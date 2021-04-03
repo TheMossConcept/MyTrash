@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "plastic-recycling-app",
-    "slug": "plastic-recycling-app",
+    "name": "Houe plastic recycling",
+    "slug": "houe-plastic-recycling",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
