@@ -8,7 +8,13 @@ class XMsClientPrincipalAuthenticationProvider implements AuthenticationProvider
     this.xMsClientPrincipal = xMsClientPrincipal 
   }
   getAccessToken() {
-    return new Promise<string>(() => { return this.xMsClientPrincipal }, (error) => return `Failed in the AuthenticationProvider with error: ${error}`)
+    return new Promise<string>((resolve, reject) => {
+      if (this.xMsClientPrincipal) {
+        resolve(this.xMsClientPrincipal)
+      } else {
+        reject('x-ms-principal is missing')
+      }
+    })
   }
 }
 
