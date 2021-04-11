@@ -1,16 +1,16 @@
 import "isomorphic-fetch";
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 import {Client} from "@microsoft/microsoft-graph-client";
-import XMsClientPrincipalAuthenticationProvider from "./XMsClientPrincipalAuthenticationProvider";
+import CustomAuthenticationProvider from './CustomAuthenticationProvider'
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   // TODO: Move this extraction of the header to the XMsClientPrincipalAuthenticationProvider
-  const accessToken = req.headers["x-ms-client-principal"];
+  const accessToken = req.headers["access-token"];
 
   if (accessToken){
     try {
       const clientOptions = {
-        authProvider: new XMsClientPrincipalAuthenticationProvider(accessToken)
+        authProvider: new CustomAuthenticationProvider(accessToken)
       }
       const client = Client.initWithMiddleware(clientOptions)
       const userDetails = await client.api("/me").get();
@@ -26,7 +26,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     }
   } else {
     context.res = { 
-      body: "Missing x-ms-client-principal header!!"
+      body: "Missing access-token header!!"
     }
   }
 
