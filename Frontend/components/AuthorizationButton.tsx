@@ -26,8 +26,6 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
     path: "one",
   });
 
-  console.log(`Redirect uri: ${redirectUri}`);
-
   const authRequest = new AuthRequest({
     clientId: "a67a4317-87b9-403b-8db9-e0227117bc8a",
     scopes: ["openid", "profile", "email", "offline_access"],
@@ -64,7 +62,9 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
           },
           discovery
         )
-          .then(() => {
+          .then((tokenResponse) => {
+            console.log("Token response:")
+            console.log(tokenResponse)
             handleAuthorization();
           })
           .catch((error) => {
