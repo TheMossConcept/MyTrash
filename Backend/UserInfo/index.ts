@@ -7,14 +7,20 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   const accessToken = req.headers["x-ms-client-principal"];
 
   if (accessToken){
-    const clientOptions = {
-      authProvider: new XMsClientPrincipalAuthenticationProvider(accessToken)
-    }
-    const client = Client.initWithMiddleware(clientOptions)
-    const userDetails = await client.api("/me").get();
+    try {
+      const clientOptions = {
+        authProvider: new XMsClientPrincipalAuthenticationProvider(accessToken)
+      }
+      const client = Client.initWithMiddleware(clientOptions)
+        const userDetails = await client.api("/me").get();
 
-    context.res = { 
-      body: JSON.stringify(userDetails)
+      context.res = { 
+        body: JSON.stringify(userDetails)
+      }
+    } catch (error) {
+      context.res = {
+        body: JSON.stringify(error)
+      }
     }
   } else {
     context.res = { 
