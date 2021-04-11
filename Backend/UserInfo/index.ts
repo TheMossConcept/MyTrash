@@ -1,3 +1,4 @@
+import "isomorphic-fetch";
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
 import {Client} from "@microsoft/microsoft-graph-client";
 import XMsClientPrincipalAuthenticationProvider from "./XMsClientPrincipalAuthenticationProvider";
@@ -12,14 +13,15 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         authProvider: new XMsClientPrincipalAuthenticationProvider(accessToken)
       }
       const client = Client.initWithMiddleware(clientOptions)
-        const userDetails = await client.api("/me").get();
+      const userDetails = await client.api("/me").get();
 
       context.res = { 
         body: JSON.stringify(userDetails)
       }
     } catch (error) {
       context.res = {
-        body: JSON.stringify(error)
+        body: JSON.stringify(error),
+        statusCode: '500'
       }
     }
   } else {
