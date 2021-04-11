@@ -20,7 +20,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
       }
     } catch (error) {
       context.res = {
-        body: JSON.stringify(error),
+        body: `${JSON.stringify(error)}. The auth token used is: ${accessToken}`,
         statusCode: '500'
       }
     }
