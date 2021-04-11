@@ -18,4 +18,4 @@ class CustomAuthenticationProvider implements AuthenticationProvider {
   }
 }
 
-export default XMsClientPrincipalAuthenticationProvider;
+export default CustomAuthenticationProvider;
