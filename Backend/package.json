@@ -18,6 +18,7 @@
     "typescript": "^3.3.3"
   },
   "dependencies": {
-    "@microsoft/microsoft-graph-client": "^2.2.1"
+    "@microsoft/microsoft-graph-client": "^2.2.1",
+    "@types/node": "^14.14.37"
   }
 }
