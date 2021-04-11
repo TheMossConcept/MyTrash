@@ -4,7 +4,7 @@ import {Client} from "@microsoft/microsoft-graph-client";
 import CustomAuthenticationProvider from './CustomAuthenticationProvider'
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-  // TODO: Move this extraction of the header to the XMsClientPrincipalAuthenticationProvider
+  // TODO: Move this extraction of the header to the CustomAuthenticationProvider
   const accessToken = req.headers["access-token"];
 
   if (accessToken){
