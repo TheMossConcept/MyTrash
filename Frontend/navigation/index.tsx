@@ -10,7 +10,7 @@ import LoginScreen from "../screens/LoginScreen";
 
 import NotFoundScreen from "../screens/NotFoundScreen";
 import { RootStackParamList } from "../types";
-import BottomTabNavigator from "./BottomTabNavigator";
+import TabNavigator from "./TabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
 
 // If you are not familiar with React Navigation, we recommend going through the
@@ -41,7 +41,7 @@ function RootNavigator() {
       initialRouteName="Login"
     >
       <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Root" component={BottomTabNavigator} />
+      <Stack.Screen name="Root" component={TabNavigator} />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
