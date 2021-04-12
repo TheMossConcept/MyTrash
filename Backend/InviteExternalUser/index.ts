@@ -4,7 +4,6 @@ import CustomAuthenticationProvider from "../CustomAuthenticationProvider";
 
 type RequestBody = {
   email: string;
-  redirectUrl: string;
   appRoleId: string;
 }
 
@@ -23,7 +22,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     // Issue the invitation in accordance with the request
     const invitation = {
       invitedUserEmailAddress: requestBody.email,
-      inviteRedirectUrl: requestBody.redirectUrl,
+      // TODO: Fix the hardcoding!
+      inviteRedirectUrl: 'http://127.0.0.1/login',
       sendInvitationMessage: true
     };
     const invitationResult = await client.api('/invitations')

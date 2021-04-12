@@ -11,7 +11,7 @@ import { Button } from "react-native";
 WebBrowser.maybeCompleteAuthSession();
 
 type Props = {
-  handleAuthorization: () => void;
+  handleAuthorization: (tokenResponse: any) => void;
 };
 
 export default function AuthorizationButton({ handleAuthorization }: Props) {
@@ -65,7 +65,7 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
           .then((tokenResponse) => {
             console.log("Token response:")
             console.log(tokenResponse)
-            handleAuthorization();
+            handleAuthorization(tokenResponse);
           })
           .catch((error) => {
             console.log("ERROR: ");
