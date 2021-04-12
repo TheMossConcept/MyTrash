@@ -29,14 +29,13 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const invitationResult = await client.api('/invitations')
       .post(invitation);
 
-    // Get the service principal for which we want to add a role. TODO: Fix the hardcoding of 
+    // Get all the information necessary for the appRoleAssignment TODO: Fix the hardcoding of 
     // the id and move the roles to the backend registration instead
-    const servicePrincipalId = '291ca79c-04ea-4531-af1f-9123ff054436';
-    // const servicePrincipal = await client.api(`servicePrincipals/${servicePrincipalId}`).get()
+    const resourceId = '291ca79c-04ea-4531-af1f-9123ff054436';
+    const principalId = invitationResult?.invitedUser?.id;
+    const appRoleId = requestBody.appRoleId;
 
-    const invitedUserId = invitationResult?.invitedUser?.id;
-
-   // await client.api(`users/${invitedUserId}/appRoleAssignments`).post({ principalId: invitedUserId, resourceId: servicePrincipalId, appRoleId: requestBody.appRoleId })
+   await client.api(`users/${principalId}/appRoleAssignments`).post({ principalId, resourceId, appRoleId })
 
     // TODO: Here, do an app role assignment in accordance with
     // the role passed in the request payload as outlined by 
