@@ -95,6 +95,10 @@ export default function UserInvitationForm() {
       <Snackbar
         visible={showSuccessSnackbar}
         onDismiss={dismissSuccessSnackbar}
+        action={{
+          label: "OK",
+          onPress: dismissSuccessSnackbar,
+        }}
       >
         Brugeren er inviteret til MyTrash
       </Snackbar>
@@ -113,6 +117,8 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
+    height: "100%",
   },
   buttonContainer: {
     flexDirection: "row",
