@@ -6,7 +6,11 @@ import React, { FC } from "react";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import AdministrationScreen from "../screens/AdministrationScreen";
+import CollectionAdministrationScreen from "../screens/CollectionAdministrationScreen";
 import CollectionScreen from "../screens/CollectionScreen";
+import LogisticsScreen from "../screens/LogisticsScreen";
+import ProductionScreen from "../screens/ProductionScreen";
+import RecipientScreen from "../screens/RecipientScreen";
 import { TabsParamList, RootStackParamList } from "../types";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
@@ -31,8 +35,44 @@ const TabNavigator: FC<Props> = () => {
         }}
       />
       <Tab.Screen
+        name="Indsamlingsadministration"
+        component={CollectionAdministrationScreen}
+        options={{
+          tabBarIcon: ({ color }: { color: string }) => (
+            <TabBarIcon name="ios-code" color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
         name="Indsamling"
         component={CollectionScreen}
+        options={{
+          tabBarIcon: ({ color }: { color: string }) => (
+            <TabBarIcon name="ios-code" color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Logistik"
+        component={LogisticsScreen}
+        options={{
+          tabBarIcon: ({ color }: { color: string }) => (
+            <TabBarIcon name="ios-code" color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Modtagelse"
+        component={RecipientScreen}
+        options={{
+          tabBarIcon: ({ color }: { color: string }) => (
+            <TabBarIcon name="ios-code" color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Produktion"
+        component={ProductionScreen}
         options={{
           tabBarIcon: ({ color }: { color: string }) => (
             <TabBarIcon name="ios-code" color={color} />

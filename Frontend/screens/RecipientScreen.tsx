@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 
 import { Text, View } from "../components/Themed";
 
-export default function CollectionScreen() {
+export default function RecipientScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Not implemented yet</Text>
