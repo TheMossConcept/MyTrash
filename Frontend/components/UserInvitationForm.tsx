@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import * as React from "react";
 import { ActivityIndicator, Button, StyleSheet, TextInput } from "react-native";
+import { Snackbar } from "react-native-paper";
 
 import { View } from "./Themed";
 
@@ -19,20 +20,28 @@ export default function UserInvitationForm() {
     },
   });
 
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoadingRoles, setIsLoadingRoles] = React.useState(false);
+  const [isLoadingInvite, setIsLoadingInvite] = React.useState(false);
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = React.useState(false);
+  const dismissSuccessSnackbar = () => {
+    setShowSuccessSnackbar(false);
+    // TODO: This should probably be somewhere else
+    setEmailToInvite("");
+  };
+
   const [availableAppRoles, setAvailableAppRoles] = React.useState<AppRole[]>(
     []
   );
   // Initially, fetch the available app roles
   React.useEffect(() => {
-    setIsLoading(true);
+    setIsLoadingRoles(true);
 
     axiosInstance
       .get("/UserAppRoles")
       .then((response: AxiosResponse<AppRole[]>) => {
         setAvailableAppRoles(response.data);
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => setIsLoadingRoles(false));
   }, []);
 
   const [emailToInvite, setEmailToInvite] = React.useState("");
@@ -44,21 +53,31 @@ export default function UserInvitationForm() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        value={emailToInvite}
-        onChangeText={setEmailToInvite}
-        style={styles.textInput}
-      />
+      {isLoadingInvite ? (
+        <ActivityIndicator />
+      ) : (
+        <TextInput
+          value={emailToInvite}
+          onChangeText={setEmailToInvite}
+          style={styles.textInput}
+        />
+      )}
       <View style={styles.buttonContainer}>
-        {isLoading ? (
+        {isLoadingRoles ? (
           <ActivityIndicator />
         ) : (
           availableAppRoles.map((availableAppRole: AppRole) => {
             const onPress = () => {
-              axiosInstance.post("/InviteExternalUser", {
-                email: emailToInvite,
-                appRoleId: availableAppRole.id,
-              });
+              axiosInstance
+                .post("/InviteExternalUser", {
+                  email: emailToInvite,
+                  appRoleId: availableAppRole.id,
+                })
+                .then(() => setShowSuccessSnackbar(true))
+                .finally(() => setIsLoadingInvite(false));
+
+              setEmailToInvite("");
+              setIsLoadingInvite(true);
             };
 
             return (
@@ -73,6 +92,12 @@ export default function UserInvitationForm() {
           })
         )}
       </View>
+      <Snackbar
+        visible={showSuccessSnackbar}
+        onDismiss={dismissSuccessSnackbar}
+      >
+        Brugeren er inviteret til MyTrash
+      </Snackbar>
     </View>
   );
 }
