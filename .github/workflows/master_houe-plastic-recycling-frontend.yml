@@ -9,7 +9,7 @@ on:
       - master
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './Frontend' # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_PACKAGE_PATH: './Frontend' # set this to the path to your web app project, defaults to the repository root
 
 jobs:
   build-and-deploy:
@@ -23,7 +23,7 @@ jobs:
 
     - name: npm install, build, and test
       run: |
-        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        pushd './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
         npm install
         npm run build --if-present
 
@@ -33,5 +33,5 @@ jobs:
         app-name: houe-plastic-recycling-frontend
         slot-name: Production
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A5A334E7235F45A4823590912FD0572D }}
-        package: .
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
