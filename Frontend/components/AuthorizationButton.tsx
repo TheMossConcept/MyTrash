@@ -16,17 +16,20 @@ type Props = {
 
 export default function AuthorizationButton({ handleAuthorization }: Props) {
   // Endpoint
+  // TODO: Fix the hardcoding
   const discovery = useAutoDiscovery(
     "https://login.microsoftonline.com/65fa44cb-fe68-4b06-ad9f-d4343bd7589f/v2.0"
   );
 
   const redirectUri = makeRedirectUri({
     // For usage in bare and standalone
-    native: "houe-plastic-recycling://one",
-    path: "one",
+    // TODO: Find a redirection tab that actually works for all rights
+    native: "houe-plastic-recycling://Administration",
+    path: "Administration",
   });
 
   const authRequest = new AuthRequest({
+    // TODO: Fix teh hardcoding!
     clientId: "a67a4317-87b9-403b-8db9-e0227117bc8a",
     scopes: ["openid", "profile", "email", "offline_access"],
     // redirectUri: "houe-plastic-recycling://one",
@@ -54,6 +57,7 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
           {
             code: authSessionResult.params.code,
             scopes: ["openid", "profile", "email", "offline_access"],
+            // TODO: Fix teh hardcoding!
             clientId: "a67a4317-87b9-403b-8db9-e0227117bc8a",
             redirectUri,
             extraParams: {
@@ -63,8 +67,8 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
           discovery
         )
           .then((tokenResponse) => {
-            console.log("Token response:")
-            console.log(tokenResponse)
+            console.log("Token response:");
+            console.log(tokenResponse);
             handleAuthorization(tokenResponse);
           })
           .catch((error) => {
