@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from "axios";
+import axios, { AxiosResponse } from "axios";
 import * as React from "react";
 import { Button, StyleSheet, TextInput } from "react-native";
 
@@ -8,45 +8,59 @@ import { View } from "../components/Themed";
 type AppRole = {
   displayName: string;
   id: string;
-}
+};
 
 export default function AdministrationScreen() {
-
   // TODO: Get the base url out in a config file that is environment specific!!
   const axiosInstance = axios.create({
-    baseURL: 'http://localhost:7071/api',
+    baseURL: "http://localhost:7071/api",
     headers: {
-      'access-token': sessionStorage.getItem('accessToken')
-    }
-  })
+      "access-token": sessionStorage.getItem("accessToken"),
+    },
+  });
 
-  const [availableAppRoles, setAvailableAppRoles] = React.useState<AppRole[]>([]);
+  const [availableAppRoles, setAvailableAppRoles] = React.useState<AppRole[]>(
+    []
+  );
   // Initially, fetch the available app roles
   React.useEffect(() => {
-    axiosInstance.get('/UserAppRoles').then((response: AxiosResponse<AppRole[]>) => {
-      setAvailableAppRoles(response.data)
-    })
-  }, [])
+    axiosInstance
+      .get("/UserAppRoles")
+      .then((response: AxiosResponse<AppRole[]>) => {
+        setAvailableAppRoles(response.data);
+      });
+  }, []);
 
-  const [emailToInvite, setEmailToInvite] = React.useState('');
+  const [emailToInvite, setEmailToInvite] = React.useState("");
 
   // TODO: Extend this with regexp to verify the shape of the email
   const emailToInviteIsInvalid = () => {
-    return emailToInvite === ''
-  }
-
+    return emailToInvite === "";
+  };
 
   return (
     <View style={styles.container}>
-      <TextInput value={emailToInvite} onChangeText={setEmailToInvite} style={styles.textInput} />
+      <TextInput
+        value={emailToInvite}
+        onChangeText={setEmailToInvite}
+        style={styles.textInput}
+      />
       {availableAppRoles.map((availableAppRole: AppRole) => {
         const onPress = () => {
-          axiosInstance.post('/InviteExternalUser', {email: emailToInvite, appRoleId: availableAppRole.id})
-      };
+          axiosInstance.post("/InviteExternalUser", {
+            email: emailToInvite,
+            appRoleId: availableAppRole.id,
+          });
+        };
 
-      return (
-      <Button key={availableAppRole.id} title={availableAppRole.displayName} onPress={onPress} disabled={emailToInviteIsInvalid()}  />
-      )
+        return (
+          <Button
+            key={availableAppRole.id}
+            title={availableAppRole.displayName}
+            onPress={onPress}
+            disabled={emailToInviteIsInvalid()}
+          />
+        );
       })}
     </View>
   );
@@ -61,7 +75,7 @@ const styles = StyleSheet.create({
   textInput: {
     height: 30,
     width: "80%",
-    textAlign: 'center',
-    backgroundColor: 'lightgrey'
+    textAlign: "center",
+    backgroundColor: "lightgrey",
   },
 });

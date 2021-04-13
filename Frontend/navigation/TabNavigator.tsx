@@ -1,18 +1,13 @@
 import { Ionicons } from "@expo/vector-icons";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import {
-  StackScreenProps,
-} from "@react-navigation/stack";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC } from "react";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import AdministrationScreen from "../screens/AdministrationScreen";
 import CollectionScreen from "../screens/CollectionScreen";
-import {
-  TabsParamList,
-  RootStackParamList,
-} from "../types";
+import { TabsParamList, RootStackParamList } from "../types";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
