@@ -8,4 +8,8 @@ export type RootStackParamList = {
 export type TabsParamList = {
   Administration: undefined;
   Indsamling: undefined;
+  Indsamlingsadministration: undefined;
+  Logistik: undefined;
+  Modtagelse: undefined;
+  Produktion: undefined;
 };

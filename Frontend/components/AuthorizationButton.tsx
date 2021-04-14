@@ -7,6 +7,7 @@ import {
   useAutoDiscovery,
 } from "expo-auth-session";
 import { Button } from "react-native";
+import { AUTHORIZATION_URL } from "react-native-dotenv";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -16,10 +17,9 @@ type Props = {
 
 export default function AuthorizationButton({ handleAuthorization }: Props) {
   // Endpoint
-  // TODO: Fix the hardcoding
-  const discovery = useAutoDiscovery(
-    "https://login.microsoftonline.com/65fa44cb-fe68-4b06-ad9f-d4343bd7589f/v2.0"
-  );
+  const discovery = useAutoDiscovery(AUTHORIZATION_URL);
+
+  console.log(AUTHORIZATION_URL);
 
   const redirectUri = makeRedirectUri({
     // For usage in bare and standalone
