@@ -19,8 +19,6 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
   // Endpoint
   const discovery = useAutoDiscovery(AUTHORIZATION_URL);
 
-  console.log(AUTHORIZATION_URL);
-
   const redirectUri = makeRedirectUri({
     // For usage in bare and standalone
     // TODO: Find a redirection tab that actually works for all rights

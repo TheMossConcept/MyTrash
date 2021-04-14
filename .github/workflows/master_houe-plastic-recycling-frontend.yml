@@ -10,6 +10,7 @@ on:
 
 env:
   AZURE_WEBAPP_PACKAGE_PATH: './Frontend' # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_BUILD_PATH: './Frontend/web-build' # set this to the path to the build folder of your webapp
 
 jobs:
   build-and-deploy:
@@ -25,6 +26,7 @@ jobs:
       run: |
         pushd './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
         npm install
+        npm install --global expo
         npm run build:web --if-present
 
     - name: Run Azure webapp deploy action using publish profile credentials
@@ -33,5 +35,5 @@ jobs:
         app-name: houe-plastic-recycling-frontend
         slot-name: Production
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_A5A334E7235F45A4823590912FD0572D }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        package: ${{ env.AZURE_WEBAPP_BUILD_PATH }}
 
