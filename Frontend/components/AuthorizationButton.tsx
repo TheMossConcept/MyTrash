@@ -9,6 +9,7 @@ import {
 import { Button } from "react-native";
 import { AUTHORIZATION_URL } from "react-native-dotenv";
 
+// TO TRIGGER CI/CD
 WebBrowser.maybeCompleteAuthSession();
 
 type Props = {
