@@ -26,7 +26,7 @@ jobs:
       run: |
         pushd './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
         npm install
-        npm run build:web --if-present
+        node_modules/expo/bin/cli.js build:web
 
     - name: Run Azure webapp deploy action using publish profile credentials
       uses: azure/webapps-deploy@v2
