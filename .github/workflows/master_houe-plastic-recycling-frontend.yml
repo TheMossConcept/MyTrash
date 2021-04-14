@@ -21,9 +21,10 @@ jobs:
     - name: 'Checkout Github Action'
       uses: actions/checkout@master
 
+    - name: Expo GitHub Action
+      uses: expo/expo-github-action@5.1.1
 
     - name: npm install, build, and test
-      uses: expo/expo-github-action@5.1.1
       run: |
         pushd './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
         npm install
