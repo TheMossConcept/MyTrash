@@ -22,7 +22,7 @@ jobs:
       uses: actions/checkout@master
 
     - name: Expo GitHub Action
-      uses: expo/expo-github-action@5.4
+      uses: expo/expo-github-action@5.4.0
 
     - name: npm install, build, and test
       run: |
