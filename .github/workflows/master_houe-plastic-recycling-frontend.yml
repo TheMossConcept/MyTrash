@@ -23,9 +23,11 @@ jobs:
 
 
     - name: npm install, build, and test
+      uses: expo/expo-github-action@5.1.1
       run: |
         pushd './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
         npm install
+        expo build
 
     - name: Run Azure webapp deploy action using publish profile credentials
       uses: azure/webapps-deploy@v2
