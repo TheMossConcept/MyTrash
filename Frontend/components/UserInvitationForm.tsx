@@ -73,10 +73,19 @@ export default function UserInvitationForm() {
           availableAppRoles.map((availableAppRole: AppRole) => {
             const onPress = () => {
               axiosInstance
-                .post("/InviteExternalUser", {
-                  email: emailToInvite,
-                  appRoleId: availableAppRole.id,
-                })
+                .post(
+                  "/InviteExternalUser",
+                  {
+                    email: emailToInvite,
+                    appRoleId: availableAppRole.id,
+                  },
+                  {
+                    params: {
+                      code:
+                        "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+                    },
+                  }
+                )
                 .then(() => setShowSuccessSnackbar(true))
                 .finally(() => setIsLoadingInvite(false));
 
