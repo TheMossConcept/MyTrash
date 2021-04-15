@@ -14,7 +14,7 @@ type AppRole = {
 export default function UserInvitationForm() {
   // TODO: Get the base url out in a config file that is environment specific!!
   const axiosInstance = axios.create({
-    baseURL: "http://localhost:7071/api",
+    baseURL: "https://houe-plastic-recycling.azurewebsites.net/api",
     headers: {
       "access-token": sessionStorage.getItem("accessToken"),
     },
