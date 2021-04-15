@@ -17,7 +17,7 @@ type Props = StackScreenProps<RootStackParamList, "Login">;
 const LoginScreen: FC<Props> = ({ navigation }) => {
   const handleAuthorizationSuccess = (tokenResponse: any) => {
     // TODO: Add validation and proper typings here!
-    sessionStorage.setItem('accessToken', tokenResponse.accessToken)
+    sessionStorage.setItem("accessToken", tokenResponse.accessToken);
 
     navigation.navigate("Root");
   };

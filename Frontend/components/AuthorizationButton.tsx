@@ -23,8 +23,7 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
   const redirectUri = makeRedirectUri({
     // For usage in bare and standalone
     // TODO: Find a redirection tab that actually works for all rights
-    native: "houe-plastic-recycling://Administration",
-    path: "Administration",
+    native: "houe-plastic-recycling://",
   });
 
   const authRequest = new AuthRequest({
