@@ -25,13 +25,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     }) )
 
     context.res = { 
-      body: JSON.stringify(returnValue),
-      headers: {
-        "Access-Control-Allow-Credentials" : "true",
-        "Access-Control-Allow-Origin" : "*",
-        "Access-Control-Allow-Methods": "*",
-        "Access-Control-Allow-Headers": "*"
-      }
+      body: JSON.stringify(returnValue)
     }
   } catch (error) {
     context.res = {

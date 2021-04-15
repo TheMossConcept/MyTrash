@@ -14,7 +14,7 @@ type AppRole = {
 export default function UserInvitationForm() {
   // TODO: Get the base url out in a config file that is environment specific!!
   const axiosInstance = axios.create({
-    baseURL: "https://houe-plastic-recycling.azurewebsites.net/api",
+    baseURL: "https://houe-plastic-recycling-windows.azurewebsites.net/api",
     headers: {
       "access-token": sessionStorage.getItem("accessToken"),
     },
@@ -37,7 +37,11 @@ export default function UserInvitationForm() {
     setIsLoadingRoles(true);
 
     axiosInstance
-      .get("/UserAppRoles")
+      .get("/UserAppRoles", {
+        params: {
+          code: "oYx2YQIRFLv7fVYRd4aV9Rj/EyzQGwTepONvms8DBLJPquUIh9sDAw==",
+        },
+      })
       .then((response: AxiosResponse<AppRole[]>) => {
         setAvailableAppRoles(response.data);
       })
