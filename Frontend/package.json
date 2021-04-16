@@ -8,7 +8,7 @@
     "eject": "expo eject",
     "test": "jest --watchAll",
     "build:web": "expo build:web",
-    "build:azure": "npm install --global expo-cli && expo build:web"
+    "build:azure": "npm install --global expo-cli && npm install && expo build:web"
   },
   "jest": {
     "preset": "jest-expo"
