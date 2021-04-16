@@ -8,7 +8,7 @@
     "eject": "expo eject",
     "test": "jest --watchAll",
     "build:web": "expo build:web",
-    "build:azure": "ls"
+    "build:azure": "expo build:web"
   },
   "jest": {
     "preset": "jest-expo"
