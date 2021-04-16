@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://go.microsoft.com/fwlink/?linkid=2134798
 # More GitHub Actions for Azure: https://go.microsoft.com/fwlink/?linkid=2135048
 
-name: Azure App Service - houe-plastic-recycling-frontend(Production), Build and deploy React app
+name: Frontend
 
 on:
   push:
@@ -9,8 +9,7 @@ on:
       - master
 
 env:
-  AZURE_WEBAPP_PACKAGE_PATH: './Frontend' # set this to the path to your web app project, defaults to the repository root
-  AZURE_WEBAPP_BUILD_PATH: './Frontend/web-build' # set this to the path to the build folder of your webapp
+  RUN_BUILD_COMMAND: "npm run build:web"
 
 jobs:
   build-and-deploy:
@@ -20,15 +19,6 @@ jobs:
     # checkout the repo
     - name: 'Checkout Github Action'
       uses: actions/checkout@master
-
-      #- name: Expo GitHub Action
-      #uses: expo/expo-github-action@5.4.0
-
-      #- name: npm install, build, and test
-      #run: |
-      #  pushd './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
-      #  npm install
-      #  expo build:web
 
     - name: Build And Deploy
       id: builddeploy
@@ -43,6 +33,6 @@ jobs:
         ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
         # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
         app_location: "/Frontend" # App source code path
-        api_location: "/Backend" # Api source code path - optional 
+        api_location: "" # Api source code path - optional 
         output_location: "web-build" # Built app content directory - optional
         ###### End of Repository/Build Configurations ######
