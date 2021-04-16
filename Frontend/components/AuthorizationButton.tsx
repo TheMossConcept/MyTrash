@@ -7,7 +7,7 @@ import {
   useAutoDiscovery,
 } from "expo-auth-session";
 import { Button } from "react-native";
-import { AUTHORIZATION_URL } from "react-native-dotenv";
+import { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID } from "react-native-dotenv";
 
 // TO TRIGGER CI/CD
 WebBrowser.maybeCompleteAuthSession();
@@ -27,11 +27,8 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
   });
 
   const authRequest = new AuthRequest({
-    // TODO: Fix teh hardcoding!
-    clientId: "a67a4317-87b9-403b-8db9-e0227117bc8a",
+    clientId: AZURE_AD_CLIENT_ID,
     scopes: ["openid", "profile", "email", "offline_access"],
-    // redirectUri: "houe-plastic-recycling://one",
-    // For usage in managed apps using the proxy
     redirectUri,
   });
 
@@ -56,7 +53,7 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
             code: authSessionResult.params.code,
             scopes: ["openid", "profile", "email", "offline_access"],
             // TODO: Fix teh hardcoding!
-            clientId: "a67a4317-87b9-403b-8db9-e0227117bc8a",
+            clientId: AZURE_AD_CLIENT_ID,
             redirectUri,
             extraParams: {
               code_verifier: authRequest.codeVerifier,
