@@ -28,7 +28,7 @@ jobs:
       run: |
         pushd './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
         npm install
-        expo build
+        expo build:web
 
     - name: Build And Deploy
       id: builddeploy
