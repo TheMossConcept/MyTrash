@@ -21,6 +21,11 @@ jobs:
     - name: 'Checkout Github Action'
       uses: actions/checkout@master
 
+    - name: 'Setup node'
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14.16.1'
+
       #- name: Expo GitHub Action
       #uses: expo/expo-github-action@5.4.0
 
