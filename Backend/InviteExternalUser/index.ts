@@ -23,7 +23,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const invitation = {
       invitedUserEmailAddress: requestBody.email,
       // TODO: Fix the hardcoding!
-      inviteRedirectUrl: 'http://houe-plastic-recycling-frontend.azurewebsites.net/login',
+      inviteRedirectUrl: 'https://gentle-dune-02f023b03.azurestaticapps.net',
       sendInvitationMessage: true
     };
     const invitationResult = await client.api('/invitations')
