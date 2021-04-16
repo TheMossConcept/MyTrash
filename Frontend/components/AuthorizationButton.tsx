@@ -77,5 +77,5 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
     }
   };
 
-  return <Button title="Login test" onPress={onPress} />;
+  return <Button title="Login" onPress={onPress} />;
 }
