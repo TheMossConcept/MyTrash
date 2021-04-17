@@ -10,6 +10,7 @@ on:
 
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './Backend' # set this to the path to your web app project, defaults to the repository root
+  AZURE_FRONTEND_PACKAGE_PATH: './Frontend' # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '14.x' # set this to the node version to use (supports 8.x, 10.x, 12.x, 14.x)
 
 jobs:
@@ -38,13 +39,18 @@ jobs:
         api_location: "" # Api source code path - optional. 
         output_location: "web-build" # Built app content directory - optional
         ###### End of Repository/Build Configurations ######
-    - name: Build and deploy native apps
+    - name: Setup expo CLI for native app publishing
       uses: expo/expo-github-action@5.4.0
       with:
           expo-version: 4.x
           expo-token: ${{ secrets.EXPO_ACCESS_TOKEN }}
-    - run: npm install
-    - run: expo publish
+    - name: Build and deploy native apps
+      shell: pwsh
+      run: |
+        pushd './${{ env.AZURE_FRONTEND_PACKAGE_PATH }}'
+        npm install
+        npm run expo publish
+        popd
   backend-build-and-deploy:
     runs-on: windows-latest
     steps:
