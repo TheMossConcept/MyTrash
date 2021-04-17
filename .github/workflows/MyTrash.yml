@@ -48,7 +48,6 @@ jobs:
       shell: pwsh
       run: |
         pushd './${{ env.AZURE_FRONTEND_PACKAGE_PATH }}'
-        npm install
         npm run expo publish
         popd
   backend-build-and-deploy:
