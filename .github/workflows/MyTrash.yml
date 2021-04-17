@@ -39,7 +39,7 @@ jobs:
         output_location: "web-build" # Built app content directory - optional
         ###### End of Repository/Build Configurations ######
     - name: Build and deploy native apps
-      uses: expo/expo-github-actions@5.4.0
+      uses: expo/expo-github-action@5.4.0
       with:
           expo-version: 4.x
           expo-token: ${{ secrets.EXPO_ACCESS_TOKEN }}
