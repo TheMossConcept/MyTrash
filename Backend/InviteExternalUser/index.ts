@@ -1,6 +1,6 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
-import CustomAuthenticationProvider from "../CustomAuthenticationProvider";
+import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 
 type RequestBody = {
   email: string;
