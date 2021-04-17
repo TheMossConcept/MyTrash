@@ -1,7 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, { AxiosResponse } from "axios";
 import * as React from "react";
 import { ActivityIndicator, Button, StyleSheet, TextInput } from "react-native";
 import { Snackbar } from "react-native-paper";
+import axiosUtils from "../utils/axios";
 
 import { View } from "./Themed";
 
@@ -12,16 +14,15 @@ type AppRole = {
 };
 
 export default function UserInvitationForm() {
-  // TODO: Get the base url out in a config file that is environment specific!!
-  const axiosInstance = axios.create({
-    baseURL: "https://houe-plastic-recycling-windows.azurewebsites.net/api",
-    headers: {
-      "access-token": sessionStorage.getItem("accessToken"),
-    },
+  const [accessToken, setAccessToken] = React.useState<string | undefined>();
+
+  AsyncStorage.getItem("accessToken").then((localAccessToken) => {
+    setAccessToken(localAccessToken || undefined);
   });
 
   const [isLoadingRoles, setIsLoadingRoles] = React.useState(false);
   const [isLoadingInvite, setIsLoadingInvite] = React.useState(false);
+
   const [showSuccessSnackbar, setShowSuccessSnackbar] = React.useState(false);
   const dismissSuccessSnackbar = () => {
     setShowSuccessSnackbar(false);
@@ -32,21 +33,25 @@ export default function UserInvitationForm() {
   const [availableAppRoles, setAvailableAppRoles] = React.useState<AppRole[]>(
     []
   );
+
   // Initially, fetch the available app roles
   React.useEffect(() => {
-    setIsLoadingRoles(true);
+    if (accessToken) {
+      setIsLoadingRoles(true);
 
-    axiosInstance
-      .get("/UserAppRoles", {
-        params: {
-          code: "oYx2YQIRFLv7fVYRd4aV9Rj/EyzQGwTepONvms8DBLJPquUIh9sDAw==",
-        },
-      })
-      .then((response: AxiosResponse<AppRole[]>) => {
-        setAvailableAppRoles(response.data);
-      })
-      .finally(() => setIsLoadingRoles(false));
-  }, []);
+      axios
+        .get("/UserAppRoles", {
+          params: {
+            code: "oYx2YQIRFLv7fVYRd4aV9Rj/EyzQGwTepONvms8DBLJPquUIh9sDAw==",
+          },
+          ...axiosUtils.getSharedAxiosConfig(accessToken),
+        })
+        .then((response: AxiosResponse<AppRole[]>) => {
+          setAvailableAppRoles(response.data);
+        })
+        .finally(() => setIsLoadingRoles(false));
+    }
+  }, [accessToken]);
 
   const [emailToInvite, setEmailToInvite] = React.useState("");
 
@@ -72,25 +77,28 @@ export default function UserInvitationForm() {
         ) : (
           availableAppRoles.map((availableAppRole: AppRole) => {
             const onPress = () => {
-              axiosInstance
-                .post(
-                  "/InviteExternalUser",
-                  {
-                    email: emailToInvite,
-                    appRoleId: availableAppRole.id,
-                  },
-                  {
-                    params: {
-                      code:
-                        "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+              if (accessToken) {
+                axios
+                  .post(
+                    "/InviteExternalUser",
+                    {
+                      email: emailToInvite,
+                      appRoleId: availableAppRole.id,
                     },
-                  }
-                )
-                .then(() => setShowSuccessSnackbar(true))
-                .finally(() => setIsLoadingInvite(false));
+                    {
+                      params: {
+                        code:
+                          "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+                      },
+                      ...axiosUtils.getSharedAxiosConfig(accessToken),
+                    }
+                  )
+                  .then(() => setShowSuccessSnackbar(true))
+                  .finally(() => setIsLoadingInvite(false));
 
-              setEmailToInvite("");
-              setIsLoadingInvite(true);
+                setEmailToInvite("");
+                setIsLoadingInvite(true);
+              }
             };
 
             return (

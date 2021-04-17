@@ -22,9 +22,11 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
 
   const redirectUri = makeRedirectUri({
     // For usage in bare and standalone
-    // TODO: Find a redirection tab that actually works for all rights
-    native: "houe-plastic-recycling://",
+    // TODO: Fix the hardcoding and make this environment specific!
+    native: "exp://login",
   });
+
+  console.log(redirectUri);
 
   const authRequest = new AuthRequest({
     clientId: AZURE_AD_CLIENT_ID,

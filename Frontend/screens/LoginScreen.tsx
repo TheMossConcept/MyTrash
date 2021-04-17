@@ -1,6 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC } from "react";
 import { StyleSheet, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import AuthorizationButton from "../components/AuthorizationButton";
 import { RootStackParamList } from "../types";
 
@@ -17,7 +18,7 @@ type Props = StackScreenProps<RootStackParamList, "Login">;
 const LoginScreen: FC<Props> = ({ navigation }) => {
   const handleAuthorizationSuccess = (tokenResponse: any) => {
     // TODO: Add validation and proper typings here!
-    sessionStorage.setItem("accessToken", tokenResponse.accessToken);
+    AsyncStorage.setItem("accessToken", tokenResponse.accessToken);
 
     navigation.navigate("Root");
   };
