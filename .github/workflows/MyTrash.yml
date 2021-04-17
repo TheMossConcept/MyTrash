@@ -21,7 +21,7 @@ jobs:
     - name: 'Checkout Github Action'
       uses: actions/checkout@master
 
-    - name: Build And Deploy
+    - name: Build and deploy webapp
       id: builddeploy
       uses: Azure/static-web-apps-deploy@v0.0.1-preview
       env:
@@ -38,6 +38,13 @@ jobs:
         api_location: "" # Api source code path - optional. 
         output_location: "web-build" # Built app content directory - optional
         ###### End of Repository/Build Configurations ######
+    - name: Build and deploy native apps
+      uses: expo/expo-github-actions@5.4.0
+      with:
+          expo-version: 4.x
+          expo-token: ${{ secrets.EXPO_ACCESS_TOKEN }}
+    - run: npm install
+    - run: expo publish
   backend-build-and-deploy:
     runs-on: windows-latest
     steps:
