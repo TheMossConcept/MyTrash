@@ -42,17 +42,6 @@ jobs:
         api_location: "" # Api source code path - optional. 
         output_location: "web-build" # Built app content directory - optional
         ###### End of Repository/Build Configurations ######
-        #- name: Setup expo CLI for native app publishing
-        #uses: expo/expo-github-action@5.4.0
-        #with:
-        #expo-version: 4.x
-        #expo-token: ${{ secrets.EXPO_ACCESS_TOKEN }}
-        #- name: Build and deploy native apps
-        #shell: pwsh
-        #run: |
-        #pushd './${{ env.AZURE_FRONTEND_PACKAGE_PATH }}'
-        #npm run expo publish
-        #popd
   backend-build-and-deploy:
     runs-on: windows-latest
     steps:
