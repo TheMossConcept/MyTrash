@@ -29,7 +29,7 @@ jobs:
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         NODE_VERSION: ${{ env.NODE_VERSION }}
-        PRE_BUILD_COMMAND: "npm install --global --silent expo-cli"
+        PRE_BUILD_COMMAND: "npm install --silent expo-cli"
         POST_BUILD_COMMAND: "expo publish"
       with:
         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_GENTLE_DUNE_02F023B03 }}
