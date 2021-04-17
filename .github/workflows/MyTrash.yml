@@ -12,7 +12,7 @@ env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './Backend' # set this to the path to your web app project, defaults to the repository root
   AZURE_FRONTEND_PACKAGE_PATH: './Frontend' # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '14.x' # set this to the node version to use (supports 8.x, 10.x, 12.x, 14.x)
-  expo-token: ${{ secrets.EXPO_ACCESS_TOKEN }}
+  EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
 
 jobs:
   frontend-build-and-deploy:
@@ -27,6 +27,7 @@ jobs:
       id: builddeploy
       uses: Azure/static-web-apps-deploy@v0.0.1-preview
       env:
+        EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         NODE_VERSION: ${{ env.NODE_VERSION }}
         PRE_BUILD_COMMAND: "npm install --global --silent expo-cli"
         POST_BUILD_COMMAND: "expo publish"
