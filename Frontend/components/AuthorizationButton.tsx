@@ -9,7 +9,6 @@ import {
 import { Button } from "react-native";
 import { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID } from "react-native-dotenv";
 
-// TO TRIGGER CI/CD
 WebBrowser.maybeCompleteAuthSession();
 
 type Props = {
@@ -17,7 +16,6 @@ type Props = {
 };
 
 export default function AuthorizationButton({ handleAuthorization }: Props) {
-  // Endpoint
   const discovery = useAutoDiscovery(AUTHORIZATION_URL);
 
   const redirectUri = makeRedirectUri({
@@ -25,8 +23,6 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
     // TODO: Fix the hardcoding and make this environment specific!
     native: "exp://login",
   });
-
-  console.log(redirectUri);
 
   const authRequest = new AuthRequest({
     clientId: AZURE_AD_CLIENT_ID,
@@ -39,11 +35,9 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
     if (discovery) {
       /* We don't care about the return value of this, but one of the side effects of it is that
        * the challenge and verifier is set up correctly. This is not the most elegant way of doing
-       * it but that is the way the library works for now */
+       * it but that is the way the library works for now :( :( */
       await authRequest.getAuthRequestConfigAsync();
       const authSessionResult = await authRequest.promptAsync(discovery);
-      console.log(authSessionResult.type);
-      console.log(authRequest.codeVerifier);
       if (
         authSessionResult &&
         authSessionResult.type === "success" &&
@@ -64,13 +58,11 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
           discovery
         )
           .then((tokenResponse) => {
-            console.log("Token response:");
-            console.log(tokenResponse);
             handleAuthorization(tokenResponse);
           })
           .catch((error) => {
-            console.log("ERROR: ");
-            console.log(error);
+            // eslint-disable-next-line no-console
+            console.warn(error);
           });
       }
     }
