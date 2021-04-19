@@ -27,7 +27,7 @@ const mongoAPI = {
 };
 
 // TODO: Make these two mutually exclusive so you cannot mix properties from one in the other
-type Entities = Cluster;
+type Entities = Cluster | UserMetadata;
 
 // TODO: Consider moving these types somewhere else when this file becomes big
 type Cluster = {
@@ -38,6 +38,18 @@ type Cluster = {
   productionPartnerId: string;
   // Derived from the number of furniture ordered, what furniture it is and the plastic required for each
   necessaryPlasticQuantityInKilos: number;
+};
+
+// TODO: Look into getting this information into AD as well!
+type UserMetadata = {
+  entityName: "userMetadata";
+  azureAdId: string;
+  phoneNumber: string;
+  companyName: string;
+  debitorNumber: number;
+  street: string;
+  city: string;
+  zipCode: number;
 };
 
 export default mongoAPI;

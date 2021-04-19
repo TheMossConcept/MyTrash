@@ -1,11 +1,8 @@
+// TODO: Fix the import/no-unresolved error here (and everywhere else)!!
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
-
-type RequestBody = {
-  email: string;
-  appRoleIds: string[];
-};
+import mongoAPI from "../utils/DatabaseAPI";
 
 const httpTrigger: AzureFunction = async function (
   context: Context,
@@ -14,7 +11,8 @@ const httpTrigger: AzureFunction = async function (
   // TODO: Find a more elegant way to error handling
   try {
     // TODO: Add a guard to ensure that the request is correct. Otherwise, return invalid request
-    const requestBody: RequestBody = req.body;
+    const requestBody: UserDTO = req.body;
+    const { appRoleIds, email, ...additionalUserMetadata } = requestBody;
 
     // Initialize the client
     const clientOptions = {
@@ -24,7 +22,7 @@ const httpTrigger: AzureFunction = async function (
 
     // Issue the invitation in accordance with the request
     const invitation = {
-      invitedUserEmailAddress: requestBody.email,
+      invitedUserEmailAddress: email,
       // TODO: Fix the hardcoding!
       inviteRedirectUrl: "https://gentle-dune-02f023b03.azurestaticapps.net",
       sendInvitationMessage: true,
@@ -35,18 +33,21 @@ const httpTrigger: AzureFunction = async function (
     // the id and move the roles to the backend registration instead
     const resourceId = "291ca79c-04ea-4531-af1f-9123ff054436";
     const principalId = invitationResult?.invitedUser?.id;
-    const { appRoleIds } = requestBody;
 
-    // TODO: Consider how we can batch these calls!
+    // TODO: Consider how we can batch these calls! Also, we want to raise and error event if something goes wrong
+    // and handle that in an error function!
     appRoleIds.forEach((appRoleId: string) => {
       return client
         .api(`servicePrincipals/${resourceId}/appRoleAssignedTo`)
         .post({ principalId, resourceId, appRoleId });
     });
 
-    // TODO: Here, do an app role assignment in accordance with
-    // the role passed in the request payload as outlined by
-    // https://docs.microsoft.com/en-us/graph/api/resources/approleassignment?view=graph-rest-1.0
+    // TODO: Here we want to raise an event if something goes wrong as well
+    mongoAPI.insert({
+      entityName: "userMetadata",
+      azureAdId: principalId,
+      ...additionalUserMetadata,
+    });
 
     context.res = {
       body: JSON.stringify(invitationResult),
@@ -57,6 +58,17 @@ const httpTrigger: AzureFunction = async function (
       statusCode: "500",
     };
   }
+};
+
+type UserDTO = {
+  email: string;
+  phoneNumber: string;
+  companyName: string;
+  debitorNumber: number;
+  street: string;
+  city: string;
+  zipCode: number;
+  appRoleIds: string[];
 };
 
 export default httpTrigger;
