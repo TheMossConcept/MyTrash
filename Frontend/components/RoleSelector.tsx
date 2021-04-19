@@ -5,7 +5,9 @@ import {
   StyleSheet,
   Text,
   View,
+  // TODO: Fix this deprecation!
   CheckBox,
+  ViewProps,
 } from "react-native";
 import useAccessToken from "../hooks/useAccessToken";
 // TODO: Fix this
@@ -41,7 +43,7 @@ export default function RoleSelector({
       axios
         .get("/UserAppRoles", {
           params: {
-            // TODO: Fix hardcoding!
+            // TODO: Fix hardcoding and move this into the getSharedAxiosConfig function!
             code: "oYx2YQIRFLv7fVYRd4aV9Rj/EyzQGwTepONvms8DBLJPquUIh9sDAw==",
           },
           ...axiosUtils.getSharedAxiosConfig(accessToken),
@@ -63,6 +65,7 @@ export default function RoleSelector({
             appRole={availableAppRole}
             selectionState={roleSelectionState}
             disabled={selectionDisabled}
+            style={styles.checkbox}
             key={availableAppRole.id}
           />
         ))
@@ -75,12 +78,13 @@ type RoleSelectorCheckboxProps = {
   appRole: AppRole;
   selectionState: [string[], (value: string[]) => void];
   disabled: boolean;
-};
+} & ViewProps;
 
 function RoleSelectorCheckbox({
   appRole,
   selectionState,
   disabled,
+  ...viewProps
 }: RoleSelectorCheckboxProps) {
   const { displayName, id } = appRole;
   const [selectedAppRoles, setSelectedAppRoles] = selectionState;
@@ -96,8 +100,9 @@ function RoleSelectorCheckbox({
     }
   };
 
+  // TODO: Disable the spread forbidden rule and spread viewProps
   return (
-    <View>
+    <View style={viewProps.style}>
       <CheckBox
         value={checkboxValue}
         onValueChange={onValueChange}
@@ -111,5 +116,10 @@ function RoleSelectorCheckbox({
 const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
+  },
+  checkbox: {
+    alignItems: "center",
+    marginLeft: 15,
+    marginRight: 15,
   },
 });
