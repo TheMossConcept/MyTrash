@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { ActivityIndicator, Button, StyleSheet } from "react-native";
+import { isEmpty } from "lodash";
 import axiosUtils from "../utils/axios";
 
 import { View } from "./Themed";
@@ -13,14 +14,25 @@ import UserForm, { UserFormData } from "./UserForm";
 
 export default function UserInvitationForm() {
   const [rolesToInviteTo, setRolesToInviteTo] = useState<string[]>([]);
-  const [, setUserData] = useState<UserFormData | null>(null);
-  const [isLoadingInvite, setIsLoadingInvite] = useState(false);
+  const [userData, setUserData] = useState<UserFormData>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const onDismiss = () => {
-    setEmailToInvite("");
+    setUserData({});
   };
 
-  const [emailToInvite, setEmailToInvite] = useState("");
+  // TODO: Delegate this to the form and the individual fields. Commmunicate
+  // the information back through the type
+  const isValid =
+    userData.email &&
+    userData.phoneNumber &&
+    userData.companyName &&
+    userData.debitorNumber &&
+    userData.streetName &&
+    userData.city &&
+    userData.zipCode &&
+    !isEmpty(rolesToInviteTo);
+
   const [showSnackbar, setShowSnackbar] = useState(false);
 
   const accessToken = useAccessToken();
@@ -30,7 +42,7 @@ export default function UserInvitationForm() {
         .post(
           "/InviteExternalUser",
           {
-            email: emailToInvite,
+            ...userData,
             appRoleIds: rolesToInviteTo,
           },
           {
@@ -38,20 +50,20 @@ export default function UserInvitationForm() {
               code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
             },
             ...axiosUtils.getSharedAxiosConfig(accessToken),
-            // ..axiosUtils.getSharedAxiosConfig(accessToken),
           }
         )
-        .then(() => setShowSnackbar(true))
-        .finally(() => setIsLoadingInvite(false));
-
-      setEmailToInvite("");
-      setIsLoadingInvite(true);
+        .then(() => {
+          setShowSnackbar(true);
+          setUserData({});
+          setRolesToInviteTo([]);
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
   return (
     <View style={styles.container}>
-      {isLoadingInvite ? (
+      {isLoading ? (
         <ActivityIndicator />
       ) : (
         <View>
@@ -62,8 +74,8 @@ export default function UserInvitationForm() {
           />
         </View>
       )}
-      <UserForm handleUserDataChange={setUserData} style={styles.userForm} />
-      <Button onPress={inviteUser} title="Inviter bruger" />
+      <UserForm userFormState={[userData, setUserData]} />
+      <Button onPress={inviteUser} title="Inviter bruger" disabled={!isValid} />
       <DismissableSnackbar
         title="Brugeren er blevet inviteret"
         showState={[showSnackbar, setShowSnackbar]}
