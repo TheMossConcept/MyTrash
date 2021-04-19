@@ -6,15 +6,12 @@ const httpTrigger: AzureFunction = async function (
   req: HttpRequest
 ): Promise<void> {
   context.log("HTTP trigger function processed a request.");
-  const requestBody = req.body;
-
-  console.log(typeof requestBody);
+  const requestBody: ClusterCreationDTO = req.body;
 
   // TODO: Add request body validation here (in the form of a type guard) as well!
   if (requestBody) {
     const insertionReulst = await databaseAPI.insert({
       entityName: "cluster",
-      necessaryPlasticQuantityInKilos: 25,
       ...requestBody,
     });
 
@@ -30,14 +27,10 @@ const httpTrigger: AzureFunction = async function (
   }
 };
 
-/*
 type ClusterCreationDTO = {
   collectionAdministratorId: string;
   logisticsPartnerId: string;
   productionPartnerId: string;
-  numberOfChairsOrdered: number;
-  plasticRequiredPerChair: number;
 };
-*/
 
 export default httpTrigger;
