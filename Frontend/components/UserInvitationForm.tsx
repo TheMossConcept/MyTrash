@@ -37,7 +37,7 @@ export default function UserInvitationForm() {
       setIsLoadingRoles(true);
 
       axios
-        .get("/UserAppRoles", {
+        .get("/GetAppRoles", {
           params: {
             // TODO: Fix hardcoding!
             code: "oYx2YQIRFLv7fVYRd4aV9Rj/EyzQGwTepONvms8DBLJPquUIh9sDAw==",
