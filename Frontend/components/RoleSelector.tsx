@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, { AxiosResponse } from "axios";
 import React, { useEffect, useState } from "react";
 import {
@@ -8,6 +7,7 @@ import {
   View,
   CheckBox,
 } from "react-native";
+import useAccessToken from "../hooks/useAccessToken";
 // TODO: Fix this
 // import { CheckBox } from "@react-native-community/checkbox";
 import axiosUtils from "../utils/axios";
@@ -27,14 +27,11 @@ export default function RoleSelector({
   selectionDisabled,
 }: Props) {
   // TODO: Make a hook for handling this access token stuff at some point!
-  const [accessToken, setAccessToken] = useState<string | undefined>();
   const [availableAppRoles, setAvailableAppRoles] = useState<AppRole[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
 
-  AsyncStorage.getItem("accessToken").then((localAccessToken) => {
-    setAccessToken(localAccessToken || undefined);
-  });
+  const accessToken = useAccessToken();
 
   // Initially, fetch the available app roles
   useEffect(() => {
@@ -55,33 +52,6 @@ export default function RoleSelector({
         .finally(() => setIsLoading(false));
     }
   }, [accessToken]);
-
-  /*
-          const onPress = () => {
-            if (accessToken) {
-              axios
-                .post(
-                  "/InviteExternalUser",
-                  {
-                    email: emailToInvite,
-                    appRoleId: availableAppRole.id,
-                  },
-                  {
-                    params: {
-                      code:
-                        "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
-                    },
-                    ...axiosUtils.getSharedAxiosConfig(accessToken),
-                  }
-                )
-                .then(() => setShowSnackbar(true))
-                .finally(() => setIsLoadingInvite(false));
-
-              setEmailToInvite("");
-              setIsLoadingInvite(true);
-            }
-          };
-   */
 
   return (
     <View style={styles.buttonContainer}>

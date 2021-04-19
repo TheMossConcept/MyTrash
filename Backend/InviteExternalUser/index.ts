@@ -4,7 +4,7 @@ import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider"
 
 type RequestBody = {
   email: string;
-  appRoleId: string;
+  appRoleIds: string[];
 };
 
 const httpTrigger: AzureFunction = async function (
@@ -35,11 +35,14 @@ const httpTrigger: AzureFunction = async function (
     // the id and move the roles to the backend registration instead
     const resourceId = "291ca79c-04ea-4531-af1f-9123ff054436";
     const principalId = invitationResult?.invitedUser?.id;
-    const { appRoleId } = requestBody;
+    const { appRoleIds } = requestBody;
 
-    await client
-      .api(`users/${principalId}/appRoleAssignments`)
-      .post({ principalId, resourceId, appRoleId });
+    // TODO: Consider how we can batch these calls!
+    appRoleIds.forEach((appRoleId: string) => {
+      return client
+        .api(`servicePrincipals/${resourceId}/appRoleAssignedTo`)
+        .post({ principalId, resourceId, appRoleId });
+    });
 
     // TODO: Here, do an app role assignment in accordance with
     // the role passed in the request payload as outlined by
