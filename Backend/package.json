@@ -13,6 +13,7 @@
   "devDependencies": {
     "@azure/functions": "^1.0.1-beta1",
     "@microsoft/microsoft-graph-types": "^1.35.0",
+    "@types/mongodb": "^3.6.12",
     "@typescript-eslint/eslint-plugin": "^4.21.0",
     "@typescript-eslint/parser": "^4.21.0",
     "eslint": "^7.23.0",
