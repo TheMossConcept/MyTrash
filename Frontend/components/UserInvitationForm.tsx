@@ -52,7 +52,7 @@ export default function UserInvitationForm() {
   }, [accessToken]);
 
   const [emailToInvite, setEmailToInvite] = useState("");
-  const [showSnackbar, setShowSnackbar] = useState("");
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   // TODO: Extend this with regexp to verify the shape of the email
   const emailToInviteIsInvalid = () => {
