@@ -2,12 +2,12 @@ import React, { FC, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import Autocomplete from "react-native-autocomplete-input";
 
-type SelectableEntity = {
+export type SelectableEntity = {
   id: string;
   displayName: string;
 };
 
-export type Props = {
+type Props = {
   title?: string;
   entities: SelectableEntity[];
   selectionState: [string, (newValue: string) => void];

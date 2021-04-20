@@ -16,7 +16,7 @@ type UserInputProps = {
 };
 
 const ClusterCreationForm: FC<Props> = () => {
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
     []
   );
@@ -46,8 +46,8 @@ const ClusterCreationForm: FC<Props> = () => {
         ...axiosUtils.getSharedAxiosConfig(accessToken),
       });
 
-      Promise.all([getAppRolesPromise, getUsersByRolePromise]).then(
-        ([appRolesResult, usersByRoleResult]) => {
+      Promise.all([getAppRolesPromise, getUsersByRolePromise])
+        .then(([appRolesResult, usersByRoleResult]) => {
           const appRoles: any[] = appRolesResult.data;
           const usersByRole: any[] = usersByRoleResult.data;
 
@@ -88,13 +88,10 @@ const ClusterCreationForm: FC<Props> = () => {
           );
 
           setUserSelectionData(selectionData);
-          console.log(appRoles);
-          console.log(usersByRoleResult);
-        }
-      );
-      // .finally(() => setLoading(false));
+        })
+        .finally(() => setLoading(false));
 
-      // setLoading(true);
+      setLoading(true);
     }
   }, [accessToken]);
 
@@ -104,17 +101,21 @@ const ClusterCreationForm: FC<Props> = () => {
 
   return (
     <View style={styles.container}>
-      {false ? (
+      {loading ? (
         <ActivityIndicator />
       ) : (
         userSelectionData.map((selectionData) => (
-          <AutocompleteInput
-            /* TODO: Get a better key !! */
+          /* TODO: Get a better key !! */
+          <View
+            style={styles.autocompleteInputContainer}
             key={selectionData.title}
-            selectionState={selectionData.selectionState}
-            entities={selectionData.users}
-            title={selectionData.title}
-          />
+          >
+            <AutocompleteInput
+              selectionState={selectionData.selectionState}
+              entities={selectionData.users}
+              title={selectionData.title}
+            />
+          </View>
         ))
       )}
       <Button title="Opret cluster" onPress={onCreateCluster} />
@@ -126,7 +127,15 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
+    flexDirection: "row",
+    width: "auto",
+    // Obviously, this is just a temporary layout "fix"
+    height: "250px",
+  },
+  autocompleteInputContainer: {
+    paddingLeft: 5,
+    paddingRight: 5,
+    flex: 1,
   },
 });
 
