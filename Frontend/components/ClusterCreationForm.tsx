@@ -95,8 +95,23 @@ const ClusterCreationForm: FC<Props> = () => {
     }
   }, [accessToken]);
 
+  const [productionPartnerId] = productionPartnerSelectionState;
+  const [collectionAdministratorId] = collectionAdministratorSelectionState;
+  const [logisticsPartnerId] = logisticsPartnerSelectionState;
+
   const onCreateCluster = () => {
-    console.log("Not implemented!");
+    if (accessToken) {
+      axios.post(
+        "/CreateCluster",
+        { productionPartnerId, collectionAdministratorId, logisticsPartnerId },
+        {
+          params: {
+            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+          },
+          ...axiosUtils.getSharedAxiosConfig(accessToken),
+        }
+      );
+    }
   };
 
   return (
