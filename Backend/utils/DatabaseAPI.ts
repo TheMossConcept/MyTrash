@@ -36,8 +36,6 @@ type Cluster = {
   // NB! This is not necessarily a one-to-one
   logisticsPartnerId: string;
   productionPartnerId: string;
-  // Derived from the number of furniture ordered, what furniture it is and the plastic required for each
-  necessaryPlasticQuantityInKilos: number;
 };
 
 // TODO: Look into getting this information into AD as well!

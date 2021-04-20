@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/UserAppRoles/index.js"
+  "scriptFile": "../dist/GetUsersByAppRoles/index.js"
 }

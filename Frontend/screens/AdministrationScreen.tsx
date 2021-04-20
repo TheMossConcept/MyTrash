@@ -1,5 +1,6 @@
 import * as React from "react";
 import { StyleSheet } from "react-native";
+import ClusterCreationForm from "../components/ClusterCreationForm";
 
 import { View } from "../components/Themed";
 import UserInvitationForm from "../components/UserInvitationForm";
@@ -7,6 +8,7 @@ import UserInvitationForm from "../components/UserInvitationForm";
 export default function AdministrationScreen() {
   return (
     <View style={styles.container}>
+      <ClusterCreationForm />
       <UserInvitationForm />
     </View>
   );

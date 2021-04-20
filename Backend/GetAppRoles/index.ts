@@ -31,6 +31,7 @@ const httpTrigger: AzureFunction = async function (
         description: servicePrincipalUserAppRole.description,
         id: servicePrincipalUserAppRole.id,
         displayName: servicePrincipalUserAppRole.displayName,
+        value: servicePrincipalUserAppRole.value,
       })
     );
 

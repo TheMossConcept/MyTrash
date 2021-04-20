@@ -15,71 +15,79 @@ import { TabsParamList, RootStackParamList } from "../types";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
+export const AccessTokenContext = React.createContext<string | undefined>(
+  undefined
+);
+
 type Props = StackScreenProps<RootStackParamList, "Root">;
 
-const TabNavigator: FC<Props> = () => {
+const TabNavigator: FC<Props> = ({ route }) => {
+  const { accessToken } = route.params;
+  console.log(`Access token in TabNavigator: ${accessToken}`);
   const colorScheme = useColorScheme();
 
   return (
-    <Tab.Navigator
-      initialRouteName="Administration"
-      tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
-    >
-      <Tab.Screen
-        name="Administration"
-        component={AdministrationScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="ios-code" color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Indsamlingsadministration"
-        component={CollectionAdministrationScreen}
-        options={{
-          tabBarIcon: ({ color }: { color: string }) => (
-            <TabBarIcon name="ios-code" color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Indsamling"
-        component={CollectionScreen}
-        options={{
-          tabBarIcon: ({ color }: { color: string }) => (
-            <TabBarIcon name="ios-code" color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Logistik"
-        component={LogisticsScreen}
-        options={{
-          tabBarIcon: ({ color }: { color: string }) => (
-            <TabBarIcon name="ios-code" color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Modtagelse"
-        component={RecipientScreen}
-        options={{
-          tabBarIcon: ({ color }: { color: string }) => (
-            <TabBarIcon name="ios-code" color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Produktion"
-        component={ProductionScreen}
-        options={{
-          tabBarIcon: ({ color }: { color: string }) => (
-            <TabBarIcon name="ios-code" color={color} />
-          ),
-        }}
-      />
-    </Tab.Navigator>
+    <AccessTokenContext.Provider value={accessToken}>
+      <Tab.Navigator
+        initialRouteName="Administration"
+        tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
+      >
+        <Tab.Screen
+          name="Administration"
+          component={AdministrationScreen}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <TabBarIcon name="ios-code" color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Indsamlingsadministration"
+          component={CollectionAdministrationScreen}
+          options={{
+            tabBarIcon: ({ color }: { color: string }) => (
+              <TabBarIcon name="ios-code" color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Indsamling"
+          component={CollectionScreen}
+          options={{
+            tabBarIcon: ({ color }: { color: string }) => (
+              <TabBarIcon name="ios-code" color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Logistik"
+          component={LogisticsScreen}
+          options={{
+            tabBarIcon: ({ color }: { color: string }) => (
+              <TabBarIcon name="ios-code" color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Modtagelse"
+          component={RecipientScreen}
+          options={{
+            tabBarIcon: ({ color }: { color: string }) => (
+              <TabBarIcon name="ios-code" color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Produktion"
+          component={ProductionScreen}
+          options={{
+            tabBarIcon: ({ color }: { color: string }) => (
+              <TabBarIcon name="ios-code" color={color} />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </AccessTokenContext.Provider>
   );
 };
 
