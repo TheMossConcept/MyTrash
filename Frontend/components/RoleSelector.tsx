@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -9,7 +9,7 @@ import {
   CheckBox,
   ViewProps,
 } from "react-native";
-import useAccessToken from "../hooks/useAccessToken";
+import { AccessTokenContext } from "../navigation/TabNavigator";
 // TODO: Fix this
 // import { CheckBox } from "@react-native-community/checkbox";
 import axiosUtils from "../utils/axios";
@@ -28,12 +28,11 @@ export default function RoleSelector({
   roleSelectionState,
   selectionDisabled,
 }: Props) {
+  const accessToken = useContext(AccessTokenContext);
   // TODO: Make a hook for handling this access token stuff at some point!
   const [availableAppRoles, setAvailableAppRoles] = useState<AppRole[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const accessToken = useAccessToken();
 
   // Initially, fetch the available app roles
   useEffect(() => {
