@@ -7,6 +7,7 @@ const getMongoClient = async () => {
   // If the global mongo client is not defined, create it by connecting to the db
   if (!globalMongoClientInstace) {
     globalMongoClientInstace = await mongodb.MongoClient.connect(
+      // TODO: Move to env!
       "mongodb://cosmos-houe-plastic-recycling:30OZ6PBjKuwKJfm9S4Wd4Jj1c9zobJbwLKA5j6zcK58UcZ5WCi11mK3tWmppuyiwJbJsxxce6WkvCyFcCtUp0A%3D%3D@cosmos-houe-plastic-recycling.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@cosmos-houe-plastic-recycling@"
     );
   }
@@ -27,7 +28,13 @@ const mongoAPI = {
 };
 
 // TODO: Make these two mutually exclusive so you cannot mix properties from one in the other
-type Entities = Cluster | UserMetadata;
+type Entities =
+  | Cluster
+  | UserMetadata
+  | PlasticBag
+  | PlasticBagAggregate
+  | Pellet
+  | Product;
 
 // TODO: Consider moving these types somewhere else when this file becomes big
 type Cluster = {
@@ -48,6 +55,26 @@ type UserMetadata = {
   street: string;
   city: string;
   zipCode: number;
+};
+
+type PlasticBag = {
+  entityName: "plasticBag";
+  clusterId: string;
+};
+
+type PlasticBagAggregate = {
+  entityName: "plasticBagAggregate";
+  clusterId: string;
+};
+
+type Pellet = {
+  entityName: "pellet";
+  clusterId: string;
+};
+
+type Product = {
+  entityName: "product";
+  clusterId: string;
 };
 
 export default mongoAPI;
