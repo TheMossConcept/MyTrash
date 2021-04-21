@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { View } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
-import validateString, { ValidationResult } from "../../utils/form";
+import { ValidationResult, validateString } from "../../utils/form";
 
 type Props = {
   emailState: [string | undefined, (newValue: string | undefined) => void];
@@ -55,6 +55,7 @@ const EmailInput: FC<Props> = ({ emailState, isOptional }) => {
         onChangeText={setEmailWrapper}
         error={hasValidationError}
         label="Email"
+        keyboardType="email-address"
       />
       <HelperText type="error" visible={hasValidationError}>
         {validationError}

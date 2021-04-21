@@ -27,7 +27,6 @@ export default function UserInvitationForm() {
     userData.email &&
     userData.phoneNumber &&
     userData.companyName &&
-    userData.debitorNumber &&
     userData.streetName &&
     userData.city &&
     userData.zipCode &&

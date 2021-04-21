@@ -1,5 +1,6 @@
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { Text, View, ViewProps } from "react-native";
+import { setValue } from "../utils/form";
 import EmailInput from "./InputElements/EmailInput";
 import NumericInput from "./InputElements/NumericInput";
 import PhoneNumberInput from "./InputElements/PhoneNumberInput";
@@ -9,7 +10,6 @@ export type UserFormData = {
   email?: string;
   phoneNumber?: string;
   companyName?: string;
-  debitorNumber?: string;
   streetName?: string;
   city?: string;
   zipCode?: number;
@@ -21,7 +21,7 @@ type Props = {
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
 const UserForm: FC<Props> = ({ userFormState, ...viewProps }) => {
-  const [userFormData, setUserFormData] = userFormState;
+  const [userFormData] = userFormState;
 
   const {
     email,
@@ -32,46 +32,29 @@ const UserForm: FC<Props> = ({ userFormState, ...viewProps }) => {
     zipCode,
   } = userFormData;
 
-  const setValue = (key: keyof UserFormData) => (
-    value: string | number | undefined
-  ) => {
-    const existingValue = userFormData[key];
-    // Update the value if it has changed
-    /*
-    if (value === undefined) {
-      setUserFormData({ ...userFormData, [key]: undefined });
-    }
-    */
-    if (existingValue !== value) {
-      setUserFormData({ ...userFormData, [key]: value });
-    }
-  };
-
-  useEffect(() => {
-    console.log(`UserFormData changed to: ${JSON.stringify(userFormData)}`);
-  }, [userFormData]);
+  const setUserFormValue = setValue(userFormState);
 
   // TODO: Disable the spreading is forbidden style and spread the view props here!
   return (
     <View style={viewProps.style}>
       <Text>Kontaktoplysninger</Text>
-      <EmailInput emailState={[email, setValue("email")]} />
+      <EmailInput emailState={[email, setUserFormValue("email")]} />
       <PhoneNumberInput
-        phoneNumberState={[phoneNumber, setValue("phoneNumber")]}
+        phoneNumberState={[phoneNumber, setUserFormValue("phoneNumber")]}
       />
       <Text>Virksomhed</Text>
       <StringInput
-        stringState={[companyName, setValue("companyName")]}
+        stringState={[companyName, setUserFormValue("companyName")]}
         label="Virksomhedsnavn"
       />
       <Text>Adresse</Text>
       <StringInput
-        stringState={[streetName, setValue("streetName")]}
+        stringState={[streetName, setUserFormValue("streetName")]}
         label="Gadenavn"
       />
-      <StringInput stringState={[city, setValue("city")]} label="By" />
+      <StringInput stringState={[city, setUserFormValue("city")]} label="By" />
       <NumericInput
-        numberState={[zipCode, setValue("zipCode")]}
+        numberState={[zipCode, setUserFormValue("zipCode")]}
         label="Postnummer"
       />
     </View>

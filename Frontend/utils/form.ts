@@ -1,4 +1,4 @@
-export default function validateString(
+export function validateString(
   newValue: string | null,
   regexp: RegExp,
   isOptional?: boolean
@@ -23,4 +23,14 @@ export enum ValidationResult {
   "success",
   "missing",
   "invalid",
+}
+
+export function setValue<T>(formState: [T, (newValue: T) => void]) {
+  return (key: keyof T) => {
+    return (value: string | number | undefined) => {
+      const [formData, setFormData] = formState;
+      // Update the value if it has changed
+      setFormData({ ...formData, [key]: value });
+    };
+  };
 }

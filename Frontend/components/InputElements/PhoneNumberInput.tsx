@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { View } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
-import validateString, { ValidationResult } from "../../utils/form";
+import { ValidationResult, validateString } from "../../utils/form";
 
 type Props = {
   phoneNumberState: [
@@ -60,6 +60,7 @@ const PhoneNumberInput: FC<Props> = ({ phoneNumberState, isOptional }) => {
         value={textInputValue}
         onChangeText={setPhoneNumberWrapper}
         error={hasValidationError}
+        keyboardType="phone-pad"
         label="Telefonnummer"
       />
       <HelperText type="error" visible={hasValidationError}>
