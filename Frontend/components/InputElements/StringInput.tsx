@@ -4,13 +4,14 @@ import { TextInput, HelperText } from "react-native-paper";
 import validateString, { ValidationResult } from "../../utils/form";
 
 type Props = {
-  emailState: [string | undefined, (newValue: string | undefined) => void];
+  stringState: [string | undefined, (newValue: string | undefined) => void];
+  label: string;
   isOptional?: boolean;
 };
 
-const EmailInput: FC<Props> = ({ emailState, isOptional }) => {
-  const [email, setEmail] = emailState;
-  const [textInputValue, setTextInputValue] = useState(email);
+const StringInput: FC<Props> = ({ stringState, isOptional, label }) => {
+  const [stringValue, setStringValue] = stringState;
+  const [textInputValue, setTextInputValue] = useState(stringValue);
   const [validationError, setValidationError] = useState<string>();
 
   const setEmailWrapper = (newValue: string) => {
@@ -18,26 +19,26 @@ const EmailInput: FC<Props> = ({ emailState, isOptional }) => {
     setTextInputValue(newValue);
 
     // I got the regexp from here https://emailregex.com/
-    const emailRegExp = new RegExp(
+    const stringRegExp = new RegExp(
       // eslint-disable-next-line no-control-regex
-      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+      /^([a-z]|æ|ø|å)*$/i
     );
 
-    const validationResult = validateString(newValue, emailRegExp, isOptional);
+    const validationResult = validateString(newValue, stringRegExp, isOptional);
 
     switch (validationResult) {
       case ValidationResult.missing:
-        setEmail(undefined);
-        setValidationError("En email addresse er påkrævet");
+        setStringValue(undefined);
+        setValidationError("Værdien er påkrævet");
         break;
 
       case ValidationResult.invalid:
-        setEmail(undefined);
-        setValidationError("Ugyldig email");
+        setStringValue(undefined);
+        setValidationError("Kun tekst er tilladt");
         break;
 
       case ValidationResult.success:
-        setEmail(newValue);
+        setStringValue(newValue);
         setValidationError(undefined);
         break;
       default:
@@ -54,7 +55,7 @@ const EmailInput: FC<Props> = ({ emailState, isOptional }) => {
         value={textInputValue}
         onChangeText={setEmailWrapper}
         error={hasValidationError}
-        label="Email"
+        label={label}
       />
       <HelperText type="error" visible={hasValidationError}>
         {validationError}
@@ -63,4 +64,4 @@ const EmailInput: FC<Props> = ({ emailState, isOptional }) => {
   );
 };
 
-export default EmailInput;
+export default StringInput;

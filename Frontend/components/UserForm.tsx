@@ -1,12 +1,15 @@
-import React, { FC } from "react";
-import { Text, TextInput, View, ViewProps } from "react-native";
+import React, { FC, useEffect } from "react";
+import { Text, View, ViewProps } from "react-native";
 import EmailInput from "./InputElements/EmailInput";
+import NumericInput from "./InputElements/NumericInput";
+import PhoneNumberInput from "./InputElements/PhoneNumberInput";
+import StringInput from "./InputElements/StringInput";
 
 export type UserFormData = {
   email?: string;
   phoneNumber?: string;
   companyName?: string;
-  debitorNumber?: number;
+  debitorNumber?: string;
   streetName?: string;
   city?: string;
   zipCode?: number;
@@ -24,7 +27,6 @@ const UserForm: FC<Props> = ({ userFormState, ...viewProps }) => {
     email,
     phoneNumber,
     companyName,
-    debitorNumber,
     streetName,
     city,
     zipCode,
@@ -35,48 +37,42 @@ const UserForm: FC<Props> = ({ userFormState, ...viewProps }) => {
   ) => {
     const existingValue = userFormData[key];
     // Update the value if it has changed
+    /*
+    if (value === undefined) {
+      setUserFormData({ ...userFormData, [key]: undefined });
+    }
+    */
     if (existingValue !== value) {
       setUserFormData({ ...userFormData, [key]: value });
     }
   };
+
+  useEffect(() => {
+    console.log(`UserFormData changed to: ${JSON.stringify(userFormData)}`);
+  }, [userFormData]);
 
   // TODO: Disable the spreading is forbidden style and spread the view props here!
   return (
     <View style={viewProps.style}>
       <Text>Kontaktoplysninger</Text>
       <EmailInput emailState={[email, setValue("email")]} />
-      <TextInput
-        value={phoneNumber?.toString()}
-        onChangeText={setValue("phoneNumber")}
-        placeholder="Telefonnummer"
+      <PhoneNumberInput
+        phoneNumberState={[phoneNumber, setValue("phoneNumber")]}
       />
       <Text>Virksomhed</Text>
-      <TextInput
-        value={companyName}
-        onChangeText={setValue("companyName")}
-        placeholder="Firmanavn"
-      />
-      <TextInput
-        value={debitorNumber?.toString()}
-        onChangeText={setValue("debitorNumber")}
-        keyboardType="numeric"
-        placeholder="Debitornummer"
+      <StringInput
+        stringState={[companyName, setValue("companyName")]}
+        label="Virksomhedsnavn"
       />
       <Text>Adresse</Text>
-      <TextInput
-        value={streetName}
-        onChangeText={setValue("streetName")}
-        placeholder="Gadenavn"
+      <StringInput
+        stringState={[streetName, setValue("streetName")]}
+        label="Gadenavn"
       />
-      <TextInput
-        value={city}
-        onChangeText={setValue("city")}
-        placeholder="By"
-      />
-      <TextInput
-        value={zipCode?.toString()}
-        onChangeText={setValue("zipCode")}
-        placeholder="Postnummer"
+      <StringInput stringState={[city, setValue("city")]} label="By" />
+      <NumericInput
+        numberState={[zipCode, setValue("zipCode")]}
+        label="Postnummer"
       />
     </View>
   );

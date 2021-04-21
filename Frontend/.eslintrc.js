@@ -24,9 +24,12 @@ module.exports = {
       },
     },
   },
+  // TODO: Fix this stuff such that is always uses the @typescript-eslint rules!
   rules: {
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": ["error"],
     "import/extensions": "off",
     "react/prop-types": "off",
     "prettier/prettier": "error",

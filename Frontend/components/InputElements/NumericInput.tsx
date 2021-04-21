@@ -4,40 +4,48 @@ import { TextInput, HelperText } from "react-native-paper";
 import validateString, { ValidationResult } from "../../utils/form";
 
 type Props = {
-  emailState: [string | undefined, (newValue: string | undefined) => void];
+  numberState: [number | undefined, (newValue: number | undefined) => void];
+  label: string;
   isOptional?: boolean;
 };
 
-const EmailInput: FC<Props> = ({ emailState, isOptional }) => {
-  const [email, setEmail] = emailState;
-  const [textInputValue, setTextInputValue] = useState(email);
+const NumericInput: FC<Props> = ({ numberState, isOptional, label }) => {
+  const [numericValue, setNumericValue] = numberState;
+  const [textInputValue, setTextInputValue] = useState(
+    numericValue?.toString() || null
+  );
   const [validationError, setValidationError] = useState<string>();
 
-  const setEmailWrapper = (newValue: string) => {
+  const setNumericValueWrapper = (newValue: string) => {
     // Make sure the UI is always updated with the latest input
     setTextInputValue(newValue);
 
     // I got the regexp from here https://emailregex.com/
-    const emailRegExp = new RegExp(
+    const numericRegExp = new RegExp(
       // eslint-disable-next-line no-control-regex
-      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+      /^\d*$/
     );
 
-    const validationResult = validateString(newValue, emailRegExp, isOptional);
+    const validationResult = validateString(
+      newValue,
+      numericRegExp,
+      isOptional
+    );
 
     switch (validationResult) {
       case ValidationResult.missing:
-        setEmail(undefined);
-        setValidationError("En email addresse er påkrævet");
+        setNumericValue(undefined);
+        setValidationError("Værdien er påkrævet");
         break;
 
       case ValidationResult.invalid:
-        setEmail(undefined);
-        setValidationError("Ugyldig email");
+        setNumericValue(undefined);
+        setValidationError("Kun tal er tilladt");
         break;
 
       case ValidationResult.success:
-        setEmail(newValue);
+        // Here, we know this should succeed because it passed the validation
+        setNumericValue(Number.parseInt(newValue, 10));
         setValidationError(undefined);
         break;
       default:
@@ -51,10 +59,11 @@ const EmailInput: FC<Props> = ({ emailState, isOptional }) => {
   return (
     <View>
       <TextInput
-        value={textInputValue}
-        onChangeText={setEmailWrapper}
+        value={textInputValue || ""}
+        keyboardType="numeric"
+        onChangeText={setNumericValueWrapper}
         error={hasValidationError}
-        label="Email"
+        label={label}
       />
       <HelperText type="error" visible={hasValidationError}>
         {validationError}
@@ -63,4 +72,4 @@ const EmailInput: FC<Props> = ({ emailState, isOptional }) => {
   );
 };
 
-export default EmailInput;
+export default NumericInput;
