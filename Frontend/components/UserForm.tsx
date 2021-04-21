@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { Text, TextInput, View, ViewProps } from "react-native";
+import EmailInput from "./InputElements/EmailInput";
 
 export type UserFormData = {
   email?: string;
@@ -29,19 +30,21 @@ const UserForm: FC<Props> = ({ userFormState, ...viewProps }) => {
     zipCode,
   } = userFormData;
 
-  const setValue = (key: keyof UserFormData) => (value: string | number) => {
-    setUserFormData({ ...userFormData, [key]: value });
+  const setValue = (key: keyof UserFormData) => (
+    value: string | number | undefined
+  ) => {
+    const existingValue = userFormData[key];
+    // Update the value if it has changed
+    if (existingValue !== value) {
+      setUserFormData({ ...userFormData, [key]: value });
+    }
   };
 
   // TODO: Disable the spreading is forbidden style and spread the view props here!
   return (
     <View style={viewProps.style}>
       <Text>Kontaktoplysninger</Text>
-      <TextInput
-        value={email}
-        onChangeText={setValue("email")}
-        placeholder="Email"
-      />
+      <EmailInput emailState={[email, setValue("email")]} />
       <TextInput
         value={phoneNumber?.toString()}
         onChangeText={setValue("phoneNumber")}
