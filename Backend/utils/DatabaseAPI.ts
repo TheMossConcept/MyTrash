@@ -25,28 +25,55 @@ const mongoAPI = {
 
     return insertionResult;
   },
+  findById: async (entityName: Entities["entityName"], id: string) => {
+    const client = await getMongoClient();
+    const result = client
+      .db(DATABASE_NAME)
+      .collection(entityName)
+      .find({ _id: id });
+
+    return result;
+  },
+  // I'd love for the entityType to automatically be determined
+  // based on the value of T, however, I do not think that is
+  // possible in TypeScript at the moment (going from type to
+  // value)
+  async find<T extends Entities>(
+    entityName: T["entityName"],
+    query?: mongodb.FilterQuery<T>
+  ) {
+    const client = await getMongoClient();
+    const result = client
+      .db(DATABASE_NAME)
+      .collection(entityName)
+      .find(query)
+      .toArray();
+
+    return result;
+  },
 };
 
 // TODO: Make these two mutually exclusive so you cannot mix properties from one in the other
 type Entities =
-  | Cluster
-  | UserMetadata
-  | PlasticBag
-  | PlasticBagAggregate
-  | Pellet
-  | Product;
+  | ClusterEntity
+  | UserMetadataEntity
+  | PlasticBagEntity
+  | PlasticBagAggregateEntity
+  | PelletEntity
+  | ProductEntity;
 
 // TODO: Consider moving these types somewhere else when this file becomes big
-type Cluster = {
+export type ClusterEntity = {
   entityName: "cluster";
   collectionAdministratorId: string;
   // NB! This is not necessarily a one-to-one
   logisticsPartnerId: string;
   productionPartnerId: string;
+  name: string;
 };
 
 // TODO: Look into getting this information into AD as well!
-type UserMetadata = {
+export type UserMetadataEntity = {
   entityName: "userMetadata";
   azureAdId: string;
   phoneNumber: string;
@@ -57,22 +84,22 @@ type UserMetadata = {
   zipCode: number;
 };
 
-type PlasticBag = {
+export type PlasticBagEntity = {
   entityName: "plasticBag";
   clusterId: string;
 };
 
-type PlasticBagAggregate = {
+export type PlasticBagAggregateEntity = {
   entityName: "plasticBagAggregate";
   clusterId: string;
 };
 
-type Pellet = {
+export type PelletEntity = {
   entityName: "pellet";
   clusterId: string;
 };
 
-type Product = {
+export type ProductEntity = {
   entityName: "product";
   clusterId: string;
 };

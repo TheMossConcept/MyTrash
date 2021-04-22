@@ -31,6 +31,7 @@ type ClusterCreationDTO = {
   collectionAdministratorId: string;
   logisticsPartnerId: string;
   productionPartnerId: string;
+  name: string;
 };
 
 export default httpTrigger;
