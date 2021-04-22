@@ -11,7 +11,7 @@ import CollectionScreen from "../screens/CollectionScreen";
 import LogisticsScreen from "../screens/LogisticsScreen";
 import ProductionScreen from "../screens/ProductionScreen";
 import RecipientScreen from "../screens/RecipientScreen";
-import { TabsParamList, RootStackParamList } from "../types";
+import { TabsParamList, RootStackParamList } from "../typings/types";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 

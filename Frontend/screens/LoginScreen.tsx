@@ -2,7 +2,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC } from "react";
 import { StyleSheet, View } from "react-native";
 import AuthorizationButton from "../components/AuthorizationButton";
-import { RootStackParamList } from "../types";
+import { RootStackParamList } from "../typings/types";
 
 const styles = StyleSheet.create({
   container: {

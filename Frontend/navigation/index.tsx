@@ -9,7 +9,7 @@ import { ColorSchemeName } from "react-native";
 import LoginScreen from "../screens/LoginScreen";
 
 import NotFoundScreen from "../screens/NotFoundScreen";
-import { RootStackParamList } from "../types";
+import { RootStackParamList } from "../typings/types";
 import TabNavigator from "./TabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
 
