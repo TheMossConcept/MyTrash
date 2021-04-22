@@ -12,6 +12,7 @@ const httpTrigger: AzureFunction = async function (
   };
   const client = Client.initWithMiddleware(clientOptions);
 
+  const appRoleToInclude: string = req.query.appRoleId;
   // TODO: Add pagination here!
   const users: { value: any[] } = await client
     .api("users?$expand=appRoleAssignments")
@@ -20,25 +21,14 @@ const httpTrigger: AzureFunction = async function (
     // Get user info to return
     const { id, displayName } = user;
 
-    user.appRoleAssignments.forEach((appRoleAssignment) => {
-      const { appRoleId } = appRoleAssignment;
-
-      // For each app role id the user has, add the user's information to the array of users
-      // belonging to that key if it exists. If not, create a new array that other users
-      // can subsequently be added to
-      const existingRoleAssignmentArray = accumulator[appRoleId];
-      if (existingRoleAssignmentArray) {
-        accumulator[appRoleId] = [
-          ...existingRoleAssignmentArray,
-          { displayName, id },
-        ];
-      } else {
-        accumulator[appRoleId] = [{ displayName, id }];
-      }
-    });
-
+    const appRoleAssignmentIdsForUser = user.appRoleAssignments.map(
+      (appRoleAssignment: { appRoleId: string }) => appRoleAssignment.appRoleId
+    );
+    if (appRoleAssignmentIdsForUser.includes(appRoleToInclude)) {
+      return [...accumulator, { displayName, id }];
+    }
     return accumulator;
-  }, {});
+  }, []);
 
   context.res = {
     // status: 200, /* Defaults to 200 */
@@ -47,4 +37,3 @@ const httpTrigger: AzureFunction = async function (
 };
 
 export default httpTrigger;
-

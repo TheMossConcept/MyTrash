@@ -1,18 +1,23 @@
 import axios from "axios";
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
 import { AccessTokenContext } from "../navigation/TabNavigator";
 import axiosUtils from "../utils/axios";
-import AutocompleteInput, {
-  SelectableEntity,
-} from "./InputElements/AutocompleteInput";
+import AutocompleteInput from "./InputElements/AutocompleteInput";
 
 type Props = {};
 
 type UserInputProps = {
   title?: string;
-  users: SelectableEntity[];
-  selectionState: [string, (newValue: string) => void];
+  usersEndpoint: string;
+  selectionState: [string, Dispatch<SetStateAction<string>>];
 };
 
 const ClusterCreationForm: FC<Props> = () => {
@@ -32,62 +37,52 @@ const ClusterCreationForm: FC<Props> = () => {
   // each time
   useEffect(() => {
     if (accessToken) {
-      const getAppRolesPromise = axios.get("/GetAppRoles", {
-        params: {
-          code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
-        },
-        ...axiosUtils.getSharedAxiosConfig(accessToken),
-      });
-
-      const getUsersByRolePromise = axios.get("/GetUsersByAppRoles", {
-        params: {
-          code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
-        },
-        ...axiosUtils.getSharedAxiosConfig(accessToken),
-      });
-
-      Promise.all([getAppRolesPromise, getUsersByRolePromise])
-        .then(([appRolesResult, usersByRoleResult]) => {
+      axios
+        .get("/GetAppRoles", {
+          params: {
+            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+          },
+          ...axiosUtils.getSharedAxiosConfig(accessToken),
+        })
+        .then((appRolesResult) => {
           const appRoles: any[] = appRolesResult.data;
-          const usersByRole: any[] = usersByRoleResult.data;
+          const localUserSelectionData = appRoles.map((appRole) => {
+            const appRoleId = appRole.id;
+            const appRoleValue = appRole.value;
+            const title: string | undefined = appRole.displayName;
 
-          const selectionData = appRoles.reduce<UserInputProps[]>(
-            (accumulator, appRole) => {
-              const appRoleId = appRole.id;
-              const usersForAppRole = usersByRole[appRoleId];
+            const usersEndpoint = `/GetUsersByAppRole?appRoleId=${appRoleId}`;
 
-              // TODO: This can be done WAY more elegantly!!
-              if (usersForAppRole.length !== 0) {
-                let selectionState;
-                if (appRole.value === "CollectionAdministrator") {
-                  selectionState = collectionAdministratorSelectionState;
+            let selectionState;
+            switch (appRoleValue) {
+              case "ProductionPartner":
+                selectionState = productionPartnerSelectionState;
+                break;
+              case "CollectionAdministrator":
+                selectionState = collectionAdministratorSelectionState;
+                break;
+              case "LogisticsPartner":
+                selectionState = logisticsPartnerSelectionState;
+                break;
+              default:
+                console.warn("DEFAULT CASE IN CLUSTER CREATION FORM!!");
+                break;
+            }
+
+            return selectionState
+              ? {
+                  title,
+                  usersEndpoint,
+                  selectionState,
                 }
-                if (appRole.value === "LogisticsPartner") {
-                  selectionState = logisticsPartnerSelectionState;
-                }
-                if (appRole.value === "ProductionPartner") {
-                  selectionState = productionPartnerSelectionState;
-                }
+              : undefined;
+          });
 
-                if (selectionState) {
-                  return [
-                    ...accumulator,
-                    {
-                      users: usersForAppRole,
-                      title: appRole.displayName,
-                      selectionState,
-                    },
-                  ];
-                }
-              }
+          const localUserSelectionDataRectified = localUserSelectionData.filter(
+            (selectionData) => selectionData !== undefined
+          ) as UserInputProps[];
 
-              // Fallback to just returning the accumulator if we haven't returned before here
-              return accumulator;
-            },
-            []
-          );
-
-          setUserSelectionData(selectionData);
+          setUserSelectionData(localUserSelectionDataRectified);
         })
         .finally(() => setLoading(false));
 
@@ -127,7 +122,7 @@ const ClusterCreationForm: FC<Props> = () => {
           >
             <AutocompleteInput
               selectionState={selectionData.selectionState}
-              entities={selectionData.users}
+              endpoint={selectionData.usersEndpoint}
               title={selectionData.title}
             />
           </View>
