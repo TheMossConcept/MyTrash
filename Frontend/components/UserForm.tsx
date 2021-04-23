@@ -11,6 +11,7 @@ export type UserFormData = {
   phoneNumber?: string;
   companyName?: string;
   streetName?: string;
+  houseNumber?: number;
   city?: string;
   zipCode?: number;
 };
@@ -28,6 +29,7 @@ const UserForm: FC<Props> = ({ userFormState, ...viewProps }) => {
     phoneNumber,
     companyName,
     streetName,
+    houseNumber,
     city,
     zipCode,
   } = userFormData;
@@ -51,6 +53,10 @@ const UserForm: FC<Props> = ({ userFormState, ...viewProps }) => {
       <StringInput
         stringState={[streetName, setUserFormValue("streetName")]}
         label="Gadenavn"
+      />
+      <NumericInput
+        numberState={[houseNumber, setUserFormValue("houseNumber")]}
+        label="Husnummer"
       />
       <StringInput stringState={[city, setUserFormValue("city")]} label="By" />
       <NumericInput

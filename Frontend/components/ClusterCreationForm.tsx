@@ -30,9 +30,11 @@ const ClusterCreationForm: FC<Props> = () => {
   );
 
   const [name, setName] = useState<string | undefined>();
+  const [c5Reference, setC5Reference] = useState<string | undefined>();
   const productionPartnerSelectionState = useState("");
   const collectionAdministratorSelectionState = useState("");
   const logisticsPartnerSelectionState = useState("");
+  const recipientPartnerSelectionState = useState("");
 
   const resetState = () => {
     const [, setProductionPartner] = productionPartnerSelectionState;
@@ -81,6 +83,9 @@ const ClusterCreationForm: FC<Props> = () => {
                 break;
               case "LogisticsPartner":
                 selectionState = logisticsPartnerSelectionState;
+                break;
+              case "RecipientPartner":
+                selectionState = recipientPartnerSelectionState;
                 break;
               default:
                 console.warn("DEFAULT CASE IN CLUSTER CREATION FORM!!");
@@ -140,6 +145,10 @@ const ClusterCreationForm: FC<Props> = () => {
   return (
     <View style={styles.container}>
       <StringInput label="Navn" stringState={[name, setName]} />
+      <StringInput
+        label="C5 Reference"
+        stringState={[c5Reference, setC5Reference]}
+      />
       {loading ? (
         <ActivityIndicator />
       ) : (
