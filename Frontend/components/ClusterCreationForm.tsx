@@ -11,6 +11,8 @@ import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
 import { AccessTokenContext } from "../navigation/TabNavigator";
 import axiosUtils from "../utils/axios";
 import AutocompleteInput from "./InputElements/AutocompleteInput";
+import StringInput from "./InputElements/StringInput";
+import DismissableSnackbar from "./shared/DismissableSnackbar";
 
 type Props = {};
 
@@ -22,13 +24,29 @@ type UserInputProps = {
 
 const ClusterCreationForm: FC<Props> = () => {
   const [loading, setLoading] = useState(false);
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
   const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
     []
   );
 
+  const [name, setName] = useState<string | undefined>();
   const productionPartnerSelectionState = useState("");
   const collectionAdministratorSelectionState = useState("");
   const logisticsPartnerSelectionState = useState("");
+
+  const resetState = () => {
+    const [, setProductionPartner] = productionPartnerSelectionState;
+    const [
+      ,
+      setCollectionAdministrator,
+    ] = collectionAdministratorSelectionState;
+    const [, setLogisticsPartner] = logisticsPartnerSelectionState;
+
+    setName(undefined);
+    setProductionPartner("");
+    setCollectionAdministrator("");
+    setLogisticsPartner("");
+  };
 
   const accessToken = useContext(AccessTokenContext);
 
@@ -96,21 +114,32 @@ const ClusterCreationForm: FC<Props> = () => {
 
   const onCreateCluster = () => {
     if (accessToken) {
-      axios.post(
-        "/CreateCluster",
-        { productionPartnerId, collectionAdministratorId, logisticsPartnerId },
-        {
-          params: {
-            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+      axios
+        .post(
+          "/CreateCluster",
+          {
+            name,
+            productionPartnerId,
+            collectionAdministratorId,
+            logisticsPartnerId,
           },
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        }
-      );
+          {
+            params: {
+              code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+            },
+            ...axiosUtils.getSharedAxiosConfig(accessToken),
+          }
+        )
+        .then(() => {
+          setShowSuccessSnackbar(true);
+          resetState();
+        });
     }
   };
 
   return (
     <View style={styles.container}>
+      <StringInput label="Navn" stringState={[name, setName]} />
       {loading ? (
         <ActivityIndicator />
       ) : (
@@ -129,6 +158,10 @@ const ClusterCreationForm: FC<Props> = () => {
         ))
       )}
       <Button title="Opret cluster" onPress={onCreateCluster} />
+      <DismissableSnackbar
+        title="Clusteret blev oprettet"
+        showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
+      />
     </View>
   );
 };

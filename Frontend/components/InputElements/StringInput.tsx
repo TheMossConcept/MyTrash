@@ -21,7 +21,7 @@ const StringInput: FC<Props> = ({ stringState, isOptional, label }) => {
     // I got the regexp from here https://emailregex.com/
     const stringRegExp = new RegExp(
       // eslint-disable-next-line no-control-regex
-      /^([a-z]|æ|ø|å)*$/i
+      /^([a-z]|æ|ø|å|\s)*$/i
     );
 
     const validationResult = validateString(newValue, stringRegExp, isOptional);

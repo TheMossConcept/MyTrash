@@ -20,4 +20,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  autocompleteInput: {
+    height: "200px",
+  },
 });

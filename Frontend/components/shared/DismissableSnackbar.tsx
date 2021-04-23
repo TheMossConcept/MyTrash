@@ -1,17 +1,13 @@
-import React from "react";
+import React, { FC } from "react";
 import { Snackbar } from "react-native-paper";
 
 type Props = {
   title: string;
   showState: [boolean, (value: boolean) => void];
-  onDismiss: () => void | undefined;
+  onDismiss?: () => void;
 };
 
-export default function DismissableSnackbar({
-  title,
-  onDismiss,
-  showState,
-}: Props) {
+const DismissableSnackbar: FC<Props> = ({ title, showState, onDismiss }) => {
   const [showSnackbar, setShowSnackbar] = showState;
 
   const dismiss = () => {
@@ -33,4 +29,6 @@ export default function DismissableSnackbar({
       {title}
     </Snackbar>
   );
-}
+};
+
+export default DismissableSnackbar;
