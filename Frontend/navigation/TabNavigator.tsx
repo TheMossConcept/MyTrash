@@ -26,6 +26,9 @@ const TabNavigator: FC<Props> = ({ route }) => {
   console.log(`Access token in TabNavigator: ${accessToken}`);
   const colorScheme = useColorScheme();
 
+  //  TODO_SESSION: Make a header, where you can see the name of the
+  //  user that is logged in and get the opportunity to log out if you
+  //  want to
   return (
     <AccessTokenContext.Provider value={accessToken}>
       <Tab.Navigator

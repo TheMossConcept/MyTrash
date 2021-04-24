@@ -73,7 +73,7 @@ export default function UserInvitationForm() {
           />
         </View>
       )}
-      <UserForm userFormState={[userData, setUserData]} />
+      <UserForm userFormState={[userData, setUserData]} isPartner />
       <Button onPress={inviteUser} title="Inviter bruger" disabled={!isValid} />
       <DismissableSnackbar
         title="Brugeren er blevet inviteret"

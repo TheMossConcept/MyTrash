@@ -11,6 +11,8 @@ import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
 import { AccessTokenContext } from "../navigation/TabNavigator";
 import axiosUtils from "../utils/axios";
 import AutocompleteInput from "./InputElements/AutocompleteInput";
+import BooleanInput from "./InputElements/BooleanInput";
+import NumericInput from "./InputElements/NumericInput";
 import StringInput from "./InputElements/StringInput";
 import DismissableSnackbar from "./shared/DismissableSnackbar";
 
@@ -25,12 +27,20 @@ type UserInputProps = {
 const ClusterCreationForm: FC<Props> = () => {
   const [loading, setLoading] = useState(false);
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
     []
   );
 
   const [name, setName] = useState<string | undefined>();
   const [c5Reference, setC5Reference] = useState<string | undefined>();
+  const [necessaryPlastic, setNeccesaryPlastic] = useState<
+    number | undefined
+  >();
+  const [usefulPlasticFactor, setUsefulPlasticFactor] = useState<
+    number | undefined
+  >();
+
   const productionPartnerSelectionState = useState("");
   const collectionAdministratorSelectionState = useState("");
   const logisticsPartnerSelectionState = useState("");
@@ -149,6 +159,16 @@ const ClusterCreationForm: FC<Props> = () => {
         label="C5 Reference"
         stringState={[c5Reference, setC5Reference]}
       />
+      <NumericInput
+        label="Plastbehov"
+        numberState={[necessaryPlastic, setNeccesaryPlastic]}
+      />
+      <NumericInput
+        label="Beregningsfaktor"
+        numberState={[usefulPlasticFactor, setUsefulPlasticFactor]}
+      />
+      {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
+      <BooleanInput label="Åbent cluster" booleanState={[isOpen, setIsOpen]} />
       {loading ? (
         <ActivityIndicator />
       ) : (

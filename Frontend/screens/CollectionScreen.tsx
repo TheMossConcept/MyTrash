@@ -1,15 +1,24 @@
-import * as React from "react";
-import { StyleSheet } from "react-native";
+import React, { FC, useState } from "react";
+import { StyleSheet, View, Text } from "react-native";
+import JoinClusterForm from "../components/JoinClusterForm";
+import CollectionForm, {
+  CollectionFormData,
+} from "../components/OrderCollectionForm";
 
-import { Text, View } from "../components/Themed";
-
-export default function CollectionScreen() {
+// TODO_SESSION: Iterate through all (active) clusters and show everything
+// except ClusterCreationForm in the context of a cluster
+const CollectionScreen: FC = () => {
+  const collectionFormDataState = useState<CollectionFormData>({});
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Not implemented yet</Text>
+      <JoinClusterForm />
+      <Text>Bestil afhentning</Text>
+      <CollectionForm collectionFormState={collectionFormDataState} />
     </View>
   );
-}
+};
+
+export default CollectionScreen;
 
 const styles = StyleSheet.create({
   container: {

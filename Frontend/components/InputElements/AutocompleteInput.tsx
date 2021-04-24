@@ -13,7 +13,7 @@ export type SelectableEntity = {
 type Props = {
   title?: string;
   endpoint: string;
-  selectionState: [string, (newValue: string) => void];
+  selectionState: [string | undefined, (newValue: string) => void];
 };
 
 // TODO: By simply handing this component an endpoint that it calls itself, we make it

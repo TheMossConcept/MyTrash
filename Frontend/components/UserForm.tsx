@@ -8,6 +8,7 @@ import StringInput from "./InputElements/StringInput";
 
 export type UserFormData = {
   email?: string;
+  contactPersonName?: string;
   phoneNumber?: string;
   companyName?: string;
   streetName?: string;
@@ -18,13 +19,15 @@ export type UserFormData = {
 
 type Props = {
   userFormState: [UserFormData, (newValue: UserFormData) => void];
+  isPartner: boolean;
 } & ViewProps;
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
-const UserForm: FC<Props> = ({ userFormState, ...viewProps }) => {
+const UserForm: FC<Props> = ({ userFormState, isPartner, ...viewProps }) => {
   const [userFormData] = userFormState;
 
   const {
+    contactPersonName,
     email,
     phoneNumber,
     companyName,
@@ -40,15 +43,28 @@ const UserForm: FC<Props> = ({ userFormState, ...viewProps }) => {
   return (
     <View style={viewProps.style}>
       <Text>Kontaktoplysninger</Text>
+      {isPartner ? (
+        <StringInput
+          label="Kontaktperson"
+          stringState={[
+            contactPersonName,
+            setUserFormValue("contactPersonName"),
+          ]}
+        />
+      ) : null}
       <EmailInput emailState={[email, setUserFormValue("email")]} />
       <PhoneNumberInput
         phoneNumberState={[phoneNumber, setUserFormValue("phoneNumber")]}
       />
-      <Text>Virksomhed</Text>
-      <StringInput
-        stringState={[companyName, setUserFormValue("companyName")]}
-        label="Virksomhedsnavn"
-      />
+      {isPartner ? (
+        <View>
+          <Text>Virksomhed</Text>
+          <StringInput
+            stringState={[companyName, setUserFormValue("companyName")]}
+            label="Virksomhedsnavn"
+          />
+        </View>
+      ) : null}
       <Text>Adresse</Text>
       <StringInput
         stringState={[streetName, setUserFormValue("streetName")]}

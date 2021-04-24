@@ -1,12 +1,18 @@
 import * as React from "react";
 import { StyleSheet } from "react-native";
 
-import { Text, View } from "../components/Themed";
+import { View } from "../components/Themed";
+import UserForm, { UserFormData } from "../components/UserForm";
 
 export default function CollectionAdministrationScreen() {
+  const userFormDataState = React.useState<UserFormData>({});
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Not implemented yet</Text>
+      {/* TODO_SESSION: Consider whether we should create a separate form for inviting collectors or we can use the same
+       * form as for collaborator - I think we can probably just use the same
+       */}
+
+      <UserForm userFormState={userFormDataState} isPartner={false} />
     </View>
   );
 }
