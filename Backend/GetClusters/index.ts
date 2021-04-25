@@ -11,13 +11,21 @@ const httpTrigger: AzureFunction = async function (
     productionPartnerId,
   } = req.query;
 
-  const clusters = await databaseAPI.find<ClusterEntity>("cluster", {
-    $or: [
-      { collectionAdministratorId },
-      { logisticsPartnerId },
-      { productionPartnerId },
-    ],
-  });
+  const queryIsLimitedToUser =
+    collectionAdministratorId || logisticsPartnerId || productionPartnerId;
+
+  const clusters = await databaseAPI.find<ClusterEntity>(
+    "cluster",
+    queryIsLimitedToUser
+      ? {
+          $or: [
+            { collectionAdministratorId },
+            { logisticsPartnerId },
+            { productionPartnerId },
+          ],
+        }
+      : undefined
+  );
   // TODO: The frontend relies on this particular return value format. Consider
   // whether that is too hard of a coupling and we need a gateway instead, or
   // if it is acceptable for now, given the scope of the project

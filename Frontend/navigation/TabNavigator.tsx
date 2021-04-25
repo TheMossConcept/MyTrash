@@ -21,6 +21,13 @@ const Tab = createMaterialTopTabNavigator<TabsParamList>();
 type UserInfo = {
   name: string;
   roles: string[];
+  userId: string;
+};
+
+type IdTokenData = {
+  name: string;
+  roles: string[];
+  oid: string;
 };
 
 export const AccessTokenContext = React.createContext<string | null>(null);
@@ -50,11 +57,12 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
 
     // TODO: Consider whether we need to clear this as well. For now, I
     // don't think so as we always get a new id token when logging in, however
-    // stale state is always a mess
+    // potential stale state is always dangerous
     AsyncStorage.setItem("idToken", idToken);
   }, [accessTokenState, idToken]);
 
-  const userInfo: UserInfo = jwtDecode(idToken);
+  const { roles, name, oid } = jwtDecode(idToken) as IdTokenData;
+  const userInfo: UserInfo = { roles, name, userId: oid };
   const colorScheme = useColorScheme();
 
   const showAdministrationScreen = userInfo.roles.includes(
@@ -85,6 +93,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           <Tab.Screen
             name="Administration"
             component={AdministrationScreen}
+            initialParams={{ userId: userInfo.userId }}
             options={{
               tabBarIcon: ({ color }) => (
                 <TabBarIcon name="ios-code" color={color} />

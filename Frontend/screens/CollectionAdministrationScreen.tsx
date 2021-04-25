@@ -1,10 +1,16 @@
-import * as React from "react";
+import { StackScreenProps } from "@react-navigation/stack";
+import React, { FC } from "react";
 import { StyleSheet } from "react-native";
 
 import { View } from "../components/Themed";
 import UserForm, { UserFormData } from "../components/UserForm";
+import { TabsParamList } from "../typings/types";
 
-export default function CollectionAdministrationScreen() {
+type Props = StackScreenProps<TabsParamList, "Indsamlingsadministration">;
+
+// { route }
+const CollectionAdministrationScreen: FC<Props> = () => {
+  // const { userId } = route;
   const userFormDataState = React.useState<UserFormData>({});
   return (
     <View style={styles.container}>
@@ -15,7 +21,7 @@ export default function CollectionAdministrationScreen() {
       <UserForm userFormState={userFormDataState} isPartner={false} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -33,3 +39,5 @@ const styles = StyleSheet.create({
     width: "80%",
   },
 });
+
+export default CollectionAdministrationScreen;
