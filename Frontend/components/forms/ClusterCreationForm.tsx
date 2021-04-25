@@ -1,12 +1,5 @@
 import axios from "axios";
-import React, {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import axiosUtils from "../../utils/axios";
@@ -32,7 +25,11 @@ type ClusterCreationFormData = {
 type UserInputProps = {
   title?: string;
   usersEndpoint: string;
-  selectionState: [string, Dispatch<SetStateAction<string>>];
+  stateKey:
+    | "productionPartnerId"
+    | "collectionAdministratorId"
+    | "logisticsPartnerId"
+    | "recipientPartnerId";
 };
 
 type Props = {};
@@ -41,7 +38,9 @@ const ClusterCreationForm: FC<Props> = () => {
   const [loading, setLoading] = useState(false);
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
 
-  const [clusterData, setClusterData] = useState<ClusterCreationFormData>({});
+  const [clusterData, setClusterData] = useState<ClusterCreationFormData>({
+    isOpen: false,
+  });
   const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
     []
   );
@@ -52,7 +51,6 @@ const ClusterCreationForm: FC<Props> = () => {
     c5Reference,
     necessaryPlastic,
     usefulPlasticFactor,
-    productionPartnerId,
     collectionAdministratorId,
     logisticsPartnerId,
     recipientPartnerId,
@@ -97,42 +95,30 @@ const ClusterCreationForm: FC<Props> = () => {
 
             const usersEndpoint = `/GetUsersByAppRole?appRoleId=${appRoleId}`;
 
-            let selectionState;
+            let stateKey;
             switch (appRoleValue) {
               case "ProductionPartner":
-                selectionState = [
-                  productionPartnerId,
-                  setClusterFormValue("productionPartnerId"),
-                ];
+                stateKey = "productionPartnerId";
                 break;
               case "CollectionAdministrator":
-                selectionState = [
-                  collectionAdministratorId,
-                  setClusterFormValue("collectionAdministratorId"),
-                ];
+                stateKey = "collectionAdministratorId";
                 break;
               case "LogisticsPartner":
-                selectionState = [
-                  logisticsPartnerId,
-                  setClusterFormValue("logisticsPartnerId"),
-                ];
+                stateKey = "logisticsPartnerId";
                 break;
               case "RecipientPartner":
-                selectionState = [
-                  recipientPartnerId,
-                  setClusterFormValue("recipientPartnerId"),
-                ];
+                stateKey = "recipientPartnerId";
                 break;
               default:
                 console.warn("DEFAULT CASE IN CLUSTER CREATION FORM!!");
                 break;
             }
 
-            return selectionState
+            return stateKey
               ? {
                   title,
                   usersEndpoint,
-                  selectionState,
+                  stateKey,
                 }
               : undefined;
           });
@@ -204,7 +190,10 @@ const ClusterCreationForm: FC<Props> = () => {
             key={selectionData.title}
           >
             <AutocompleteInput
-              selectionState={selectionData.selectionState}
+              selectionState={[
+                clusterData[selectionData.stateKey],
+                setClusterFormValue(selectionData.stateKey),
+              ]}
               endpoint={selectionData.usersEndpoint}
               title={selectionData.title}
             />

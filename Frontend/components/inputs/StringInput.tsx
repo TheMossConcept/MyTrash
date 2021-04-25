@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { View } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 import { ValidationResult, validateString } from "../../utils/form";
@@ -10,8 +10,13 @@ type Props = {
 };
 
 const StringInput: FC<Props> = ({ stringState, isOptional, label }) => {
+  // TODO: Get rid of the state duplication in the input fields to fix reset errors!
   const [stringValue, setStringValue] = stringState;
   const [textInputValue, setTextInputValue] = useState(stringValue);
+  useEffect(() => {
+    setTextInputValue(stringValue);
+  }, [stringValue]);
+
   const [validationError, setValidationError] = useState<string>();
 
   const setEmailWrapper = (newValue: string) => {

@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { View } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 import { ValidationResult, validateString } from "../../utils/form";
@@ -11,6 +11,9 @@ type Props = {
 const EmailInput: FC<Props> = ({ emailState, isOptional }) => {
   const [email, setEmail] = emailState;
   const [textInputValue, setTextInputValue] = useState(email);
+  useEffect(() => {
+    setTextInputValue(email);
+  }, [email]);
   const [validationError, setValidationError] = useState<string>();
 
   const setEmailWrapper = (newValue: string) => {

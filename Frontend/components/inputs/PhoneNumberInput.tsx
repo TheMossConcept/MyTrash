@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { View } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 import { ValidationResult, validateString } from "../../utils/form";
@@ -14,6 +14,9 @@ type Props = {
 const PhoneNumberInput: FC<Props> = ({ phoneNumberState, isOptional }) => {
   const [phoneNumber, setPhoneNumber] = phoneNumberState;
   const [textInputValue, setTextInputValue] = useState(phoneNumber);
+  useEffect(() => {
+    setTextInputValue(phoneNumber);
+  }, [phoneNumber]);
   const [validationError, setValidationError] = useState<string>();
 
   const setPhoneNumberWrapper = (newValue: string) => {

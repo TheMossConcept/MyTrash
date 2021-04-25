@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { View } from "react-native";
 import { TextInput, HelperText } from "react-native-paper";
 import { ValidationResult, validateString } from "../../utils/form";
@@ -14,6 +14,9 @@ const NumericInput: FC<Props> = ({ numberState, isOptional, label }) => {
   const [textInputValue, setTextInputValue] = useState(
     numericValue?.toString() || null
   );
+  useEffect(() => {
+    setTextInputValue(numericValue?.toString() || null);
+  }, [numericValue]);
   const [validationError, setValidationError] = useState<string>();
 
   const setNumericValueWrapper = (newValue: string) => {
@@ -23,7 +26,7 @@ const NumericInput: FC<Props> = ({ numberState, isOptional, label }) => {
     // I got the regexp from here https://emailregex.com/
     const numericRegExp = new RegExp(
       // eslint-disable-next-line no-control-regex
-      /^\d*$/
+      /^[\d|.]*$/
     );
 
     const validationResult = validateString(
