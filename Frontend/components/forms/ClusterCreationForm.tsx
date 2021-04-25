@@ -10,6 +10,7 @@ import React, {
 import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import axiosUtils from "../../utils/axios";
+import { setValue } from "../../utils/form";
 import AutocompleteInput from "../inputs/AutocompleteInput";
 import BooleanInput from "../inputs/BooleanInput";
 import NumericInput from "../inputs/NumericInput";
@@ -17,11 +18,15 @@ import StringInput from "../inputs/StringInput";
 import DismissableSnackbar from "../shared/DismissableSnackbar";
 
 type ClusterCreationFormData = {
-  clusterIsOpen: boolean;
-  clusterName: string;
-  c5Reference: string;
-  necessaryPlastic: number;
-  usefulPlasticFactor: number;
+  isOpen?: boolean;
+  name?: string;
+  c5Reference?: string;
+  necessaryPlastic?: number;
+  usefulPlasticFactor?: number;
+  productionPartnerId?: string;
+  collectionAdministratorId?: string;
+  logisticsPartnerId?: string;
+  recipientPartnerId?: string;
 };
 
 type UserInputProps = {
@@ -35,38 +40,39 @@ type Props = {};
 const ClusterCreationForm: FC<Props> = () => {
   const [loading, setLoading] = useState(false);
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+
+  const [clusterData, setClusterData] = useState<ClusterCreationFormData>({});
   const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
     []
   );
 
-  const [name, setName] = useState<string | undefined>();
-  const [c5Reference, setC5Reference] = useState<string | undefined>();
-  const [necessaryPlastic, setNeccesaryPlastic] = useState<
-    number | undefined
-  >();
-  const [usefulPlasticFactor, setUsefulPlasticFactor] = useState<
-    number | undefined
-  >();
+  const {
+    name,
+    isOpen,
+    c5Reference,
+    necessaryPlastic,
+    usefulPlasticFactor,
+    productionPartnerId,
+    collectionAdministratorId,
+    logisticsPartnerId,
+    recipientPartnerId,
+  } = clusterData;
 
-  const productionPartnerSelectionState = useState("");
-  const collectionAdministratorSelectionState = useState("");
-  const logisticsPartnerSelectionState = useState("");
-  const recipientPartnerSelectionState = useState("");
+  const isValid =
+    name &&
+    isOpen !== undefined &&
+    c5Reference &&
+    necessaryPlastic &&
+    usefulPlasticFactor &&
+    collectionAdministratorId &&
+    logisticsPartnerId &&
+    recipientPartnerId;
 
   const resetState = () => {
-    const [, setProductionPartner] = productionPartnerSelectionState;
-    const [
-      ,
-      setCollectionAdministrator,
-    ] = collectionAdministratorSelectionState;
-    const [, setLogisticsPartner] = logisticsPartnerSelectionState;
-
-    setName(undefined);
-    setProductionPartner("");
-    setCollectionAdministrator("");
-    setLogisticsPartner("");
+    setClusterData({});
   };
+
+  const setClusterFormValue = setValue([clusterData, setClusterData]);
 
   const accessToken = useContext(AccessTokenContext);
 
@@ -94,16 +100,28 @@ const ClusterCreationForm: FC<Props> = () => {
             let selectionState;
             switch (appRoleValue) {
               case "ProductionPartner":
-                selectionState = productionPartnerSelectionState;
+                selectionState = [
+                  productionPartnerId,
+                  setClusterFormValue("productionPartnerId"),
+                ];
                 break;
               case "CollectionAdministrator":
-                selectionState = collectionAdministratorSelectionState;
+                selectionState = [
+                  collectionAdministratorId,
+                  setClusterFormValue("collectionAdministratorId"),
+                ];
                 break;
               case "LogisticsPartner":
-                selectionState = logisticsPartnerSelectionState;
+                selectionState = [
+                  logisticsPartnerId,
+                  setClusterFormValue("logisticsPartnerId"),
+                ];
                 break;
               case "RecipientPartner":
-                selectionState = recipientPartnerSelectionState;
+                selectionState = [
+                  recipientPartnerId,
+                  setClusterFormValue("recipientPartnerId"),
+                ];
                 break;
               default:
                 console.warn("DEFAULT CASE IN CLUSTER CREATION FORM!!");
@@ -131,28 +149,15 @@ const ClusterCreationForm: FC<Props> = () => {
     }
   }, [accessToken]);
 
-  const [productionPartnerId] = productionPartnerSelectionState;
-  const [collectionAdministratorId] = collectionAdministratorSelectionState;
-  const [logisticsPartnerId] = logisticsPartnerSelectionState;
-
   const onCreateCluster = () => {
     if (accessToken) {
       axios
-        .post(
-          "/CreateCluster",
-          {
-            name,
-            productionPartnerId,
-            collectionAdministratorId,
-            logisticsPartnerId,
+        .post("/CreateCluster", clusterData, {
+          params: {
+            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
           },
-          {
-            params: {
-              code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
-            },
-            ...axiosUtils.getSharedAxiosConfig(accessToken),
-          }
-        )
+          ...axiosUtils.getSharedAxiosConfig(accessToken),
+        })
         .then(() => {
           setShowSuccessSnackbar(true);
           resetState();
@@ -162,21 +167,33 @@ const ClusterCreationForm: FC<Props> = () => {
 
   return (
     <View style={styles.container}>
-      <StringInput label="Navn" stringState={[name, setName]} />
+      <StringInput
+        label="Navn"
+        stringState={[name, setClusterFormValue("name")]}
+      />
       <StringInput
         label="C5 Reference"
-        stringState={[c5Reference, setC5Reference]}
+        stringState={[c5Reference, setClusterFormValue("c5Reference")]}
       />
       <NumericInput
         label="Plastbehov"
-        numberState={[necessaryPlastic, setNeccesaryPlastic]}
+        numberState={[
+          necessaryPlastic,
+          setClusterFormValue("necessaryPlastic"),
+        ]}
       />
       <NumericInput
         label="Beregningsfaktor"
-        numberState={[usefulPlasticFactor, setUsefulPlasticFactor]}
+        numberState={[
+          usefulPlasticFactor,
+          setClusterFormValue("usefulPlasticFactor"),
+        ]}
       />
       {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
-      <BooleanInput label="Åbent cluster" booleanState={[isOpen, setIsOpen]} />
+      <BooleanInput
+        label="Åbent cluster"
+        booleanState={[isOpen || false, setClusterFormValue("isOpen")]}
+      />
       {loading ? (
         <ActivityIndicator />
       ) : (
@@ -194,7 +211,11 @@ const ClusterCreationForm: FC<Props> = () => {
           </View>
         ))
       )}
-      <Button title="Opret cluster" onPress={onCreateCluster} />
+      <Button
+        title="Opret cluster"
+        onPress={onCreateCluster}
+        disabled={!isValid}
+      />
       <DismissableSnackbar
         title="Clusteret blev oprettet"
         showState={[showSuccessSnackbar, setShowSuccessSnackbar]}

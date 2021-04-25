@@ -27,7 +27,7 @@ export enum ValidationResult {
 
 export function setValue<T>(formState: [T, (newValue: T) => void]) {
   return (key: keyof T) => {
-    return (value: string | number | undefined) => {
+    return (value: string | number | boolean | undefined) => {
       const [formData, setFormData] = formState;
       // Update the value if it has changed
       setFormData({ ...formData, [key]: value });
