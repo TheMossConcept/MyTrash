@@ -31,7 +31,23 @@ type IdTokenData = {
 };
 
 export const AccessTokenContext = React.createContext<string | null>(null);
-// export const UserIdentityContext = React.createContext()
+
+type TabBarIconProps = {
+  focused: boolean;
+  color: string;
+};
+
+// TODO: Make into a higher order component and parametrize if necessary
+const TabBarIcon: FC<TabBarIconProps> = ({ color }) => {
+  return (
+    <Ionicons
+      size={30}
+      style={{ marginBottom: -3 }}
+      name="ios-code"
+      color={color}
+    />
+  );
+};
 
 type Props = StackScreenProps<RootStackParamList, "Root">;
 
@@ -93,11 +109,8 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           <Tab.Screen
             name="Administration"
             component={AdministrationScreen}
-            initialParams={{ userId: userInfo.userId }}
             options={{
-              tabBarIcon: ({ color }) => (
-                <TabBarIcon name="ios-code" color={color} />
-              ),
+              tabBarIcon: TabBarIcon,
             }}
           />
         )}
@@ -105,10 +118,9 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           <Tab.Screen
             name="Indsamlingsadministration"
             component={CollectionAdministrationScreen}
+            initialParams={{ userId: userInfo.userId }}
             options={{
-              tabBarIcon: ({ color }: { color: string }) => (
-                <TabBarIcon name="ios-code" color={color} />
-              ),
+              tabBarIcon: TabBarIcon,
             }}
           />
         )}
@@ -116,10 +128,9 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           <Tab.Screen
             name="Indsamling"
             component={CollectionScreen}
+            initialParams={{ userId: userInfo.userId }}
             options={{
-              tabBarIcon: ({ color }: { color: string }) => (
-                <TabBarIcon name="ios-code" color={color} />
-              ),
+              tabBarIcon: TabBarIcon,
             }}
           />
         )}
@@ -127,10 +138,9 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           <Tab.Screen
             name="Logistik"
             component={LogisticsScreen}
+            initialParams={{ userId: userInfo.userId }}
             options={{
-              tabBarIcon: ({ color }: { color: string }) => (
-                <TabBarIcon name="ios-code" color={color} />
-              ),
+              tabBarIcon: TabBarIcon,
             }}
           />
         )}
@@ -139,9 +149,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
             name="Modtagelse"
             component={RecipientScreen}
             options={{
-              tabBarIcon: ({ color }: { color: string }) => (
-                <TabBarIcon name="ios-code" color={color} />
-              ),
+              tabBarIcon: TabBarIcon,
             }}
           />
         )}
@@ -150,9 +158,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
             name="Produktion"
             component={ProductionScreen}
             options={{
-              tabBarIcon: ({ color }: { color: string }) => (
-                <TabBarIcon name="ios-code" color={color} />
-              ),
+              tabBarIcon: TabBarIcon,
             }}
           />
         )}
@@ -165,6 +171,7 @@ export default TabNavigator;
 
 // You can explore the built-in icon families and icons on the web at:
 // https://icons.expo.fyi/
+/*
 function TabBarIcon({
   name,
   color,
@@ -181,3 +188,4 @@ function TabBarIcon({
     />
   );
 }
+ */
