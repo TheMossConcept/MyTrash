@@ -16,7 +16,6 @@ const ClusterList: FC<Props> = ({ clusters, children }) => {
           {children}
         </List.Accordion>
       ))}
-      ;
     </List.Section>
   );
 };

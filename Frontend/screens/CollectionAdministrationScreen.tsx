@@ -1,24 +1,24 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC } from "react";
 import { StyleSheet } from "react-native";
+import ClusterList from "../components/shared/ClusterList";
 
 import { View } from "../components/Themed";
 import UserForm, { UserFormData } from "../components/UserForm";
 import { TabsParamList } from "../typings/types";
+import useClusters from "../hooks/useCluster";
 
 type Props = StackScreenProps<TabsParamList, "Indsamlingsadministration">;
 
-// { route }
-const CollectionAdministrationScreen: FC<Props> = () => {
-  // const { userId } = route;
+const CollectionAdministrationScreen: FC<Props> = ({ route }) => {
+  const { userId } = route.params;
+  const clusters = useClusters({ collectionAdministratorId: userId });
   const userFormDataState = React.useState<UserFormData>({});
   return (
     <View style={styles.container}>
-      {/* TODO_SESSION: Consider whether we should create a separate form for inviting collectors or we can use the same
-       * form as for collaborator - I think we can probably just use the same
-       */}
-
-      <UserForm userFormState={userFormDataState} isPartner={false} />
+      <ClusterList clusters={clusters}>
+        <UserForm userFormState={userFormDataState} isPartner={false} />
+      </ClusterList>
     </View>
   );
 };
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "grey",
   },
   title: {
     fontSize: 20,

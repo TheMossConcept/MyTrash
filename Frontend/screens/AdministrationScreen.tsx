@@ -1,38 +1,18 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import axios from "axios";
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC } from "react";
 import { StyleSheet, Text } from "react-native";
-import { black } from "react-native-paper/lib/typescript/styles/colors";
 import ClusterCreationForm from "../components/ClusterCreationForm";
 
 import { View } from "../components/Themed";
 import UserInvitationForm from "../components/UserInvitationForm";
-import { AccessTokenContext } from "../navigation/TabNavigator";
-import axiosUtils from "../utils/axios";
 import { TabsParamList } from "../typings/types";
-import ClusterList, { Cluster } from "../components/shared/ClusterList";
+import ClusterList from "../components/shared/ClusterList";
+import useClusters from "../hooks/useCluster";
 
 type Props = StackScreenProps<TabsParamList, "Administration">;
 
-// TODO_SESSION: Iterate through all (active) clusters and show everything
-// except ClusterCreationForm in the context of a cluster
-// { route }
 const AdministrationScreen: FC<Props> = () => {
-  // const { userId } = route.params;
-  const accessToken = useContext(AccessTokenContext);
-  const [clusters, setClusters] = useState<Cluster[]>([]);
-
-  useEffect(() => {
-    if (accessToken) {
-      axios
-        .get("GetClusters", {
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        })
-        .then((clustersResult) => {
-          setClusters(clustersResult.data);
-        });
-    }
-  }, [accessToken]);
+  const clusters = useClusters();
 
   return (
     <View style={styles.container}>

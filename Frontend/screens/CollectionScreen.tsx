@@ -11,6 +11,7 @@ const CollectionScreen: FC = () => {
   const collectionFormDataState = useState<CollectionFormData>({});
   return (
     <View style={styles.container}>
+      {/* TODO_SESSION: NB! The JoinClusterForm should be its own screen   */}
       <JoinClusterForm />
       <Text>Bestil afhentning</Text>
       <CollectionForm collectionFormState={collectionFormDataState} />
