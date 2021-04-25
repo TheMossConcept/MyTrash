@@ -16,7 +16,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: "module",
   },
-  plugins: ["react", "@typescript-eslint", "prettier"],
+  plugins: ["react", "react-hooks", "@typescript-eslint", "prettier"],
   settings: {
     "import/resolver": {
       node: {
@@ -26,6 +26,8 @@ module.exports = {
   },
   // TODO: Fix this stuff such that is always uses the @typescript-eslint rules!
   rules: {
+    "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
+    "react-hooks/exhaustive-deps": "warn", // Checks effect dependencies
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": "off",
     "no-shadow": "off",

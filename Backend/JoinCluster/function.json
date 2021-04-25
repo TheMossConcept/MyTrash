@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/UserInfo/index.js"
+  "scriptFile": "../dist/JoinCluster/index.js"
 }

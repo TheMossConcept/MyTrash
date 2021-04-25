@@ -4,8 +4,6 @@ import CollectionForm, {
   CollectionFormData,
 } from "../components/forms/OrderCollectionForm";
 
-// TODO_SESSION: Iterate through all (active) clusters and show everything
-// except ClusterCreationForm in the context of a cluster
 const CollectionScreen: FC = () => {
   const collectionFormDataState = useState<CollectionFormData>({});
   return (

@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { Button, View, Text, StyleSheet } from "react-native";
+import { Button, View, StyleSheet } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import AutocompleteInput from "../components/inputs/AutocompleteInput";
 import UserForm, { UserFormData } from "../components/forms/UserForm";
@@ -21,14 +21,10 @@ const JoinClusterForm: FC<Props> = ({ route }) => {
   return (
     <View style={styles.container}>
       <UserForm isPartner={false} userFormState={userFormDataState} />
-      {selectedClusterId !== undefined ? (
-        <Text>{selectedClusterId}</Text>
-      ) : (
-        <AutocompleteInput
-          selectionState={[selectedClusterId, setSelectedClusterId]}
-          endpoint="/GetClusters"
-        />
-      )}
+      <AutocompleteInput
+        selectionState={[selectedClusterId, setSelectedClusterId]}
+        endpoint="/GetOpenClusters"
+      />
       <Button title="Tilmeld" onPress={joinCluster} />
     </View>
   );

@@ -30,7 +30,9 @@ type IdTokenData = {
   oid: string;
 };
 
-export const AccessTokenContext = React.createContext<string | null>(null);
+export const AccessTokenContext = React.createContext<string | undefined>(
+  undefined
+);
 
 type TabBarIconProps = {
   focused: boolean;
@@ -56,11 +58,11 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
 
   // TODO: Extend this to handle refreshing the access token. Consider making it as a separate hook
   // that handles everything related to access and refresh tokens
-  const [accessTokenState, setAccessToken] = useState<string | null>(
+  const [accessTokenState, setAccessToken] = useState<string | undefined>(
     accessToken
   );
   const logout = () => {
-    setAccessToken(null);
+    setAccessToken(undefined);
     navigation.navigate("Login");
   };
 
@@ -92,9 +94,6 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
   const showProductionScreen = userInfo.roles.includes("ProductionPartner");
   const showRecipientScreen = userInfo.roles.includes("RecipientPartner");
 
-  //  TODO_SESSION: Make a header, where you can see the name of the
-  //  user that is logged in and get the opportunity to log out if you
-  //  want to
   return (
     <AccessTokenContext.Provider value={accessTokenState}>
       <Appbar.Header>

@@ -31,24 +31,22 @@ const AutocompleteInput: FC<Props> = ({ title, endpoint, selectionState }) => {
   const accessToken = useContext(AccessTokenContext);
 
   useEffect(() => {
-    if (accessToken) {
-      setLoading(true);
+    setLoading(true);
 
-      axios
-        .get(endpoint, {
-          params: {
-            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
-          },
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        })
-        .then((entitiesResult) => {
-          const fetchedEntities: SelectableEntity[] = entitiesResult.data;
-          setEntities(fetchedEntities);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }
+    axios
+      .get(endpoint, {
+        params: {
+          code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+        },
+        ...axiosUtils.getSharedAxiosConfig(accessToken),
+      })
+      .then((entitiesResult) => {
+        const fetchedEntities: SelectableEntity[] = entitiesResult.data;
+        setEntities(fetchedEntities);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [endpoint, accessToken]);
 
   const [hideSuggestionList, setHideSuggestionList] = useState(false);
@@ -101,7 +99,7 @@ const AutocompleteInput: FC<Props> = ({ title, endpoint, selectionState }) => {
 const styles = StyleSheet.create({
   container: {
     // TODO: This is obviously a temporary fix!
-    height: "250px",
+    height: "150px",
   },
 });
 
