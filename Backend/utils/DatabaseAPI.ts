@@ -70,6 +70,10 @@ export type ClusterEntity = {
   logisticsPartnerId: string;
   productionPartnerId: string;
   name: string;
+  open: boolean;
+  c5Reference: string;
+  usefulPlasticFactor: number;
+  necessaryAmountOfPlastic: number;
 };
 
 // TODO: Look into getting this information into AD as well!

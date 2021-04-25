@@ -31,6 +31,10 @@ type ClusterCreationDTO = {
   collectionAdministratorId: string;
   logisticsPartnerId: string;
   productionPartnerId: string;
+  open: boolean;
+  c5Reference: string;
+  usefulPlasticFactor: number;
+  necessaryAmountOfPlastic: number;
   name: string;
 };
 
