@@ -1,6 +1,6 @@
 // Navigation
 export type RootStackParamList = {
-  Root: { accessToken: string };
+  Root: { accessToken: string; idToken: string };
   Login: undefined;
   NotFound: undefined;
 };

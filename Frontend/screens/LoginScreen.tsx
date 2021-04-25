@@ -17,7 +17,11 @@ type Props = StackScreenProps<RootStackParamList, "Login">;
 const LoginScreen: FC<Props> = ({ navigation }) => {
   // TODO: Add proper validation and typings here
   const handleAuthorizationSuccess = (tokenResponse: any) => {
-    navigation.navigate("Root", { accessToken: tokenResponse.accessToken });
+    // TODO: Save in async storage here such that we can get it again if we end up at the error page!
+    navigation.navigate("Root", {
+      accessToken: tokenResponse.accessToken,
+      idToken: tokenResponse.idToken,
+    });
   };
   return (
     <View style={styles.container}>
