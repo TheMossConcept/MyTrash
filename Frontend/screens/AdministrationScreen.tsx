@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import ClusterCreationForm from "../components/ClusterCreationForm";
 
 import { View } from "../components/Themed";
@@ -10,8 +10,10 @@ import UserInvitationForm from "../components/UserInvitationForm";
 export default function AdministrationScreen() {
   return (
     <View style={styles.container}>
+      <Text>Opret cluster</Text>
       <ClusterCreationForm />
       {/* TODO_SESSION: Recipient partner and production partner should NOT be linked to a cluster!  */}
+      <Text>Inviter bruger</Text>
       <UserInvitationForm />
     </View>
   );
