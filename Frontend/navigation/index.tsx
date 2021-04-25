@@ -9,6 +9,7 @@ import { ColorSchemeName } from "react-native";
 import LoginScreen from "../screens/LoginScreen";
 
 import NotFoundScreen from "../screens/NotFoundScreen";
+import JoinClusterScreen from "../screens/JoinClusterScreen";
 import { RootStackParamList } from "../typings/types";
 import TabNavigator from "./TabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
@@ -41,6 +42,7 @@ function RootNavigator() {
       initialRouteName="Login"
     >
       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Join" component={JoinClusterScreen} />
       <Stack.Screen name="Root" component={TabNavigator} />
       <Stack.Screen
         name="NotFound"

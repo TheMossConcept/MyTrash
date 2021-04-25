@@ -8,21 +8,29 @@ import React, {
   useState,
 } from "react";
 import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
-import { AccessTokenContext } from "../navigation/TabNavigator";
-import axiosUtils from "../utils/axios";
-import AutocompleteInput from "./InputElements/AutocompleteInput";
-import BooleanInput from "./InputElements/BooleanInput";
-import NumericInput from "./InputElements/NumericInput";
-import StringInput from "./InputElements/StringInput";
-import DismissableSnackbar from "./shared/DismissableSnackbar";
+import { AccessTokenContext } from "../../navigation/TabNavigator";
+import axiosUtils from "../../utils/axios";
+import AutocompleteInput from "../inputs/AutocompleteInput";
+import BooleanInput from "../inputs/BooleanInput";
+import NumericInput from "../inputs/NumericInput";
+import StringInput from "../inputs/StringInput";
+import DismissableSnackbar from "../shared/DismissableSnackbar";
 
-type Props = {};
+type ClusterCreationFormData = {
+  clusterIsOpen: boolean;
+  clusterName: string;
+  c5Reference: string;
+  necessaryPlastic: number;
+  usefulPlasticFactor: number;
+};
 
 type UserInputProps = {
   title?: string;
   usersEndpoint: string;
   selectionState: [string, Dispatch<SetStateAction<string>>];
 };
+
+type Props = {};
 
 const ClusterCreationForm: FC<Props> = () => {
   const [loading, setLoading] = useState(false);

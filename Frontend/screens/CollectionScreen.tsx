@@ -1,9 +1,8 @@
 import React, { FC, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import JoinClusterForm from "../components/JoinClusterForm";
 import CollectionForm, {
   CollectionFormData,
-} from "../components/OrderCollectionForm";
+} from "../components/forms/OrderCollectionForm";
 
 // TODO_SESSION: Iterate through all (active) clusters and show everything
 // except ClusterCreationForm in the context of a cluster
@@ -11,8 +10,6 @@ const CollectionScreen: FC = () => {
   const collectionFormDataState = useState<CollectionFormData>({});
   return (
     <View style={styles.container}>
-      {/* TODO_SESSION: NB! The JoinClusterForm should be its own screen   */}
-      <JoinClusterForm />
       <Text>Bestil afhentning</Text>
       <CollectionForm collectionFormState={collectionFormDataState} />
     </View>

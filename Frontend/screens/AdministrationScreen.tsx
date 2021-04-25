@@ -1,10 +1,10 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC } from "react";
 import { StyleSheet, Text } from "react-native";
-import ClusterCreationForm from "../components/ClusterCreationForm";
+import ClusterCreationForm from "../components/forms/ClusterCreationForm";
 
 import { View } from "../components/Themed";
-import UserInvitationForm from "../components/UserInvitationForm";
+import UserInvitationForm from "../components/UserInvitation";
 import { TabsParamList } from "../typings/types";
 import ClusterList from "../components/shared/ClusterList";
 import useClusters from "../hooks/useCluster";

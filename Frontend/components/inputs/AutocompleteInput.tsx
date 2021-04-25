@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import Autocomplete from "react-native-autocomplete-input";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import axiosUtils from "../../utils/axios";
@@ -69,7 +69,7 @@ const AutocompleteInput: FC<Props> = ({ title, endpoint, selectionState }) => {
   // The types for react-native-autocomplete-input are faulty. It is flatListProps { renderItem } that is
   // required not renderItem on its own
   return (
-    <View>
+    <View style={styles.container}>
       <Text>{title}</Text>
       <Autocomplete
         data={filteredUsers}
@@ -97,5 +97,12 @@ const AutocompleteInput: FC<Props> = ({ title, endpoint, selectionState }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    // TODO: This is obviously a temporary fix!
+    height: "250px",
+  },
+});
 
 export default AutocompleteInput;

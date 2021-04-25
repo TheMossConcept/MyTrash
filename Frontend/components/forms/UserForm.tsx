@@ -1,10 +1,10 @@
 import React, { FC } from "react";
 import { Text, View, ViewProps } from "react-native";
-import { setValue } from "../utils/form";
-import EmailInput from "./InputElements/EmailInput";
-import NumericInput from "./InputElements/NumericInput";
-import PhoneNumberInput from "./InputElements/PhoneNumberInput";
-import StringInput from "./InputElements/StringInput";
+import { setValue } from "../../utils/form";
+import EmailInput from "../inputs/EmailInput";
+import NumericInput from "../inputs/NumericInput";
+import PhoneNumberInput from "../inputs/PhoneNumberInput";
+import StringInput from "../inputs/StringInput";
 
 export type UserFormData = {
   email?: string;

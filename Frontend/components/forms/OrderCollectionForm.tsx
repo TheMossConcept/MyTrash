@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 // TODO: Fix it so that we use buttons from react-native-paper instead
 import { View, ViewProps, Button } from "react-native";
-import { setValue } from "../utils/form";
-import NumericInput from "./InputElements/NumericInput";
+import { setValue } from "../../utils/form";
+import NumericInput from "../inputs/NumericInput";
 
 // TODO: Everything should not always be optional!
 export type CollectionFormData = {

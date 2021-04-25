@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 import ClusterList from "../components/shared/ClusterList";
 
 import { View } from "../components/Themed";
-import UserForm, { UserFormData } from "../components/UserForm";
+import UserForm, { UserFormData } from "../components/forms/UserForm";
 import { TabsParamList } from "../typings/types";
 import useClusters from "../hooks/useCluster";
 
