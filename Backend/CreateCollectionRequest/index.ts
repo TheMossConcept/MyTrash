@@ -17,11 +17,12 @@ const httpTrigger: AzureFunction = async function (
     );
 
     if (cluster) {
-      const { logisticsPartnerId } = cluster;
+      const { logisticsPartnerId, recipientPartnerId } = cluster;
 
       const insertionReulst = await databaseAPI.insert({
         entityName: "collectionRequest",
         logisticsPartnerId,
+        recipientPartnerId,
         requesterId,
         numberOfBags,
       });

@@ -127,8 +127,16 @@ export type ProductEntity = {
 export type CollectionRequestEntity = {
   entityName: "collectionRequest";
   logisticsPartnerId: string;
+  recipientPartnerId: string;
   requesterId: string;
   numberOfBags: number;
+};
+
+export type CollectionEntity = {
+  entityName: "collection";
+  logisticsPartnerId: string;
+  weight: string;
+  hasBeenReceived: boolean;
 };
 
 export default mongoAPI;
