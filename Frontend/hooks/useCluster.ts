@@ -19,6 +19,8 @@ const useClusters = (queryParams?: Object) => {
           setClusters(clustersResult.data);
         });
     }
+    // TODO: Find a structure where this warning is not there but the
+    // useEffect hook does not loop forever due to the queryParams object
   }, [accessToken]);
 
   return clusters;

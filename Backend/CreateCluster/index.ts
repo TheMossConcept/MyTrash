@@ -16,6 +16,7 @@ const httpTrigger: AzureFunction = async function (
       entityName: "cluster",
       open: isOpen,
       necessaryAmountOfPlastic: necessaryPlastic,
+      collectors: [],
       ...clusterPayload,
     });
 
@@ -33,6 +34,7 @@ const httpTrigger: AzureFunction = async function (
 
 type ClusterCreationDTO = {
   collectionAdministratorId: string;
+  recipientPartnerId: string;
   logisticsPartnerId: string;
   productionPartnerId: string;
   isOpen: boolean;

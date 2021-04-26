@@ -38,12 +38,12 @@ const mongoAPI = {
 
     return result;
   },
-  findById: async (entityName: Entities["entityName"], id: string) => {
+  async findById<T extends Entities>(entityName: T["entityName"], id: string) {
     const client = await getMongoClient();
-    const result = client
+    const result = await client
       .db(DATABASE_NAME)
       .collection(entityName)
-      .find({ _id: id });
+      .findOne<T>(new mongodb.ObjectId(id));
 
     return result;
   },
@@ -73,7 +73,8 @@ type Entities =
   | PlasticBagEntity
   | PlasticBagAggregateEntity
   | PelletEntity
-  | ProductEntity;
+  | ProductEntity
+  | CollectionRequestEntity;
 
 // TODO: Consider moving these types somewhere else when this file becomes big
 export type ClusterEntity = {
@@ -82,6 +83,7 @@ export type ClusterEntity = {
   // NB! This is not necessarily a one-to-one
   logisticsPartnerId: string;
   productionPartnerId: string;
+  recipientPartnerId: string;
   collectors: string[];
   name: string;
   open: boolean;
@@ -120,6 +122,13 @@ export type PelletEntity = {
 export type ProductEntity = {
   entityName: "product";
   clusterId: string;
+};
+
+export type CollectionRequestEntity = {
+  entityName: "collectionRequest";
+  logisticsPartnerId: string;
+  requesterId: string;
+  numberOfBags: number;
 };
 
 export default mongoAPI;

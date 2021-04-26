@@ -18,11 +18,12 @@ const AdministrationScreen: FC<Props> = () => {
     <View style={styles.container}>
       <ClusterCreationForm />
       <ClusterList clusters={clusters}>
-        <View style={styles.container}>
-          <Text>Opret cluster</Text>
-          <Text>Inviter bruger</Text>
-          <UserInvitationForm />
-        </View>
+        {({ cluster }) => (
+          <View style={styles.container}>
+            <Text>Inviter bruger</Text>
+            <UserInvitationForm clusterId={cluster.id} />
+          </View>
+        )}
       </ClusterList>
     </View>
   );

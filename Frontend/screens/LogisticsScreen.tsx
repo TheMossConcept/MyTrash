@@ -12,10 +12,11 @@ type Props = StackScreenProps<TabsParamList, "Logistik">;
 const LogisticsScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
   const clusters = useClusters({ logisticsPartnerId: userId });
+  /* Vis afhentningsanmodninger */
   return (
     <View style={styles.container}>
       <ClusterList clusters={clusters}>
-        <Text style={styles.title}>Not implemented yet</Text>
+        {({ cluster }) => <Text style={styles.title}>{cluster.id}</Text>}
       </ClusterList>
     </View>
   );

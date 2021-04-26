@@ -1,14 +1,22 @@
 import * as React from "react";
-import { StyleSheet } from "react-native";
+import { Button, StyleSheet } from "react-native";
+import StringInput from "../components/inputs/StringInput";
 
 import { Text, View } from "../components/Themed";
 
 export default function ProductionScreen() {
+  return <></>;
+  /* Vis for hvert batch vi har modtaget */
+  /*
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Not implemented yet</Text>
+      <Boolean label="Bekræft modtagelse af batch" />
+      <StringInput label="Varenummer" />
+      <Button title="Opret vare" />
+      <Button title="Afsend varer"_ />
     </View>
   );
+   */
 }
 
 const styles = StyleSheet.create({

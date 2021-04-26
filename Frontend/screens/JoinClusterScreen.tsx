@@ -16,6 +16,7 @@ const JoinClusterForm: FC<Props> = ({ route }) => {
   const userFormDataState = useState<UserFormData>({});
 
   const joinCluster = () => {
+    // TODO: Call join cluster. We need a user id and thus and id token
     console.log("Not implemented");
   };
   return (

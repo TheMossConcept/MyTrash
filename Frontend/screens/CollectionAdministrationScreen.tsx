@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC } from "react";
-import { StyleSheet } from "react-native";
+import { Button, StyleSheet } from "react-native";
 import ClusterList from "../components/shared/ClusterList";
 
 import { View } from "../components/Themed";
@@ -17,7 +17,15 @@ const CollectionAdministrationScreen: FC<Props> = ({ route }) => {
   return (
     <View style={styles.container}>
       <ClusterList clusters={clusters}>
-        <UserForm userFormState={userFormDataState} isPartner={false} />
+        {() => (
+          <View>
+            <UserForm userFormState={userFormDataState} isPartner={false} />
+            <Button
+              title="Inviter"
+              onPress={() => console.log("Not implemented yet!")}
+            />
+          </View>
+        )}
       </ClusterList>
     </View>
   );
