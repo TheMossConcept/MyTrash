@@ -124,18 +124,14 @@ export type ProductEntity = {
   clusterId: string;
 };
 
-export type CollectionRequestEntity = {
-  entityName: "collectionRequest";
-  logisticsPartnerId: string;
-  recipientPartnerId: string;
-  requesterId: string;
-  numberOfBags: number;
-};
-
 export type CollectionEntity = {
   entityName: "collection";
+  requesterId: string;
   logisticsPartnerId: string;
-  weight: string;
+  recipientPartnerId: string;
+  numberOfUnits: number;
+  weight?: number;
+  hasBeenCollected: boolean;
   hasBeenReceived: boolean;
 };
 

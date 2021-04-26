@@ -10,7 +10,7 @@ const httpTrigger: AzureFunction = async function (
 
   // TODO: Add request body validation here (in the form of a type guard) as well!
   if (requestBody) {
-    const { requesterId, clusterId, numberOfBags } = requestBody;
+    const { requesterId, clusterId, numberOfUnits } = requestBody;
     const cluster = await databaseAPI.findById<ClusterEntity>(
       "cluster",
       clusterId
@@ -20,11 +20,11 @@ const httpTrigger: AzureFunction = async function (
       const { logisticsPartnerId, recipientPartnerId } = cluster;
 
       const insertionReulst = await databaseAPI.insert({
-        entityName: "collectionRequest",
+        entityName: "collection",
         logisticsPartnerId,
         recipientPartnerId,
         requesterId,
-        numberOfBags,
+        numberOfUnits,
       });
 
       context.res = {
@@ -48,7 +48,7 @@ const httpTrigger: AzureFunction = async function (
 type CollectionRequestCreationDTO = {
   clusterId: string;
   requesterId: string;
-  numberOfBags: number;
+  numberOfUnits: number;
 };
 
 export default httpTrigger;
