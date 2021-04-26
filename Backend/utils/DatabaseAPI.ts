@@ -25,6 +25,19 @@ const mongoAPI = {
 
     return insertionResult;
   },
+  async update<T extends Entities>(
+    entityName: T["entityName"],
+    id: string,
+    update: mongodb.UpdateQuery<T>
+  ) {
+    const client = await getMongoClient();
+    const result = await client
+      .db(DATABASE_NAME)
+      .collection(entityName)
+      .updateOne({ _id: id }, update);
+
+    return result;
+  },
   findById: async (entityName: Entities["entityName"], id: string) => {
     const client = await getMongoClient();
     const result = client
@@ -69,6 +82,7 @@ export type ClusterEntity = {
   // NB! This is not necessarily a one-to-one
   logisticsPartnerId: string;
   productionPartnerId: string;
+  collectors: string[];
   name: string;
   open: boolean;
   c5Reference: string;

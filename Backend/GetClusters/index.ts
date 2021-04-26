@@ -9,19 +9,29 @@ const httpTrigger: AzureFunction = async function (
     collectionAdministratorId,
     logisticsPartnerId,
     productionPartnerId,
+    collectorId,
   } = req.query;
 
   const queryIsLimitedToUser =
-    collectionAdministratorId || logisticsPartnerId || productionPartnerId;
+    collectionAdministratorId ||
+    logisticsPartnerId ||
+    productionPartnerId ||
+    collectorId;
 
   const clusters = await databaseAPI.find<ClusterEntity>(
     "cluster",
     queryIsLimitedToUser
       ? {
           $or: [
-            { collectionAdministratorId },
-            { logisticsPartnerId },
-            { productionPartnerId },
+            {
+              collectionAdministratorId: {
+                $exists: true,
+                collectionAdministratorId,
+              },
+            },
+            { logisticsPartnerId: { $exists: true, logisticsPartnerId } },
+            { productionPartnerId: { $exists: true, productionPartnerId } },
+            { collectors: collectorId },
           ],
         }
       : undefined
