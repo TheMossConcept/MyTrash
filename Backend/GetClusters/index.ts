@@ -26,12 +26,15 @@ const httpTrigger: AzureFunction = async function (
             {
               collectionAdministratorId: {
                 $exists: true,
-                collectionAdministratorId,
+                $eq: collectionAdministratorId,
               },
             },
-            { logisticsPartnerId: { $exists: true, logisticsPartnerId } },
-            { productionPartnerId: { $exists: true, productionPartnerId } },
-            { collectors: collectorId },
+            // { logisticsPartnerId },
+            { logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId } },
+            {
+              productionPartnerId: { $exists: true, $eq: productionPartnerId },
+            },
+            { collectors: { $exists: true, $eq: collectorId } },
           ],
         }
       : undefined
