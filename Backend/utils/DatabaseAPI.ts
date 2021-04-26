@@ -74,7 +74,7 @@ type Entities =
   | PlasticBagAggregateEntity
   | PelletEntity
   | ProductEntity
-  | CollectionRequestEntity;
+  | CollectionEntity;
 
 // TODO: Consider moving these types somewhere else when this file becomes big
 export type ClusterEntity = {
