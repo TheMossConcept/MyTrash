@@ -13,6 +13,8 @@ export default function ProductionScreen() {
       <Boolean label="Bekræft modtagelse af batch" />
       <StringInput label="Varenummer" />
       <Button title="Opret vare" />
+
+      // Iterer 
       <Button title="Afsend varer"_ />
     </View>
   );

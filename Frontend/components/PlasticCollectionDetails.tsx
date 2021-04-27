@@ -16,6 +16,7 @@ export type PlasticCollection = {
   city: string;
   zipCode: string;
   companyName?: string;
+  collectionStatus: "pending" | "scheduled" | "delivered" | "received";
 };
 
 const PlasticCollectionDetails: FC<Props> = ({ plasticCollection }) => {
@@ -41,7 +42,7 @@ const PlasticCollectionDetails: FC<Props> = ({ plasticCollection }) => {
       <Text>
         {city} {zipCode}
       </Text>
-      <Text>Antal enheder ${numberOfUnits}</Text>
+      <Text>Antal enheder {numberOfUnits}</Text>
       {/* TODO: Make a button to register schedule pick-up and another to register delivery */}
     </List.Accordion>
   );

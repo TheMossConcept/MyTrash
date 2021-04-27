@@ -4,22 +4,12 @@ import { List } from "react-native-paper";
 import PlasticCollectionDetails, {
   PlasticCollection,
   PlasticCollectionDetailsProps,
-} from "./PlasticCollection";
+} from "./PlasticCollectionDetails";
 
 type Props = {
-  showSections: CollectionStatusTypes[];
-  collections: CollectionWithStatusType[];
+  showSections: Array<PlasticCollection["collectionStatus"]>;
+  collections: PlasticCollection[];
 } & Pick<PlasticCollectionDetailsProps, "interactable">;
-
-export type CollectionWithStatusType = PlasticCollection & {
-  collectionStatus: CollectionStatusTypes;
-};
-
-export type CollectionStatusTypes =
-  | "pending"
-  | "scheduled"
-  | "delivered"
-  | "received";
 
 const PlasticCollectionList: FC<Props> = ({
   showSections,
@@ -35,27 +25,27 @@ const PlasticCollectionList: FC<Props> = ({
     received: PlasticCollection[];
   }>(
     (accumulator, collection) => {
-      const { collectionStatus, ...collectionWithoutStatus } = collection;
+      const { collectionStatus } = collection;
       switch (collectionStatus) {
         case "pending":
           return {
             ...accumulator,
-            pending: [...accumulator.pending, collectionWithoutStatus],
+            pending: [...accumulator.pending, collection],
           };
         case "scheduled":
           return {
             ...accumulator,
-            scheduled: [...accumulator.scheduled, collectionWithoutStatus],
+            scheduled: [...accumulator.scheduled, collection],
           };
         case "delivered":
           return {
             ...accumulator,
-            delivered: [...accumulator.delivered, collectionWithoutStatus],
+            delivered: [...accumulator.delivered, collection],
           };
         case "received":
           return {
             ...accumulator,
-            received: [...accumulator.received, collectionWithoutStatus],
+            received: [...accumulator.received, collection],
           };
         default:
           // eslint-disable-next-line no-console

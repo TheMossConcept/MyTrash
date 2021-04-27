@@ -17,7 +17,9 @@ export default function RecipientScreen() {
   /*
   return (
     <View style={styles.container}>
+      <Text>Modtagelse af leverancer</Text>
       <BooleanInput label="Bekræft modtagelse af plast poser" />
+      <NumericInput label="Vægt" />
       <Text>Register aggregeret plast</Text>
       <AutocompleteInput endpoint="GetClusters/" />
       <NumericInput label="Vægt" />

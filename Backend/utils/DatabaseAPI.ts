@@ -144,6 +144,7 @@ export type CollectionEntity = {
   recipientPartnerId: string;
   numberOfUnits: number;
   weight?: number;
+  comment?: string;
   hasBeenCollected: boolean;
   hasBeenReceived: boolean;
   scheduledPickupTime: Date;
