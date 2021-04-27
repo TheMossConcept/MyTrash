@@ -5,16 +5,15 @@ import axiosUtils from "../utils/axios";
 
 import useAccessToken from "../hooks/useAccessToken";
 import { TabsParamList } from "../typings/types";
-import PlasticCollectionList, {
-  CollectionWithStatusType,
-} from "../components/PlasticCollectionList";
+import PlasticCollectionList from "../components/PlasticCollectionList";
+import { PlasticCollection } from "../components/PlasticCollectionDetails";
 
 type Props = StackScreenProps<TabsParamList, "Logistik">;
 
 const LogisticsScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
   const [plasticCollections, setPlasticCollections] = useState<
-    CollectionWithStatusType[]
+    PlasticCollection[]
   >([]);
   const accessToken = useAccessToken();
 

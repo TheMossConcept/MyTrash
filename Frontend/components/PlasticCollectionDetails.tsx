@@ -1,6 +1,8 @@
 import React, { FC } from "react";
-import { Text } from "react-native";
+import { Button, Text, View } from "react-native";
 import { List } from "react-native-paper";
+import { DatePickerModal } from "react-native-paper-dates";
+// import { DateTime } from "luxon";
 
 type Props = { plasticCollection: PlasticCollection; interactable: boolean };
 export type PlasticCollectionDetailsProps = Props;
@@ -19,7 +21,10 @@ export type PlasticCollection = {
   collectionStatus: "pending" | "scheduled" | "delivered" | "received";
 };
 
-const PlasticCollectionDetails: FC<Props> = ({ plasticCollection }) => {
+const PlasticCollectionDetails: FC<Props> = ({
+  plasticCollection,
+  interactable,
+}) => {
   const {
     companyName,
     streetName,
@@ -27,12 +32,35 @@ const PlasticCollectionDetails: FC<Props> = ({ plasticCollection }) => {
     zipCode,
     city,
     numberOfUnits,
+    collectionStatus,
     /*
     requesterId,
     recipientPartnerId,
      */
   } = plasticCollection;
+
   const title = companyName || `${streetName} ${streetNumber}`;
+
+  const schedule = () => {
+    console.log("Not implemented");
+    // TODO: Do the call to schedule the pick-up at the specified date!
+  };
+
+  // TODO: FIX LUXON!
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  const [open, setOpen] = React.useState(false);
+
+  const selectPickupDate = () => setOpen(true);
+
+  const onDismissSingle = () => {
+    setOpen(false);
+  };
+
+  const onConfirmSingle = (params: any) => {
+    setOpen(false);
+    setDate(params.date);
+  };
+
   return (
     <List.Accordion title={title}>
       {companyName && <Text>{companyName}</Text>}
@@ -43,6 +71,21 @@ const PlasticCollectionDetails: FC<Props> = ({ plasticCollection }) => {
         {city} {zipCode}
       </Text>
       <Text>Antal enheder {numberOfUnits}</Text>
+      {interactable && collectionStatus && (
+        <View>
+          <Text>Planlæg afhentning</Text>
+          <Text>Afhentningsdato: {date ? date.toString() : "Ikke valgt"}</Text>
+          <Button title="Vælg afhentningsdato" onPress={selectPickupDate} />
+          <DatePickerModal
+            mode="single"
+            visible={open}
+            onDismiss={onDismissSingle}
+            date={date}
+            onConfirm={onConfirmSingle}
+          />
+          <Button title="Planlæg" onPress={schedule} />
+        </View>
+      )}
       {/* TODO: Make a button to register schedule pick-up and another to register delivery */}
     </List.Accordion>
   );

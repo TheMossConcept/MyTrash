@@ -17,7 +17,7 @@ const PlasticCollectionList: FC<Props> = ({
   interactable,
 }) => {
   // TODO: Should this logic reside in the backend instead, or is it view related? Perhaps
-  // a gateway would be the appropriate place to put this!
+  // a gateway would be the appropriate place to put this. For now, move it to a utility function
   const sortedCollections = collections.reduce<{
     pending: PlasticCollection[];
     scheduled: PlasticCollection[];
