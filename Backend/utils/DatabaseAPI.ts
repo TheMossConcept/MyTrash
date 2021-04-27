@@ -146,7 +146,8 @@ export type CollectionEntity = {
   weight?: number;
   hasBeenCollected: boolean;
   hasBeenReceived: boolean;
-  collectionStatus: "pending" | "delivered" | "received";
+  scheduledPickupTime: Date;
+  collectionStatus: "pending" | "scheduled" | "delivered" | "received";
 };
 
 export default mongoAPI;
