@@ -139,7 +139,7 @@ export type ProductEntity = {
 export type CollectionEntity = {
   entityName: "collection";
   requesterId: string;
-  // clusterId: string;
+  clusterId: string;
   logisticsPartnerId: string;
   recipientPartnerId: string;
   numberOfUnits: number;

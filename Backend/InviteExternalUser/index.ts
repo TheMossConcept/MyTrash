@@ -67,7 +67,7 @@ type UserDTO = {
   // NB! Needs to be a string because it can contain letters such as 4A
   streetNumber: string;
   city: string;
-  zipCode: string;
+  zipCode: number;
   appRoleIds: string[];
 };
 
