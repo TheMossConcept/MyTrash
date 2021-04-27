@@ -21,6 +21,7 @@ const httpTrigger: AzureFunction = async function (
 
       const insertionReulst = await databaseAPI.insert({
         entityName: "collection",
+        clusterId,
         logisticsPartnerId,
         recipientPartnerId,
         requesterId,
