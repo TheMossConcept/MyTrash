@@ -58,7 +58,7 @@ const OrderCollectionButton: FC<OrderCollectionButtonProps> = ({
   const accessToken = useAccessToken();
   const createCollectionRequest = () => {
     axios.post(
-      "CreateCollection/",
+      "CreatePlasticCollection/",
       { clusterId, requesterId: userId, ...collectionFormData },
       { ...axiosUtils.getSharedAxiosConfig(accessToken) }
     );

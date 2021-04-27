@@ -28,6 +28,7 @@ const httpTrigger: AzureFunction = async function (
         numberOfUnits,
         hasBeenReceived: false,
         hasBeenCollected: false,
+        collectionStatus: "pending",
       });
 
       context.res = {

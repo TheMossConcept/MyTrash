@@ -4,6 +4,8 @@ import databaseAPI, {
   UserMetadataEntity,
 } from "../utils/DatabaseAPI";
 
+type CollectionFromDb = CollectionEntity & { _id: string };
+
 const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
@@ -11,9 +13,11 @@ const httpTrigger: AzureFunction = async function (
   const { logisticsPartnerId } = req.query as Payload;
 
   // TODO: This type should automatically be inferred!
-  const collectionsForPartner: CollectionEntity[] = await databaseAPI.find<CollectionEntity>(
+  const collectionsForPartner: CollectionFromDb[] = await databaseAPI.find<CollectionFromDb>(
     "collection",
-    { logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId } }
+    {
+      logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId },
+    }
   );
 
   const returnValuePromises = collectionsForPartner.map(async (collection) => {
@@ -23,17 +27,21 @@ const httpTrigger: AzureFunction = async function (
       { azureAdId: collection.requesterId }
     );
 
+    const { _id, ...collectionToReturn } = collection;
+
     // TODO: Consider whether we should throw an exception here or just return collection
     if (requester) {
       return {
-        ...collection,
+        ...collectionToReturn,
+        id: _id,
         streetName: requester.street,
+        streetNumber: requester.streetNumber,
         city: requester.city,
         zipCode: requester.zipCode,
         companyName: requester.companyName,
       };
     }
-    return collection;
+    return { id: _id, ...collectionToReturn };
   });
 
   const returnValue = await Promise.all(returnValuePromises);
