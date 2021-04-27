@@ -3,10 +3,12 @@ import React, { FC } from "react";
 import { View, ViewProps } from "react-native";
 import { setValue } from "../../utils/form";
 import NumericInput from "../inputs/NumericInput";
+import StringInput from "../inputs/StringInput";
 
 // TODO: Everything should not always be optional!
 export type CollectionFormData = {
   numberOfUnits?: number;
+  comment?: string;
 };
 
 type Props = {
@@ -20,7 +22,7 @@ type Props = {
 const CollectionForm: FC<Props> = ({ collectionFormState, ...viewProps }) => {
   const [collectionFormData] = collectionFormState;
 
-  const { numberOfUnits: numberOfBags } = collectionFormData;
+  const { numberOfUnits, comment } = collectionFormData;
 
   const setCollectionFormValue = setValue(collectionFormState);
 
@@ -31,7 +33,11 @@ const CollectionForm: FC<Props> = ({ collectionFormState, ...viewProps }) => {
     <View style={viewProps.style}>
       <NumericInput
         label="Antal enheder"
-        numberState={[numberOfBags, setCollectionFormValue("numberOfUnits")]}
+        numberState={[numberOfUnits, setCollectionFormValue("numberOfUnits")]}
+      />
+      <StringInput
+        label="Kommentar"
+        stringState={[comment, setCollectionFormValue("comment")]}
       />
     </View>
   );

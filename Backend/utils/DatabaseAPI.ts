@@ -56,11 +56,24 @@ const mongoAPI = {
     query?: mongodb.FilterQuery<T>
   ) {
     const client = await getMongoClient();
-    const result = client
+    const result = await client
       .db(DATABASE_NAME)
       .collection(entityName)
+      // TODO: Add the type here!
       .find(query)
       .toArray();
+
+    return result;
+  },
+  async findOne<T extends Entities>(
+    entityName: T["entityName"],
+    query?: mongodb.FilterQuery<T>
+  ) {
+    const client = await getMongoClient();
+    const result = await client
+      .db(DATABASE_NAME)
+      .collection(entityName)
+      .findOne<T>(query);
 
     return result;
   },
@@ -98,10 +111,10 @@ export type UserMetadataEntity = {
   azureAdId: string;
   phoneNumber: string;
   companyName: string;
-  debitorNumber: number;
   street: string;
+  streetNumber: string;
   city: string;
-  zipCode: number;
+  zipCode: string;
 };
 
 export type PlasticBagEntity = {
@@ -127,6 +140,7 @@ export type ProductEntity = {
 export type CollectionEntity = {
   entityName: "collection";
   requesterId: string;
+  // clusterId: string;
   logisticsPartnerId: string;
   recipientPartnerId: string;
   numberOfUnits: number;
