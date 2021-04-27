@@ -62,12 +62,12 @@ const httpTrigger: AzureFunction = async function (
 
 type UserDTO = {
   email: string;
-  phoneNumber: string;
   companyName: string;
-  debitorNumber: number;
   street: string;
+  // NB! Needs to be a string because it can contain letters such as 4A
+  streetNumber: string;
   city: string;
-  zipCode: number;
+  zipCode: string;
   appRoleIds: string[];
 };
 

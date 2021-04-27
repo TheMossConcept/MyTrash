@@ -109,12 +109,11 @@ export type ClusterEntity = {
 export type UserMetadataEntity = {
   entityName: "userMetadata";
   azureAdId: string;
-  phoneNumber: string;
   companyName: string;
   street: string;
   streetNumber: string;
   city: string;
-  zipCode: string;
+  zipCode: number;
 };
 
 export type PlasticBagEntity = {
