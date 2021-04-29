@@ -21,6 +21,7 @@ export type PlasticCollection = {
 
 const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
   plasticCollection,
+  children,
 }) => {
   const {
     companyName,
@@ -43,6 +44,7 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
         {city} {zipCode}
       </Text>
       <Text>Antal enheder {numberOfUnits}</Text>
+      {children}
       {/* TODO: Make a button to register schedule pick-up and another to register delivery */}
     </List.Accordion>
   );
@@ -64,8 +66,9 @@ const PlasticCollectionsDetails: FC<Props> = ({
       <List.Subheader>{title}</List.Subheader>
       {plasticCollections.map((collection) => (
         <View key={collection.id}>
-          <PlasticCollectionDetail plasticCollection={collection} />
-          {children && children(collection.id)}
+          <PlasticCollectionDetail plasticCollection={collection}>
+            {children && children(collection.id)}
+          </PlasticCollectionDetail>
         </View>
       ))}
     </List.Section>

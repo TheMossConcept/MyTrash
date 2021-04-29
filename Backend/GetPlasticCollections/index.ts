@@ -10,13 +10,21 @@ const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
-  const { logisticsPartnerId } = req.query as Payload;
+  const { logisticsPartnerId, requesterId, clusterId } = req.query as Payload;
 
   // TODO: This type should automatically be inferred!
   const collectionsForPartner: CollectionFromDb[] = await databaseAPI.find<CollectionFromDb>(
     "collection",
     {
-      logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId },
+      $and: [
+        { clusterId: { $exists: true, $eq: clusterId } },
+        {
+          $or: [
+            { logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId } },
+            { requesterId: { $exists: true, $eq: requesterId } },
+          ],
+        },
+      ],
     }
   );
 
@@ -53,6 +61,8 @@ const httpTrigger: AzureFunction = async function (
 
 type Payload = {
   logisticsPartnerId: string;
+  requesterId: string;
+  clusterId: string;
 };
 
 export default httpTrigger;

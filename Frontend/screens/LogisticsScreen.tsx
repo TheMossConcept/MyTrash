@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useEffect, useState } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import axiosUtils from "../utils/axios";
 
 import useAccessToken from "../hooks/useAccessToken";
@@ -37,7 +37,7 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
 
   return (
-    <View>
+    <View style={styles.container}>
       <PlasticCollectionsDetails
         title="Afventer"
         plasticCollections={sortedCollections.pending}
@@ -65,5 +65,11 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "grey",
+  },
+});
 
 export default LogisticsScreen;
