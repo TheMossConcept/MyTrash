@@ -26,8 +26,6 @@ const httpTrigger: AzureFunction = async function (
         recipientPartnerId,
         requesterId,
         numberOfUnits,
-        hasBeenReceived: false,
-        hasBeenCollected: false,
         collectionStatus: "pending",
         comment,
       });

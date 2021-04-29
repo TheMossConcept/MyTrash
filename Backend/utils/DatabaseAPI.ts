@@ -145,9 +145,7 @@ export type CollectionEntity = {
   numberOfUnits: number;
   weight?: number;
   comment?: string;
-  hasBeenCollected: boolean;
-  hasBeenReceived: boolean;
-  scheduledPickupTime?: Date;
+  scheduledPickupDate?: Date;
   collectionStatus: "pending" | "scheduled" | "delivered" | "received";
 };
 
