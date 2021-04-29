@@ -16,6 +16,7 @@ export type PlasticCollection = {
   city: string;
   zipCode: string;
   companyName?: string;
+  comment?: string;
   collectionStatus: "pending" | "scheduled" | "delivered" | "received";
 };
 
@@ -30,6 +31,7 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
     zipCode,
     city,
     numberOfUnits,
+    comment,
   } = plasticCollection;
 
   const title = companyName || `${streetName} ${streetNumber}`;
@@ -43,6 +45,7 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
       <Text>
         {city} {zipCode}
       </Text>
+      {comment && <Text>{comment}</Text>}
       <Text>Antal enheder {numberOfUnits}</Text>
       {children}
       {/* TODO: Make a button to register schedule pick-up and another to register delivery */}

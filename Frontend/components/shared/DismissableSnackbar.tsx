@@ -7,6 +7,7 @@ type Props = {
   onDismiss?: () => void;
 };
 
+// TODO: Change this such that it is absolutely positioned and always shown at the bottom
 const DismissableSnackbar: FC<Props> = ({ title, showState, onDismiss }) => {
   const [showSnackbar, setShowSnackbar] = showState;
 
