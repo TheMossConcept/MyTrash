@@ -1,4 +1,3 @@
-import { DateTime } from "luxon";
 import React, { FC } from "react";
 import { Text, View } from "react-native";
 import { List } from "react-native-paper";
@@ -18,6 +17,7 @@ export type PlasticCollection = {
   companyName?: string;
   comment?: string;
   scheduledPickupDate?: string;
+  weight?: number;
   collectionStatus: "pending" | "scheduled" | "delivered" | "received";
 };
 
@@ -33,18 +33,8 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
     city,
     numberOfUnits,
     comment,
-    scheduledPickupDate,
   } = plasticCollection;
 
-  const scheduledPickupDateString = scheduledPickupDate
-    ? DateTime.fromISO(scheduledPickupDate).toLocaleString({
-        month: "long",
-        day: "2-digit",
-        minute: "2-digit",
-        hour: "2-digit",
-        hour12: false,
-      })
-    : undefined;
   const title = companyName || `${streetName} ${streetNumber}`;
 
   return (
@@ -58,9 +48,6 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
       </Text>
       {comment && <Text>{comment}</Text>}
       <Text>Antal enheder {numberOfUnits}</Text>
-      {scheduledPickupDateString !== undefined && (
-        <Text>Afhentning planlagt til {scheduledPickupDateString}</Text>
-      )}
       {children}
       {/* TODO: Make a button to register schedule pick-up and another to register delivery */}
     </List.Accordion>
@@ -70,7 +57,7 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
 type Props = {
   plasticCollections: PlasticCollection[];
   title: string;
-  children?: (collectionId: string) => React.ReactNode;
+  children?: (plasticCollection: PlasticCollection) => React.ReactNode;
 };
 
 const PlasticCollectionsDetails: FC<Props> = ({
@@ -84,7 +71,7 @@ const PlasticCollectionsDetails: FC<Props> = ({
       {plasticCollections.map((collection) => (
         <View key={collection.id}>
           <PlasticCollectionDetail plasticCollection={collection}>
-            {children && children(collection.id)}
+            {children && children(collection)}
           </PlasticCollectionDetail>
         </View>
       ))}

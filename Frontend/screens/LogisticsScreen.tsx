@@ -11,7 +11,7 @@ import PlasticCollectionsDetails, {
 } from "../components/collections/PlasticCollectionsDetails";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import SchedulePlasticCollection from "../components/collections/SchedulePlasticCollection";
-import DeliverPlasticCollection from "../components/collections/CollectPlasticCollection";
+import DeliverPlasticCollection from "../components/collections/DeliverPlasticCollection";
 
 type Props = StackScreenProps<TabsParamList, "Logistik">;
 
@@ -42,16 +42,16 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
         title="Afventer"
         plasticCollections={sortedCollections.pending}
       >
-        {(collectionId) => (
-          <SchedulePlasticCollection plasticCollectionId={collectionId} />
+        {(collection) => (
+          <SchedulePlasticCollection plasticCollectionId={collection.id} />
         )}
       </PlasticCollectionsDetails>
       <PlasticCollectionsDetails
         title="Planlagt"
         plasticCollections={sortedCollections.scheduled}
       >
-        {(collectionId) => (
-          <DeliverPlasticCollection plasticCollectionId={collectionId} />
+        {(collection) => (
+          <DeliverPlasticCollection plasticCollectionId={collection.id} />
         )}
       </PlasticCollectionsDetails>
       <PlasticCollectionsDetails

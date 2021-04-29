@@ -11,6 +11,6 @@ export type TabsParamList = {
   Indsamling: { userId: string };
   Indsamlingsadministration: { userId: string };
   Logistik: { userId: string };
-  Modtagelse: undefined;
-  Produktion: undefined;
+  Modtagelse: { userId: string };
+  Produktion: { userId: string };
 };

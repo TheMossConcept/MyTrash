@@ -147,6 +147,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           <Tab.Screen
             name="Modtagelse"
             component={RecipientScreen}
+            initialParams={{ userId: userInfo.userId }}
             options={{
               tabBarIcon: TabBarIcon,
             }}
@@ -156,6 +157,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           <Tab.Screen
             name="Produktion"
             component={ProductionScreen}
+            initialParams={{ userId: userInfo.userId }}
             options={{
               tabBarIcon: TabBarIcon,
             }}

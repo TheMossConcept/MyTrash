@@ -1,7 +1,8 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
+import { DateTime } from "luxon";
 import axiosUtils from "../utils/axios";
 import CollectionForm, {
   CollectionFormData,
@@ -82,7 +83,24 @@ const UserCollectionsForCluster: FC<UserCollectionsForClusterProps> = ({
       <PlasticCollectionsDetails
         title="Planlagt"
         plasticCollections={sortedCollections.scheduled}
-      />
+      >
+        {(collection) => {
+          const scheduledPickupDateString = collection.scheduledPickupDate
+            ? DateTime.fromISO(collection.scheduledPickupDate).toLocaleString({
+                month: "long",
+                day: "2-digit",
+                minute: "2-digit",
+                hour: "2-digit",
+                hour12: false,
+              })
+            : undefined;
+
+          if (scheduledPickupDateString !== undefined) {
+            <Text>Afhentning planlagt til {scheduledPickupDateString}</Text>;
+          }
+          return null;
+        }}
+      </PlasticCollectionsDetails>
       <PlasticCollectionsDetails
         title="Afleveret"
         plasticCollections={sortedCollections.delivered}
