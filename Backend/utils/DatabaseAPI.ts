@@ -34,7 +34,7 @@ const mongoAPI = {
     const result = await client
       .db(DATABASE_NAME)
       .collection(entityName)
-      .updateOne({ _id: id }, update);
+      .updateOne({ _id: new mongodb.ObjectId(id) }, update);
 
     return result;
   },

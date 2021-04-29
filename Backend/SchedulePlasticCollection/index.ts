@@ -14,13 +14,16 @@ const httpTrigger: AzureFunction = async function (
   req: HttpRequest
 ): Promise<void> {
   const { collectionId } = req.query as QueryParams;
-  const { pickupDate } = req.rawBody as RequestBody;
+  const { pickupDate } = req.body as RequestBody;
 
   const statusUpdate = databaseAPI.update<CollectionEntity>(
     "collection",
     collectionId,
     {
-      $set: { scheduledPickupDate: pickupDate, collectionStatus: "scheduled" },
+      $set: {
+        scheduledPickupDate: new Date(pickupDate),
+        collectionStatus: "scheduled",
+      },
     }
   );
 
