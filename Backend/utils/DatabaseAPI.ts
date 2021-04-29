@@ -147,7 +147,7 @@ export type CollectionEntity = {
   comment?: string;
   hasBeenCollected: boolean;
   hasBeenReceived: boolean;
-  scheduledPickupTime: Date;
+  scheduledPickupTime?: Date;
   collectionStatus: "pending" | "scheduled" | "delivered" | "received";
 };
 
