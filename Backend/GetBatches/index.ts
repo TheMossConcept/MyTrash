@@ -11,29 +11,26 @@ const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
-  const { clusterId } = req.query as Payload;
-
-  const cluster = await databaseAPI.findById<ClusterEntity>(
-    "cluster",
-    clusterId
-  );
-
+  // TODO: Change clusterId to recipientPartnerId as we want all batches for a given recipient
+  const { recipientPartnerId } = req.query as Payload;
   // TODO: This type should automatically be inferred!
-  const batchesForCluster: BatchFromDb[] = await databaseAPI.find<BatchFromDb>(
+  const batchesForRecipient: BatchFromDb[] = await databaseAPI.find<BatchFromDb>(
     "batch",
-    clusterId ? { clusterId: { $exists: true, $eq: clusterId } } : {}
+    recipientPartnerId
+      ? { recipientPartnerId: { $exists: true, $eq: recipientPartnerId } }
+      : {}
   );
 
-  const returnValuePromises = batchesForCluster.map(async (batch) => {
+  const returnValuePromises = batchesForRecipient.map(async (batch) => {
     // NB! The recipient partner is always the creator
     const creator = await databaseAPI.findOne<UserMetadataEntity>(
       "userMetadata",
-      { azureAdId: cluster.recipientPartnerId }
+      { azureAdId: batch.recipientPartnerId }
     );
 
     const productionPartner = await databaseAPI.findOne<UserMetadataEntity>(
       "userMetadata",
-      { azureAdId: cluster.productionPartnerId }
+      { azureAdId: batch.productionPartnerId }
     );
 
     const creatorName = creator?.companyName;
@@ -51,7 +48,7 @@ const httpTrigger: AzureFunction = async function (
       };
     }
     throw new Error(
-      `Batch creator or recipient could not be found for batch linked to cluster with id ${clusterId} or their company name was not set`
+      `Batch creator or recipient could not be found for recipientPartnerId ${batch.recipientPartnerId} or productionPartnerId ${batch.productionPartnerId} or their company name was not set`
     );
   });
 
@@ -63,7 +60,7 @@ const httpTrigger: AzureFunction = async function (
 };
 
 type Payload = {
-  clusterId: string;
+  recipientPartnerId: string;
 };
 
 export default httpTrigger;

@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useState, useEffect } from "react";
-import { Button, StyleSheet } from "react-native";
+import { Button, StyleSheet, Text } from "react-native";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import axiosUtils from "../utils/axios";
 import PlasticCollectionsDetails, {
@@ -14,6 +14,7 @@ import useAccessToken from "../hooks/useAccessToken";
 import { TabsParamList } from "../typings/types";
 import DismissableSnackbar from "../components/shared/DismissableSnackbar";
 import CreateBatch from "../components/batch/CreateBatch";
+import BatchDetails from "../components/batch/BatchDetails";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
@@ -37,6 +38,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   }, [accessToken, userId]);
 
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
+  const clusterIdsForReceivedCollections = sortedCollections.received.map(collection => collection.clusterId);
 
   return (
     <View style={styles.container}>
@@ -59,6 +61,8 @@ const RecipientScreen: FC<Props> = ({ route }) => {
           />
         )}
       </PlasticCollectionsDetails>
+      <Text>Batches</Text>
+      <BatchDetails
     </View>
   );
 };
