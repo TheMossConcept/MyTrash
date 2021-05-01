@@ -83,7 +83,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
         {(batch) => <RegisterBatchSent batchId={batch.id} />}
       </BatchDetails>
       <BatchDetails batches={sortedBatches.sent} title="Afsendte" />
-      <BatchDetails batches={sortedBatches.received} title="Modtagede" />
+      <BatchDetails batches={sortedBatches.received} title="Modtaget" />
     </View>
   );
 };

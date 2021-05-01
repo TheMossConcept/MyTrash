@@ -12,6 +12,7 @@ const httpTrigger: AzureFunction = async function (
   if (requestBody) {
     const insertionReulst = await databaseAPI.insert({
       entityName: "product",
+      hasBeenSent: false,
       ...requestBody,
     });
 
@@ -29,7 +30,9 @@ const httpTrigger: AzureFunction = async function (
 
 type ProductCreationDTO = {
   clusterId: string;
+  productionPartnerId: string;
+  batchId: string;
+  productNumber: string;
 };
 
 export default httpTrigger;
-

@@ -2,7 +2,6 @@ import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import databaseAPI, {
   UserMetadataEntity,
   BatchEntity,
-  ClusterEntity,
 } from "../utils/DatabaseAPI";
 
 type BatchFromDb = BatchEntity & { _id: string };
@@ -12,12 +11,21 @@ const httpTrigger: AzureFunction = async function (
   req: HttpRequest
 ): Promise<void> {
   // TODO: Change clusterId to recipientPartnerId as we want all batches for a given recipient
-  const { recipientPartnerId } = req.query as Payload;
+  const { recipientPartnerId, productionPartnerId } = req.query as Payload;
+
+  const queryIsLimitedToUser = recipientPartnerId || productionPartnerId;
   // TODO: This type should automatically be inferred!
   const batchesForRecipient: BatchFromDb[] = await databaseAPI.find<BatchFromDb>(
     "batch",
-    recipientPartnerId
-      ? { recipientPartnerId: { $exists: true, $eq: recipientPartnerId } }
+    queryIsLimitedToUser
+      ? {
+          $or: [
+            { recipientPartnerId: { $exists: true, $eq: recipientPartnerId } },
+            {
+              productionPartnerId: { $exists: true, $eq: productionPartnerId },
+            },
+          ],
+        }
       : {}
   );
 
@@ -61,6 +69,7 @@ const httpTrigger: AzureFunction = async function (
 
 type Payload = {
   recipientPartnerId: string;
+  productionPartnerId: string;
 };
 
 export default httpTrigger;

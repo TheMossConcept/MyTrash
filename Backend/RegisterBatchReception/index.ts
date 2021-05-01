@@ -10,7 +10,7 @@ const httpTrigger: AzureFunction = async function (
   const { batchId } = req.query as Payload;
 
   const update = await databaseAPI.update<BatchEntity>("batch", batchId, {
-    $set: { batchStatus: "sent" },
+    $set: { batchStatus: "received" },
   });
 
   context.res = {
@@ -19,3 +19,4 @@ const httpTrigger: AzureFunction = async function (
 };
 
 export default httpTrigger;
+
