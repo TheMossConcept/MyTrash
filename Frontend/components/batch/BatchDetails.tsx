@@ -10,7 +10,7 @@ export type Batch = {
   inputWeight: number;
   outputWeight: number;
   creatorName: string;
-  recipientName?: string;
+  recipientName: string;
   creationDate: Date;
   batchStatus: "created" | "sent" | "received";
 };
