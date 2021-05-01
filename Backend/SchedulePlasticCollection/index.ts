@@ -6,7 +6,7 @@ type QueryParams = {
 };
 
 type RequestBody = {
-  pickupDate: Date;
+  pickupDate: string;
 };
 
 const httpTrigger: AzureFunction = async function (

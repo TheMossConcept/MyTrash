@@ -13,17 +13,17 @@ export default function sortBatchByStatus(batches: Batch[]) {
         case "created":
           return {
             ...accumulator,
-            pending: [...accumulator.created, batch],
+            created: [...accumulator.created, batch],
           };
         case "sent":
           return {
             ...accumulator,
-            scheduled: [...accumulator.sent, batch],
+            sent: [...accumulator.sent, batch],
           };
         case "received":
           return {
             ...accumulator,
-            delivered: [...accumulator.received, batch],
+            received: [...accumulator.received, batch],
           };
         default:
           // eslint-disable-next-line no-console

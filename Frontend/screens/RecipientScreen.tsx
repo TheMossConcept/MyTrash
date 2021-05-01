@@ -14,7 +14,8 @@ import useAccessToken from "../hooks/useAccessToken";
 import { TabsParamList } from "../typings/types";
 import DismissableSnackbar from "../components/shared/DismissableSnackbar";
 import CreateBatch from "../components/batch/CreateBatch";
-import BatchDetails from "../components/batch/BatchDetails";
+import BatchDetails, { Batch } from "../components/batch/BatchDetails";
+import sortBatchByStatus from "../utils/batch";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
@@ -23,12 +24,13 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   const [plasticCollections, setPlasticCollections] = useState<
     PlasticCollection[]
   >([]);
+  const [batches, setBatches] = useState<Batch[]>([]);
 
   const accessToken = useAccessToken();
   useEffect(() => {
     axios
       .get("/GetPlasticCollections", {
-        params: { logisticsPartnerId: userId },
+        params: { recipientPartnerId: userId },
         ...axiosUtils.getSharedAxiosConfig(accessToken),
       })
       .then((axiosResult) => {
@@ -37,8 +39,22 @@ const RecipientScreen: FC<Props> = ({ route }) => {
       });
   }, [accessToken, userId]);
 
+  useEffect(() => {
+    axios
+      .get("/GetBatches", {
+        params: { recipientPartnerId: userId },
+        ...axiosUtils.getSharedAxiosConfig(accessToken),
+      })
+      .then((axiosResult) => {
+        const { data } = axiosResult;
+        setBatches(data);
+      });
+  }, [accessToken, userId]);
+
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
-  const clusterIdsForReceivedCollections = sortedCollections.received.map(collection => collection.clusterId);
+  const sortedBatches = sortBatchByStatus(batches);
+
+  const markBatchAsSent = () => console.log("Not implemented yet!");
 
   return (
     <View style={styles.container}>
@@ -54,15 +70,22 @@ const RecipientScreen: FC<Props> = ({ route }) => {
         title="Bekræftet"
         plasticCollections={sortedCollections.received}
       >
-        {(collection) => (
-          <CreateBatch
-            clusterId={collection.clusterId}
-            batchCreatorId={userId}
-          />
-        )}
+        {(collection) => {
+          // TODO: Change this such that it is a high level operation and you can select a cluster
+          return (
+            <CreateBatch
+              clusterId={collection.clusterId}
+              batchCreatorId={userId}
+            />
+          );
+        }}
       </PlasticCollectionsDetails>
       <Text>Batches</Text>
-      <BatchDetails
+      <BatchDetails batches={sortedBatches.created} title="Oprettede">
+        {() => <Button title="Marker som afsendt" onPress={markBatchAsSent} />}
+      </BatchDetails>
+      <BatchDetails batches={sortedBatches.sent} title="Afsendte" />
+      <BatchDetails batches={sortedBatches.received} title="Modtagede" />
     </View>
   );
 };

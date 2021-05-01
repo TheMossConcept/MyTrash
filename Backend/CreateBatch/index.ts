@@ -10,7 +10,7 @@ const httpTrigger: AzureFunction = async function (
 
   // TODO: Add request body validation here (in the form of a type guard) as well!
   if (requestBody) {
-    const { clusterId } = requestBody;
+    const { clusterId, creationDate } = requestBody;
     const cluster = await databaseAPI.findById<ClusterEntity>(
       "cluster",
       clusterId
@@ -23,6 +23,7 @@ const httpTrigger: AzureFunction = async function (
         batchStatus: "created",
         recipientPartnerId,
         productionPartnerId,
+        creationDate: new Date(creationDate),
         ...requestBody,
       });
 
@@ -45,11 +46,10 @@ const httpTrigger: AzureFunction = async function (
 
 type BatchCreationDTO = {
   clusterId: string;
-  creationDate: Date;
+  creationDate: string;
   inputWeight: number;
   outputWeight: number;
   addtionFactor: number;
 };
 
 export default httpTrigger;
-
