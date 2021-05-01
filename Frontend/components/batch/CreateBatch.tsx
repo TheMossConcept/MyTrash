@@ -30,7 +30,7 @@ const CreateBatch: FC<Props> = ({ clusterId, batchCreatorId }) => {
         ...formState,
         clusterId,
         recipientPartnerId: batchCreatorId,
-        creationDate: Date(),
+        creationDate: new Date().toISOString(),
       },
       {
         ...axiosUtils.getSharedAxiosConfig(accessToken),

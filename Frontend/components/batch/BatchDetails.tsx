@@ -11,14 +11,14 @@ export type Batch = {
   outputWeight: number;
   creatorName: string;
   recipientName: string;
-  creationDate: Date;
+  creationDate: string;
   batchStatus: "created" | "sent" | "received";
 };
 
 type BatchDetailProps = { batch: Batch };
 
 const BatchDetail: FC<BatchDetailProps> = ({ batch }) => {
-  const creationDateTime = DateTime.fromJSDate(batch.creationDate);
+  const creationDateTime = DateTime.fromISO(batch.creationDate);
   const title = `Oprettet af ${
     batch.creatorName
   } d ${creationDateTime.toLocaleString({ month: "long", day: "2-digit" })}`;
