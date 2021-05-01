@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import axiosUtils from "../utils/axios";
 import useAccessToken from "../hooks/useAccessToken";
@@ -11,11 +11,34 @@ type Props = {
   batchId: string;
 };
 
-const Product: FC<Props> = ({ clusterId, productionPartnerId, batchId }) => {
+export type Product = {
+  id: string;
+  productNumber: number;
+  hasBeenSent: boolean;
+};
+
+const ProductsForBatch: FC<Props> = ({
+  clusterId,
+  productionPartnerId,
+  batchId,
+}) => {
   const accessToken = useAccessToken();
   const [productNumber, setProductNumer] = useState<number | undefined>(
     undefined
   );
+
+  const [products, setProducts] = useState<Product[]>([]);
+  useEffect(() => {
+    axios
+      .get("GetProducts/", {
+        ...axiosUtils.getSharedAxiosConfig(accessToken),
+        params: { batchId },
+      })
+      .then((productsResponse) => {
+        const productsFromResponse = productsResponse.data;
+        setProducts(productsFromResponse);
+      });
+  }, [accessToken, batchId]);
 
   const createProduct = () => {
     axios.post(
@@ -27,7 +50,17 @@ const Product: FC<Props> = ({ clusterId, productionPartnerId, batchId }) => {
 
   return (
     <View style={styles.container}>
-      {/* TODO: Get products here! If they are not sent, include a button to mark them as sent! */}
+      <Text>Produkter lavet ud af batch</Text>
+      {products.map((product) => (
+        <View key={product.id}>
+          <Text>Varenummer ${product.productNumber}</Text>
+          {product.hasBeenSent ? (
+            <Text>Produktet er afsendt</Text>
+          ) : (
+            <MarkProductAsSentButton productId={product.id} />
+          )}
+        </View>
+      ))}
       <Text>Opret produkt</Text>
       <NumericInput
         label="Varenummer"
@@ -38,10 +71,30 @@ const Product: FC<Props> = ({ clusterId, productionPartnerId, batchId }) => {
   );
 };
 
+type MarkProductAsSentButtonProps = {
+  productId: string;
+};
+
+const MarkProductAsSentButton: FC<MarkProductAsSentButtonProps> = ({
+  productId,
+}) => {
+  const accessToken = useAccessToken();
+
+  const markProductAsSent = () => {
+    axios.post(
+      "/RegisterProductSent",
+      {},
+      { ...axiosUtils.getSharedAxiosConfig(accessToken), params: { productId } }
+    );
+  };
+
+  return <Button title="Marker som afsendt" onPress={markProductAsSent} />;
+};
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "grey",
   },
 });
 
-export default Product;
+export default ProductsForBatch;
