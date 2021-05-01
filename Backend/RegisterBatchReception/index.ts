@@ -1,4 +1,4 @@
-import { HttpRequest, Context } from "@azure/functions";
+import { AzureFunction, HttpRequest, Context } from "@azure/functions";
 import databaseAPI, { BatchEntity } from "../utils/DatabaseAPI";
 
 type Payload = { batchId: string };

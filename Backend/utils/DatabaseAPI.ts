@@ -141,6 +141,10 @@ export type BatchEntity = {
 export type ProductEntity = {
   entityName: "product";
   clusterId: string;
+  productionPartnerId: string;
+  batchId: string;
+  hasBeenSent: boolean;
+  productNumber: string;
 };
 
 export default mongoAPI;
