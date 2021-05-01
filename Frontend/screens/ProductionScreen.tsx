@@ -8,6 +8,7 @@ import useAccessToken from "../hooks/useAccessToken";
 import sortBatchByStatus from "../utils/batch";
 import BatchDetails, { Batch } from "../components/batch/BatchDetails";
 import DismissableSnackbar from "../components/shared/DismissableSnackbar";
+import ProductsForBatch from "../components/ProductsForBatch";
 
 type Props = StackScreenProps<TabsParamList, "Produktion">;
 
@@ -35,10 +36,15 @@ const ProductionScreen: FC<Props> = ({ route }) => {
       <BatchDetails batches={sortedBatches.sent} title="Modtagne batches">
         {(batch) => <ConfirmBatchReception batchId={batch.id} />}
       </BatchDetails>
-      <BatchDetails
-        batches={sortedBatches.received}
-        title="Bekræftede batches"
-      />
+      <BatchDetails batches={sortedBatches.received} title="Bekræftede batches">
+        {(batch) => (
+          <ProductsForBatch
+            batchId={batch.id}
+            productionPartnerId={userId}
+            clusterId={batch.clusterId}
+          />
+        )}
+      </BatchDetails>
     </View>
   );
 };

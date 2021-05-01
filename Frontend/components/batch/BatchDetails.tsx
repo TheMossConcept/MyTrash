@@ -7,6 +7,7 @@ import { List } from "react-native-paper";
 // once we have end-to-end typings!!
 export type Batch = {
   id: string;
+  clusterId: string;
   inputWeight: number;
   outputWeight: number;
   creatorName: string;
