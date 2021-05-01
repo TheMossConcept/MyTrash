@@ -83,11 +83,9 @@ const mongoAPI = {
 type Entities =
   | ClusterEntity
   | UserMetadataEntity
-  | PlasticBagEntity
-  | PlasticBagAggregateEntity
-  | PelletEntity
   | ProductEntity
-  | CollectionEntity;
+  | CollectionEntity
+  | BatchEntity;
 
 // TODO: Consider moving these types somewhere else when this file becomes big
 export type ClusterEntity = {
@@ -116,26 +114,6 @@ export type UserMetadataEntity = {
   zipCode: number;
 };
 
-export type PlasticBagEntity = {
-  entityName: "plasticBag";
-  clusterId: string;
-};
-
-export type PlasticBagAggregateEntity = {
-  entityName: "plasticBagAggregate";
-  clusterId: string;
-};
-
-export type PelletEntity = {
-  entityName: "pellet";
-  clusterId: string;
-};
-
-export type ProductEntity = {
-  entityName: "product";
-  clusterId: string;
-};
-
 export type CollectionEntity = {
   entityName: "collection";
   requesterId: string;
@@ -147,6 +125,23 @@ export type CollectionEntity = {
   comment?: string;
   scheduledPickupDate?: Date;
   collectionStatus: "pending" | "scheduled" | "delivered" | "received";
+};
+
+export type BatchEntity = {
+  entityName: "batch";
+  clusterId: string;
+  inputWeight: number;
+  outputWeight: number;
+  addtionFactor: number;
+  /*
+  recipientPartnerId: string;
+  productionPartnerId: string;
+  */
+};
+
+export type ProductEntity = {
+  entityName: "product";
+  clusterId: string;
 };
 
 export default mongoAPI;

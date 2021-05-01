@@ -1,22 +1,21 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
-import databaseAPI from "../utils/DatabaseAPI";
+import databaseAPI, { ClusterEntity } from "../utils/DatabaseAPI";
 
 const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
   context.log("HTTP trigger function processed a request.");
-  const requestBody: PelletCreationDTO = req.body;
+  const requestBody: BatchCreationDTO = req.body;
 
   // TODO: Add request body validation here (in the form of a type guard) as well!
   if (requestBody) {
     const insertionReulst = await databaseAPI.insert({
-      entityName: "pellet",
+      entityName: "batch",
       ...requestBody,
     });
 
     context.res = {
-      // status: 200, /* Defaults to 200 */
       body: JSON.stringify(insertionReulst),
     };
   } else {
@@ -27,8 +26,11 @@ const httpTrigger: AzureFunction = async function (
   }
 };
 
-type PelletCreationDTO = {
+type BatchCreationDTO = {
   clusterId: string;
+  inputWeight: number;
+  outputWeight: number;
+  addtionFactor: number;
 };
 
 export default httpTrigger;

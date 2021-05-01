@@ -13,6 +13,7 @@ import { View } from "../components/Themed";
 import useAccessToken from "../hooks/useAccessToken";
 import { TabsParamList } from "../typings/types";
 import DismissableSnackbar from "../components/shared/DismissableSnackbar";
+import CreateBatch from "../components/CreateBatch";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
@@ -50,7 +51,9 @@ const RecipientScreen: FC<Props> = ({ route }) => {
       <PlasticCollectionsDetails
         title="Bekræftet"
         plasticCollections={sortedCollections.received}
-      />
+      >
+        {(collection) => <CreateBatch clusterId={collection.clusterId} />}
+      </PlasticCollectionsDetails>
     </View>
   );
 };

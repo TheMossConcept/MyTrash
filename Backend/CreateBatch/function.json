@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/CreatePellet/index.js"
+  "scriptFile": "../dist/CreateBatch/index.js"
 }
