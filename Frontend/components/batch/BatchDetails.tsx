@@ -17,7 +17,7 @@ export type Batch = {
 
 type BatchDetailProps = { batch: Batch };
 
-const BatchDetail: FC<BatchDetailProps> = ({ batch }) => {
+const BatchDetail: FC<BatchDetailProps> = ({ batch, children }) => {
   const creationDateTime = DateTime.fromISO(batch.creationDate);
   const title = `Oprettet af ${
     batch.creatorName
@@ -30,6 +30,7 @@ const BatchDetail: FC<BatchDetailProps> = ({ batch }) => {
       {batch.recipientName && (
         <Text>Batch sendt til: {batch.recipientName}</Text>
       )}
+      {children}
     </List.Accordion>
   );
 };

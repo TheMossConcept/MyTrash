@@ -54,8 +54,6 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
   const sortedBatches = sortBatchByStatus(batches);
 
-  const markBatchAsSent = () => console.log("Not implemented yet!");
-
   return (
     <View style={styles.container}>
       <PlasticCollectionsDetails
@@ -82,12 +80,29 @@ const RecipientScreen: FC<Props> = ({ route }) => {
       </PlasticCollectionsDetails>
       <Text>Batches</Text>
       <BatchDetails batches={sortedBatches.created} title="Oprettede">
-        {() => <Button title="Marker som afsendt" onPress={markBatchAsSent} />}
+        {(batch) => <RegisterBatchSent batchId={batch.id} />}
       </BatchDetails>
       <BatchDetails batches={sortedBatches.sent} title="Afsendte" />
       <BatchDetails batches={sortedBatches.received} title="Modtagede" />
     </View>
   );
+};
+
+type RegisterBatchSentProps = {
+  batchId: string;
+};
+
+const RegisterBatchSent: FC<RegisterBatchSentProps> = ({ batchId }) => {
+  const accessToken = useAccessToken();
+
+  const markBatchAsSent = () => {
+    axios.post(
+      "/RegisterBatchSent",
+      {},
+      { ...axiosUtils.getSharedAxiosConfig(accessToken), params: { batchId } }
+    );
+  };
+  return <Button title="Marker som afsendt" onPress={markBatchAsSent} />;
 };
 
 type RegisterPlasticCollectionRecieptProps = {
