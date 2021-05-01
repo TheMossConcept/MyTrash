@@ -133,10 +133,9 @@ export type BatchEntity = {
   inputWeight: number;
   outputWeight: number;
   addtionFactor: number;
-  /*
   recipientPartnerId: string;
   productionPartnerId: string;
-  */
+  batchStatus: "created" | "sent" | "received";
 };
 
 export type ProductEntity = {

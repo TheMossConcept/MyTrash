@@ -10,14 +10,31 @@ const httpTrigger: AzureFunction = async function (
 
   // TODO: Add request body validation here (in the form of a type guard) as well!
   if (requestBody) {
-    const insertionReulst = await databaseAPI.insert({
-      entityName: "batch",
-      ...requestBody,
-    });
+    const { clusterId } = requestBody;
+    const cluster = await databaseAPI.findById<ClusterEntity>(
+      "cluster",
+      clusterId
+    );
 
-    context.res = {
-      body: JSON.stringify(insertionReulst),
-    };
+    if (cluster) {
+      const { recipientPartnerId, productionPartnerId } = cluster;
+      const insertionReulst = await databaseAPI.insert({
+        entityName: "batch",
+        batchStatus: "created",
+        recipientPartnerId,
+        productionPartnerId,
+        ...requestBody,
+      });
+
+      context.res = {
+        body: JSON.stringify(insertionReulst),
+      };
+    } else {
+      context.res = {
+        statusCode: 400,
+        body: `Cluster with id ${clusterId} not found`,
+      };
+    }
   } else {
     context.res = {
       statusCode: 400,
@@ -28,6 +45,7 @@ const httpTrigger: AzureFunction = async function (
 
 type BatchCreationDTO = {
   clusterId: string;
+  creationDate: Date;
   inputWeight: number;
   outputWeight: number;
   addtionFactor: number;
