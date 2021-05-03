@@ -1,7 +1,14 @@
 import axios from "axios";
-import { Field, Formik } from "formik";
+import { ErrorMessage, Formik } from "formik";
+import * as yup from "yup";
 import React, { FC, useContext, useEffect, useState } from "react";
-import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
+import {
+  ActivityIndicator,
+  Button,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { Checkbox, TextInput } from "react-native-paper";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import axiosUtils from "../../utils/axios";
@@ -10,9 +17,9 @@ import AutocompleteInput from "../inputs/AutocompleteInput";
 import DismissableSnackbar from "../shared/DismissableSnackbar";
 
 type ClusterCreationFormData = {
-  isOpen?: boolean;
-  name?: string;
-  c5Reference?: string;
+  isOpen: boolean;
+  name: string;
+  c5Reference: string;
   necessaryPlastic?: number;
   usefulPlasticFactor?: number;
   productionPartnerId?: string;
@@ -38,12 +45,15 @@ const ClusterCreationForm: FC<Props> = () => {
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
 
   const [clusterData, setClusterData] = useState<ClusterCreationFormData>({
+    name: "",
+    c5Reference: "",
     isOpen: false,
   });
   const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
     []
   );
 
+  /*
   const {
     name,
     isOpen,
@@ -68,6 +78,7 @@ const ClusterCreationForm: FC<Props> = () => {
   const resetState = () => {
     setClusterData({});
   };
+   */
 
   const setClusterFormValue = setValue([clusterData, setClusterData]);
 
@@ -145,66 +156,115 @@ const ClusterCreationForm: FC<Props> = () => {
         })
         .then(() => {
           setShowSuccessSnackbar(true);
-          resetState();
+          // resetState();
         });
     }
   };
 
-  return (
-    <Formik initialValues={clusterData} onSubmit={onCreateCluster}>
-      <View style={styles.container}>
-        <View style={styles.inputContainer}>
-          <View style={styles.inputColumn}>
-            <Field as={TextInput} name="name" label="Navn" />
-            <Field as={TextInput} name="c5Reference" label="C5 Reference" />
-            <Field as={TextInput} name="necessaryPlastic" label="Plastbehov" />
-            <Field
-              as={TextInput}
-              name="usefulPlasticFactor"
-              label="Beregningsfaktor"
-            />
-          </View>
-          {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
-          <View style={styles.inputColumn}>
-            {loading ? (
-              <ActivityIndicator />
-            ) : (
-              userSelectionData.map((selectionData, index) => {
-                const userSelections = userSelectionData.length;
-                const zIndex = userSelections - index;
+  const validationSchema = yup.object().shape({
+    name: yup.string().required("Navn skal angives"),
+    c5Reference: yup.string().required("C5 reference skal angives"),
+    necessaryPlastic: yup.number().required("Plastbehov skal angives"),
+    usefulPlasticFactor: yup.number().required("Beregningsfaktor skal angives"),
+  });
 
-                return (
-                  <AutocompleteInput
-                    containerStyle={{ zIndex }}
-                    key={selectionData.title}
-                    selectionState={[
-                      clusterData[selectionData.stateKey],
-                      setClusterFormValue(selectionData.stateKey),
-                    ]}
-                    endpoint={selectionData.usersEndpoint}
-                    title={selectionData.title}
-                  />
-                );
-              })
-            )}
+  return (
+    <Formik
+      initialValues={clusterData}
+      onSubmit={(values) => console.log(values)}
+      validationSchema={validationSchema}
+      validateOnMount
+    >
+      {({
+        handleSubmit,
+        handleBlur,
+        handleChange,
+        values,
+        isValid,
+        setFieldValue,
+      }) => (
+        <View style={styles.container}>
+          <View style={styles.inputContainer}>
+            <View style={styles.inputColumn}>
+              <TextInput
+                onChangeText={handleChange("name")}
+                onBlur={handleBlur("name")}
+                value={values.name}
+                label="Navn"
+              />
+              <ErrorMessage name="name" />
+              <TextInput
+                onChangeText={handleChange("c5Reference")}
+                onBlur={handleBlur("c5Reference")}
+                value={values.c5Reference}
+                label="C5 Reference"
+              />
+              <ErrorMessage name="c5Reference" />
+              <TextInput
+                onChangeText={handleChange("necessaryPlastic")}
+                onBlur={handleBlur("necessaryPlastic")}
+                value={values.necessaryPlastic?.toString() || ""}
+                label="Plastbehov"
+              />
+              <ErrorMessage name="necessaryPlastic" />
+              <TextInput
+                onChangeText={handleChange("usefulPlasticFactor")}
+                onBlur={handleBlur("usefulPlasticFactor")}
+                keyboardType="numeric"
+                value={values.usefulPlasticFactor?.toString() || ""}
+                label="Beregningsfaktor"
+              />
+              <ErrorMessage name="usefulPlasticFactor" />
+            </View>
+            {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
+            <View style={styles.inputColumn}>
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                userSelectionData.map((selectionData, index) => {
+                  const userSelections = userSelectionData.length;
+                  const zIndex = userSelections - index;
+
+                  return (
+                    <AutocompleteInput
+                      containerStyle={{ zIndex }}
+                      key={selectionData.title}
+                      selectionState={[
+                        clusterData[selectionData.stateKey],
+                        setClusterFormValue(selectionData.stateKey),
+                      ]}
+                      endpoint={selectionData.usersEndpoint}
+                      title={selectionData.title}
+                    />
+                  );
+                })
+              )}
+            </View>
           </View>
+          <Text>Åbent cluster</Text>
+          <Checkbox
+            status={values.isOpen ? "checked" : "unchecked"}
+            onPress={() => setFieldValue("isOpen", !values.isOpen)}
+          />
+          <Button
+            title="Opret cluster"
+            disabled={!isValid}
+            onPress={() => handleSubmit()}
+          />
+          <DismissableSnackbar
+            title="Clusteret blev oprettet"
+            showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
+          />
         </View>
-        <Button
-          title="Opret cluster"
-          onPress={onCreateCluster}
-          disabled={!isValid}
-        />
-        <DismissableSnackbar
-          title="Clusteret blev oprettet"
-          showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-        />
-      </View>
+      )}
     </Formik>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
+    justifyContent: "center",
     flexDirection: "column",
     marginTop: 20,
     marginBottom: 20,
