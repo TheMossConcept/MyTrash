@@ -1,13 +1,12 @@
 import axios from "axios";
+import { Field, Formik } from "formik";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
+import { Checkbox, TextInput } from "react-native-paper";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import axiosUtils from "../../utils/axios";
 import { setValue } from "../../utils/form";
 import AutocompleteInput from "../inputs/AutocompleteInput";
-import BooleanInput from "../inputs/BooleanInput";
-import NumericInput from "../inputs/NumericInput";
-import StringInput from "../inputs/StringInput";
 import DismissableSnackbar from "../shared/DismissableSnackbar";
 
 type ClusterCreationFormData = {
@@ -152,64 +151,53 @@ const ClusterCreationForm: FC<Props> = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <StringInput
-        label="Navn"
-        stringState={[name, setClusterFormValue("name")]}
-      />
-      <StringInput
-        label="C5 Reference"
-        stringState={[c5Reference, setClusterFormValue("c5Reference")]}
-      />
-      <NumericInput
-        label="Plastbehov"
-        numberState={[
-          necessaryPlastic,
-          setClusterFormValue("necessaryPlastic"),
-        ]}
-      />
-      <NumericInput
-        label="Beregningsfaktor"
-        numberState={[
-          usefulPlasticFactor,
-          setClusterFormValue("usefulPlasticFactor"),
-        ]}
-      />
-      {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
-      <BooleanInput
-        label="Åbent cluster"
-        booleanState={[isOpen || false, setClusterFormValue("isOpen")]}
-      />
-      {loading ? (
-        <ActivityIndicator />
-      ) : (
-        userSelectionData.map((selectionData) => (
-          /* TODO: Get a better key !! */
-          <View
-            style={styles.autocompleteInputContainer}
-            key={selectionData.title}
-          >
-            <AutocompleteInput
-              selectionState={[
-                clusterData[selectionData.stateKey],
-                setClusterFormValue(selectionData.stateKey),
-              ]}
-              endpoint={selectionData.usersEndpoint}
-              title={selectionData.title}
-            />
-          </View>
-        ))
-      )}
-      <Button
-        title="Opret cluster"
-        onPress={onCreateCluster}
-        disabled={!isValid}
-      />
-      <DismissableSnackbar
-        title="Clusteret blev oprettet"
-        showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-      />
-    </View>
+    <Formik initialValues={clusterData} onSubmit={onCreateCluster}>
+      <View style={styles.container}>
+        <View style={styles.inputContainer}>
+          <Field as={TextInput} name="name" label="Navn" />
+          <Field as={TextInput} name="c5Reference" label="C5 Reference" />
+          <Field as={TextInput} name="necessaryPlastic" label="Plastbehov" />
+          <Field
+            as={TextInput}
+            name="usefulPlasticFactor"
+            label="Beregningsfaktor"
+          />
+        </View>
+        {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
+        <View style={styles.inputContainer}>
+          {loading ? (
+            <ActivityIndicator />
+          ) : (
+            userSelectionData.map((selectionData, index) => {
+              const userSelections = userSelectionData.length;
+              const zIndex = userSelections - index;
+
+              return (
+                <AutocompleteInput
+                  containerStyle={{ zIndex }}
+                  key={selectionData.title}
+                  selectionState={[
+                    clusterData[selectionData.stateKey],
+                    setClusterFormValue(selectionData.stateKey),
+                  ]}
+                  endpoint={selectionData.usersEndpoint}
+                  title={selectionData.title}
+                />
+              );
+            })
+          )}
+        </View>
+        <Button
+          title="Opret cluster"
+          onPress={onCreateCluster}
+          disabled={!isValid}
+        />
+        <DismissableSnackbar
+          title="Clusteret blev oprettet"
+          showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
+        />
+      </View>
+    </Formik>
   );
 };
 
@@ -218,14 +206,25 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
-    width: "auto",
-    // Obviously, this is just a temporary layout "fix"
-    height: "250px",
+  },
+  inputContainer: {
+    flex: 1,
+    flexDirection: "column",
+  },
+  createBtn: {
+    flex: 2,
   },
   autocompleteInputContainer: {
     paddingLeft: 5,
     paddingRight: 5,
     flex: 1,
+  },
+  autocompleteContainer: {
+    flex: 1,
+    left: 0,
+    position: "absolute",
+    right: 0,
+    zIndex: 999,
   },
 });
 

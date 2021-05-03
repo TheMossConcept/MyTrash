@@ -36,6 +36,7 @@
     "expo-splash-screen": "~0.8.0",
     "expo-status-bar": "~1.0.3",
     "expo-web-browser": "~8.6.0",
+    "formik": "^2.2.6",
     "jsc-android": "^250230.2.1",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
