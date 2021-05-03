@@ -83,16 +83,17 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
   const userInfo: UserInfo = { roles, name, userId: oid };
   const colorScheme = useColorScheme();
 
-  const showAdministrationScreen = userInfo.roles.includes(
-    "SolutionAdministrator"
-  );
-  const showCollectionAdministrationScreen = userInfo.roles.includes(
-    "CollectionAdministrator"
-  );
-  const showCollectionScreen = userInfo.roles.includes("Collector");
-  const showLogisticsScreen = userInfo.roles.includes("LogisticsPartner");
-  const showProductionScreen = userInfo.roles.includes("ProductionPartner");
-  const showRecipientScreen = userInfo.roles.includes("RecipientPartner");
+  const showAdministrationScreen =
+    userInfo.roles?.includes("SolutionAdministrator") || true;
+  const showCollectionAdministrationScreen =
+    userInfo.roles?.includes("CollectionAdministrator") || true;
+  const showCollectionScreen = userInfo.roles?.includes("Collector") || true;
+  const showLogisticsScreen =
+    userInfo.roles?.includes("LogisticsPartner") || true;
+  const showProductionScreen =
+    userInfo.roles?.includes("ProductionPartner") || true;
+  const showRecipientScreen =
+    userInfo.roles?.includes("RecipientPartner") || true;
 
   return (
     <AccessTokenContext.Provider value={accessTokenState}>

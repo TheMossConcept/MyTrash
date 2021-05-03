@@ -56,6 +56,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
 
   return (
     <View style={styles.container}>
+      <Text>Plastikafhentninger</Text>
       <PlasticCollectionsDetails
         title="Modtaget"
         plasticCollections={sortedCollections.delivered}
