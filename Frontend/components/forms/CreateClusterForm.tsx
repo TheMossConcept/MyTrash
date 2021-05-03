@@ -154,38 +154,40 @@ const ClusterCreationForm: FC<Props> = () => {
     <Formik initialValues={clusterData} onSubmit={onCreateCluster}>
       <View style={styles.container}>
         <View style={styles.inputContainer}>
-          <Field as={TextInput} name="name" label="Navn" />
-          <Field as={TextInput} name="c5Reference" label="C5 Reference" />
-          <Field as={TextInput} name="necessaryPlastic" label="Plastbehov" />
-          <Field
-            as={TextInput}
-            name="usefulPlasticFactor"
-            label="Beregningsfaktor"
-          />
-        </View>
-        {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
-        <View style={styles.inputContainer}>
-          {loading ? (
-            <ActivityIndicator />
-          ) : (
-            userSelectionData.map((selectionData, index) => {
-              const userSelections = userSelectionData.length;
-              const zIndex = userSelections - index;
+          <View style={styles.inputColumn}>
+            <Field as={TextInput} name="name" label="Navn" />
+            <Field as={TextInput} name="c5Reference" label="C5 Reference" />
+            <Field as={TextInput} name="necessaryPlastic" label="Plastbehov" />
+            <Field
+              as={TextInput}
+              name="usefulPlasticFactor"
+              label="Beregningsfaktor"
+            />
+          </View>
+          {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
+          <View style={styles.inputColumn}>
+            {loading ? (
+              <ActivityIndicator />
+            ) : (
+              userSelectionData.map((selectionData, index) => {
+                const userSelections = userSelectionData.length;
+                const zIndex = userSelections - index;
 
-              return (
-                <AutocompleteInput
-                  containerStyle={{ zIndex }}
-                  key={selectionData.title}
-                  selectionState={[
-                    clusterData[selectionData.stateKey],
-                    setClusterFormValue(selectionData.stateKey),
-                  ]}
-                  endpoint={selectionData.usersEndpoint}
-                  title={selectionData.title}
-                />
-              );
-            })
-          )}
+                return (
+                  <AutocompleteInput
+                    containerStyle={{ zIndex }}
+                    key={selectionData.title}
+                    selectionState={[
+                      clusterData[selectionData.stateKey],
+                      setClusterFormValue(selectionData.stateKey),
+                    ]}
+                    endpoint={selectionData.usersEndpoint}
+                    title={selectionData.title}
+                  />
+                );
+              })
+            )}
+          </View>
         </View>
         <Button
           title="Opret cluster"
@@ -203,28 +205,17 @@ const ClusterCreationForm: FC<Props> = () => {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
+    flexDirection: "column",
+    marginTop: 20,
+    marginBottom: 20,
   },
   inputContainer: {
-    flex: 1,
-    flexDirection: "column",
+    flexDirection: "row",
+    zIndex: 1,
   },
-  createBtn: {
-    flex: 2,
-  },
-  autocompleteInputContainer: {
-    paddingLeft: 5,
-    paddingRight: 5,
+  inputColumn: {
     flex: 1,
-  },
-  autocompleteContainer: {
-    flex: 1,
-    left: 0,
-    position: "absolute",
-    right: 0,
-    zIndex: 999,
+    padding: 5,
   },
 });
 
