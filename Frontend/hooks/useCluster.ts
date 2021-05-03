@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useCallback } from "react";
 import axiosUtils from "../utils/axios";
 import { Cluster } from "../components/shared/ClusterList";
 import { AccessTokenContext } from "../navigation/TabNavigator";
@@ -8,7 +8,7 @@ const useClusters = (queryParams?: Object) => {
   const accessToken = useContext(AccessTokenContext);
   const [clusters, setClusters] = useState<Cluster[]>([]);
 
-  useEffect(() => {
+  const fetchClusters = useCallback(() => {
     if (accessToken) {
       axios
         .get("GetClusters", {
@@ -19,11 +19,14 @@ const useClusters = (queryParams?: Object) => {
           setClusters(clustersResult.data);
         });
     }
-    // TODO: Find a structure where this warning is not there but the
-    // useEffect hook does not loop forever due to the queryParams object
   }, [accessToken]);
 
-  return clusters;
+  // Fetch whenever the function updates!
+  useEffect(() => {
+    fetchClusters();
+  }, [fetchClusters]);
+
+  return { clusters, refetchClusters: fetchClusters };
 };
 
 export default useClusters;

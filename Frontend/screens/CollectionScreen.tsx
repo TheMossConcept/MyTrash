@@ -25,7 +25,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     collectionFormData,
     setCollectionFormData,
   ] = useState<CollectionFormData>({});
-  const clusters = useClusters({ collectorId: userId });
+  const { clusters } = useClusters({ collectorId: userId });
 
   return (
     <View style={styles.container}>

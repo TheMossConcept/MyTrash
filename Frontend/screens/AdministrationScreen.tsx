@@ -13,11 +13,11 @@ import Container from "../components/shared/Container";
 type Props = StackScreenProps<TabsParamList, "Administration">;
 
 const AdministrationScreen: FC<Props> = () => {
-  const clusters = useClusters();
+  const { clusters, refetchClusters } = useClusters();
 
   return (
     <Container>
-      <CreateClusterForm />
+      <CreateClusterForm onCreation={refetchClusters} />
       <ClusterList clusters={clusters}>
         {({ cluster }) => (
           <View>

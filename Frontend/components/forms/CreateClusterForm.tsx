@@ -38,55 +38,31 @@ type UserInputProps = {
     | "recipientPartnerId";
 };
 
-type Props = {};
+type Props = { onCreation?: () => void };
 
-const ClusterCreationForm: FC<Props> = () => {
+const ClusterCreationForm: FC<Props> = ({ onCreation }) => {
   const [loading, setLoading] = useState(false);
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
 
-  const [clusterData, setClusterData] = useState<ClusterCreationFormData>({
+  const initialValues: ClusterCreationFormData = {
     name: "",
-    c5Reference: "",
     isOpen: false,
-  });
-  const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
-    []
-  );
-
-  /*
-  const {
-    name,
-    isOpen,
-    c5Reference,
-    necessaryPlastic,
-    usefulPlasticFactor,
-    collectionAdministratorId,
-    logisticsPartnerId,
-    recipientPartnerId,
-  } = clusterData;
-
-  const isValid =
-    name &&
-    isOpen !== undefined &&
-    c5Reference &&
-    necessaryPlastic &&
-    usefulPlasticFactor &&
-    collectionAdministratorId &&
-    logisticsPartnerId &&
-    recipientPartnerId;
-
-  const resetState = () => {
-    setClusterData({});
+    c5Reference: "",
+    logisticsPartnerId: "",
+    recipientPartnerId: "",
+    productionPartnerId: "",
+    collectionAdministratorId: "",
   };
-   */
-
-  const setClusterFormValue = setValue([clusterData, setClusterData]);
 
   const accessToken = useContext(AccessTokenContext);
 
   // Only run data fetch once, otherwise the state update of an
   // array will cause an infinite reload because it is a new instance
   // each time
+  // TODO: Factor all this out into its own component!!
+  const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
+    []
+  );
   useEffect(() => {
     if (accessToken) {
       axios
@@ -145,10 +121,10 @@ const ClusterCreationForm: FC<Props> = () => {
     }
   }, [accessToken]);
 
-  const onCreateCluster = () => {
+  const createCluster = (values: ClusterCreationFormData) => {
     if (accessToken) {
       axios
-        .post("/CreateCluster", clusterData, {
+        .post("/CreateCluster", values, {
           params: {
             code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
           },
@@ -156,7 +132,9 @@ const ClusterCreationForm: FC<Props> = () => {
         })
         .then(() => {
           setShowSuccessSnackbar(true);
-          // resetState();
+          if (onCreation) {
+            onCreation();
+          }
         });
     }
   };
@@ -170,8 +148,8 @@ const ClusterCreationForm: FC<Props> = () => {
 
   return (
     <Formik
-      initialValues={clusterData}
-      onSubmit={(values) => console.log(values)}
+      initialValues={initialValues}
+      onSubmit={(values) => createCluster(values)}
       validationSchema={validationSchema}
       validateOnMount
     >
@@ -230,8 +208,9 @@ const ClusterCreationForm: FC<Props> = () => {
                       containerStyle={{ zIndex }}
                       key={selectionData.title}
                       selectionState={[
-                        clusterData[selectionData.stateKey],
-                        setClusterFormValue(selectionData.stateKey),
+                        values[selectionData.stateKey],
+                        (newValue: string) =>
+                          setFieldValue(selectionData.stateKey, newValue, true),
                       ]}
                       endpoint={selectionData.usersEndpoint}
                       title={selectionData.title}

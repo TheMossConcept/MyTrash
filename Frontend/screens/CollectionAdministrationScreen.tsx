@@ -12,7 +12,9 @@ type Props = StackScreenProps<TabsParamList, "Indsamlingsadministration">;
 
 const CollectionAdministrationScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
-  const clusters = useClusters({ collectionAdministratorId: userId });
+  const { clusters } = useClusters({
+    collectionAdministratorId: userId,
+  });
   const userFormDataState = React.useState<UserFormData>({});
   return (
     <View style={styles.container}>

@@ -12,6 +12,7 @@ type Props = {
 };
 
 const ClusterList: FC<Props> = ({ clusters, children }) => {
+  console.log(clusters);
   return (
     <List.Section title="Clusters">
       {clusters.map((cluster) => (
