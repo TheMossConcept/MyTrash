@@ -1,4 +1,5 @@
 import axios from "axios";
+import { FormikHandlers } from "formik";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, Text } from "react-native";
 import Autocomplete, {
@@ -17,7 +18,8 @@ type Props = {
   title?: string;
   endpoint: string;
   selectionState: [string | undefined, (newValue: string) => void];
-} & Pick<AutocompleteProps<any>, "containerStyle">;
+} & Pick<AutocompleteProps<any>, "containerStyle"> &
+  Partial<Pick<FormikHandlers, "handleBlur">>;
 
 // TODO: By simply handing this component an endpoint that it calls itself, we make it
 // more reuseable by offloading responsibility onto it, however, we also potentially
@@ -30,6 +32,7 @@ const AutocompleteInput: FC<Props> = ({
   endpoint,
   selectionState,
   containerStyle,
+  handleBlur,
 }) => {
   const [loading, setLoading] = useState(false);
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
@@ -89,12 +92,15 @@ const AutocompleteInput: FC<Props> = ({
       value={query}
       onChangeText={setQueryWrapper}
       onFocus={() => setHideSuggestionList(false)}
-      onBlur={() => {
+      onBlur={(event) => {
         // We need to give the other event handler time to do its job before
         // hiding the suggestion list.
         // TODO: Do something less brittle that is not
         // reliant on timing!
         setTimeout(() => setHideSuggestionList(true), 250);
+        if (handleBlur) {
+          handleBlur(event);
+        }
       }}
       renderTextInput={({ value, onChangeText, onFocus, onBlur }: any) => (
         <TextInput

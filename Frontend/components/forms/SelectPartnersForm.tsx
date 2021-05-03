@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
+import { FormikHandlers } from "formik";
 import axiosUtils from "../../utils/axios";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import AutocompleteInput from "../inputs/AutocompleteInput";
@@ -25,9 +26,9 @@ type StateValue = {
 type Props = {
   values: StateValue;
   setValues: (field: string, newValue: string) => void;
-};
+} & Pick<FormikHandlers, "handleBlur">;
 
-const SelectPartnersForm: FC<Props> = ({ values, setValues }) => {
+const SelectPartnersForm: FC<Props> = ({ values, setValues, handleBlur }) => {
   const [loading, setLoading] = useState(false);
   const accessToken = useContext(AccessTokenContext);
 
@@ -111,6 +112,9 @@ const SelectPartnersForm: FC<Props> = ({ values, setValues }) => {
                   setValues(selectionData.stateKey, newValue),
               ]}
               endpoint={selectionData.usersEndpoint}
+              handleBlur={
+                handleBlur ? handleBlur(selectionData.stateKey) : undefined
+              }
               title={selectionData.title}
             />
           );
