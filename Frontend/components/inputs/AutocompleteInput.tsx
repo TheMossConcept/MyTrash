@@ -34,7 +34,14 @@ const AutocompleteInput: FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
   const [query, setQuery] = useState("");
+
   const [, setSelectedUserId] = selectionState;
+
+  const setQueryWrapper = (newValue: string) => {
+    // When you re-query, you automatically loose your selection
+    setSelectedUserId("");
+    setQuery(newValue);
+  };
 
   const accessToken = useContext(AccessTokenContext);
 
@@ -80,7 +87,7 @@ const AutocompleteInput: FC<Props> = ({
       containerStyle={containerStyle}
       data={filteredUsers}
       value={query}
-      onChangeText={setQuery}
+      onChangeText={setQueryWrapper}
       onFocus={() => setHideSuggestionList(false)}
       onBlur={() => {
         // We need to give the other event handler time to do its job before

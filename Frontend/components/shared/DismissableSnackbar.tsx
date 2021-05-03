@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { StyleSheet } from "react-native";
 import { Snackbar } from "react-native-paper";
 
 type Props = {
@@ -20,6 +21,7 @@ const DismissableSnackbar: FC<Props> = ({ title, showState, onDismiss }) => {
 
   return (
     <Snackbar
+      style={styles.snackbar}
       visible={showSnackbar}
       onDismiss={dismiss}
       action={{
@@ -31,5 +33,12 @@ const DismissableSnackbar: FC<Props> = ({ title, showState, onDismiss }) => {
     </Snackbar>
   );
 };
+
+const styles = StyleSheet.create({
+  snackbar: {
+    position: "absolute",
+    width: "100%",
+  },
+});
 
 export default DismissableSnackbar;
