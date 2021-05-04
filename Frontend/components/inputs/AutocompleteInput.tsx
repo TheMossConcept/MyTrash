@@ -38,7 +38,13 @@ const AutocompleteInput: FC<Props> = ({
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
   const [query, setQuery] = useState("");
 
-  const [, setSelectedUserId] = selectionState;
+  const [selectedUserId, setSelectedUserId] = selectionState;
+
+  useEffect(() => {
+    if (!selectedUserId) {
+      setQuery("");
+    }
+  }, [selectedUserId]);
 
   const setQueryWrapper = (newValue: string) => {
     // When you re-query, you automatically loose your selection
