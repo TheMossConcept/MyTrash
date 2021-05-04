@@ -35,16 +35,31 @@ const AutocompleteInput: FC<Props> = ({
   handleBlur,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [entities, setEntities] = useState<SelectableEntity[]>([]);
   const [query, setQuery] = useState("");
+  const [entities, setEntities] = useState<SelectableEntity[]>([]);
+
+  const filteredUsers = entities.filter((entity) => {
+    const lowerCaseDisplayName = entity.displayName.toLowerCase();
+    const lowerCaseQuery = query.toLowerCase();
+
+    return lowerCaseDisplayName.includes(lowerCaseQuery);
+  });
 
   const [selectedUserId, setSelectedUserId] = selectionState;
 
+  // Always maintain consistency with the state and the UI
   useEffect(() => {
     if (!selectedUserId) {
       setQuery("");
+    } else {
+      // TODO: This is going to be a problem, once we introduce pagination!
+      filteredUsers.forEach((user) => {
+        if (user.id === selectedUserId) {
+          setQuery(user.displayName);
+        }
+      });
     }
-  }, [selectedUserId]);
+  }, [filteredUsers, selectedUserId]);
 
   const setQueryWrapper = (newValue: string) => {
     // When you re-query, you automatically loose your selection
@@ -74,13 +89,6 @@ const AutocompleteInput: FC<Props> = ({
   }, [endpoint, accessToken]);
 
   const [hideSuggestionList, setHideSuggestionList] = useState(true);
-
-  const filteredUsers = entities.filter((entity) => {
-    const lowerCaseDisplayName = entity.displayName.toLowerCase();
-    const lowerCaseQuery = query.toLowerCase();
-
-    return lowerCaseDisplayName.includes(lowerCaseQuery);
-  });
 
   const handleItemSelection = (item: SelectableEntity) => () => {
     setSelectedUserId(item.id);

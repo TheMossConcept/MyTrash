@@ -12,7 +12,7 @@ type UpdateFormProps = {
   clusterId?: string;
 };
 
-export const UpdateForm: FC<UpdateFormProps> = ({
+export const UpdateCluster: FC<UpdateFormProps> = ({
   clusterId,
   successCallback,
 }) => {
