@@ -20,9 +20,10 @@ export type ClusterFormData = {
 type Props = {
   cluster: ClusterFormData;
   submit: (Cluster: ClusterFormData, reset: () => void) => void;
+  submitTitle: string;
 };
 
-const ClusterForm: FC<Props> = ({ cluster, submit }) => {
+const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
   const validationSchema = yup.object().shape({
     name: yup.string().required("Navn skal angives"),
     c5Reference: yup.string().required("C5 reference skal angives"),
@@ -112,7 +113,7 @@ const ClusterForm: FC<Props> = ({ cluster, submit }) => {
               onPress={() => setFieldValue("isOpen", !values.isOpen)}
             />
             <Button
-              title="Opret cluster"
+              title={submitTitle}
               disabled={!isValid || isSubmitting}
               onPress={() => handleSubmit()}
             />

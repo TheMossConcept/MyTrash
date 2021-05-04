@@ -57,7 +57,11 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
 
   return initialValues ? (
     <View>
-      <ClusterForm cluster={initialValues} submit={updateCluster} />
+      <ClusterForm
+        cluster={initialValues}
+        submit={updateCluster}
+        submitTitle="Opdater cluster"
+      />
       <DismissableSnackbar
         title="Clusteret blev opdateret"
         showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
@@ -108,7 +112,11 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
 
   return (
     <View>
-      <ClusterForm cluster={initialValues} submit={createCluster} />
+      <ClusterForm
+        cluster={initialValues}
+        submit={createCluster}
+        submitTitle="Opret cluster"
+      />
       <DismissableSnackbar
         title="Clusteret blev oprettet"
         showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
