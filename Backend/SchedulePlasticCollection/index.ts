@@ -16,7 +16,7 @@ const httpTrigger: AzureFunction = async function (
   const { collectionId } = req.query as QueryParams;
   const { pickupDate } = req.body as RequestBody;
 
-  const statusUpdate = await databaseAPI.update<CollectionEntity>(
+  const statusUpdate = await databaseAPI.updateOne<CollectionEntity>(
     "collection",
     collectionId,
     {

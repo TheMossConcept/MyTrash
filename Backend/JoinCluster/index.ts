@@ -8,7 +8,7 @@ const httpTrigger: AzureFunction = async function (
   const requestBody: JoinClusterDTO = req.body;
   const { collectorId, clusterId } = requestBody;
 
-  const updateResult = await databaseAPI.update<ClusterEntity>(
+  const updateResult = await databaseAPI.updateOne<ClusterEntity>(
     "cluster",
     clusterId,
     {

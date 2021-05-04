@@ -25,7 +25,7 @@ const mongoAPI = {
 
     return insertionResult;
   },
-  async update<T extends Entities>(
+  async updateOne<T extends Entities>(
     entityName: T["entityName"],
     id: string,
     update: mongodb.UpdateQuery<T>

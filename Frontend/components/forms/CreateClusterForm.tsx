@@ -36,18 +36,18 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
     }
   }, [accessToken, clusterId]);
 
-  const updateCluster = (values: ClusterFormData, reset: () => void) => {
+  const updateCluster = (values: ClusterFormData) => {
     if (accessToken) {
       axios
         .put("/UpdateCluster", values, {
           params: {
             code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+            clusterId,
           },
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
         .then(() => {
           setShowSuccessSnackbar(true);
-          reset();
           if (successCallback) {
             successCallback();
           }

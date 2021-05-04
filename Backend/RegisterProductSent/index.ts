@@ -9,9 +9,13 @@ const httpTrigger: AzureFunction = async function (
 ): Promise<void> {
   const { productId } = req.query as Payload;
 
-  const update = await databaseAPI.update<ProductEntity>("product", productId, {
-    $set: { hasBeenSent: true },
-  });
+  const update = await databaseAPI.updateOne<ProductEntity>(
+    "product",
+    productId,
+    {
+      $set: { hasBeenSent: true },
+    }
+  );
 
   context.res = {
     body: JSON.stringify(update),

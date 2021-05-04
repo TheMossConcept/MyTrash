@@ -15,7 +15,7 @@ const httpTrigger: AzureFunction = async function (
 
     const { collectionId } = req.query as Payload;
 
-    const update = await databaseAPI.update<CollectionEntity>(
+    const update = await databaseAPI.updateOne<CollectionEntity>(
       "collection",
       collectionId,
       {
@@ -38,4 +38,3 @@ const httpTrigger: AzureFunction = async function (
 };
 
 export default httpTrigger;
-

@@ -24,7 +24,10 @@ const AdministrationScreen: FC<Props> = () => {
       <ClusterList clusters={clusters}>
         {({ cluster }) => (
           <View>
-            <UpdateCluster clusterId={cluster.id} />
+            <UpdateCluster
+              clusterId={cluster.id}
+              successCallback={refetchClusters}
+            />
             <Text>Inviter bruger</Text>
             <UserInvitationForm clusterId={cluster.id} />
           </View>
