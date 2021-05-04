@@ -1,6 +1,6 @@
 import axios from "axios";
 import { FormikHandlers } from "formik";
-import React, { FC, useContext, useEffect, useState } from "react";
+import React, { FC, useContext, useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, Text } from "react-native";
 import Autocomplete, {
   AutocompleteProps,
@@ -38,27 +38,27 @@ const AutocompleteInput: FC<Props> = ({
   const [query, setQuery] = useState("");
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
 
-  const filteredUsers = entities.filter((entity) => {
-    const lowerCaseDisplayName = entity.displayName.toLowerCase();
-    const lowerCaseQuery = query.toLowerCase();
+  const filteredUsers = useMemo(
+    () =>
+      entities.filter((entity) => {
+        const lowerCaseDisplayName = entity.displayName.toLowerCase();
+        const lowerCaseQuery = query.toLowerCase();
 
-    return lowerCaseDisplayName.includes(lowerCaseQuery);
-  });
+        return lowerCaseDisplayName.includes(lowerCaseQuery);
+      }),
+    [entities, query]
+  );
 
   const [selectedUserId, setSelectedUserId] = selectionState;
 
   // Always maintain consistency with the state and the UI
   useEffect(() => {
-    if (!selectedUserId) {
-      setQuery("");
-    } else {
-      // TODO: This is going to be a problem, once we introduce pagination!
-      filteredUsers.forEach((user) => {
-        if (user.id === selectedUserId) {
-          setQuery(user.displayName);
-        }
-      });
-    }
+    // TODO: This is going to be a problem, once we introduce pagination!
+    filteredUsers.forEach((user) => {
+      if (user.id === selectedUserId) {
+        setQuery(user.displayName);
+      }
+    });
   }, [filteredUsers, selectedUserId]);
 
   const setQueryWrapper = (newValue: string) => {
