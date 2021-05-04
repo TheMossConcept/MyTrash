@@ -1,5 +1,8 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
-import databaseAPI, { ClusterEntity } from "../utils/DatabaseAPI";
+import databaseAPI, {
+  ClusterEntity,
+  CollectionEntity,
+} from "../utils/DatabaseAPI";
 
 const httpTrigger: AzureFunction = async function (
   context: Context,
@@ -10,7 +13,13 @@ const httpTrigger: AzureFunction = async function (
 
   // TODO: Add request body validation here (in the form of a type guard) as well!
   if (requestBody) {
-    const { requesterId, clusterId, numberOfUnits, comment } = requestBody;
+    const {
+      requesterId,
+      clusterId,
+      numberOfUnits,
+      comment,
+      isLastCollection,
+    } = requestBody;
     const cluster = await databaseAPI.findById<ClusterEntity>(
       "cluster",
       clusterId
@@ -19,8 +28,19 @@ const httpTrigger: AzureFunction = async function (
     if (cluster) {
       const { logisticsPartnerId, recipientPartnerId } = cluster;
 
+      const previousCollection = await databaseAPI.findOne<CollectionEntity>(
+        "collection",
+        { clusterId, requesterId }
+      );
+      // If there is just ONE previous collection to be found, we know this is not
+      // the first one we order and therefor we do not need to query them all, just
+      // one is sufficient
+      const isFirstCollection = !previousCollection;
+
       const insertionReulst = await databaseAPI.insert({
         entityName: "collection",
+        isFirstCollection,
+        isLastCollection,
         clusterId,
         logisticsPartnerId,
         recipientPartnerId,
@@ -51,6 +71,7 @@ type CollectionRequestCreationDTO = {
   clusterId: string;
   requesterId: string;
   numberOfUnits: number;
+  isLastCollection: boolean;
   comment: string;
 };
 

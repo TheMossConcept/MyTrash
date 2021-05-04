@@ -116,6 +116,8 @@ export type UserMetadataEntity = {
 
 export type CollectionEntity = {
   entityName: "collection";
+  isFirstCollection: boolean;
+  isLastCollection: boolean;
   requesterId: string;
   clusterId: string;
   logisticsPartnerId: string;

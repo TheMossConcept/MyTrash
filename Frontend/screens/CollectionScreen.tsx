@@ -4,9 +4,7 @@ import React, { FC, useEffect, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { DateTime } from "luxon";
 import axiosUtils from "../utils/axios";
-import CollectionForm, {
-  CollectionFormData,
-} from "../components/forms/OrderCollectionForm";
+import CollectionForm from "../components/forms/OrderCollectionForm";
 import ClusterList from "../components/shared/ClusterList";
 import useAccessToken from "../hooks/useAccessToken";
 import useClusters from "../hooks/useCluster";
@@ -15,16 +13,12 @@ import PlasticCollectionsDetails, {
   PlasticCollection,
 } from "../components/collections/PlasticCollectionsDetails";
 import sortCollectionsByStatus from "../utils/plasticCollections";
-import OrderCollectionButton from "../components/collections/OrderCollectionButton";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
 const CollectionScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
-  const [
-    collectionFormData,
-    setCollectionFormData,
-  ] = useState<CollectionFormData>({});
+
   const { clusters } = useClusters({ collectorId: userId });
 
   return (
@@ -32,14 +26,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       <ClusterList clusters={clusters}>
         {({ cluster }) => (
           <View>
-            <CollectionForm
-              collectionFormState={[collectionFormData, setCollectionFormData]}
-            />
-            <OrderCollectionButton
-              clusterId={cluster.id}
-              userId={userId}
-              collectionFormData={collectionFormData}
-            />
+            <CollectionForm clusterId={cluster.id} userId={userId} />
             <UserCollectionsForCluster userId={userId} clusterId={cluster.id} />
           </View>
         )}

@@ -23,22 +23,20 @@ type Props = {
   submitTitle: string;
 };
 
-const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
-  const validationSchema = yup.object().shape({
-    name: yup.string().required("Navn skal angives"),
-    c5Reference: yup.string().required("C5 reference skal angives"),
-    necessaryPlastic: yup.number().required("Plastbehov skal angives"),
-    usefulPlasticFactor: yup.number().required("Beregningsfaktor skal angives"),
-    collectionAdministratorId: yup
-      .string()
-      .required("Indsamlingsadministrator skal vælges"),
-    logisticsPartnerId: yup.string().required("Logistikpartner skal vælges"),
-    recipientPartnerId: yup.string().required("Modtagerpartner skal vælges"),
-    productionPartnerId: yup
-      .string()
-      .required("Produktionspartner skal vælges"),
-  });
+const validationSchema = yup.object().shape({
+  name: yup.string().required("Navn skal angives"),
+  c5Reference: yup.string().required("C5 reference skal angives"),
+  necessaryPlastic: yup.number().required("Plastbehov skal angives"),
+  usefulPlasticFactor: yup.number().required("Beregningsfaktor skal angives"),
+  collectionAdministratorId: yup
+    .string()
+    .required("Indsamlingsadministrator skal vælges"),
+  logisticsPartnerId: yup.string().required("Logistikpartner skal vælges"),
+  recipientPartnerId: yup.string().required("Modtagerpartner skal vælges"),
+  productionPartnerId: yup.string().required("Produktionspartner skal vælges"),
+});
 
+const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
   return (
     <Formik
       initialValues={cluster}

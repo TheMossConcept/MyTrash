@@ -1,45 +1,109 @@
-import React, { FC } from "react";
+import axios from "axios";
+import { ErrorMessage, Formik } from "formik";
+import React, { FC, useState } from "react";
 // TODO: Fix it so that we use buttons from react-native-paper instead
-import { View, ViewProps } from "react-native";
-import { setValue } from "../../utils/form";
-import NumericInput from "../inputs/NumericInput";
-import StringInput from "../inputs/StringInput";
+import { Button, Text } from "react-native";
+import * as yup from "yup";
+import { Checkbox, TextInput } from "react-native-paper";
+import axiosUtils from "../../utils/axios";
+import useAccessToken from "../../hooks/useAccessToken";
+import Container from "../shared/Container";
+import DismissableSnackbar from "../shared/DismissableSnackbar";
 
-// TODO: Everything should not always be optional!
-export type CollectionFormData = {
+type CollectionFormData = {
   numberOfUnits?: number;
   comment?: string;
+  isLastCollection: boolean;
 };
 
 type Props = {
-  collectionFormState: [
-    CollectionFormData,
-    (newValue: CollectionFormData) => void
-  ];
-} & ViewProps;
+  userId: string;
+  clusterId: string;
+};
+
+const validationSchema = yup.object().shape({
+  numberOfUnits: yup
+    .number()
+    .min(1, "Der skal minimum være en enhed")
+    .required("Antal enheder er påkrævet"),
+  comment: yup.string().optional(),
+  isLastCollection: yup.boolean().optional(),
+});
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
-const CollectionForm: FC<Props> = ({ collectionFormState, ...viewProps }) => {
-  const [collectionFormData] = collectionFormState;
+const CollectionForm: FC<Props> = ({ userId, clusterId }) => {
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const initialValues: CollectionFormData = { isLastCollection: false };
 
-  const { numberOfUnits, comment } = collectionFormData;
+  const accessToken = useAccessToken();
+  const createCollectionRequest = (
+    values: CollectionFormData,
+    reset: () => void
+  ) => {
+    axios
+      .post(
+        "/CreatePlasticCollection",
+        { clusterId, requesterId: userId, ...values },
+        { ...axiosUtils.getSharedAxiosConfig(accessToken) }
+      )
+      .then(() => {
+        reset();
+        setShowSuccessSnackbar(true);
+      });
+  };
 
-  const setCollectionFormValue = setValue(collectionFormState);
-
-  // TODO_SESSION: Get cluster id from the cluster context and collectorId
-  // from the logged in user and do the actual POST request here
-  // TODO: Disable the spreading is forbidden style and spread the view props here!
   return (
-    <View style={viewProps.style}>
-      <NumericInput
-        label="Antal enheder"
-        numberState={[numberOfUnits, setCollectionFormValue("numberOfUnits")]}
-      />
-      <StringInput
-        label="Kommentar"
-        stringState={[comment, setCollectionFormValue("comment")]}
-      />
-    </View>
+    <Formik
+      validationSchema={validationSchema}
+      initialValues={initialValues}
+      onSubmit={(values, formikHelpers) =>
+        createCollectionRequest(values, formikHelpers.resetForm)
+      }
+      validateOnMount
+    >
+      {({
+        handleSubmit,
+        handleChange,
+        handleBlur,
+        setFieldValue,
+        values,
+        isValid,
+        isSubmitting,
+      }) => (
+        <Container>
+          <TextInput
+            label="Antal enheder"
+            value={values.numberOfUnits?.toString()}
+            onChangeText={handleChange("numberOfUnits")}
+            onBlur={handleBlur("numberOfUnits")}
+          />
+          <ErrorMessage name="numberOfUnits" />
+          <TextInput
+            label="Kommentar"
+            value={values.comment}
+            onChangeText={handleChange("comment")}
+            onBlur={handleBlur("comment")}
+          />
+          <ErrorMessage name="comment" />
+          <Text>Sidste opsamling</Text>
+          <Checkbox
+            status={values.isLastCollection ? "checked" : "unchecked"}
+            onPress={() =>
+              setFieldValue("isLastCollection", !values.isLastCollection)
+            }
+          />
+          <Button
+            title="Bestil afhentning"
+            disabled={!isValid || isSubmitting}
+            onPress={() => handleSubmit()}
+          />
+          <DismissableSnackbar
+            title="Afhentning bestilt"
+            showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
+          />
+        </Container>
+      )}
+    </Formik>
   );
 };
 
