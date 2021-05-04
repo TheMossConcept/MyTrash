@@ -70,6 +70,7 @@ const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
                   value={values.name}
                   label="Navn"
                 />
+                {/* TODO: Make this into its own utility component. If errorMessage is not show, show another component */}
                 <ErrorMessage name="name" />
                 <TextInput
                   onChangeText={handleChange("c5Reference")}
@@ -101,10 +102,6 @@ const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
                   handleBlur={handleBlur}
                   values={values}
                 />
-                <ErrorMessage name="collectionAdministratorId" />
-                <ErrorMessage name="logisticsPartnerId" />
-                <ErrorMessage name="recipientPartnerId" />
-                <ErrorMessage name="productionPartnerId" />
               </View>
             </View>
             <Text>Åbent cluster</Text>
@@ -131,14 +128,19 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginTop: 20,
     marginBottom: 20,
+    width: "100%",
   },
   inputContainer: {
     flexDirection: "row",
     zIndex: 1,
+    minWidth: "80%",
+  },
+  TextInput: {
+    marginBottom: 10,
   },
   inputColumn: {
     flex: 1,
-    padding: 5,
+    padding: 10,
   },
 });
 

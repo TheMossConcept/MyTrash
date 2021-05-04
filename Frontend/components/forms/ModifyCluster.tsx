@@ -4,6 +4,7 @@ import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import axiosUtils from "../../utils/axios";
+import Container from "../shared/Container";
 import DismissableSnackbar from "../shared/DismissableSnackbar";
 import ClusterForm, { ClusterFormData } from "./ClusterForm";
 
@@ -56,7 +57,7 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
   };
 
   return initialValues ? (
-    <View>
+    <Container>
       <ClusterForm
         cluster={initialValues}
         submit={updateCluster}
@@ -66,7 +67,7 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
         title="Clusteret blev opdateret"
         showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
       />
-    </View>
+    </Container>
   ) : (
     <ActivityIndicator />
   );
@@ -111,7 +112,7 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
   };
 
   return (
-    <View>
+    <Container>
       <ClusterForm
         cluster={initialValues}
         submit={createCluster}
@@ -121,6 +122,6 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
         title="Clusteret blev oprettet"
         showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
       />
-    </View>
+    </Container>
   );
 };

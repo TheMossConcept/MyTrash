@@ -7,26 +7,33 @@ import { View } from "../components/Themed";
 import UserForm, { UserFormData } from "../components/forms/UserForm";
 import { TabsParamList } from "../typings/types";
 import useClusters from "../hooks/useCluster";
+import Container from "../components/shared/Container";
+import { UpdateCluster } from "../components/forms/ModifyCluster";
 
 type Props = StackScreenProps<TabsParamList, "Indsamlingsadministration">;
 
 const CollectionAdministrationScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
-  const { clusters } = useClusters({
+  const { clusters, refetchClusters } = useClusters({
     collectionAdministratorId: userId,
   });
+
   const userFormDataState = React.useState<UserFormData>({});
   return (
     <View style={styles.container}>
       <ClusterList clusters={clusters}>
-        {() => (
-          <View>
+        {({ cluster }) => (
+          <Container>
+            <UpdateCluster
+              clusterId={cluster.id}
+              successCallback={refetchClusters}
+            />
             <UserForm userFormState={userFormDataState} isPartner={false} />
             <Button
               title="Inviter"
               onPress={() => console.log("Not implemented yet!")}
             />
-          </View>
+          </Container>
         )}
       </ClusterList>
     </View>

@@ -1,10 +1,11 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-import { FormikHandlers } from "formik";
+import { ErrorMessage, FormikHandlers } from "formik";
 import axiosUtils from "../../utils/axios";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import AutocompleteInput from "../inputs/AutocompleteInput";
+import Container from "../shared/Container";
 
 type UserInputProps = {
   title?: string;
@@ -103,20 +104,22 @@ const SelectPartnersForm: FC<Props> = ({ values, setValues, handleBlur }) => {
           const zIndex = userSelections - index;
 
           return (
-            <AutocompleteInput
-              containerStyle={{ zIndex }}
-              key={selectionData.title}
-              selectionState={[
-                values[selectionData.stateKey],
-                (newValue: string) =>
-                  setValues(selectionData.stateKey, newValue),
-              ]}
-              endpoint={selectionData.usersEndpoint}
-              handleBlur={
-                handleBlur ? handleBlur(selectionData.stateKey) : undefined
-              }
-              title={selectionData.title}
-            />
+            <View key={selectionData.title} style={{ width: "100%", zIndex }}>
+              <AutocompleteInput
+                containerStyle={{ zIndex }}
+                selectionState={[
+                  values[selectionData.stateKey],
+                  (newValue: string) =>
+                    setValues(selectionData.stateKey, newValue),
+                ]}
+                endpoint={selectionData.usersEndpoint}
+                handleBlur={
+                  handleBlur ? handleBlur(selectionData.stateKey) : undefined
+                }
+                title={selectionData.title}
+              />
+              <ErrorMessage name={selectionData.stateKey} />
+            </View>
           );
         })
       )}
