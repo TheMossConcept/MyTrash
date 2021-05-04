@@ -1,12 +1,11 @@
 import { ErrorMessage, Formik } from "formik";
 import * as yup from "yup";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { Checkbox, TextInput } from "react-native-paper";
-import DismissableSnackbar from "../shared/DismissableSnackbar";
 import SelectPartnersForm from "./SelectPartnersForm";
 
-type ClusterFormData = {
+export type ClusterFormData = {
   isOpen: boolean;
   name: string;
   c5Reference: string;
@@ -20,12 +19,10 @@ type ClusterFormData = {
 
 type Props = {
   cluster: ClusterFormData;
-  submit: (Cluster: ClusterFormData) => void;
+  submit: (Cluster: ClusterFormData, reset: () => void) => void;
 };
 
 const ClusterForm: FC<Props> = ({ cluster, submit }) => {
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
-
   const validationSchema = yup.object().shape({
     name: yup.string().required("Navn skal angives"),
     c5Reference: yup.string().required("C5 reference skal angives"),
@@ -44,7 +41,9 @@ const ClusterForm: FC<Props> = ({ cluster, submit }) => {
   return (
     <Formik
       initialValues={cluster}
-      onSubmit={submit}
+      onSubmit={(values, formikHelpers) =>
+        submit(values, formikHelpers.resetForm)
+      }
       validationSchema={validationSchema}
       validateOnMount
     >
@@ -55,6 +54,7 @@ const ClusterForm: FC<Props> = ({ cluster, submit }) => {
         values,
         isValid,
         setFieldValue,
+        isSubmitting,
       }) => {
         const setPartnersValues = (field: string, value: any) =>
           setFieldValue(field, value, true);
@@ -113,12 +113,8 @@ const ClusterForm: FC<Props> = ({ cluster, submit }) => {
             />
             <Button
               title="Opret cluster"
-              disabled={!isValid}
+              disabled={!isValid || isSubmitting}
               onPress={() => handleSubmit()}
-            />
-            <DismissableSnackbar
-              title="Clusteret blev oprettet"
-              showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
             />
           </View>
         );
