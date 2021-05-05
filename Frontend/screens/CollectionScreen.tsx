@@ -11,7 +11,7 @@ import useClusters from "../hooks/useCluster";
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
   PlasticCollection,
-} from "../components/collections/PlasticCollectionsDetails";
+} from "../components/collection/PlasticCollectionsDetails";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;

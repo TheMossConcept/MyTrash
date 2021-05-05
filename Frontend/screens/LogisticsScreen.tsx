@@ -8,10 +8,10 @@ import useAccessToken from "../hooks/useAccessToken";
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
   PlasticCollection,
-} from "../components/collections/PlasticCollectionsDetails";
+} from "../components/collection/PlasticCollectionsDetails";
 import sortCollectionsByStatus from "../utils/plasticCollections";
-import SchedulePlasticCollection from "../components/collections/SchedulePlasticCollection";
-import DeliverPlasticCollection from "../components/collections/DeliverPlasticCollection";
+import SchedulePlasticCollection from "../components/collection/SchedulePlasticCollection";
+import DeliverPlasticCollection from "../components/collection/DeliverPlasticCollection";
 
 type Props = StackScreenProps<TabsParamList, "Logistik">;
 

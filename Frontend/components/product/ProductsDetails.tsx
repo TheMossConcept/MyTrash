@@ -1,12 +1,9 @@
 import axios from "axios";
 import React, { FC, useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
-import axiosUtils from "../utils/axios";
-import useAccessToken from "../hooks/useAccessToken";
-import DismissableSnackbar from "./shared/DismissableSnackbar";
-import FormContainer from "./shared/FormContainer";
-import NumberField from "./inputs/NumberField";
-import SubmitButton from "./inputs/SubmitButton";
+import axiosUtils from "../../utils/axios";
+import useAccessToken from "../../hooks/useAccessToken";
+import CreateProduct from "./CreateProduct";
 
 type Props = {
   clusterId: string;
@@ -20,17 +17,11 @@ export type Product = {
   hasBeenSent: boolean;
 };
 
-type CreateProductFormData = {
-  productNumber?: number;
-};
-
-const ProductsForBatch: FC<Props> = ({
+const ProductsDetails: FC<Props> = ({
   clusterId,
   productionPartnerId,
   batchId,
 }) => {
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
-  const initialFormValues: CreateProductFormData = {};
   const accessToken = useAccessToken();
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -46,26 +37,6 @@ const ProductsForBatch: FC<Props> = ({
       });
   }, [accessToken, batchId]);
 
-  const createProduct = (
-    values: CreateProductFormData,
-    resetForm: () => void
-  ) => {
-    axios
-      .post(
-        "/CreateProduct",
-        {
-          clusterId,
-          productionPartnerId,
-          batchId,
-          productNumber: values.productNumber,
-        },
-        { ...axiosUtils.getSharedAxiosConfig(accessToken) }
-      )
-      .then(() => {
-        resetForm();
-      });
-  };
-
   return (
     <View style={styles.container}>
       <Text>Produkter lavet ud af batch</Text>
@@ -79,20 +50,11 @@ const ProductsForBatch: FC<Props> = ({
           )}
         </View>
       ))}
-      <Text>Opret produkt</Text>
-      <FormContainer
-        initialValues={initialFormValues}
-        onSubmit={(values, formikHelpers) =>
-          createProduct(values, formikHelpers.resetForm)
-        }
-      >
-        <NumberField formKey="productNumber" label="Varenummer" />
-        <SubmitButton title="Opret produkt" />
-        <DismissableSnackbar
-          title="Produkt oprettet"
-          showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-        />
-      </FormContainer>
+      <CreateProduct
+        clusterId={clusterId}
+        batchId={batchId}
+        productionPartnerId={productionPartnerId}
+      />
     </View>
   );
 };
@@ -123,4 +85,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductsForBatch;
+export default ProductsDetails;

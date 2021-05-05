@@ -1,4 +1,5 @@
 import axios from "axios";
+import * as yup from "yup";
 import React, { FC, useState } from "react";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
@@ -14,6 +15,12 @@ type CreateBatchFormData = {
   outputWeight?: number;
   additionFactor?: number;
 };
+
+const validationSchema = yup.object().shape({
+  inputWeight: yup.number().required("Forbrugt plast er påkrævet"),
+  outputWeight: yup.number().required("Batch vægt er påkrævet"),
+  additionFactor: yup.number().required("Tilsætningsfaktor er påkrævet"),
+});
 
 const CreateBatch: FC<Props> = ({ clusterId, batchCreatorId }) => {
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
@@ -48,6 +55,7 @@ const CreateBatch: FC<Props> = ({ clusterId, batchCreatorId }) => {
       onSubmit={(values, formikHelpers) =>
         createBatch(values, formikHelpers.resetForm)
       }
+      validationSchema={validationSchema}
     >
       <NumberField formKey="inputWeight" label="Forbrugt plast" />
       <NumberField formKey="outputWeight" label="Batch vægt" />

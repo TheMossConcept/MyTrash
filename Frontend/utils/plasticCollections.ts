@@ -1,4 +1,4 @@
-import { PlasticCollection } from "../components/collections/PlasticCollectionsDetails";
+import { PlasticCollection } from "../components/collection/PlasticCollectionsDetails";
 
 export default function sortCollectionsByStatus(
   plasticCollections: PlasticCollection[]
