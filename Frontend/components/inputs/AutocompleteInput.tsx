@@ -51,7 +51,9 @@ const AutocompleteInput: FC<Props> = ({
 
   const [selectedUserId, setSelectedUserId] = selectionState;
 
-  // Always maintain consistency with the state and the UI
+  // ================ UI and selection state consistency ========================
+
+  // This useEffect ensures correct query state on selection
   useEffect(() => {
     // TODO: This is going to be a problem, once we introduce pagination!
     filteredUsers.forEach((user) => {
@@ -61,11 +63,21 @@ const AutocompleteInput: FC<Props> = ({
     });
   }, [filteredUsers, selectedUserId]);
 
+  // This useEffect enables reset from outside this component (query is local to  this component!)
+  useEffect(() => {
+    if (!selectedUserId) {
+      setQuery("");
+    }
+  }, [selectedUserId]);
+
+  // Always reset selection state when changing the query!
   const setQueryWrapper = (newValue: string) => {
     // When you re-query, you automatically loose your selection
     setSelectedUserId("");
     setQuery(newValue);
   };
+
+  // ============================================================================
 
   const accessToken = useContext(AccessTokenContext);
 

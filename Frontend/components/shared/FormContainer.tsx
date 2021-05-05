@@ -1,4 +1,4 @@
-import { Formik, FormikHelpers } from "formik";
+import { Formik, FormikConfig } from "formik";
 import React, { PropsWithChildren } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -12,10 +12,7 @@ export const FormContext = React.createContext<FormContextValues<any> | null>(
   null
 );
 
-type Props<T> = {
-  initialValues: T;
-  onSubmit: (values: T, formikHelpers: FormikHelpers<T>) => void;
-};
+type Props<T> = FormikConfig<T>;
 
 export default function FormContainer<T>({
   initialValues,

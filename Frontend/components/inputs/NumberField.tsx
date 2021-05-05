@@ -23,7 +23,7 @@ export default function NumberField<T>({
           label={label}
           /* NB! This is unsafe but I don't know how to statically tell the compiler
           that T should only contain strings */
-          value={((values[key] as unknown) as number)?.toString()}
+          value={((values[key] as unknown) as number)?.toString() || ""}
           onChangeText={handleChange(key)}
           onBlur={handleBlur(key)}
         />

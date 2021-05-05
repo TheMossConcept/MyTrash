@@ -1,11 +1,10 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-import { ErrorMessage, FormikHandlers } from "formik";
+import { ErrorMessage, useFormikContext } from "formik";
 import axiosUtils from "../../utils/axios";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import AutocompleteInput from "../inputs/AutocompleteInput";
-import Container from "../shared/Container";
 
 type UserInputProps = {
   title?: string;
@@ -17,19 +16,9 @@ type UserInputProps = {
     | "recipientPartnerId";
 };
 
-type StateValue = {
-  productionPartnerId?: string;
-  collectionAdministratorId?: string;
-  logisticsPartnerId?: string;
-  recipientPartnerId?: string;
-};
+type Props = {};
 
-type Props = {
-  values: StateValue;
-  setValues: (field: string, newValue: string) => void;
-} & Pick<FormikHandlers, "handleBlur">;
-
-const SelectPartnersForm: FC<Props> = ({ values, setValues, handleBlur }) => {
+const SelectPartnersForm: FC<Props> = () => {
   const [loading, setLoading] = useState(false);
   const accessToken = useContext(AccessTokenContext);
 
@@ -94,37 +83,44 @@ const SelectPartnersForm: FC<Props> = ({ values, setValues, handleBlur }) => {
     }
   }, [accessToken]);
 
-  return (
-    <View>
-      {loading ? (
-        <ActivityIndicator />
-      ) : (
-        userSelectionData.map((selectionData, index) => {
-          const userSelections = userSelectionData.length;
-          const zIndex = userSelections - index;
+  const formikProps = useFormikContext<any>();
 
-          return (
-            <View key={selectionData.title} style={{ width: "100%", zIndex }}>
-              <AutocompleteInput
-                containerStyle={{ zIndex }}
-                selectionState={[
-                  values[selectionData.stateKey],
-                  (newValue: string) =>
-                    setValues(selectionData.stateKey, newValue),
-                ]}
-                endpoint={selectionData.usersEndpoint}
-                handleBlur={
-                  handleBlur ? handleBlur(selectionData.stateKey) : undefined
-                }
-                title={selectionData.title}
-              />
-              <ErrorMessage name={selectionData.stateKey} />
-            </View>
-          );
-        })
-      )}
-    </View>
-  );
+  if (!formikProps) {
+    throw Error(
+      "Incorrect use of select partners form. It's used outside a FormContainer which is not allowed as it needs the context crated by Formik!"
+    );
+  } else {
+    const { values, setFieldValue, handleBlur } = formikProps;
+    return (
+      <View>
+        {loading ? (
+          <ActivityIndicator />
+        ) : (
+          userSelectionData.map((selectionData, index) => {
+            const userSelections = userSelectionData.length;
+            const zIndex = userSelections - index;
+
+            return (
+              <View key={selectionData.title} style={{ width: "100%", zIndex }}>
+                <AutocompleteInput
+                  containerStyle={{ zIndex }}
+                  selectionState={[
+                    values[selectionData.stateKey],
+                    (newValue: string) =>
+                      setFieldValue(selectionData.stateKey, newValue),
+                  ]}
+                  endpoint={selectionData.usersEndpoint}
+                  handleBlur={handleBlur(selectionData.stateKey)}
+                  title={selectionData.title}
+                />
+                <ErrorMessage name={selectionData.stateKey} />
+              </View>
+            );
+          })
+        )}
+      </View>
+    );
+  }
 };
 
 export default SelectPartnersForm;

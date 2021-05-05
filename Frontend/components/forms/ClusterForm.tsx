@@ -1,9 +1,12 @@
-import { ErrorMessage, Formik } from "formik";
 import * as yup from "yup";
 import React, { FC } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-import { Checkbox, TextInput } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
 import SelectPartnersForm from "./SelectPartnersForm";
+import FormContainer from "../shared/FormContainer";
+import StringField from "../inputs/StringField";
+import NumberField from "../inputs/NumberField";
+import SubmitButton from "../inputs/SubmitButton";
+import BooleanField from "../inputs/BooleanField";
 
 export type ClusterFormData = {
   isOpen: boolean;
@@ -38,7 +41,7 @@ const validationSchema = yup.object().shape({
 
 const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
   return (
-    <Formik
+    <FormContainer
       initialValues={cluster}
       onSubmit={(values, formikHelpers) =>
         submit(values, formikHelpers.resetForm)
@@ -46,76 +49,26 @@ const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
       validationSchema={validationSchema}
       validateOnMount
     >
-      {({
-        handleSubmit,
-        handleBlur,
-        handleChange,
-        values,
-        isValid,
-        setFieldValue,
-        isSubmitting,
-      }) => {
-        const setPartnersValues = (field: string, value: any) =>
-          setFieldValue(field, value, true);
-
-        return (
-          <View style={styles.container}>
-            <View style={styles.inputContainer}>
-              <View style={styles.inputColumn}>
-                <TextInput
-                  onChangeText={handleChange("name")}
-                  onBlur={handleBlur("name")}
-                  value={values.name}
-                  label="Navn"
-                />
-                {/* TODO: Make this into its own utility component. If errorMessage is not show, show another component */}
-                <ErrorMessage name="name" />
-                <TextInput
-                  onChangeText={handleChange("c5Reference")}
-                  onBlur={handleBlur("c5Reference")}
-                  value={values.c5Reference}
-                  label="C5 Reference"
-                />
-                <ErrorMessage name="c5Reference" />
-                <TextInput
-                  onChangeText={handleChange("necessaryPlastic")}
-                  onBlur={handleBlur("necessaryPlastic")}
-                  value={values.necessaryPlastic?.toString() || ""}
-                  label="Plastbehov"
-                />
-                <ErrorMessage name="necessaryPlastic" />
-                <TextInput
-                  onChangeText={handleChange("usefulPlasticFactor")}
-                  onBlur={handleBlur("usefulPlasticFactor")}
-                  keyboardType="numeric"
-                  value={values.usefulPlasticFactor?.toString() || ""}
-                  label="Beregningsfaktor"
-                />
-                <ErrorMessage name="usefulPlasticFactor" />
-              </View>
-              {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
-              <View style={styles.inputColumn}>
-                <SelectPartnersForm
-                  setValues={setPartnersValues}
-                  handleBlur={handleBlur}
-                  values={values}
-                />
-              </View>
-            </View>
-            <Text>Åbent cluster</Text>
-            <Checkbox
-              status={values.isOpen ? "checked" : "unchecked"}
-              onPress={() => setFieldValue("isOpen", !values.isOpen)}
-            />
-            <Button
-              title={submitTitle}
-              disabled={!isValid || isSubmitting}
-              onPress={() => handleSubmit()}
+      <View style={styles.container}>
+        <View style={styles.inputContainer}>
+          <View style={styles.inputColumn}>
+            <StringField formKey="name" label="Navn" />
+            <StringField formKey="c5Reference" label="C5 Reference" />
+            <NumberField formKey="necessaryPlastic" label="Plastbehov" />
+            <NumberField
+              formKey="usefulPlasticFactor"
+              label="Beregningsfaktor"
             />
           </View>
-        );
-      }}
-    </Formik>
+          {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
+          <View style={styles.inputColumn}>
+            <SelectPartnersForm />
+          </View>
+        </View>
+        <BooleanField formKey="isOpen" label="Åbent cluster" />
+        <SubmitButton title={submitTitle} />
+      </View>
+    </FormContainer>
   );
 };
 
