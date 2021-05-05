@@ -7,7 +7,6 @@ import axiosUtils from "../utils/axios";
 import PlasticCollectionsDetails, {
   PlasticCollection,
 } from "../components/collections/PlasticCollectionsDetails";
-import NumericInput from "../components/inputs/NumericInput";
 
 import { View } from "../components/Themed";
 import useAccessToken from "../hooks/useAccessToken";
@@ -16,6 +15,9 @@ import DismissableSnackbar from "../components/shared/DismissableSnackbar";
 import CreateBatch from "../components/batch/CreateBatch";
 import BatchDetails, { Batch } from "../components/batch/BatchDetails";
 import sortBatchByStatus from "../utils/batch";
+import FormContainer from "../components/shared/FormContainer";
+import NumberField from "../components/inputs/NumberField";
+import SubmitButton from "../components/inputs/SubmitButton";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
@@ -109,37 +111,53 @@ type RegisterPlasticCollectionRecieptProps = {
   plasticCollection: PlasticCollection;
 };
 
+type RegisterWeightFormData = {
+  weight?: number;
+};
+
 const RegisterPlasticCollectionReciept: FC<RegisterPlasticCollectionRecieptProps> = ({
   plasticCollection,
 }) => {
-  const [weight, setWeight] = useState<number | undefined>(
-    plasticCollection.weight
-  );
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
 
   const accessToken = useAccessToken();
-  const registerReciept = () => {
+  const registerReciept = (
+    values: RegisterWeightFormData,
+    resetForm: () => void
+  ) => {
     axios
       .post(
         "/RegisterPlasticCollectionReceived",
-        { weight },
+        { ...values },
         {
           params: { collectionId: plasticCollection.id },
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         }
       )
-      .then(() => setShowSuccessSnackbar(true));
+      .then(() => {
+        setShowSuccessSnackbar(true);
+        resetForm();
+      });
+  };
+
+  const initialValues: RegisterWeightFormData = {
+    weight: plasticCollection.weight,
   };
 
   return (
-    <View>
-      <NumericInput label="Vægt" numberState={[weight, setWeight]} />
-      <Button title="Register modtagelse" onPress={registerReciept} />
+    <FormContainer
+      initialValues={initialValues}
+      onSubmit={(values, formikHelpers) =>
+        registerReciept(values, formikHelpers.resetForm)
+      }
+    >
+      <NumberField formKey="weight" label="Vægt" />
+      <SubmitButton title="Register modtagelse" />
       <DismissableSnackbar
         title="Modtagelse registreret"
         showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
       />
-    </View>
+    </FormContainer>
   );
 };
 

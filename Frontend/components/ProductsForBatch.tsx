@@ -3,7 +3,10 @@ import React, { FC, useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import axiosUtils from "../utils/axios";
 import useAccessToken from "../hooks/useAccessToken";
-import NumericInput from "./inputs/NumericInput";
+import DismissableSnackbar from "./shared/DismissableSnackbar";
+import FormContainer from "./shared/FormContainer";
+import NumberField from "./inputs/NumberField";
+import SubmitButton from "./inputs/SubmitButton";
 
 type Props = {
   clusterId: string;
@@ -17,15 +20,18 @@ export type Product = {
   hasBeenSent: boolean;
 };
 
+type CreateProductFormData = {
+  productNumber?: number;
+};
+
 const ProductsForBatch: FC<Props> = ({
   clusterId,
   productionPartnerId,
   batchId,
 }) => {
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const initialFormValues: CreateProductFormData = {};
   const accessToken = useAccessToken();
-  const [productNumber, setProductNumer] = useState<number | undefined>(
-    undefined
-  );
 
   const [products, setProducts] = useState<Product[]>([]);
   useEffect(() => {
@@ -40,12 +46,24 @@ const ProductsForBatch: FC<Props> = ({
       });
   }, [accessToken, batchId]);
 
-  const createProduct = () => {
-    axios.post(
-      "/CreateProduct",
-      { clusterId, productionPartnerId, batchId, productNumber },
-      { ...axiosUtils.getSharedAxiosConfig(accessToken) }
-    );
+  const createProduct = (
+    values: CreateProductFormData,
+    resetForm: () => void
+  ) => {
+    axios
+      .post(
+        "/CreateProduct",
+        {
+          clusterId,
+          productionPartnerId,
+          batchId,
+          productNumber: values.productNumber,
+        },
+        { ...axiosUtils.getSharedAxiosConfig(accessToken) }
+      )
+      .then(() => {
+        resetForm();
+      });
   };
 
   return (
@@ -62,11 +80,19 @@ const ProductsForBatch: FC<Props> = ({
         </View>
       ))}
       <Text>Opret produkt</Text>
-      <NumericInput
-        label="Varenummer"
-        numberState={[productNumber, setProductNumer]}
-      />
-      <Button title="Opret product" onPress={createProduct} />
+      <FormContainer
+        initialValues={initialFormValues}
+        onSubmit={(values, formikHelpers) =>
+          createProduct(values, formikHelpers.resetForm)
+        }
+      >
+        <NumberField formKey="productNumber" label="Varenummer" />
+        <SubmitButton title="Opret produkt" />
+        <DismissableSnackbar
+          title="Produkt oprettet"
+          showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
+        />
+      </FormContainer>
     </View>
   );
 };
