@@ -50,6 +50,9 @@ const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
       validateOnMount
     >
       <View style={styles.container}>
+        <View style={styles.isOpenCheckboxContainer}>
+          <BooleanField formKey="isOpen" label="Åbent cluster" />
+        </View>
         <View style={styles.inputContainer}>
           <View style={styles.inputColumn}>
             <StringField formKey="name" label="Navn" />
@@ -65,7 +68,6 @@ const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
             <SelectPartnersForm />
           </View>
         </View>
-        <BooleanField formKey="isOpen" label="Åbent cluster" />
         <SubmitButton title={submitTitle} />
       </View>
     </FormContainer>
@@ -79,19 +81,20 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginTop: 20,
     marginBottom: 20,
-    width: "100%",
+    width: "80%",
   },
   inputContainer: {
     flexDirection: "row",
     zIndex: 1,
-    minWidth: "80%",
-  },
-  TextInput: {
-    marginBottom: 10,
+    width: "80%",
   },
   inputColumn: {
     flex: 1,
     padding: 10,
+  },
+  isOpenCheckboxContainer: {
+    alignItems: "flex-start",
+    width: "80%",
   },
 });
 
