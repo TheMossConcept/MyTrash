@@ -2,16 +2,6 @@ import { Formik, FormikConfig } from "formik";
 import React, { PropsWithChildren } from "react";
 import { StyleSheet, View } from "react-native";
 
-export type FormContextValues<T> = {
-  values: T;
-  handleChange: (key: keyof T) => void;
-  handleBlur: (key: keyof T) => void;
-};
-
-export const FormContext = React.createContext<FormContextValues<any> | null>(
-  null
-);
-
 type Props<T> = FormikConfig<T>;
 
 export default function FormContainer<T>({
@@ -22,12 +12,8 @@ export default function FormContainer<T>({
   // TODO: Add global view context here!
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit}>
-      {(formikProps: FormContextValues<T>) => {
-        return (
-          <FormContext.Provider value={formikProps}>
-            <View style={styles.container}>{children}</View>
-          </FormContext.Provider>
-        );
+      {() => {
+        return <View style={styles.container}>{children}</View>;
       }}
     </Formik>
   );
