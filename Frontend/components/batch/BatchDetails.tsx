@@ -26,7 +26,7 @@ const BatchDetail: FC<BatchDetailProps> = ({ batch, children }) => {
   return (
     <List.Accordion title={title}>
       <Text>Plast input: {batch.inputWeight}kg</Text>
-      <Text>Batch vægt: {batch.inputWeight}kg</Text>
+      <Text>Batch vægt: {batch.outputWeight}kg</Text>
       <Text>Batch oprettet af: {batch.creatorName}</Text>
       {batch.recipientName && (
         <Text>Batch sendt til: {batch.recipientName}</Text>

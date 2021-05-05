@@ -1,11 +1,11 @@
 import React, { FC } from "react";
-import { StyleSheet, View, ViewProps } from "react-native";
+import { StyleSheet, View } from "react-native";
 
-type Props = {} & Pick<ViewProps, "style">;
+type Props = {};
 
-const Container: FC<Props> = ({ children, style }) => {
+const Container: FC<Props> = ({ children }) => {
   // TODO: Add global view context here!
-  return <View style={{ ...style, ...styles.container }}>{children}</View>;
+  return <View style={styles.container}>{children}</View>;
 };
 
 const styles = StyleSheet.create({
