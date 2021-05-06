@@ -5,13 +5,12 @@ import { StyleSheet, View } from "react-native";
 type Props<T> = FormikConfig<T>;
 
 export default function FormContainer<T>({
-  initialValues,
-  onSubmit,
   children,
+  ...formikConfig
 }: PropsWithChildren<Props<T>>) {
   // TODO: Add global view context here!
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit}>
+    <Formik {...formikConfig}>
       {() => {
         return <View style={styles.container}>{children}</View>;
       }}
