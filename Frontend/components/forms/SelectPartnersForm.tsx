@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-import { ErrorMessage, useFormikContext } from "formik";
+import { ErrorMessage } from "formik";
 import axiosUtils from "../../utils/axios";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import AutocompleteInput from "../inputs/AutocompleteInput";
@@ -9,7 +9,7 @@ import AutocompleteInput from "../inputs/AutocompleteInput";
 type UserInputProps = {
   title?: string;
   usersEndpoint: string;
-  stateKey:
+  formKey:
     | "productionPartnerId"
     | "collectionAdministratorId"
     | "logisticsPartnerId"
@@ -43,30 +43,30 @@ const SelectPartnersForm: FC<Props> = () => {
 
             const usersEndpoint = `/GetUsersByAppRole?appRoleId=${appRoleId}`;
 
-            let stateKey;
+            let formKey;
             switch (appRoleValue) {
               case "ProductionPartner":
-                stateKey = "productionPartnerId";
+                formKey = "productionPartnerId";
                 break;
               case "CollectionAdministrator":
-                stateKey = "collectionAdministratorId";
+                formKey = "collectionAdministratorId";
                 break;
               case "LogisticsPartner":
-                stateKey = "logisticsPartnerId";
+                formKey = "logisticsPartnerId";
                 break;
               case "RecipientPartner":
-                stateKey = "recipientPartnerId";
+                formKey = "recipientPartnerId";
                 break;
               default:
                 console.warn("DEFAULT CASE IN CLUSTER CREATION FORM!!");
                 break;
             }
 
-            return stateKey
+            return formKey
               ? {
                   title,
                   usersEndpoint,
-                  stateKey,
+                  formKey,
                 }
               : undefined;
           });
@@ -83,44 +83,30 @@ const SelectPartnersForm: FC<Props> = () => {
     }
   }, [accessToken]);
 
-  const formikProps = useFormikContext<any>();
+  return (
+    <View>
+      {loading ? (
+        <ActivityIndicator />
+      ) : (
+        userSelectionData.map((selectionData, index) => {
+          const userSelections = userSelectionData.length;
+          const zIndex = userSelections - index;
 
-  if (!formikProps) {
-    throw Error(
-      "Incorrect use of select partners form. It's used outside a FormContainer which is not allowed as it needs the context crated by Formik!"
-    );
-  } else {
-    const { values, setFieldValue, handleBlur } = formikProps;
-    return (
-      <View>
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          userSelectionData.map((selectionData, index) => {
-            const userSelections = userSelectionData.length;
-            const zIndex = userSelections - index;
-
-            return (
-              <View key={selectionData.title} style={{ width: "100%", zIndex }}>
-                <AutocompleteInput
-                  containerStyle={{ zIndex }}
-                  selectionState={[
-                    values[selectionData.stateKey],
-                    (newValue: string) =>
-                      setFieldValue(selectionData.stateKey, newValue),
-                  ]}
-                  endpoint={selectionData.usersEndpoint}
-                  handleBlur={handleBlur(selectionData.stateKey)}
-                  title={selectionData.title}
-                />
-                <ErrorMessage name={selectionData.stateKey} />
-              </View>
-            );
-          })
-        )}
-      </View>
-    );
-  }
+          return (
+            <View key={selectionData.title} style={{ width: "100%", zIndex }}>
+              <AutocompleteInput
+                containerStyle={{ zIndex }}
+                endpoint={selectionData.usersEndpoint}
+                title={selectionData.title}
+                formKey={selectionData.formKey}
+              />
+              <ErrorMessage name={selectionData.formKey} />
+            </View>
+          );
+        })
+      )}
+    </View>
+  );
 };
 
 export default SelectPartnersForm;
