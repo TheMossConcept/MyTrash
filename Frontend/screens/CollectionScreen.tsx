@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useEffect, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { View, Text } from "react-native";
 import { DateTime } from "luxon";
 import axiosUtils from "../utils/axios";
 import CollectionForm from "../components/forms/OrderCollectionForm";
@@ -13,6 +13,7 @@ import PlasticCollectionsDetails, {
   PlasticCollection,
 } from "../components/collection/PlasticCollectionsDetails";
 import sortCollectionsByStatus from "../utils/plasticCollections";
+import Container from "../components/shared/Container";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
@@ -22,7 +23,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
   const { clusters } = useClusters({ collectorId: userId });
 
   return (
-    <View style={styles.container}>
+    <Container style={{ justifyContent: "center" }}>
       <ClusterList clusters={clusters}>
         {({ cluster }) => (
           <View>
@@ -31,7 +32,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
           </View>
         )}
       </ClusterList>
-    </View>
+    </Container>
   );
 };
 
@@ -62,7 +63,7 @@ const UserCollectionsForCluster: FC<UserCollectionsForClusterProps> = ({
 
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
   return (
-    <View>
+    <Container>
       <PlasticCollectionsDetails
         title="Afventer"
         plasticCollections={sortedCollections.pending}
@@ -96,26 +97,8 @@ const UserCollectionsForCluster: FC<UserCollectionsForClusterProps> = ({
         title="Bekræftet"
         plasticCollections={sortedCollections.received}
       />
-    </View>
+    </Container>
   );
 };
 
 export default CollectionScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "grey",
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-});

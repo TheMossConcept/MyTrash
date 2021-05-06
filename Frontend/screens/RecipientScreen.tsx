@@ -1,20 +1,20 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useState, useEffect } from "react";
-import { Button, StyleSheet, Text } from "react-native";
+import { Button, Text } from "react-native";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import axiosUtils from "../utils/axios";
 import PlasticCollectionsDetails, {
   PlasticCollection,
 } from "../components/collection/PlasticCollectionsDetails";
 
-import { View } from "../components/Themed";
 import useAccessToken from "../hooks/useAccessToken";
 import { TabsParamList } from "../typings/types";
 import CreateBatch from "../components/batch/CreateBatch";
 import BatchDetails, { Batch } from "../components/batch/BatchDetails";
 import sortBatchByStatus from "../utils/batch";
 import RegisterPlasticCollectionReciept from "../components/collection/RegisterPlasticCollectionReciept";
+import Container from "../components/shared/Container";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
@@ -54,7 +54,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   const sortedBatches = sortBatchByStatus(batches);
 
   return (
-    <View style={styles.container}>
+    <Container style={{ justifyContent: "center" }}>
       <PlasticCollectionsDetails
         title="Modtaget"
         plasticCollections={sortedCollections.delivered}
@@ -83,7 +83,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
       </BatchDetails>
       <BatchDetails batches={sortedBatches.sent} title="Afsendte" />
       <BatchDetails batches={sortedBatches.received} title="Modtaget" />
-    </View>
+    </Container>
   );
 };
 
@@ -105,12 +105,3 @@ const RegisterBatchSent: FC<RegisterBatchSentProps> = ({ batchId }) => {
 };
 
 export default RecipientScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "grey",
-  },
-});

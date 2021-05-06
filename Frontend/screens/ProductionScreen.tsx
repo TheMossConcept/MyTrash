@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useEffect, useState } from "react";
-import { Button, StyleSheet, View } from "react-native";
+import { Button, View } from "react-native";
 import axiosUtils from "../utils/axios";
 import { TabsParamList } from "../typings/types";
 import useAccessToken from "../hooks/useAccessToken";
@@ -9,6 +9,7 @@ import sortBatchByStatus from "../utils/batch";
 import BatchDetails, { Batch } from "../components/batch/BatchDetails";
 import DismissableSnackbar from "../components/shared/DismissableSnackbar";
 import ProductsDetails from "../components/product/ProductsDetails";
+import Container from "../components/shared/Container";
 
 type Props = StackScreenProps<TabsParamList, "Produktion">;
 
@@ -32,7 +33,7 @@ const ProductionScreen: FC<Props> = ({ route }) => {
 
   const sortedBatches = sortBatchByStatus(batches);
   return (
-    <View style={styles.container}>
+    <Container>
       <BatchDetails batches={sortedBatches.sent} title="Modtagne batches">
         {(batch) => <ConfirmBatchReception batchId={batch.id} />}
       </BatchDetails>
@@ -45,7 +46,7 @@ const ProductionScreen: FC<Props> = ({ route }) => {
           />
         )}
       </BatchDetails>
-    </View>
+    </Container>
   );
 };
 
@@ -81,12 +82,3 @@ const ConfirmBatchReception: FC<ConfirmBatchReceptionProps> = ({ batchId }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "grey",
-  },
-});
