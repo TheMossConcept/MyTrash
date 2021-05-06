@@ -53,7 +53,8 @@ const AutocompleteInput: FC<Props> = ({
 
   // ================ UI and selection state consistency ========================
 
-  // This useEffect ensures correct query state on selection
+  // This useEffect ensures correct query state on selection both when it happens explicitly
+  // in the component and explicitly from the outside
   useEffect(() => {
     // TODO: This is going to be a problem, once we introduce pagination!
     filteredUsers.forEach((user) => {
