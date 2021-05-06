@@ -1,6 +1,6 @@
 import { Formik, FormikConfig } from "formik";
 import React, { PropsWithChildren } from "react";
-import { StyleSheet, View } from "react-native";
+import Container from "./Container";
 
 type Props<T> = FormikConfig<T>;
 
@@ -12,18 +12,8 @@ export default function FormContainer<T>({
   return (
     <Formik {...formikConfig}>
       {() => {
-        return <View style={styles.container}>{children}</View>;
+        return <Container>{children}</Container>;
       }}
     </Formik>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "grey",
-  },
-});

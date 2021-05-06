@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
-import { ErrorMessage } from "formik";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import axiosUtils from "../../utils/axios";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import AutocompleteInput from "../inputs/AutocompleteInput";
@@ -92,12 +91,15 @@ const SelectPartnersForm: FC<Props> = () => {
           const userSelections = userSelectionData.length;
           const zIndex = userSelections - index;
 
+          const isLastInput = index === userSelections - 1;
+
           return (
             <View key={selectionData.title} style={{ width: "100%", zIndex }}>
               <AutocompleteInput
                 containerStyle={{ zIndex }}
                 endpoint={selectionData.usersEndpoint}
                 title={selectionData.title}
+                style={isLastInput ? undefined : styles.inputField}
                 formKey={selectionData.formKey}
               />
             </View>
@@ -107,5 +109,11 @@ const SelectPartnersForm: FC<Props> = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  inputField: {
+    marginBottom: 5,
+  },
+});
 
 export default SelectPartnersForm;

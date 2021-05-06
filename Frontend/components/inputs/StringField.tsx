@@ -1,13 +1,14 @@
 import { ErrorMessage, useFormikContext } from "formik";
 import React, { PropsWithChildren } from "react";
-import { View } from "react-native";
+import { View, ViewStyle } from "react-native";
 import { TextInput } from "react-native-paper";
 
-type Props<T> = { formKey: keyof T & string; label: string };
+type Props<T> = { formKey: keyof T & string; label: string; style?: ViewStyle };
 
 export default function StringField<T>({
   formKey: key,
   label,
+  style,
 }: PropsWithChildren<Props<T>>) {
   const formikProps = useFormikContext<T>();
 
@@ -18,7 +19,7 @@ export default function StringField<T>({
   } else {
     const { values, handleChange, handleBlur } = formikProps;
     return (
-      <View>
+      <View style={style}>
         <TextInput
           /* NB! This is unsafe but I don't know how to statically tell the compiler
           that T should only contain strings */

@@ -36,6 +36,5 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     fontSize: 10,
     fontWeight: "800",
-    color: "white",
   },
 });

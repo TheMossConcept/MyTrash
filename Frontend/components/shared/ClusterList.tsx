@@ -1,5 +1,5 @@
-import React, { FC, ReactElement } from "react";
-import { StyleSheet } from "react-native";
+import React, { FC, ReactElement, useState } from "react";
+import { Text, StyleSheet, View, TouchableWithoutFeedback } from "react-native";
 import { List } from "react-native-paper";
 
 export type Cluster = {
@@ -14,20 +14,77 @@ type Props = {
 
 const ClusterList: FC<Props> = ({ clusters, children }) => {
   return (
-    <List.Section title="Clusters" style={styles.section}>
+    <List.Section title="Clusters" style={styles.container}>
       {clusters.map((cluster) => (
-        <List.Accordion key={cluster.id} title={cluster.displayName}>
-          {children({ cluster })}
-        </List.Accordion>
+        <ListItem key={cluster.id} cluster={cluster}>
+          {children}
+        </ListItem>
       ))}
     </List.Section>
   );
 };
 
+type ListItemProps = {
+  cluster: Cluster;
+} & Pick<Props, "children">;
+
+const ListItem: FC<ListItemProps> = ({ cluster, children }) => {
+  const [clusterDetailsAreShown, setClusterDetailsAreShown] = useState(false);
+  const toggleClusterDetailsAreShown = () => {
+    setClusterDetailsAreShown(!clusterDetailsAreShown);
+  };
+
+  return (
+    <View style={styles.itemContainer}>
+      <View style={styles.itemSelector}>
+        <TouchableWithoutFeedback onPress={toggleClusterDetailsAreShown}>
+          <Text style={styles.itemText}>{cluster.displayName}</Text>
+        </TouchableWithoutFeedback>
+      </View>
+      <View style={styles.itemDetails}>
+        {clusterDetailsAreShown && (
+          <View style={styles.border}>{children({ cluster })}</View>
+        )}
+      </View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
-  section: {
+  container: {
     alignItems: "flex-start",
     width: "95%",
+  },
+  itemContainer: {
+    flexDirection: "row",
+    width: "95%",
+  },
+  itemSelector: {
+    flex: 1,
+  },
+  itemText: {
+    borderColor: "black",
+    borderRadius: 8,
+    borderWidth: 0.1,
+    borderStyle: "solid",
+    textAlign: "center",
+    backgroundColor: "white",
+    fontSize: 17,
+    fontWeight: "500",
+    padding: 10,
+    marginBottom: 15,
+    cursor: "pointer",
+  },
+  border: {
+    borderColor: "black",
+    borderRadius: 8,
+    borderWidth: 0.1,
+    padding: 20,
+    borderStyle: "solid",
+  },
+  itemDetails: {
+    flex: 3,
+    marginLeft: 10,
   },
 });
 

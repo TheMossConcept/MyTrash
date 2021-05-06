@@ -9,6 +9,7 @@ import DismissableSnackbar from "./shared/DismissableSnackbar";
 import RoleSelector from "./RoleSelector";
 import UserForm, { UserFormData } from "./forms/UserForm";
 import { AccessTokenContext } from "../navigation/TabNavigator";
+import Container from "./shared/Container";
 
 type Props = {
   clusterId: string;
@@ -65,7 +66,7 @@ const UserInvitationForm: FC<Props> = ({ clusterId }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       {isLoading ? (
         <ActivityIndicator />
       ) : (
@@ -84,20 +85,8 @@ const UserInvitationForm: FC<Props> = ({ clusterId }) => {
         showState={[showSnackbar, setShowSnackbar]}
         onDismiss={onDismiss}
       />
-    </View>
+    </Container>
   );
 };
 
 export default UserInvitationForm;
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  userForm: {
-    marginTop: 20,
-    marginBottom: 20,
-  },
-});

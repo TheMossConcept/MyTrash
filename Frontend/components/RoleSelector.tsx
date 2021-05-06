@@ -13,6 +13,7 @@ import { AccessTokenContext } from "../navigation/TabNavigator";
 // TODO: Fix this
 // import { CheckBox } from "@react-native-community/checkbox";
 import axiosUtils from "../utils/axios";
+import Container from "./shared/Container";
 
 type Props = {
   roleSelectionState: [string[], (newValue: string[]) => void];
@@ -55,7 +56,7 @@ export default function RoleSelector({
   }, [accessToken]);
 
   return (
-    <View style={styles.buttonContainer}>
+    <Container style={{ flexDirection: "row" }}>
       {isLoading ? (
         <ActivityIndicator />
       ) : (
@@ -69,7 +70,7 @@ export default function RoleSelector({
           />
         ))
       )}
-    </View>
+    </Container>
   );
 }
 
@@ -113,9 +114,6 @@ function RoleSelectorCheckbox({
 }
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    flexDirection: "row",
-  },
   checkbox: {
     alignItems: "center",
     marginLeft: 15,

@@ -55,9 +55,21 @@ const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
         </View>
         <View style={styles.inputContainer}>
           <View style={styles.inputColumn}>
-            <StringField formKey="name" label="Navn" />
-            <StringField formKey="c5Reference" label="C5 Reference" />
-            <NumberField formKey="necessaryPlastic" label="Plastbehov" />
+            <StringField
+              formKey="name"
+              label="Navn"
+              style={styles.inputField}
+            />
+            <StringField
+              formKey="c5Reference"
+              label="C5 Reference"
+              style={styles.inputField}
+            />
+            <NumberField
+              formKey="necessaryPlastic"
+              label="Plastbehov"
+              style={styles.inputField}
+            />
             <NumberField
               formKey="usefulPlasticFactor"
               label="Beregningsfaktor"
@@ -95,6 +107,9 @@ const styles = StyleSheet.create({
   isOpenCheckboxContainer: {
     alignItems: "flex-start",
     width: "95%",
+  },
+  inputField: {
+    marginBottom: 5,
   },
 });
 

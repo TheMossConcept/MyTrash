@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ErrorMessage, useFormikContext } from "formik";
 import React, { FC, useContext, useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Text, View, ViewStyle } from "react-native";
 import Autocomplete, {
   AutocompleteProps,
 } from "react-native-autocomplete-input";
@@ -15,9 +15,10 @@ export type SelectableEntity = {
 };
 
 type Props = {
-  title?: string;
   endpoint: string;
   formKey: string;
+  title?: string;
+  style?: ViewStyle;
 } & Pick<AutocompleteProps<any>, "containerStyle">;
 
 // TODO: By simply handing this component an endpoint that it calls itself, we make it
@@ -31,6 +32,7 @@ const AutocompleteInput: FC<Props> = ({
   endpoint,
   containerStyle,
   formKey: key,
+  style,
 }) => {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("");
@@ -123,7 +125,7 @@ const AutocompleteInput: FC<Props> = ({
     // The types for react-native-autocomplete-input are faulty. It is flatListProps { renderItem } that is
     // required not renderItem on its own
     return (
-      <View>
+      <View style={style}>
         <Autocomplete
           containerStyle={containerStyle}
           data={filteredEntities}

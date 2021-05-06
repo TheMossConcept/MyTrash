@@ -1,11 +1,12 @@
 import React, { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 
-type Props = {};
+type Props = { style?: ViewStyle };
 
-const Container: FC<Props> = ({ children }) => {
+const Container: FC<Props> = ({ children, style }) => {
   // TODO: Add global view context here!
-  return <View style={styles.container}>{children}</View>;
+  const containerStyle = { ...styles.container, ...style };
+  return <View style={containerStyle}>{children}</View>;
 };
 
 const styles = StyleSheet.create({
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "grey",
+    backgroundColor: "white",
   },
 });
 
