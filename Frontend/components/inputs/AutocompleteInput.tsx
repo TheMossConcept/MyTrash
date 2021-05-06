@@ -134,10 +134,10 @@ const AutocompleteInput: FC<Props> = ({
             // We need to give the other event handler time to do its job before
             // hiding the suggestion list.
             // TODO: Do something less brittle that is not
-            // reliant on timing!
+            // reliant on timing! Then we can also pass handleBlur(key) directly as a callback!
             setTimeout(() => setHideSuggestionList(true), 250);
             if (handleBlur) {
-              handleBlur(event);
+              handleBlur(key)(event);
             }
           }}
           renderTextInput={({ value, onChangeText, onFocus, onBlur }: any) => (
