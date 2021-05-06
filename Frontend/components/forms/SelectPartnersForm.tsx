@@ -100,7 +100,6 @@ const SelectPartnersForm: FC<Props> = () => {
                 title={selectionData.title}
                 formKey={selectionData.formKey}
               />
-              <ErrorMessage name={selectionData.formKey} />
             </View>
           );
         })
