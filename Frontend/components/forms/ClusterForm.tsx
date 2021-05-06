@@ -81,12 +81,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginTop: 20,
     marginBottom: 20,
-    width: "80%",
+    width: "95%",
   },
   inputContainer: {
     flexDirection: "row",
     zIndex: 1,
-    width: "80%",
+    width: "95%",
   },
   inputColumn: {
     flex: 1,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   isOpenCheckboxContainer: {
     alignItems: "flex-start",
-    width: "80%",
+    width: "95%",
   },
 });
 
