@@ -66,9 +66,15 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
     native: "exp://login",
   });
 
+  // TODO: Fix teh hardcoding!
+  const clientId = "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412"; // AZURE_AD_CLIENT_ID,
+  // NB! There's a bug in Azure AD B2C that causes only an id token to be
+  // return if openid is included in scopes. See https://docs.microsoft.com/en-us/answers/questions/135912/azure-ad-b2c-access-token-missing.html
+  const scopes = [clientId, "profile", "email", "offline_access"];
+
   const authRequest = new AuthRequest({
-    clientId: "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412", // AZURE_AD_CLIENT_ID,
-    scopes: ["openid", "profile", "email", "offline_access"],
+    clientId,
+    scopes,
     extraParams: { p: "B2C_1_SignUpAndSignIn" },
     redirectUri,
   });
@@ -92,9 +98,8 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
         exchangeCodeAsync(
           {
             code: authSessionResult.params.code,
-            scopes: ["openid", "profile", "email", "offline_access"],
-            // TODO: Fix teh hardcoding!
-            clientId: "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412", // AZURE_AD_CLIENT_ID,
+            scopes,
+            clientId,
             redirectUri,
             extraParams: {
               code_verifier: authRequest.codeVerifier,
