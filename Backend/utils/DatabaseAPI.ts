@@ -80,12 +80,15 @@ const mongoAPI = {
 };
 
 // TODO: Make these two mutually exclusive so you cannot mix properties from one in the other
-type Entities =
-  | ClusterEntity
-  | UserMetadataEntity
-  | ProductEntity
-  | CollectionEntity
-  | BatchEntity;
+type Entities = ClusterEntity | ProductEntity | CollectionEntity | BatchEntity;
+
+export type UserRole =
+  | "administrator"
+  | "collectionAdministrator"
+  | "collector"
+  | "logisticsPartner"
+  | "recipientPartner"
+  | "productionPartner";
 
 // TODO: Consider moving these types somewhere else when this file becomes big
 export type ClusterEntity = {
@@ -101,17 +104,6 @@ export type ClusterEntity = {
   c5Reference: string;
   usefulPlasticFactor: number;
   necessaryAmountOfPlastic: number;
-};
-
-// TODO: Look into getting this information into AD as well!
-export type UserMetadataEntity = {
-  entityName: "userMetadata";
-  azureAdId: string;
-  companyName: string;
-  street: string;
-  streetNumber: string;
-  city: string;
-  zipCode: number;
 };
 
 export type CollectionEntity = {
