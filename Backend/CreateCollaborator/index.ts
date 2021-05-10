@@ -10,8 +10,9 @@ const httpTrigger: AzureFunction = async function (
   try {
     const requestBody: CollaboratorDTO = req.body;
     const {
-      contactPersoName,
+      contactPersonName,
       contactPersonEmail,
+      phoneNumber,
       companyName,
       street,
       streetNumber,
@@ -21,13 +22,19 @@ const httpTrigger: AzureFunction = async function (
     } = requestBody;
 
     // Initialize the client
+    /*
     const clientOptions = {
       authProvider: new CustomAuthenticationProvider(req.headers),
     };
-    const client = Client.initWithMiddleware(clientOptions);
+    */
+    const customAuthProvider = new CustomAuthenticationProvider();
+    const client = Client.initWithMiddleware({
+      authProvider: customAuthProvider,
+    });
 
-    // TODO: Fix hardcoding
-    const clientId = "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412";
+    // TODO: Fix hardcoding. Please note that t his is the client id of the b2c-extensions-app
+    // and NOT of the actual app registration itself! Also note that the -'s have been removed
+    const clientId = "efe81d2e0be34a3e87eb2cffd57626ce";
 
     const isAdministrator = role === "administrator";
     const isCollectionAdministrator = role === "collectionAdministrator";
@@ -36,14 +43,7 @@ const httpTrigger: AzureFunction = async function (
     const isProductionPartner = role === "productionPartner";
 
     const createdCollaborator = await client.api("/users").post({
-      givenName: contactPersoName,
-      streetAddress: `${street} ${streetNumber.toString}`,
-      city,
-      postalCode: zipCode.toString(),
-      passwordProfile: {
-        forceChangePasswordNextSignIn: true,
-        password: "Test1234!",
-      },
+      // NB! Down until given name will no longer be needed when creating in B2C
       identities: [
         {
           signInType: "emailAddress",
@@ -52,6 +52,17 @@ const httpTrigger: AzureFunction = async function (
           issuerAssignedId: contactPersonEmail,
         },
       ],
+      displayName: contactPersonName,
+      givenName: contactPersonName,
+      streetAddress: `${street} ${streetNumber.toString()}`,
+      city,
+      mobilePhone: phoneNumber,
+      postalCode: zipCode.toString(),
+      passwordProfile: {
+        forceChangePasswordNextSignIn: true,
+        password: "Test1234!",
+      },
+      // passwordPolicies: "DisablePasswordExpiration",
       companyName,
       [`extension_${clientId}_isAdministrator`]: isAdministrator,
       [`extension_${clientId}_isCollectionAdministrator`]: isCollectionAdministrator,
@@ -72,7 +83,7 @@ const httpTrigger: AzureFunction = async function (
 };
 
 type CollaboratorDTO = {
-  contactPersoName: string;
+  contactPersonName: string;
   contactPersonEmail: string;
   companyName: string;
   street: string;
@@ -80,8 +91,8 @@ type CollaboratorDTO = {
   streetNumber: number;
   city: string;
   zipCode: number;
+  phoneNumber: string;
   role: UserRole;
 };
 
 export default httpTrigger;
-

@@ -25,7 +25,8 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
   // not support explicitly passing query parameters
   useEffect(() => {
     const AUTHORIZATION_URL =
-      "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUpAndSignIn";
+      "https://login.microsoftonline.com/12ca994f-d987-42e1-8ef2-27f9c922d145/v2.0";
+    // "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUpAndSignIn";
 
     const updateDiscoveryDocument = async () => {
       const rawDiscoveryDocumentResponse = await axios.get(AUTHORIZATION_URL);
