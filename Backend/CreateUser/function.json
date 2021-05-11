@@ -16,5 +16,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/CreateCollaborator/index.js"
+  "scriptFile": "../dist/CreateUser/index.js"
 }

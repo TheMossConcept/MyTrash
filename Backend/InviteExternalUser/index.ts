@@ -4,6 +4,7 @@ import { Client } from "@microsoft/microsoft-graph-client";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 import mongoAPI from "../utils/DatabaseAPI";
 
+// TODO: Get rid of this!
 const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest

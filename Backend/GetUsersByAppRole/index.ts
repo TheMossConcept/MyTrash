@@ -2,13 +2,14 @@ import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 
+// TODO: We need to rewrite this!
 const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
   // Initialize the client
   const clientOptions = {
-    authProvider: new CustomAuthenticationProvider(req.headers),
+    authProvider: new CustomAuthenticationProvider(),
   };
   const client = Client.initWithMiddleware(clientOptions);
 

@@ -1,6 +1,6 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
-import { UserRole } from "../utils/DatabaseAPI";
+import databaseAPI, { UserRole, ClusterEntity } from "../utils/DatabaseAPI";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 
 const httpTrigger: AzureFunction = async function (
@@ -8,10 +8,12 @@ const httpTrigger: AzureFunction = async function (
   req: HttpRequest
 ): Promise<void> {
   try {
-    const requestBody: CollaboratorDTO = req.body;
+    const requestBody: UserDTO = req.body;
     const {
-      contactPersonName,
-      contactPersonEmail,
+      firstName,
+      lastName,
+      clusterId,
+      email,
       phoneNumber,
       companyName,
       street,
@@ -21,12 +23,6 @@ const httpTrigger: AzureFunction = async function (
       role,
     } = requestBody;
 
-    // Initialize the client
-    /*
-    const clientOptions = {
-      authProvider: new CustomAuthenticationProvider(req.headers),
-    };
-    */
     const customAuthProvider = new CustomAuthenticationProvider();
     const client = Client.initWithMiddleware({
       authProvider: customAuthProvider,
@@ -49,11 +45,12 @@ const httpTrigger: AzureFunction = async function (
           signInType: "emailAddress",
           // TODO: Fix hardcoding
           issuer: "mossconsultingorg.onmicrosoft.com",
-          issuerAssignedId: contactPersonEmail,
+          issuerAssignedId: email,
         },
       ],
-      displayName: contactPersonName,
-      givenName: contactPersonName,
+      displayName: `${firstName} ${lastName}`,
+      givenName: firstName,
+      surname: lastName,
       streetAddress: `${street} ${streetNumber.toString()}`,
       city,
       mobilePhone: phoneNumber,
@@ -71,6 +68,22 @@ const httpTrigger: AzureFunction = async function (
       [`extension_${clientId}_isProductionPartner`]: isProductionPartner,
     });
 
+    if (role === "collector") {
+      if (clusterId) {
+        await databaseAPI.update<ClusterEntity>("cluster", clusterId, {
+          $addToSet: { collectors: createdCollaborator.id },
+        });
+      } else {
+        // NB! Cleanup!
+        client.api(`users/${createdCollaborator.id}`).delete();
+        context.res = {
+          body:
+            "You tried adding a collector without providing a corresponding clusterId. That is an error",
+          statusCode: 500,
+        };
+      }
+    }
+
     context.res = {
       body: JSON.stringify(createdCollaborator),
     };
@@ -82,16 +95,18 @@ const httpTrigger: AzureFunction = async function (
   }
 };
 
-type CollaboratorDTO = {
-  contactPersonName: string;
-  contactPersonEmail: string;
-  companyName: string;
+type UserDTO = {
+  firstName: string;
+  lastName: string;
+  email: string;
   street: string;
   // NB! Needs to be a string because it can contain letters such as 4A
   streetNumber: number;
   city: string;
   zipCode: number;
   phoneNumber: string;
+  companyName?: string;
+  clusterId?: string;
   role: UserRole;
 };
 
