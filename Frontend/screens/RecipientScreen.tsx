@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useState, useEffect } from "react";
-import { Button, Text } from "react-native";
+import { Button, StyleSheet, Text } from "react-native";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import axiosUtils from "../utils/axios";
 import PlasticCollectionsDetails, {
@@ -54,7 +54,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   const sortedBatches = sortBatchByStatus(batches);
 
   return (
-    <Container style={{ justifyContent: "center" }}>
+    <Container style={{ padding: 25 }}>
       <PlasticCollectionsDetails
         title="Modtaget"
         plasticCollections={sortedCollections.delivered}

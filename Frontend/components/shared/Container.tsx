@@ -12,6 +12,7 @@ const Container: FC<Props> = ({ children, style }) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
+    padding: 25,
     flex: 1,
     alignItems: "center",
     justifyContent: "center",

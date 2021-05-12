@@ -15,6 +15,7 @@ import LogisticsScreen from "../screens/LogisticsScreen";
 import ProductionScreen from "../screens/ProductionScreen";
 import RecipientScreen from "../screens/RecipientScreen";
 import { TabsParamList, RootStackParamList } from "../typings/types";
+import DismissableSnackbar from "../components/shared/DismissableSnackbar";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
@@ -100,6 +101,10 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
         <Appbar.Content title={`Velkommen ${userInfo.name}`} />
         <Appbar.Action icon="logout" onPress={logout} />
       </Appbar.Header>
+      <DismissableSnackbar
+        showState={[false, () => console.log("LOL")]}
+        title="This is a test!"
+      />
       <Tab.Navigator
         initialRouteName="Administration"
         tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}

@@ -1,14 +1,23 @@
 import axios from "axios";
 import { DateTime } from "luxon";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
+import DismissableSnackbar from "../shared/DismissableSnackbar";
 
-type Props = { plasticCollectionId: string };
+type Props = {
+  plasticCollectionId: string;
+  plasticCollectionScheduledCallback: () => void;
+};
 
-const SchedulePlasticCollection: FC<Props> = ({ plasticCollectionId }) => {
+const SchedulePlasticCollection: FC<Props> = ({
+  plasticCollectionId,
+  plasticCollectionScheduledCallback,
+}) => {
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(true);
+
   const [date, setDate] = useState<DateTime | undefined>(undefined);
   const [timeIsSet, setTimeIsSet] = useState(false);
 
@@ -54,16 +63,28 @@ const SchedulePlasticCollection: FC<Props> = ({ plasticCollectionId }) => {
   const accessToken = useAccessToken();
   const schedule = () => {
     if (date) {
-      axios.post(
-        "SchedulePlasticCollection",
-        { pickupDate: date.toJSDate() },
-        {
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-          params: { collectionId: plasticCollectionId },
-        }
-      );
+      axios
+        .post(
+          "SchedulePlasticCollection",
+          { pickupDate: date.toJSDate() },
+          {
+            ...axiosUtils.getSharedAxiosConfig(accessToken),
+            params: { collectionId: plasticCollectionId },
+          }
+        )
+        .then(() => {
+          setShowSuccessSnackbar(true);
+        });
     }
   };
+
+  // Ensure that we don't refetch until the snackbar disappears
+  useEffect(() => {
+    // NB! This  will make a surpurflous call initially. Fix that!
+    if (!showSuccessSnackbar) {
+      plasticCollectionScheduledCallback();
+    }
+  }, [plasticCollectionScheduledCallback, showSuccessSnackbar]);
 
   const dateSelectionString = date
     ? date.toLocaleString({
@@ -113,7 +134,11 @@ const SchedulePlasticCollection: FC<Props> = ({ plasticCollectionId }) => {
         animationType="fade" // optional, default is 'none'
       />
       <View style={styles.submitBtn}>
-        <Button title="Planlæg" onPress={schedule} />
+        <Button title="Planlæg" onPress={schedule} disabled={!date} />
+        <DismissableSnackbar
+          title="Afhentning planlagt"
+          showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
+        />
       </View>
     </View>
   );

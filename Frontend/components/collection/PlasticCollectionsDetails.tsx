@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { Text, View } from "react-native";
+import { Text } from "react-native";
 import { Badge, Card, List, useTheme } from "react-native-paper";
 
 type PlasticCollectionDetailProps = { plasticCollection: PlasticCollection };
@@ -22,6 +22,7 @@ export type PlasticCollection = {
   collectionStatus: "pending" | "scheduled" | "delivered" | "received";
 };
 
+// TODO: Unify this with BatchDetail!!
 const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
   plasticCollection,
   children,
@@ -55,20 +56,16 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
             {city} {zipCode}
           </Text>
           {comment && <Text style={styles.cardText}>{comment}</Text>}
-          <View
-            style={{ alignItems: "flex-start", justifyContent: "flex-start" }}
-          >
-            <Text>
-              Antal enheder{" "}
-              <Badge
-                visible
-                style={{ backgroundColor: colors.primary }}
-                size={30}
-              >
-                {numberOfUnits}
-              </Badge>
-            </Text>
-          </View>
+          <Text>
+            Antal enheder{" "}
+            <Badge
+              visible
+              style={{ backgroundColor: colors.primary }}
+              size={30}
+            >
+              {numberOfUnits}
+            </Badge>
+          </Text>
           {children}
         </Card.Content>
       )}
