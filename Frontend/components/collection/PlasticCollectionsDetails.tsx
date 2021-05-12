@@ -118,7 +118,7 @@ const styles = {
     marginBottom: 5,
     paddingBottom: 5,
     textWeight: 600 as 600,
-    borderBottomColor: "black",
+    borderBottomColor: "lightgrey",
     borderBottomWidth: 1,
     borderBottomStyle: "solid" as "solid",
     width: "fit-content",

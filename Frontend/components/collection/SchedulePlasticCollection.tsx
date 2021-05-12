@@ -1,7 +1,7 @@
 import axios from "axios";
 import { DateTime } from "luxon";
 import React, { FC, useState } from "react";
-import { Button, Text, View } from "react-native";
+import { Button, StyleSheet, Text, View } from "react-native";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
@@ -65,33 +65,43 @@ const SchedulePlasticCollection: FC<Props> = ({ plasticCollectionId }) => {
     }
   };
 
+  const dateSelectionString = date
+    ? date.toLocaleString({
+        month: "long",
+        day: "2-digit",
+      })
+    : "Ikke valgt";
+
+  const timeSelectionString =
+    date?.minute && date?.hour
+      ? date.toLocaleString({
+          minute: timeIsSet ? "2-digit" : undefined,
+          hour: timeIsSet ? "2-digit" : undefined,
+          hour12: false,
+        })
+      : "Tidspunkt ikke valgt";
+
   return (
     <View>
-      <Text>Planlæg afhentning</Text>
       <Text>
-        Afhentningsdato:{" "}
-        {date
-          ? date.toLocaleString({
-              month: "long",
-              day: "2-digit",
-              minute: timeIsSet ? "2-digit" : undefined,
-              hour: timeIsSet ? "2-digit" : undefined,
-              hour12: false,
-            })
-          : "Ikke valgt"}
+        Afhentningsdato{" "}
+        <Button title={dateSelectionString} onPress={selectPickupDate} />
+        {date && (
+          <View style={styles.pickTimeBtn}>
+            <Button title={timeSelectionString} onPress={selectPickupTime} />
+          </View>
+        )}
       </Text>
-      <Button title="Vælg afhentningsdato" onPress={selectPickupDate} />
-      <Button
-        title="Vælg afhentningstidspunkt"
-        onPress={selectPickupTime}
-        disabled={date === undefined}
-      />
       <DatePickerModal
         mode="single"
         visible={datePickerOpen}
         onDismiss={onDismissDate}
         date={date?.toJSDate()}
         onConfirm={onConfirmDate}
+        label="Vælg afhentningsdato" // optional, default 'Select time'
+        cancelLabel="Annuller" // optional, default: 'Cancel'
+        confirmLabel="Vælg" // optional, default: 'Ok'
+        animationType="fade" // optional, default is 'none'
       />
       <TimePickerModal
         visible={timePickerOpen}
@@ -102,9 +112,23 @@ const SchedulePlasticCollection: FC<Props> = ({ plasticCollectionId }) => {
         confirmLabel="Vælg" // optional, default: 'Ok'
         animationType="fade" // optional, default is 'none'
       />
-      <Button title="Planlæg" onPress={schedule} />
+      <View style={styles.submitBtn}>
+        <Button title="Planlæg" onPress={schedule} />
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  pickTimeBtn: {
+    marginLeft: 5,
+  },
+  submitBtn: {
+    marginTop: 10,
+    width: "fit-content",
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+});
 
 export default SchedulePlasticCollection;
