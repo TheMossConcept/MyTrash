@@ -10,7 +10,7 @@ class CustomAuthenticationProvider implements AuthenticationProvider {
 
   getAccessToken = async () => {
     const accessToken = await this.azureCredential.getToken([
-      "User.ReadWrite.All",
+      "https://graph.microsoft.com/.default",
     ]);
 
     return accessToken.token;
