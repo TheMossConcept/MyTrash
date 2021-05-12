@@ -24,12 +24,6 @@ type UserInfo = {
   userId: string;
 };
 
-type IdTokenData = {
-  name: string;
-  roles: string[];
-  oid: string;
-};
-
 export const AccessTokenContext = React.createContext<string | undefined>(
   undefined
 );
@@ -79,20 +73,26 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
     AsyncStorage.setItem("idToken", idToken);
   }, [accessTokenState, idToken]);
 
-  const { roles, name, oid } = jwtDecode(idToken) as IdTokenData;
-  const userInfo: UserInfo = { roles, name, userId: oid };
+  const tokenDecoded = jwtDecode(idToken) as any;
+  // eslint-disable camelcase
+  const { given_name, family_name, oid } = tokenDecoded;
+  const name = family_name ? `${given_name} ${family_name}` : given_name;
+
+  console.log(tokenDecoded);
+  const userInfo: UserInfo = { roles: [], name, userId: oid };
   const colorScheme = useColorScheme();
 
-  const showAdministrationScreen = userInfo.roles.includes(
-    "SolutionAdministrator"
-  );
-  const showCollectionAdministrationScreen = userInfo.roles.includes(
-    "CollectionAdministrator"
-  );
-  const showCollectionScreen = userInfo.roles.includes("Collector");
-  const showLogisticsScreen = userInfo.roles.includes("LogisticsPartner");
-  const showProductionScreen = userInfo.roles.includes("ProductionPartner");
-  const showRecipientScreen = userInfo.roles.includes("RecipientPartner");
+  const showAdministrationScreen =
+    userInfo.roles?.includes("SolutionAdministrator") || true;
+  const showCollectionAdministrationScreen =
+    userInfo.roles?.includes("CollectionAdministrator") || true;
+  const showCollectionScreen = userInfo.roles?.includes("Collector") || true;
+  const showLogisticsScreen =
+    userInfo.roles?.includes("LogisticsPartner") || true;
+  const showProductionScreen =
+    userInfo.roles?.includes("ProductionPartner") || true;
+  const showRecipientScreen =
+    userInfo.roles?.includes("RecipientPartner") || true;
 
   return (
     <AccessTokenContext.Provider value={accessTokenState}>

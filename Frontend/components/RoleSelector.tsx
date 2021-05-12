@@ -22,7 +22,7 @@ type Props = {
 
 type AppRole = {
   displayName: string;
-  id: string;
+  roleValue: string;
 };
 
 export default function RoleSelector({
@@ -66,7 +66,7 @@ export default function RoleSelector({
             selectionState={roleSelectionState}
             disabled={selectionDisabled}
             style={styles.checkbox}
-            key={availableAppRole.id}
+            key={availableAppRole.roleValue}
           />
         ))
       )}
@@ -76,7 +76,7 @@ export default function RoleSelector({
 
 type RoleSelectorCheckboxProps = {
   appRole: AppRole;
-  selectionState: [string[], (value: string[]) => void];
+  selectionState: [string[], (roleValue: string[]) => void];
   disabled: boolean;
 } & ViewProps;
 
@@ -86,16 +86,18 @@ function RoleSelectorCheckbox({
   disabled,
   ...viewProps
 }: RoleSelectorCheckboxProps) {
-  const { displayName, id } = appRole;
+  const { displayName, roleValue } = appRole;
   const [selectedAppRoles, setSelectedAppRoles] = selectionState;
 
-  const checkboxValue = selectedAppRoles.includes(id);
+  const checkboxValue = selectedAppRoles.includes(roleValue);
   const onValueChange = (newValue: boolean) => {
     if (newValue) {
-      setSelectedAppRoles([...selectedAppRoles, id]);
+      setSelectedAppRoles([...selectedAppRoles, roleValue]);
     } else {
       setSelectedAppRoles(
-        selectedAppRoles.filter((selectedAppRole) => selectedAppRole !== id)
+        selectedAppRoles.filter(
+          (selectedAppRole) => selectedAppRole !== roleValue
+        )
       );
     }
   };

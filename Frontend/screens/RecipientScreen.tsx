@@ -54,7 +54,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   const sortedBatches = sortBatchByStatus(batches);
 
   return (
-    <Container style={{ justifyContent: "center" }}>
+    <Container>
       <PlasticCollectionsDetails
         title="Modtaget"
         plasticCollections={sortedCollections.delivered}

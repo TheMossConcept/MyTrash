@@ -1,45 +1,33 @@
-import "isomorphic-fetch";
+import { AzureFunction, Context } from "@azure/functions";
+import { allUserRoles } from "../utils/DatabaseAPI";
 
-import { AzureFunction, Context, HttpRequest } from "@azure/functions";
-import { Client } from "@microsoft/microsoft-graph-client";
-import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
-import { AppRole } from "../types";
-
+// TODO: Delete this!
 const httpTrigger: AzureFunction = async function (
-  context: Context,
-  req: HttpRequest
+  context: Context
 ): Promise<void> {
-  // TODO: Fix the hardcoding!
-  const resourceId = "291ca79c-04ea-4531-af1f-9123ff054436";
-
   try {
-    const clientOptions = {
-      authProvider: new CustomAuthenticationProvider(req.headers),
-    };
-    const client = Client.initWithMiddleware(clientOptions);
-    const servicePrincipal = await client
-      .api(`/servicePrincipals/${resourceId}`)
-      .get();
+    // This is the only endpoint ever dealing with display of user roles
+    // and therefore, I think it is sensible to have displayName defined here.
+    // If we get more endpoints dealing with that in the future, we should
+    // move display name to the role definitions
+    const returnValue = allUserRoles.map((userRole) => {
+      if (userRole === "Administrator")
+        return { roleValue: userRole, displayName: "Administrator" };
+      if (userRole === "CollectionAdministrator")
+        return { roleValue: userRole, displayName: "Indsamlingsadministrator" };
+      if (userRole === "Collector")
+        return { roleValue: userRole, displayName: "Indsamler" };
+      if (userRole === "LogisticsPartner")
+        return { roleValue: userRole, displayName: "Logistikpartner" };
+      if (userRole === "RecipientPartner")
+        return { roleValue: userRole, displayName: "Modtagerpartner" };
+      if (userRole === "ProductionPartner")
+        return { roleValue: userRole, displayName: "Produktionspartner" };
 
-    const servicePrincipalAppRoles: AppRole[] = servicePrincipal.appRoles || [];
-    const servicePrincipalUserAppRoles = servicePrincipalAppRoles.filter(
-      (servicePrincipalAppRole: AppRole) =>
-        servicePrincipalAppRole.allowedMemberTypes.includes("User")
-    );
-
-    // Remove everything not relevant to the frontend
-    const returnValue = servicePrincipalUserAppRoles.map(
-      (servicePrincipalUserAppRole) => ({
-        description: servicePrincipalUserAppRole.description,
-        id: servicePrincipalUserAppRole.id,
-        displayName: servicePrincipalUserAppRole.displayName,
-        value: servicePrincipalUserAppRole.value,
-      })
-    );
-
-    context.res = {
-      body: JSON.stringify(returnValue),
-    };
+      // NB! This should never happen!
+      return { roleValue: userRole, displayName: userRole };
+    });
+    context.res = { body: JSON.stringify(returnValue) };
   } catch (error) {
     context.res = {
       body: `${JSON.stringify(error)}`,
