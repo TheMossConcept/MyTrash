@@ -1,6 +1,10 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
-import databaseAPI, { UserRole, ClusterEntity } from "../utils/DatabaseAPI";
+import databaseAPI, {
+  UserRole,
+  ClusterEntity,
+  allUserRoles,
+} from "../utils/DatabaseAPI";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 
 const httpTrigger: AzureFunction = async function (
@@ -32,11 +36,15 @@ const httpTrigger: AzureFunction = async function (
     // and NOT of the actual app registration itself! Also note that the -'s have been removed
     const clientId = "efe81d2e0be34a3e87eb2cffd57626ce";
 
-    const isAdministrator = role === "administrator";
-    const isCollectionAdministrator = role === "collectionAdministrator";
-    const isLogisticsPartner = role === "logisticsPartner";
-    const isRecipientPartner = role === "recipientPartner";
-    const isProductionPartner = role === "productionPartner";
+    const extensionsObject = allUserRoles.reduce(
+      (accumulator, currentValue) => {
+        const newValue = {
+          [`extension_${clientId}_${currentValue}`]: role === currentValue,
+        };
+        return { ...accumulator, ...newValue };
+      },
+      {}
+    );
 
     const createdCollaborator = await client.api("/users").post({
       // NB! Down until given name will no longer be needed when creating in B2C
@@ -61,11 +69,7 @@ const httpTrigger: AzureFunction = async function (
       },
       // passwordPolicies: "DisablePasswordExpiration",
       companyName,
-      [`extension_${clientId}_isAdministrator`]: isAdministrator,
-      [`extension_${clientId}_isCollectionAdministrator`]: isCollectionAdministrator,
-      [`extension_${clientId}_isLogisticsPartner`]: isLogisticsPartner,
-      [`extension_${clientId}_isRecipientPartner`]: isRecipientPartner,
-      [`extension_${clientId}_isProductionPartner`]: isProductionPartner,
+      ...extensionsObject,
     });
 
     if (role === "collector") {

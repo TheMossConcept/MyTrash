@@ -81,14 +81,21 @@ const mongoAPI = {
 
 // TODO: Make these two mutually exclusive so you cannot mix properties from one in the other
 type Entities = ClusterEntity | ProductEntity | CollectionEntity | BatchEntity;
+// TODO: At the moment, this is the source of truth. Eventually, the source of
+// truth should be the names of the actual custom attributes added in the AD
+export const allUserRoles = [
+  "Administrator",
+  "CollectionAdministrator",
+  "Collector",
+  "LogisticsPartner",
+  "RecipientPartner",
+  "ProductionPartner",
+] as const;
 
-export type UserRole =
-  | "administrator"
-  | "collectionAdministrator"
-  | "collector"
-  | "logisticsPartner"
-  | "recipientPartner"
-  | "productionPartner";
+// See https://stackoverflow.com/questions/44480644/string-union-to-string-array
+type UserRoleType = typeof allUserRoles;
+
+export type UserRole = UserRoleType[-1];
 
 // TODO: Consider moving these types somewhere else when this file becomes big
 export type ClusterEntity = {
