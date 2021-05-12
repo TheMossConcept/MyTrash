@@ -1,3 +1,6 @@
+// NB! This import needs to be here somewhere for the Microsoft Graph API for work properly
+import "isomorphic-fetch";
+
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
 import databaseAPI, {
@@ -72,7 +75,7 @@ const httpTrigger: AzureFunction = async function (
       ...extensionsObject,
     });
 
-    if (role === "collector") {
+    if (role === "Collector") {
       if (clusterId) {
         await databaseAPI.update<ClusterEntity>("cluster", clusterId, {
           $addToSet: { collectors: createdCollaborator.id },

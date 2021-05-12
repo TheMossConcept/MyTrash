@@ -1,40 +1,40 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
+import { UserRole } from "../utils/DatabaseAPI";
 
 // TODO: We need to rewrite this!
 const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
-  // Initialize the client
-  const clientOptions = {
-    authProvider: new CustomAuthenticationProvider(),
-  };
-  const client = Client.initWithMiddleware(clientOptions);
+  try {
+    const customAuthProvider = new CustomAuthenticationProvider();
+    const client = Client.initWithMiddleware({
+      authProvider: customAuthProvider,
+    });
 
-  const appRoleToInclude: string = req.query.appRoleId;
-  // TODO: Add pagination here!
-  const users: { value: any[] } = await client
-    .api("users?$expand=appRoleAssignments")
-    .get();
-  const returnValue = users.value.reduce((accumulator, user) => {
-    // Get user info to return
-    const { id, displayName } = user;
+    const { appRole } = req.query as QueryParams;
 
-    const appRoleAssignmentIdsForUser = user.appRoleAssignments.map(
-      (appRoleAssignment: { appRoleId: string }) => appRoleAssignment.appRoleId
-    );
-    if (appRoleAssignmentIdsForUser.includes(appRoleToInclude)) {
-      return [...accumulator, { displayName, id }];
-    }
-    return accumulator;
-  }, []);
+    // TODO: Fix hardcoding!
+    const clientId = "efe81d2e0be34a3e87eb2cffd57626ce";
 
-  context.res = {
-    // status: 200, /* Defaults to 200 */
-    body: JSON.stringify(returnValue),
-  };
+    const users = await client
+      .api(`/users?$filter=extension_${clientId}_${appRole} eq true`)
+      .get();
+
+    context.res = {
+      // status: 200, /* Defaults to 200 */
+      body: JSON.stringify(users),
+    };
+  } catch (e) {
+    context.res = {
+      body: JSON.stringify(e),
+      statusCode: 500,
+    };
+  }
 };
+
+type QueryParams = { appRole: UserRole };
 
 export default httpTrigger;

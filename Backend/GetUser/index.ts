@@ -24,7 +24,7 @@ const httpTrigger: AzureFunction = async function (
     const extensionSelectionString = extensionSelectionStrings.join(",");
 
     const user = await client
-      .api(encodeURI(`/users/${userId}?$select=${extensionSelectionString}`))
+      .api(`/users/${userId}?$select=${extensionSelectionString}`)
       .get();
 
     context.res = {

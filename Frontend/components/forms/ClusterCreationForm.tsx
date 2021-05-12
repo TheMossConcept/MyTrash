@@ -89,11 +89,10 @@ const ClusterCreationForm: FC<Props> = () => {
         .then((appRolesResult) => {
           const appRoles: any[] = appRolesResult.data;
           const localUserSelectionData = appRoles.map((appRole) => {
-            const appRoleId = appRole.id;
-            const appRoleValue = appRole.value;
+            const appRoleValue = appRole.roleValue;
             const title: string | undefined = appRole.displayName;
 
-            const usersEndpoint = `/GetUsersByAppRole?appRoleId=${appRoleId}`;
+            const usersEndpoint = `/GetUsersByAppRole?appRoleId=${appRoleValue}`;
 
             let stateKey;
             switch (appRoleValue) {
