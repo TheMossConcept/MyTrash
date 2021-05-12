@@ -37,7 +37,7 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
 
   return (
-    <Container>
+    <Container style={styles.container}>
       <PlasticCollectionsDetails
         title="Afventer"
         plasticCollections={sortedCollections.pending}
@@ -65,4 +65,11 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
     </Container>
   );
 };
+
+const styles = {
+  container: {
+    padding: 25,
+  },
+};
+
 export default LogisticsScreen;

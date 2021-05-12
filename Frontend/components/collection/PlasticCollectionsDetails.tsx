@@ -1,6 +1,6 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { Text, View } from "react-native";
-import { List } from "react-native-paper";
+import { Badge, Card, List, useTheme } from "react-native-paper";
 
 type PlasticCollectionDetailProps = { plasticCollection: PlasticCollection };
 
@@ -35,23 +35,45 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
     numberOfUnits,
     comment,
   } = plasticCollection;
+  const [showDetails, setShowDetails] = useState(false);
+  const toggleDetails = () => setShowDetails(!showDetails);
+
+  const { colors } = useTheme();
 
   const title = companyName || `${streetName} ${streetNumber}`;
 
   return (
-    <List.Accordion title={title}>
-      {companyName && <Text>{companyName}</Text>}
-      <Text>
-        {streetName} {streetNumber}
-      </Text>
-      <Text>
-        {city} {zipCode}
-      </Text>
-      {comment && <Text>{comment}</Text>}
-      <Text>Antal enheder {numberOfUnits}</Text>
-      {children}
+    <Card onPress={toggleDetails} style={styles.card}>
+      <Card.Title title={title} />
+      {showDetails && (
+        <Card.Content style={styles.cardContent}>
+          {companyName && <Text style={styles.cardText}>{companyName}</Text>}
+          <Text style={styles.cardText}>
+            {streetName} {streetNumber}
+          </Text>
+          <Text style={styles.cardText}>
+            {city} {zipCode}
+          </Text>
+          {comment && <Text style={styles.cardText}>{comment}</Text>}
+          <View
+            style={{ alignItems: "flex-start", justifyContent: "flex-start" }}
+          >
+            <Text>
+              Antal enheder{" "}
+              <Badge
+                visible
+                style={{ backgroundColor: colors.primary }}
+                size={30}
+              >
+                {numberOfUnits}
+              </Badge>
+            </Text>
+          </View>
+          {children}
+        </Card.Content>
+      )}
       {/* TODO: Make a button to register schedule pick-up and another to register delivery */}
-    </List.Accordion>
+    </Card>
   );
 };
 
@@ -68,16 +90,43 @@ const PlasticCollectionsDetails: FC<Props> = ({
 }) => {
   return (
     <List.Section>
-      <List.Subheader>{title}</List.Subheader>
+      <List.Subheader style={styles.listHeader}>{title}</List.Subheader>
       {plasticCollections.map((collection) => (
-        <View key={collection.id}>
-          <PlasticCollectionDetail plasticCollection={collection}>
-            {children && children(collection)}
-          </PlasticCollectionDetail>
-        </View>
+        <PlasticCollectionDetail
+          key={collection.id}
+          plasticCollection={collection}
+        >
+          {children && children(collection)}
+        </PlasticCollectionDetail>
       ))}
     </List.Section>
   );
+};
+
+const styles = {
+  card: {
+    marginBottom: 15,
+  },
+  cardContent: {
+    borderWidth: 0.3,
+    padding: 15,
+    margin: 15,
+    borderColor: "lightgrey",
+    borderStyle: "solid" as "solid",
+  },
+  cardText: {
+    marginBottom: 5,
+    paddingBottom: 5,
+    textWeight: 600 as 600,
+    borderBottomColor: "black",
+    borderBottomWidth: 1,
+    borderBottomStyle: "solid" as "solid",
+    width: "fit-content",
+  },
+  listHeader: {
+    fontSize: 28,
+    fontWeight: "900" as "900",
+  },
 };
 
 export default PlasticCollectionsDetails;
