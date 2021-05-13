@@ -102,7 +102,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
         <Appbar.Action icon="logout" onPress={logout} />
       </Appbar.Header>
       <DismissableSnackbar
-        showState={[false, () => console.log("LOL")]}
+        showState={[true, () => console.log("LOL")]}
         title="This is a test!"
       />
       <Tab.Navigator
