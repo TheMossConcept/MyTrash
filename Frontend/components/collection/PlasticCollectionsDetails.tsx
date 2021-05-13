@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { Text } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { Badge, Card, List, useTheme } from "react-native-paper";
 
 type PlasticCollectionDetailProps = {
@@ -49,8 +49,10 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
   const title = companyName || `${streetName} ${streetNumber}`;
 
   return (
-    <Card onPress={toggleDetails} style={styles.card}>
-      <Card.Title title={title} />
+    <Card style={styles.card}>
+      <TouchableOpacity onPress={toggleDetails}>
+        <Card.Title title={title} />
+      </TouchableOpacity>
       {showDetails && (
         <Card.Content style={styles.cardContent}>
           {companyName && <Text style={styles.cardText}>{companyName}</Text>}
