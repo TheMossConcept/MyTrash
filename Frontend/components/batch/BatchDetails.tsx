@@ -18,14 +18,16 @@ export type Batch = {
 
 type BatchDetailProps = { batch: Batch };
 
+// TODO: Unify this with PlasticCollectionDetail!!
 const BatchDetail: FC<BatchDetailProps> = ({ batch, children }) => {
   const [showDetails, setShowDetails] = useState(false);
   const toggleDetails = () => setShowDetails(!showDetails);
 
   const creationDateTime = DateTime.fromISO(batch.creationDate);
-  const title = `Oprettet af ${
-    batch.creatorName
-  } d ${creationDateTime.toLocaleString({ month: "long", day: "2-digit" })}`;
+  const title = `Batch oprettet d ${creationDateTime.toLocaleString({
+    month: "long",
+    day: "2-digit",
+  })}`;
   return (
     <Card onPress={toggleDetails} style={styles.card}>
       <Card.Title title={title} />
@@ -92,7 +94,7 @@ const styles = {
     width: "fit-content",
   },
   listHeader: {
-    fontSize: 28,
+    fontSize: 25,
     fontWeight: "900" as "900",
   },
 };

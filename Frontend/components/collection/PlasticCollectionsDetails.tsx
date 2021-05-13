@@ -121,7 +121,7 @@ const styles = {
     width: "fit-content",
   },
   listHeader: {
-    fontSize: 28,
+    fontSize: 25,
     fontWeight: "900" as "900",
   },
 };

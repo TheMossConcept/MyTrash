@@ -12,6 +12,7 @@ import sortCollectionsByStatus from "../utils/plasticCollections";
 import SchedulePlasticCollection from "../components/collection/SchedulePlasticCollection";
 import DeliverPlasticCollection from "../components/collection/DeliverPlasticCollection";
 import Container from "../components/shared/Container";
+import CategoryHeadline from "../components/styled/CategoryHeadline";
 
 type Props = StackScreenProps<TabsParamList, "Logistik">;
 
@@ -43,6 +44,7 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
 
   return (
     <Container style={{ padding: 25 }}>
+      <CategoryHeadline>Plastindsamlinger</CategoryHeadline>
       <PlasticCollectionsDetails
         title="Afventer"
         plasticCollections={sortedCollections.pending}
