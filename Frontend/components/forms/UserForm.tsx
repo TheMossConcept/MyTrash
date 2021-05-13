@@ -1,85 +1,123 @@
-import React, { FC } from "react";
-import { Text, View, ViewProps } from "react-native";
-import { setValue } from "../../utils/form";
-import EmailInput from "../inputs/EmailInput";
-import NumericInput from "../inputs/NumericInput";
-import PhoneNumberInput from "../inputs/PhoneNumberInput";
-import StringInput from "../inputs/StringInput";
+import axios from "axios";
+import React, { FC, useContext } from "react";
+import { View } from "react-native";
+import * as yup from "yup";
+import axiosUtils from "../../utils/axios";
+import { AccessTokenContext } from "../../navigation/TabNavigator";
+import FormContainer from "../shared/FormContainer";
+import StringField from "../inputs/StringField";
+import NumberField from "../inputs/NumberField";
+import Subheader from "../styled/Subheader";
+import SubmitButton from "../inputs/SubmitButton";
 
 export type UserFormData = {
-  email?: string;
-  contactPersonName?: string;
-  phoneNumber?: string;
-  companyName?: string;
-  streetName?: string;
-  houseNumber?: number;
-  city?: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  // This will overflow a 32-bit integer, and therefore, it has to be a string
+  phoneNumber: string;
+  companyName: string;
+  street: string;
+  // This can contain letters as well (e.g. 4A) and therefore, it has to be a string
+  streetNumber: string;
+  city: string;
+  // Eventually, this will become a string as well
   zipCode?: number;
+  role: string;
 };
 
 type Props = {
-  userFormState: [UserFormData, (newValue: UserFormData) => void];
   isPartner: boolean;
-} & ViewProps;
+  submitTitle: string;
+};
+
+const danishPhoneNumberRegExp = new RegExp(
+  // eslint-disable-next-line no-control-regex
+  /^\d{8}$/
+);
+
+const validationSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Email addressen er ugyldig")
+    .required("Email er påkrævet"),
+  firstName: yup.string().required("Fornavn er påkrævet"),
+  lastName: yup.string().optional(),
+  phoneNumber: yup
+    .string()
+    .matches(danishPhoneNumberRegExp, "Telefonnummeret er ugyldigt"),
+  companyName: yup.string().optional(),
+  street: yup.string().required("Vejnavn er påkrævet"),
+  streetNumber: yup.string().required("Gadenummer er påkrævet"),
+  city: yup.string().required("By er påkrævet"),
+  zipCode: yup.string().required("Postnummer er påkrævet"),
+  role: yup.string().required("Rolle er påkrævet"),
+});
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
-const UserForm: FC<Props> = ({ userFormState, isPartner, ...viewProps }) => {
-  const [userFormData] = userFormState;
+const UserForm: FC<Props> = ({ isPartner, submitTitle }) => {
+  const initialValues: UserFormData = {
+    email: "",
+    firstName: "",
+    lastName: "",
+    companyName: "",
+    phoneNumber: "",
+    street: "",
+    streetNumber: "",
+    city: "",
+    role: isPartner ? "" : "Collector",
+  };
 
-  const {
-    contactPersonName,
-    email,
-    phoneNumber,
-    companyName,
-    streetName,
-    houseNumber,
-    city,
-    zipCode,
-  } = userFormData;
-
-  const setUserFormValue = setValue(userFormState);
+  const accessToken = useContext(AccessTokenContext);
+  const createUser = (values: UserFormData, resetForm: () => void) => {
+    if (accessToken) {
+      axios
+        .post("/CreateUser", values, {
+          params: {
+            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+          },
+          ...axiosUtils.getSharedAxiosConfig(accessToken),
+        })
+        .then(() => {
+          // setShowSnackbar(true);
+          resetForm();
+        });
+    }
+  };
 
   // TODO: Disable the spreading is forbidden style and spread the view props here!
   return (
-    <View style={viewProps.style}>
-      <Text>Kontaktoplysninger</Text>
-      {isPartner ? (
-        <StringInput
-          label="Kontaktperson"
-          stringState={[
-            contactPersonName,
-            setUserFormValue("contactPersonName"),
-          ]}
-        />
-      ) : null}
-      <EmailInput emailState={[email, setUserFormValue("email")]} />
-      <PhoneNumberInput
-        phoneNumberState={[phoneNumber, setUserFormValue("phoneNumber")]}
-      />
-      {isPartner ? (
-        <View>
-          <Text>Virksomhed</Text>
-          <StringInput
-            stringState={[companyName, setUserFormValue("companyName")]}
-            label="Virksomhedsnavn"
-          />
+    <FormContainer
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={(values, formikHelpers) =>
+        createUser(values, formikHelpers.resetForm)
+      }
+      validateOnMount
+    >
+      <View style={{ width: "95%", margin: "auto" }}>
+        {isPartner ? (
+          <StringField label="Virksomhedsnavn" formKey="companyName" />
+        ) : null}
+        <Subheader>
+          {isPartner ? "Kontaktperson" : "Kontaktoplysninger"}
+        </Subheader>
+        <StringField label="Fornavn" formKey="firstName" />
+        <StringField label="Efternavn" formKey="lastName" />
+        <StringField label="Email" formKey="email" />
+        <StringField label="Telefonnummer" formKey="phoneNumber" />
+        <Subheader>Addresseoplysninger</Subheader>
+        <View style={{ flex: 2 }}>
+          <StringField label="Gadenavn" formKey="street" />
         </View>
-      ) : null}
-      <Text>Adresse</Text>
-      <StringInput
-        stringState={[streetName, setUserFormValue("streetName")]}
-        label="Gadenavn"
-      />
-      <NumericInput
-        numberState={[houseNumber, setUserFormValue("houseNumber")]}
-        label="Husnummer"
-      />
-      <StringInput stringState={[city, setUserFormValue("city")]} label="By" />
-      <NumericInput
-        numberState={[zipCode, setUserFormValue("zipCode")]}
-        label="Postnummer"
-      />
-    </View>
+        <View style={{ flex: 1 }}>
+          <StringField label="Husnummer" formKey="streetNumber" />
+        </View>
+        <StringField label="By" formKey="city" />
+        <NumberField label="Postnummer" formKey="zipCode" />
+        <SubmitButton title={submitTitle} />
+      </View>
+    </FormContainer>
   );
 };
 

@@ -1,8 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC } from "react";
-import { Text } from "react-native";
 
-import UserInvitationForm from "../components/UserInvitation";
 import { TabsParamList } from "../typings/types";
 import ClusterList from "../components/shared/ClusterList";
 import useClusters from "../hooks/useCluster";
@@ -11,6 +9,8 @@ import {
   CreateCluster,
   UpdateCluster,
 } from "../components/forms/ModifyCluster";
+import UserForm from "../components/forms/UserForm";
+import CategoryHeadline from "../components/styled/CategoryHeadline";
 
 type Props = StackScreenProps<TabsParamList, "Administration">;
 
@@ -19,6 +19,9 @@ const AdministrationScreen: FC<Props> = () => {
 
   return (
     <Container>
+      <CategoryHeadline>Inviter partner</CategoryHeadline>
+      <UserForm submitTitle="Inviter partner" isPartner />
+      <CategoryHeadline>Opret cluster</CategoryHeadline>
       <CreateCluster successCallback={refetchClusters} />
       <ClusterList clusters={clusters}>
         {({ cluster }) => (
@@ -27,8 +30,6 @@ const AdministrationScreen: FC<Props> = () => {
               clusterId={cluster.id}
               successCallback={refetchClusters}
             />
-            <Text>Inviter bruger</Text>
-            <UserInvitationForm clusterId={cluster.id} />
           </Container>
         )}
       </ClusterList>

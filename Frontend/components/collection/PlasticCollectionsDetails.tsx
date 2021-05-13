@@ -2,6 +2,7 @@ import React, { FC, useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import { Badge, Card, List, useTheme } from "react-native-paper";
 import InformationText from "../styled/InformationText";
+import Subheader from "../styled/Subheader";
 
 type PlasticCollectionDetailProps = {
   plasticCollection: PlasticCollection;
@@ -102,7 +103,7 @@ const PlasticCollectionsDetails: FC<Props> = ({
 }) => {
   return (
     <List.Section>
-      <List.Subheader style={styles.listHeader}>{title}</List.Subheader>
+      <Subheader>{title}</Subheader>
       {plasticCollections.map((collection) => (
         <PlasticCollectionDetail
           key={collection.id}
@@ -126,10 +127,6 @@ const styles = {
     margin: 15,
     borderColor: "lightgrey",
     borderStyle: "solid" as "solid",
-  },
-  listHeader: {
-    fontSize: 25,
-    fontWeight: "900" as "900",
   },
 };
 
