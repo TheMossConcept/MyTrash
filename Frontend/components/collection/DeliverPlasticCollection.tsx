@@ -8,7 +8,7 @@ import FormContainer from "../shared/FormContainer";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 
-type Props = { plasticCollectionId: string };
+type Props = { plasticCollectionId: string; successCallback: () => void };
 
 type DeliverPlasticCollectionFormData = {
   weight?: number;
@@ -18,7 +18,10 @@ const validationSchema = yup.object().shape({
   weight: yup.number().optional(),
 });
 
-const DeliverPlasticCollection: FC<Props> = ({ plasticCollectionId }) => {
+const DeliverPlasticCollection: FC<Props> = ({
+  plasticCollectionId,
+  successCallback,
+}) => {
   const initialValues: DeliverPlasticCollectionFormData = {};
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
 
@@ -39,6 +42,8 @@ const DeliverPlasticCollection: FC<Props> = ({ plasticCollectionId }) => {
       .then(() => {
         setShowSuccessSnackbar(true);
         resetForm();
+
+        successCallback();
       });
   };
 

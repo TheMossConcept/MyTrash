@@ -4,8 +4,8 @@ import "isomorphic-fetch";
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
 import databaseAPI, {
-  UserRole,
   ClusterEntity,
+  UserRole,
   allUserRoles,
 } from "../utils/DatabaseAPI";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
@@ -67,7 +67,7 @@ const httpTrigger: AzureFunction = async function (
       mobilePhone: phoneNumber,
       postalCode: zipCode.toString(),
       passwordProfile: {
-        forceChangePasswordNextSignIn: true,
+        forceChangePasswordNextSignIn: false,
         password: "Test1234!",
       },
       // passwordPolicies: "DisablePasswordExpiration",
@@ -77,7 +77,7 @@ const httpTrigger: AzureFunction = async function (
 
     if (role === "Collector") {
       if (clusterId) {
-        await databaseAPI.update<ClusterEntity>("cluster", clusterId, {
+        await databaseAPI.updateOne<ClusterEntity>("cluster", clusterId, {
           $addToSet: { collectors: createdCollaborator.id },
         });
       } else {

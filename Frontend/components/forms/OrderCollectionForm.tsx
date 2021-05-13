@@ -1,14 +1,15 @@
 import axios from "axios";
-import { ErrorMessage, Formik } from "formik";
 import React, { FC, useState } from "react";
 // TODO: Fix it so that we use buttons from react-native-paper instead
-import { Button, Text } from "react-native";
 import * as yup from "yup";
-import { Checkbox, TextInput } from "react-native-paper";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
-import Container from "../shared/Container";
 import DismissableSnackbar from "../shared/DismissableSnackbar";
+import FormContainer from "../shared/FormContainer";
+import StringField from "../inputs/StringField";
+import BooleanField from "../inputs/BooleanField";
+import SubmitButton from "../inputs/SubmitButton";
+import NumberField from "../inputs/NumberField";
 
 type CollectionFormData = {
   numberOfUnits?: number;
@@ -19,6 +20,7 @@ type CollectionFormData = {
 type Props = {
   userId: string;
   clusterId: string;
+  successCallback: () => void;
 };
 
 const validationSchema = yup.object().shape({
@@ -31,9 +33,12 @@ const validationSchema = yup.object().shape({
 });
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
-const CollectionForm: FC<Props> = ({ userId, clusterId }) => {
+const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
-  const initialValues: CollectionFormData = { isLastCollection: false };
+  const initialValues: CollectionFormData = {
+    isLastCollection: false,
+    comment: "",
+  };
 
   const accessToken = useAccessToken();
   const createCollectionRequest = (
@@ -49,61 +54,30 @@ const CollectionForm: FC<Props> = ({ userId, clusterId }) => {
       .then(() => {
         reset();
         setShowSuccessSnackbar(true);
+
+        successCallback();
       });
   };
 
   return (
-    <Formik
-      validationSchema={validationSchema}
+    <FormContainer
       initialValues={initialValues}
-      onSubmit={(values, formikHelpers) =>
-        createCollectionRequest(values, formikHelpers.resetForm)
-      }
+      validationSchema={validationSchema}
+      onSubmit={(values, formikHelpers) => {
+        createCollectionRequest(values, formikHelpers.resetForm);
+      }}
       validateOnMount
     >
-      {({
-        handleSubmit,
-        handleChange,
-        handleBlur,
-        setFieldValue,
-        values,
-        isValid,
-        isSubmitting,
-      }) => (
-        <Container>
-          <TextInput
-            label="Antal enheder"
-            value={values.numberOfUnits?.toString()}
-            onChangeText={handleChange("numberOfUnits")}
-            onBlur={handleBlur("numberOfUnits")}
-          />
-          <ErrorMessage name="numberOfUnits" />
-          <TextInput
-            label="Kommentar"
-            value={values.comment}
-            onChangeText={handleChange("comment")}
-            onBlur={handleBlur("comment")}
-          />
-          <ErrorMessage name="comment" />
-          <Text>Sidste opsamling</Text>
-          <Checkbox
-            status={values.isLastCollection ? "checked" : "unchecked"}
-            onPress={() =>
-              setFieldValue("isLastCollection", !values.isLastCollection)
-            }
-          />
-          <Button
-            title="Bestil afhentning"
-            disabled={!isValid || isSubmitting}
-            onPress={() => handleSubmit()}
-          />
-          <DismissableSnackbar
-            title="Afhentning bestilt"
-            showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-          />
-        </Container>
-      )}
-    </Formik>
+      <NumberField label="Antal enheder" formKey="numberOfUnits" />
+      <StringField label="Kommentar" formKey="comment" />
+      <BooleanField label="Sidste opsamling" formKey="isLastCollection" />
+
+      <SubmitButton title="Bestil afhentning" />
+      <DismissableSnackbar
+        title="Afhentning bestilt"
+        showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
+      />
+    </FormContainer>
   );
 };
 

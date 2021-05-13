@@ -19,13 +19,13 @@ const httpTrigger: AzureFunction = async function (
     // TODO: Fix hardcoding!
     const clientId = "efe81d2e0be34a3e87eb2cffd57626ce";
 
-    const users = await client
+    const usersResult = await client
       .api(`/users?$filter=extension_${clientId}_${appRole} eq true`)
       .get();
 
     context.res = {
       // status: 200, /* Defaults to 200 */
-      body: JSON.stringify(users),
+      body: JSON.stringify(usersResult.value),
     };
   } catch (e) {
     context.res = {

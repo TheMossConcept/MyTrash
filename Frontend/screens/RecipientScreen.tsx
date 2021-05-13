@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
-import React, { FC, useState, useEffect } from "react";
-import { Button, Text } from "react-native";
+import React, { FC, useState, useEffect, useCallback } from "react";
+import { Button, View } from "react-native";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import axiosUtils from "../utils/axios";
 import PlasticCollectionsDetails, {
@@ -15,6 +15,8 @@ import BatchDetails, { Batch } from "../components/batch/BatchDetails";
 import sortBatchByStatus from "../utils/batch";
 import RegisterPlasticCollectionReciept from "../components/collection/RegisterPlasticCollectionReciept";
 import Container from "../components/shared/Container";
+import CategoryHeadline from "../components/styled/CategoryHeadline";
+import DismissableSnackbar from "../components/shared/DismissableSnackbar";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
@@ -26,7 +28,8 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   const [batches, setBatches] = useState<Batch[]>([]);
 
   const accessToken = useAccessToken();
-  useEffect(() => {
+
+  const fetchPlasticCollections = useCallback(() => {
     axios
       .get("/GetPlasticCollections", {
         params: { recipientPartnerId: userId },
@@ -39,6 +42,10 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   }, [accessToken, userId]);
 
   useEffect(() => {
+    fetchPlasticCollections();
+  }, [fetchPlasticCollections]);
+
+  const fetchBatches = useCallback(() => {
     axios
       .get("/GetBatches", {
         params: { recipientPartnerId: userId },
@@ -50,6 +57,11 @@ const RecipientScreen: FC<Props> = ({ route }) => {
       });
   }, [accessToken, userId]);
 
+  // Initial fetch
+  useEffect(() => {
+    fetchBatches();
+  }, [fetchBatches]);
+
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
   const sortedBatches = sortBatchByStatus(batches);
 
@@ -58,28 +70,28 @@ const RecipientScreen: FC<Props> = ({ route }) => {
       <PlasticCollectionsDetails
         title="Modtaget"
         plasticCollections={sortedCollections.delivered}
+        hideWeight
       >
         {(collection) => (
-          <RegisterPlasticCollectionReciept plasticCollection={collection} />
+          <RegisterPlasticCollectionReciept
+            plasticCollection={collection}
+            successCallback={fetchPlasticCollections}
+          />
         )}
       </PlasticCollectionsDetails>
       <PlasticCollectionsDetails
         title="Bekræftet"
         plasticCollections={sortedCollections.received}
-      >
-        {(collection) => {
-          // TODO: Change this such that it is a high level operation and you can select a cluster
-          return (
-            <CreateBatch
-              clusterId={collection.clusterId}
-              batchCreatorId={userId}
-            />
-          );
-        }}
-      </PlasticCollectionsDetails>
-      <Text>Batches</Text>
+      />
+      <CategoryHeadline>Batches</CategoryHeadline>
+      <CreateBatch batchCreatorId={userId} creationCallback={fetchBatches} />
       <BatchDetails batches={sortedBatches.created} title="Oprettede">
-        {(batch) => <RegisterBatchSent batchId={batch.id} />}
+        {(batch) => (
+          <RegisterBatchSent
+            batchId={batch.id}
+            successCallback={fetchBatches}
+          />
+        )}
       </BatchDetails>
       <BatchDetails batches={sortedBatches.sent} title="Afsendte" />
       <BatchDetails batches={sortedBatches.received} title="Modtaget" />
@@ -89,19 +101,36 @@ const RecipientScreen: FC<Props> = ({ route }) => {
 
 type RegisterBatchSentProps = {
   batchId: string;
+  successCallback: () => void;
 };
 
-const RegisterBatchSent: FC<RegisterBatchSentProps> = ({ batchId }) => {
+const RegisterBatchSent: FC<RegisterBatchSentProps> = ({
+  batchId,
+  successCallback,
+}) => {
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
   const accessToken = useAccessToken();
 
   const markBatchAsSent = () => {
-    axios.post(
-      "/RegisterBatchSent",
-      {},
-      { ...axiosUtils.getSharedAxiosConfig(accessToken), params: { batchId } }
-    );
+    axios
+      .post(
+        "/RegisterBatchSent",
+        {},
+        { ...axiosUtils.getSharedAxiosConfig(accessToken), params: { batchId } }
+      )
+      .then(() => {
+        successCallback();
+      });
   };
-  return <Button title="Marker som afsendt" onPress={markBatchAsSent} />;
+  return (
+    <View>
+      <Button title="Marker som afsendt" onPress={markBatchAsSent} />
+      <DismissableSnackbar
+        showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
+        title="Afsendelse registreret"
+      />
+    </View>
+  );
 };
 
 export default RecipientScreen;

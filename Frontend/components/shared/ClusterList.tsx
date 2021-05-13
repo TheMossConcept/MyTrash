@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemText: {
-    borderColor: "black",
+    borderColor: "lightgrey",
     borderRadius: 8,
     borderWidth: 0.1,
     borderStyle: "solid",
@@ -76,9 +76,9 @@ const styles = StyleSheet.create({
     cursor: "pointer",
   },
   border: {
-    borderColor: "black",
+    borderColor: "lightgrey",
     borderRadius: 8,
-    borderWidth: 0.1,
+    borderWidth: 2,
     padding: 20,
     borderStyle: "solid",
   },
