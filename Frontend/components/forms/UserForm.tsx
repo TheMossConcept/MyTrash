@@ -9,6 +9,7 @@ import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
+import RoleSelector from "../RoleSelector";
 
 export type UserFormData = {
   email: string;
@@ -115,6 +116,7 @@ const UserForm: FC<Props> = ({ isPartner, submitTitle }) => {
         </View>
         <StringField label="By" formKey="city" />
         <NumberField label="Postnummer" formKey="zipCode" />
+        {isPartner && <RoleSelector formKey="role" />}
         <SubmitButton title={submitTitle} />
       </View>
     </FormContainer>

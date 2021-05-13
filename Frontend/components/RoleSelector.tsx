@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { useFormikContext } from "formik";
 import React, { useContext, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -8,7 +9,10 @@ import {
   // TODO: Fix this deprecation!
   CheckBox,
   ViewProps,
+  Button,
 } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useTheme } from "react-native-paper";
 import { AccessTokenContext } from "../navigation/TabNavigator";
 // TODO: Fix this
 // import { CheckBox } from "@react-native-community/checkbox";
@@ -16,109 +20,90 @@ import axiosUtils from "../utils/axios";
 import Container from "./shared/Container";
 
 type Props = {
-  roleSelectionState: [string[], (newValue: string[]) => void];
-  selectionDisabled: boolean;
+  formKey: string;
 };
 
 type AppRole = {
   displayName: string;
-  roleValue: string;
+  id: string;
 };
 
-export default function RoleSelector({
-  roleSelectionState,
-  selectionDisabled,
-}: Props) {
-  const accessToken = useContext(AccessTokenContext);
-  // TODO: Make a hook for handling this access token stuff at some point!
-  const [availableAppRoles, setAvailableAppRoles] = useState<AppRole[]>([]);
+export default function RoleSelector({ formKey: key }: Props) {
+  const formikProps = useFormikContext<any>();
+  const { colors } = useTheme();
 
-  const [isLoading, setIsLoading] = useState(false);
+  if (!formikProps) {
+    throw Error(
+      "Incorrect use of select partners form. It's used outside a FormContainer which is not allowed as it needs the context crated by Formik!"
+    );
+  } else {
+    const { values, setFieldValue } = formikProps;
 
-  // Initially, fetch the available app roles
-  useEffect(() => {
-    if (accessToken) {
-      setIsLoading(true);
+    const selectedRole = values[key];
+    const setSelectedRole = (newValue: any) => {
+      setFieldValue(key, newValue);
+    };
 
-      axios
-        .get("/GetAppRoles", {
-          params: {
-            // TODO: Fix hardcoding and move this into the getSharedAxiosConfig function!
-            code: "oYx2YQIRFLv7fVYRd4aV9Rj/EyzQGwTepONvms8DBLJPquUIh9sDAw==",
-          },
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        })
-        .then((response: AxiosResponse<AppRole[]>) => {
-          setAvailableAppRoles(response.data);
-        })
-        .finally(() => setIsLoading(false));
-    }
-  }, [accessToken]);
+    const accessToken = useContext(AccessTokenContext);
+    // TODO: Make a hook for handling this access token stuff at some point!
+    const [availableAppRoles, setAvailableAppRoles] = useState<AppRole[]>([]);
 
-  return (
-    <Container style={{ flexDirection: "row" }}>
-      {isLoading ? (
-        <ActivityIndicator />
-      ) : (
-        availableAppRoles.map((availableAppRole: AppRole) => (
-          <RoleSelectorCheckbox
-            appRole={availableAppRole}
-            selectionState={roleSelectionState}
-            disabled={selectionDisabled}
-            style={styles.checkbox}
-            key={availableAppRole.roleValue}
-          />
-        ))
-      )}
-    </Container>
-  );
-}
+    const [isLoading, setIsLoading] = useState(false);
 
-type RoleSelectorCheckboxProps = {
-  appRole: AppRole;
-  selectionState: [string[], (roleValue: string[]) => void];
-  disabled: boolean;
-} & ViewProps;
+    // Initially, fetch the available app roles
+    useEffect(() => {
+      if (accessToken) {
+        setIsLoading(true);
 
-function RoleSelectorCheckbox({
-  appRole,
-  selectionState,
-  disabled,
-  ...viewProps
-}: RoleSelectorCheckboxProps) {
-  const { displayName, roleValue } = appRole;
-  const [selectedAppRoles, setSelectedAppRoles] = selectionState;
+        axios
+          .get("/GetAppRoles", {
+            params: {
+              // TODO: Fix hardcoding and move this into the getSharedAxiosConfig function!
+              code: "oYx2YQIRFLv7fVYRd4aV9Rj/EyzQGwTepONvms8DBLJPquUIh9sDAw==",
+            },
+            ...axiosUtils.getSharedAxiosConfig(accessToken),
+          })
+          .then((response: AxiosResponse<AppRole[]>) => {
+            setAvailableAppRoles(response.data);
+          })
+          .finally(() => setIsLoading(false));
+      }
+    }, [accessToken]);
 
-  const checkboxValue = selectedAppRoles.includes(roleValue);
-  const onValueChange = (newValue: boolean) => {
-    if (newValue) {
-      setSelectedAppRoles([...selectedAppRoles, roleValue]);
-    } else {
-      setSelectedAppRoles(
-        selectedAppRoles.filter(
-          (selectedAppRole) => selectedAppRole !== roleValue
-        )
-      );
-    }
-  };
+    return (
+      <Container style={{ flexDirection: "row", justifyContent: "center" }}>
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          availableAppRoles.map((availableAppRole: AppRole) => {
+            const roleIsSelected = selectedRole === availableAppRole.id;
+            const selectRole = () => {
+              setSelectedRole(availableAppRole.id);
+            };
 
-  // TODO: Disable the spread forbidden rule and spread viewProps
-  return (
-    <View style={viewProps.style}>
-      <CheckBox
-        value={checkboxValue}
-        onValueChange={onValueChange}
-        disabled={disabled}
-      />
-      <Text>{displayName}</Text>
-    </View>
-  );
+            return (
+              <TouchableOpacity onPress={selectRole} key={availableAppRole.id}>
+                <View
+                  style={{
+                    marginRight: 10,
+                    padding: 10,
+                    borderRadius: 4,
+                    backgroundColor: roleIsSelected ? colors.primary : "grey",
+                  }}
+                >
+                  <Text>{availableAppRole.displayName}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })
+        )}
+      </Container>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-  checkbox: {
-    alignItems: "center",
-    marginLeft: 15,
-    marginRight: 15,
+  roleBtn: {
+    marginRight: 10,
   },
 });
