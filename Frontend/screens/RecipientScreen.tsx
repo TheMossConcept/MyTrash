@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useState, useEffect, useCallback } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, View } from "react-native";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import axiosUtils from "../utils/axios";
 import PlasticCollectionsDetails, {
@@ -66,6 +66,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
       <PlasticCollectionsDetails
         title="Modtaget"
         plasticCollections={sortedCollections.delivered}
+        hideWeight
       >
         {(collection) => (
           <RegisterPlasticCollectionReciept plasticCollection={collection} />
