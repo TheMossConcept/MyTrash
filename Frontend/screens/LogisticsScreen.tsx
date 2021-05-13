@@ -1,6 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useCallback, useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import axiosUtils from "../utils/axios";
 
 import useAccessToken from "../hooks/useAccessToken";
@@ -13,6 +14,7 @@ import SchedulePlasticCollection from "../components/collection/SchedulePlasticC
 import DeliverPlasticCollection from "../components/collection/DeliverPlasticCollection";
 import Container from "../components/shared/Container";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
+import InformationText from "../components/styled/InformationText";
 
 type Props = StackScreenProps<TabsParamList, "Logistik">;
 
@@ -50,10 +52,18 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
         plasticCollections={sortedCollections.pending}
       >
         {(collection) => (
-          <SchedulePlasticCollection
-            plasticCollectionId={collection.id}
-            plasticCollectionScheduledCallback={fetchPlasticCollections}
-          />
+          <View>
+            {collection.isFirstCollection && (
+              <InformationText>Dette er første opsamling</InformationText>
+            )}
+            {collection.isLastCollection && (
+              <InformationText>Dette er sidste opsamling</InformationText>
+            )}
+            <SchedulePlasticCollection
+              plasticCollectionId={collection.id}
+              plasticCollectionScheduledCallback={fetchPlasticCollections}
+            />
+          </View>
         )}
       </PlasticCollectionsDetails>
       <PlasticCollectionsDetails

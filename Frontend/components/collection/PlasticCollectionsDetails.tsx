@@ -18,6 +18,8 @@ export type PlasticCollection = {
   streetNumber: string;
   city: string;
   zipCode: string;
+  isFirstCollection: boolean;
+  isLastCollection: boolean;
   companyName?: string;
   comment?: string;
   scheduledPickupDate?: string;
