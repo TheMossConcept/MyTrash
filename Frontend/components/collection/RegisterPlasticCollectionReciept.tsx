@@ -11,6 +11,7 @@ import DismissableSnackbar from "../shared/DismissableSnackbar";
 
 type Props = {
   plasticCollection: PlasticCollection;
+  successCallback: () => void;
 };
 
 type RegisterWeightFormData = {
@@ -21,7 +22,10 @@ const validationSchema = yup.object().shape({
   weight: yup.number().required("Vægt er påkrævet"),
 });
 
-const RegisterPlasticCollectionReciept: FC<Props> = ({ plasticCollection }) => {
+const RegisterPlasticCollectionReciept: FC<Props> = ({
+  plasticCollection,
+  successCallback,
+}) => {
   const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
 
   const accessToken = useAccessToken();
@@ -41,6 +45,8 @@ const RegisterPlasticCollectionReciept: FC<Props> = ({ plasticCollection }) => {
       .then(() => {
         setShowSuccessSnackbar(true);
         resetForm();
+
+        successCallback();
       });
   };
 

@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { DateTime } from "luxon";
 import axiosUtils from "../utils/axios";
@@ -22,44 +22,74 @@ const CollectionScreen: FC<Props> = ({ route }) => {
 
   const { clusters } = useClusters({ collectorId: userId });
 
+  const [plasticCollections, setPlasticCollections] = useState<
+    { [clusterId: string]: PlasticCollection[] } | undefined
+  >(undefined);
+
+  const accessToken = useAccessToken();
+
+  const fetchPlasticCollections = useCallback(
+    (clusterId: string) => {
+      axios
+        .get("/GetPlasticCollections", {
+          params: { collectorId: userId, clusterId },
+          ...axiosUtils.getSharedAxiosConfig(accessToken),
+        })
+        .then((axiosResult) => {
+          const { data } = axiosResult;
+          setPlasticCollections((previousCollections) => ({
+            ...previousCollections,
+            [clusterId]: data,
+          }));
+        });
+    },
+    [accessToken, userId]
+  );
+
+  // Initial plasticCollections fetch
+  useEffect(() => {
+    const clusterIds = clusters.map((cluster) => cluster.id);
+    console.log(clusterIds);
+    clusterIds.forEach((clusterId) => fetchPlasticCollections(clusterId));
+  }, [clusters, fetchPlasticCollections]);
+
   return (
     <Container style={{ justifyContent: "center" }}>
       <ClusterList clusters={clusters}>
-        {({ cluster }) => (
-          <View>
-            <CollectionForm clusterId={cluster.id} userId={userId} />
-            <UserCollectionsForCluster userId={userId} clusterId={cluster.id} />
-          </View>
-        )}
+        {({ cluster }) => {
+          const fetchPlasticCollectionsForCluster = () => {
+            fetchPlasticCollections(cluster.id);
+          };
+
+          return (
+            <View>
+              <CollectionForm
+                clusterId={cluster.id}
+                userId={userId}
+                successCallback={fetchPlasticCollectionsForCluster}
+              />
+              {plasticCollections && (
+                <UserCollectionsForCluster
+                  plasticCollections={plasticCollections[cluster.id]}
+                />
+              )}
+            </View>
+          );
+        }}
       </ClusterList>
     </Container>
   );
 };
 
-type UserCollectionsForClusterProps = { userId: string; clusterId: string };
+type UserCollectionsForClusterProps = {
+  plasticCollections: PlasticCollection[];
+};
 
 const UserCollectionsForCluster: FC<UserCollectionsForClusterProps> = ({
-  userId,
-  clusterId,
+  plasticCollections,
 }) => {
   // TODO: Make this into a getPlasticCollections hook with an option for
   // grouping based on the status
-  const [plasticCollections, setPlasticCollections] = useState<
-    PlasticCollection[]
-  >([]);
-  const accessToken = useAccessToken();
-
-  useEffect(() => {
-    axios
-      .get("/GetPlasticCollections", {
-        params: { collectorId: userId, clusterId },
-        ...axiosUtils.getSharedAxiosConfig(accessToken),
-      })
-      .then((axiosResult) => {
-        const { data } = axiosResult;
-        setPlasticCollections(data);
-      });
-  }, [accessToken, clusterId, userId]);
 
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
   return (

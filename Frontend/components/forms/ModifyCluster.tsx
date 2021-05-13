@@ -8,7 +8,7 @@ import DismissableSnackbar from "../shared/DismissableSnackbar";
 import ClusterForm, { ClusterFormData } from "./ClusterForm";
 
 type UpdateFormProps = {
-  successCallback?: () => void;
+  successCallback: () => void;
   clusterId?: string;
 };
 
@@ -48,9 +48,8 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
         })
         .then(() => {
           setShowSuccessSnackbar(true);
-          if (successCallback) {
-            successCallback();
-          }
+
+          successCallback();
         });
     }
   };
@@ -73,7 +72,7 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
 };
 
 type CreateFormProps = {
-  successCallback?: () => void;
+  successCallback: () => void;
 };
 
 export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
@@ -103,9 +102,8 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
         .then(() => {
           setShowSuccessSnackbar(true);
           reset();
-          if (successCallback) {
-            successCallback();
-          }
+
+          successCallback();
         });
     }
   };

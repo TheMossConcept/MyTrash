@@ -28,7 +28,8 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   const [batches, setBatches] = useState<Batch[]>([]);
 
   const accessToken = useAccessToken();
-  useEffect(() => {
+
+  const fetchPlasticCollections = useCallback(() => {
     axios
       .get("/GetPlasticCollections", {
         params: { recipientPartnerId: userId },
@@ -39,6 +40,10 @@ const RecipientScreen: FC<Props> = ({ route }) => {
         setPlasticCollections(data);
       });
   }, [accessToken, userId]);
+
+  useEffect(() => {
+    fetchPlasticCollections();
+  }, [fetchPlasticCollections]);
 
   const fetchBatches = useCallback(() => {
     axios
@@ -69,7 +74,10 @@ const RecipientScreen: FC<Props> = ({ route }) => {
         hideWeight
       >
         {(collection) => (
-          <RegisterPlasticCollectionReciept plasticCollection={collection} />
+          <RegisterPlasticCollectionReciept
+            plasticCollection={collection}
+            successCallback={fetchPlasticCollections}
+          />
         )}
       </PlasticCollectionsDetails>
       <PlasticCollectionsDetails
