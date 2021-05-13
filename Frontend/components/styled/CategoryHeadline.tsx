@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { TextProps, Text, StyleSheet } from "react-native";
 
-type Props = TextProps;
+type Props = Omit<TextProps, "style">;
 
 const CategoryHeadline: FC<Props> = ({ children, ...rest }) => {
   return (

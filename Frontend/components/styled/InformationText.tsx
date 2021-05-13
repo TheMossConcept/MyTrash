@@ -1,7 +1,7 @@
 import { StyleSheet, TextProps, Text } from "react-native";
 import React, { FC } from "react";
 
-type Props = TextProps;
+type Props = Omit<TextProps, "style">;
 
 const InformationText: FC<Props> = ({ children, ...rest }) => {
   return (

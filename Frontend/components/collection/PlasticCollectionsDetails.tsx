@@ -1,6 +1,7 @@
 import React, { FC, useState } from "react";
 import { Text, TouchableOpacity } from "react-native";
 import { Badge, Card, List, useTheme } from "react-native-paper";
+import InformationText from "../styled/InformationText";
 
 type PlasticCollectionDetailProps = {
   plasticCollection: PlasticCollection;
@@ -57,16 +58,16 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
       </TouchableOpacity>
       {showDetails && (
         <Card.Content style={styles.cardContent}>
-          {companyName && <Text style={styles.cardText}>{companyName}</Text>}
-          <Text style={styles.cardText}>
+          {companyName && <InformationText>{companyName}</InformationText>}
+          <InformationText>
             {streetName} {streetNumber}
-          </Text>
-          <Text style={styles.cardText}>
+          </InformationText>
+          <InformationText>
             {city} {zipCode}
-          </Text>
-          {comment && <Text style={styles.cardText}>{comment}</Text>}
+          </InformationText>
+          {comment && <InformationText>{comment}</InformationText>}
           {weight && !hideWeight && (
-            <Text style={styles.cardText}>Vægt: {weight}kg</Text>
+            <InformationText>Vægt: {weight}kg</InformationText>
           )}
           <Text>
             Antal enheder{" "}
@@ -125,15 +126,6 @@ const styles = {
     margin: 15,
     borderColor: "lightgrey",
     borderStyle: "solid" as "solid",
-  },
-  cardText: {
-    marginBottom: 5,
-    paddingBottom: 5,
-    textWeight: 600 as 600,
-    borderBottomColor: "lightgrey",
-    borderBottomWidth: 1,
-    borderBottomStyle: "solid" as "solid",
-    width: "fit-content",
   },
   listHeader: {
     fontSize: 25,
