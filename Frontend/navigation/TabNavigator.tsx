@@ -75,25 +75,23 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
   }, [accessTokenState, idToken]);
 
   const tokenDecoded = jwtDecode(idToken) as any;
-  // eslint-disable camelcase
-  const { given_name, family_name, oid } = tokenDecoded;
+  /* eslint-disable camelcase */
+  const {
+    given_name,
+    family_name,
+    oid,
+    extension_Administrator,
+    extension_CollectionAdministrator,
+    extension_Collector,
+    extension_LogisticsPartner,
+    extension_RecipientPartner,
+    extension_ProductionPartner,
+  } = tokenDecoded;
   const name = family_name ? `${given_name} ${family_name}` : given_name;
 
   console.log(tokenDecoded);
   const userInfo: UserInfo = { roles: [], name, userId: oid };
   const colorScheme = useColorScheme();
-
-  const showAdministrationScreen =
-    userInfo.roles?.includes("SolutionAdministrator") || true;
-  const showCollectionAdministrationScreen =
-    userInfo.roles?.includes("CollectionAdministrator") || true;
-  const showCollectionScreen = userInfo.roles?.includes("Collector") || true;
-  const showLogisticsScreen =
-    userInfo.roles?.includes("LogisticsPartner") || true;
-  const showProductionScreen =
-    userInfo.roles?.includes("ProductionPartner") || true;
-  const showRecipientScreen =
-    userInfo.roles?.includes("RecipientPartner") || true;
 
   return (
     <AccessTokenContext.Provider value={accessTokenState}>
@@ -109,7 +107,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
         initialRouteName="Administration"
         tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
       >
-        {showAdministrationScreen && (
+        {extension_Administrator && (
           <Tab.Screen
             name="Administration"
             component={AdministrationScreen}
@@ -118,7 +116,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
             }}
           />
         )}
-        {showCollectionAdministrationScreen && (
+        {extension_CollectionAdministrator && (
           <Tab.Screen
             name="Indsamlingsadministration"
             component={CollectionAdministrationScreen}
@@ -128,7 +126,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
             }}
           />
         )}
-        {showCollectionScreen && (
+        {extension_Collector && (
           <Tab.Screen
             name="Indsamling"
             component={CollectionScreen}
@@ -138,7 +136,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
             }}
           />
         )}
-        {showLogisticsScreen && (
+        {extension_LogisticsPartner && (
           <Tab.Screen
             name="Logistik"
             component={LogisticsScreen}
@@ -148,7 +146,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
             }}
           />
         )}
-        {showRecipientScreen && (
+        {extension_RecipientPartner && (
           <Tab.Screen
             name="Modtagelse"
             component={RecipientScreen}
@@ -158,7 +156,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
             }}
           />
         )}
-        {showProductionScreen && (
+        {extension_ProductionPartner && (
           <Tab.Screen
             name="Produktion"
             component={ProductionScreen}
@@ -172,6 +170,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
     </AccessTokenContext.Provider>
   );
 };
+/* eslint-enable camelcase */
 
 export default TabNavigator;
 
