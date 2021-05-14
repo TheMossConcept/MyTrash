@@ -55,7 +55,7 @@ const httpTrigger: AzureFunction = async function (
         {
           signInType: "emailAddress",
           // TODO: Fix hardcoding
-          issuer: "mossconsultingorg.onmicrosoft.com",
+          issuer: "niklasnoerregaardgmail.onmicrosoft.com",
           issuerAssignedId: email,
         },
       ],

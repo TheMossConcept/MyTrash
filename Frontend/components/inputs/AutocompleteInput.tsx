@@ -109,9 +109,6 @@ const AutocompleteInput: FC<Props> = ({
 
       axios
         .get(endpoint, {
-          params: {
-            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
-          },
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
         .then((entitiesResult) => {
