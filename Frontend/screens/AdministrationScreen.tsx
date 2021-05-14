@@ -17,6 +17,7 @@ type Props = StackScreenProps<TabsParamList, "Administration">;
 
 const AdministrationScreen: FC<Props> = () => {
   const { clusters, refetchClusters } = useClusters();
+  // TODO: Find types for this library and make sure all the events are strongly typed!!
   const handlePartnerInvited = () => EventRegister.emit("partnerInvited");
 
   return (

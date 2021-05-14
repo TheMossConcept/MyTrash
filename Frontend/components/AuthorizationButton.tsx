@@ -7,7 +7,8 @@ import {
   exchangeCodeAsync,
   makeRedirectUri,
 } from "expo-auth-session";
-import { Button } from "react-native";
+import { Button, Text, View } from "react-native";
+import { TEST } from "react-native-dotenv";
 // import { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID } from "react-native-dotenv";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -20,6 +21,8 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
   const [discoveryDocument, setDiscoveryDocument] = useState<
     DiscoveryDocument | undefined
   >(undefined);
+
+  console.log(TEST);
 
   // NB! We cannot use autodiscovery in this case bacause it automatically appends /.well-known/openid-configuration to the URL and does
   // not support explicitly passing query parameters
@@ -120,5 +123,10 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
     }
   };
 
-  return <Button title="Login" onPress={onPress} />;
+  return (
+    <View>
+      <Text>{TEST}</Text>
+      <Button title="Login" onPress={onPress} />
+    </View>
+  );
 }
