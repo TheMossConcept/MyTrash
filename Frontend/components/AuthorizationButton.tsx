@@ -8,8 +8,12 @@ import {
   makeRedirectUri,
 } from "expo-auth-session";
 import { Button, Text, View } from "react-native";
-import { TEST } from "react-native-dotenv";
-// import { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID } from "react-native-dotenv";
+import {
+  AUTHORIZATION_URL,
+  AZURE_AD_CLIENT_ID,
+  MOBILE_REDIRECT_URL,
+  TEST,
+} from "react-native-dotenv";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -27,10 +31,6 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
   // NB! We cannot use autodiscovery in this case bacause it automatically appends /.well-known/openid-configuration to the URL and does
   // not support explicitly passing query parameters
   useEffect(() => {
-    const AUTHORIZATION_URL =
-      // "https://login.microsoftonline.com/12ca994f-d987-42e1-8ef2-27f9c922d145/v2.0";
-      "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUpAndSignIn";
-
     const updateDiscoveryDocument = async () => {
       const rawDiscoveryDocumentResponse = await axios.get(AUTHORIZATION_URL);
       const {
@@ -66,18 +66,15 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
   // "https://login.microsoftonline.com/12ca994f-d987-42e1-8ef2-27f9c922d145/v2.0";
   const redirectUri = makeRedirectUri({
     // For usage in bare and standalone
-    // TODO: Fix the hardcoding and make this environment specific!
-    native: "exp://login",
+    native: MOBILE_REDIRECT_URL,
   });
 
-  // TODO: Fix teh hardcoding!
-  const clientId = "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412"; // AZURE_AD_CLIENT_ID,
   // NB! There's a bug in Azure AD B2C that causes only an id token to be
   // return if openid is included in scopes. See https://docs.microsoft.com/en-us/answers/questions/135912/azure-ad-b2c-access-token-missing.html
-  const scopes = [clientId, "profile", "email", "offline_access"];
+  const scopes = [AZURE_AD_CLIENT_ID, "profile", "email", "offline_access"];
 
   const authRequest = new AuthRequest({
-    clientId,
+    clientId: AZURE_AD_CLIENT_ID,
     scopes,
     extraParams: { p: "B2C_1_SignUpAndSignIn" },
     redirectUri,
@@ -103,7 +100,7 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
           {
             code: authSessionResult.params.code,
             scopes,
-            clientId,
+            clientId: AZURE_AD_CLIENT_ID,
             redirectUri,
             extraParams: {
               code_verifier: authRequest.codeVerifier,
