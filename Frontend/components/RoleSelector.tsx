@@ -1,34 +1,17 @@
-import axios, { AxiosResponse } from "axios";
 import { useFormikContext } from "formik";
-import React, { useContext, useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  View,
-  // TODO: Fix this deprecation!
-  CheckBox,
-  ViewProps,
-  Button,
-} from "react-native";
+import React from "react";
+import { View, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useTheme } from "react-native-paper";
-import { AccessTokenContext } from "../navigation/TabNavigator";
-// TODO: Fix this
-// import { CheckBox } from "@react-native-community/checkbox";
-import axiosUtils from "../utils/axios";
+import { AppRole } from "../hooks/useAppRoles";
 import Container from "./shared/Container";
 
 type Props = {
   formKey: string;
+  appRoles: AppRole[];
 };
 
-type AppRole = {
-  displayName: string;
-  id: string;
-};
-
-export default function RoleSelector({ formKey: key }: Props) {
+export default function RoleSelector({ formKey: key, appRoles }: Props) {
   const formikProps = useFormikContext<any>();
   const { colors } = useTheme();
 
@@ -44,66 +27,30 @@ export default function RoleSelector({ formKey: key }: Props) {
       setFieldValue(key, newValue);
     };
 
-    const accessToken = useContext(AccessTokenContext);
-    // TODO: Make a hook for handling this access token stuff at some point!
-    const [availableAppRoles, setAvailableAppRoles] = useState<AppRole[]>([]);
-
-    const [isLoading, setIsLoading] = useState(false);
-
-    // Initially, fetch the available app roles
-    useEffect(() => {
-      if (accessToken) {
-        setIsLoading(true);
-
-        axios
-          .get("/GetAppRoles", {
-            params: {
-              // TODO: Fix hardcoding and move this into the getSharedAxiosConfig function!
-              code: "oYx2YQIRFLv7fVYRd4aV9Rj/EyzQGwTepONvms8DBLJPquUIh9sDAw==",
-            },
-            ...axiosUtils.getSharedAxiosConfig(accessToken),
-          })
-          .then((response: AxiosResponse<AppRole[]>) => {
-            setAvailableAppRoles(response.data);
-          })
-          .finally(() => setIsLoading(false));
-      }
-    }, [accessToken]);
-
     return (
       <Container style={{ flexDirection: "row", justifyContent: "center" }}>
-        {isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          availableAppRoles.map((availableAppRole: AppRole) => {
-            const roleIsSelected = selectedRole === availableAppRole.id;
-            const selectRole = () => {
-              setSelectedRole(availableAppRole.id);
-            };
+        {appRoles.map((availableAppRole: AppRole) => {
+          const roleIsSelected = selectedRole === availableAppRole.id;
+          const selectRole = () => {
+            setSelectedRole(availableAppRole.id);
+          };
 
-            return (
-              <TouchableOpacity onPress={selectRole} key={availableAppRole.id}>
-                <View
-                  style={{
-                    marginRight: 10,
-                    padding: 10,
-                    borderRadius: 4,
-                    backgroundColor: roleIsSelected ? colors.primary : "grey",
-                  }}
-                >
-                  <Text>{availableAppRole.displayName}</Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })
-        )}
+          return (
+            <TouchableOpacity onPress={selectRole} key={availableAppRole.id}>
+              <View
+                style={{
+                  marginRight: 10,
+                  padding: 10,
+                  borderRadius: 4,
+                  backgroundColor: roleIsSelected ? colors.primary : "grey",
+                }}
+              >
+                <Text>{availableAppRole.displayName}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        })}
       </Container>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  roleBtn: {
-    marginRight: 10,
-  },
-});

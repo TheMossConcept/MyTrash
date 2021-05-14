@@ -10,6 +10,7 @@ import NumberField from "../inputs/NumberField";
 import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
 import RoleSelector from "../RoleSelector";
+import useAppRoles, { AppRole } from "../../hooks/useAppRoles";
 
 export type UserFormData = {
   email: string;
@@ -30,6 +31,7 @@ export type UserFormData = {
 type Props = {
   isPartner: boolean;
   submitTitle: string;
+  successCallback?: () => void;
 };
 
 const danishPhoneNumberRegExp = new RegExp(
@@ -56,7 +58,9 @@ const validationSchema = yup.object().shape({
 });
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
-const UserForm: FC<Props> = ({ isPartner, submitTitle }) => {
+const UserForm: FC<Props> = ({ isPartner, submitTitle, successCallback }) => {
+  // const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+
   const initialValues: UserFormData = {
     email: "",
     firstName: "",
@@ -82,9 +86,20 @@ const UserForm: FC<Props> = ({ isPartner, submitTitle }) => {
         .then(() => {
           // setShowSnackbar(true);
           resetForm();
+
+          if (successCallback) {
+            successCallback();
+          }
         });
     }
   };
+
+  const { appRoles } = useAppRoles();
+
+  // Empty array as we do not select app roles for non-partner users
+  const appRolesForSelection = isPartner
+    ? appRoles.filter((appRole) => appRole.id !== "Collector")
+    : [];
 
   // TODO: Disable the spreading is forbidden style and spread the view props here!
   return (
@@ -116,7 +131,9 @@ const UserForm: FC<Props> = ({ isPartner, submitTitle }) => {
         </View>
         <StringField label="By" formKey="city" />
         <NumberField label="Postnummer" formKey="zipCode" />
-        {isPartner && <RoleSelector formKey="role" />}
+        {isPartner && (
+          <RoleSelector formKey="role" appRoles={appRolesForSelection} />
+        )}
         <SubmitButton title={submitTitle} />
       </View>
     </FormContainer>

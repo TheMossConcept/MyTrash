@@ -20,7 +20,7 @@ export type ClusterFormData = {
   recipientPartnerId?: string;
 };
 
-type Props = {
+export type Props = {
   cluster: ClusterFormData;
   submit: (Cluster: ClusterFormData, reset: () => void) => void;
   submitTitle: string;

@@ -1,36 +1,40 @@
 import axios from "axios";
 import { useContext, useState, useEffect, useCallback } from "react";
 import axiosUtils from "../utils/axios";
-import { Cluster } from "../components/shared/ClusterList";
 import { AccessTokenContext } from "../navigation/TabNavigator";
+
+export type AppRole = {
+  displayName: string;
+  id: string;
+};
 
 /* NB! Be aware that even though this pattern is convinient, it will lead to
  * unnecessary repeat queries. It is not an issue at the moment, however, it
  * can be once the app grows. When that happens, consider caching!
  */
-const useClusters = (queryParams?: Object) => {
+const useAppRoles = (queryParams?: Object) => {
   const accessToken = useContext(AccessTokenContext);
-  const [clusters, setClusters] = useState<Cluster[]>([]);
+  const [appRoles, setAppRoles] = useState<AppRole[]>([]);
 
-  const fetchClusters = useCallback(() => {
+  const fetchAppRoles = useCallback(() => {
     if (accessToken) {
       axios
-        .get("GetClusters", {
+        .get("GetAppRoles/", {
           params: queryParams,
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
         .then((clustersResult) => {
-          setClusters(clustersResult.data);
+          setAppRoles(clustersResult.data);
         });
     }
   }, [accessToken]);
 
   // Fetch whenever the function updates!
   useEffect(() => {
-    fetchClusters();
-  }, [fetchClusters]);
+    fetchAppRoles();
+  }, [fetchAppRoles]);
 
-  return { clusters, refetchClusters: fetchClusters };
+  return { appRoles, refetchAppRoles: fetchAppRoles };
 };
 
-export default useClusters;
+export default useAppRoles;
