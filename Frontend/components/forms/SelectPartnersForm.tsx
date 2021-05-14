@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import AutocompleteInput from "../inputs/AutocompleteInput";
 import useAppRoles from "../../hooks/useAppRoles";
 
@@ -20,6 +20,7 @@ const SelectPartnersForm: FC<Props> = () => {
   const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
     []
   );
+
   useEffect(() => {
     const localUserSelectionData = appRoles.reduce<UserInputProps[]>(
       (accumulator, appRole) => {
@@ -82,12 +83,15 @@ const SelectPartnersForm: FC<Props> = () => {
         const isLastInput = index === userSelections - 1;
 
         return (
-          <View key={selectionData.title} style={{ width: "100%", zIndex }}>
+          <View
+            key={selectionData.title}
+            style={{ width: "100%", zIndex, marginBottom: isLastInput ? 5 : 0 }}
+          >
             <AutocompleteInput
               containerStyle={{ zIndex }}
               endpoint={selectionData.usersEndpoint}
+              updateEntitiesEventName="partnerInvited"
               title={selectionData.title}
-              style={isLastInput ? undefined : styles.inputField}
               formKey={selectionData.formKey}
             />
           </View>
@@ -96,11 +100,5 @@ const SelectPartnersForm: FC<Props> = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  inputField: {
-    marginBottom: 5,
-  },
-});
 
 export default SelectPartnersForm;

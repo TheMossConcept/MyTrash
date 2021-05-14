@@ -10,7 +10,7 @@ import NumberField from "../inputs/NumberField";
 import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
 import RoleSelector from "../RoleSelector";
-import useAppRoles, { AppRole } from "../../hooks/useAppRoles";
+import useAppRoles from "../../hooks/useAppRoles";
 
 export type UserFormData = {
   email: string;

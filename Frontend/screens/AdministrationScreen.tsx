@@ -1,10 +1,10 @@
 import { StackScreenProps } from "@react-navigation/stack";
+import { EventRegister } from "react-native-event-listeners";
 import React, { FC } from "react";
 
 import { TabsParamList } from "../typings/types";
 import ClusterList from "../components/shared/ClusterList";
 import useClusters from "../hooks/useCluster";
-import useAppRoles from "../hooks/useAppRoles";
 import Container from "../components/shared/Container";
 import {
   CreateCluster,
@@ -17,11 +17,16 @@ type Props = StackScreenProps<TabsParamList, "Administration">;
 
 const AdministrationScreen: FC<Props> = () => {
   const { clusters, refetchClusters } = useClusters();
+  const handlePartnerInvited = () => EventRegister.emit("partnerInvited");
 
   return (
     <Container>
       <CategoryHeadline>Inviter partner</CategoryHeadline>
-      <UserForm submitTitle="Inviter partner" isPartner />
+      <UserForm
+        submitTitle="Inviter partner"
+        successCallback={handlePartnerInvited}
+        isPartner
+      />
       <CategoryHeadline>Opret cluster</CategoryHeadline>
       <CreateCluster successCallback={refetchClusters} />
       <ClusterList clusters={clusters}>
