@@ -28,6 +28,7 @@ jobs:
       id: builddeploy
       uses: Azure/static-web-apps-deploy@v0.0.1-preview
       env:
+        BABEL_ENV: "test"
         EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         NODE_VERSION: ${{ env.NODE_VERSION }}
         PRE_BUILD_COMMAND: "npm install --global --silent expo-cli"
