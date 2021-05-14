@@ -8,7 +8,8 @@ const getMongoClient = async () => {
   if (!globalMongoClientInstace) {
     globalMongoClientInstace = await mongodb.MongoClient.connect(
       // TODO: Move to env!
-      "mongodb://cosmos-houe-plastic-recycling:30OZ6PBjKuwKJfm9S4Wd4Jj1c9zobJbwLKA5j6zcK58UcZ5WCi11mK3tWmppuyiwJbJsxxce6WkvCyFcCtUp0A%3D%3D@cosmos-houe-plastic-recycling.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@cosmos-houe-plastic-recycling@"
+      // \
+      "mongodb://cosmos-houe-mytrash-serverless:gMCgVFsAMYZhJ7Jonq66mCgmv4lYM78LDVzNsa4XhTxyWxJS135MCox9O1d7O9gey5ILDq8XIBLxSMI5TNqPaQ==@cosmos-houe-mytrash-serverless.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@cosmos-houe-mytrash-serverless@"
     );
   }
 

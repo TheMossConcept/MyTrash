@@ -55,7 +55,7 @@ const httpTrigger: AzureFunction = async function (
         {
           signInType: "emailAddress",
           // TODO: Fix hardcoding
-          issuer: "niklasnoerregaardgmail.onmicrosoft.com",
+          issuer: "mossconsultingorg.onmicrosoft.com",
           issuerAssignedId: email,
         },
       ],
@@ -72,7 +72,7 @@ const httpTrigger: AzureFunction = async function (
       },
       // passwordPolicies: "DisablePasswordExpiration",
       companyName,
-      // ...extensionsObject,
+      ...extensionsObject,
     });
 
     if (role === "Collector") {
