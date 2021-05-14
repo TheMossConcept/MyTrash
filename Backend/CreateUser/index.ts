@@ -72,7 +72,7 @@ const httpTrigger: AzureFunction = async function (
       },
       // passwordPolicies: "DisablePasswordExpiration",
       companyName,
-      ...extensionsObject,
+      // ...extensionsObject,
     });
 
     if (role === "Collector") {
