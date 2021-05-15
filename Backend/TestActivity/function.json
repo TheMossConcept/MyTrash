@@ -1,0 +1,10 @@
+{
+  "bindings": [
+    {
+      "name": "user",
+      "type": "activityTrigger",
+      "direction": "in"
+    }
+  ],
+  "scriptFile": "../dist/TestActivity/index.js"
+}
