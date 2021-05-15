@@ -76,7 +76,7 @@ const CollaboratorForm: FC<Props> = ({ submitTitle, successCallback }) => {
   const createUser = (values: UserFormData, resetForm: () => void) => {
     if (accessToken) {
       axios
-        .post("/CreateUser", values, {
+        .post("/CreateCollaborator", values, {
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
         .then(() => {
