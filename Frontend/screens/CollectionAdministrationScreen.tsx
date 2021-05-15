@@ -1,13 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC } from "react";
-import { Button } from "react-native";
 import ClusterList from "../components/shared/ClusterList";
 
-import UserForm from "../components/forms/UserForm";
 import { TabsParamList } from "../typings/types";
 import useClusters from "../hooks/useCluster";
 import Container from "../components/shared/Container";
 import { UpdateCluster } from "../components/forms/ModifyCluster";
+import CollectorForm from "../components/forms/CollectorForm";
 
 type Props = StackScreenProps<TabsParamList, "Indsamlingsadministration">;
 
@@ -26,10 +25,9 @@ const CollectionAdministrationScreen: FC<Props> = ({ route }) => {
               clusterId={cluster.id}
               successCallback={refetchClusters}
             />
-            <UserForm submitTitle="Tilføj indsamler" isPartner={false} />
-            <Button
-              title="Inviter"
-              onPress={() => console.log("Not implemented yet!")}
+            <CollectorForm
+              clusterId={cluster.id}
+              submitTitle="Tilføj indsamler"
             />
           </Container>
         )}

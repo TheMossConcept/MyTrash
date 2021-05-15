@@ -11,10 +11,12 @@
 
 import { AzureFunction, Context } from "@azure/functions";
 
-const TestActivity: AzureFunction = async function (
+const CreateUserActivity: AzureFunction = async function (
   context: Context
 ): Promise<string> {
-  return `The user is ${JSON.stringify(context.bindings.user)}!`;
+  const { user } = context.bindings;
+  // TODO: Call create user here with the user
+  return `The user is ${JSON.stringify(user)}!`;
 };
 
-export default TestActivity;
+export default CreateUserActivity;

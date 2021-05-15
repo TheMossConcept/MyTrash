@@ -10,7 +10,7 @@ import {
   CreateCluster,
   UpdateCluster,
 } from "../components/forms/ModifyCluster";
-import UserForm from "../components/forms/UserForm";
+import CollaboratorForm from "../components/forms/CollaboratorForm";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
 
 type Props = StackScreenProps<TabsParamList, "Administration">;
@@ -23,10 +23,9 @@ const AdministrationScreen: FC<Props> = () => {
   return (
     <Container>
       <CategoryHeadline>Inviter partner</CategoryHeadline>
-      <UserForm
+      <CollaboratorForm
         submitTitle="Inviter partner"
         successCallback={handlePartnerInvited}
-        isPartner
       />
       <CategoryHeadline>Opret cluster</CategoryHeadline>
       <CreateCluster successCallback={refetchClusters} />

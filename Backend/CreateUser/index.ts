@@ -49,7 +49,7 @@ const httpTrigger: AzureFunction = async function (
       {}
     );
 
-    const createdCollaborator = await client.api("/users").post({
+    const createdUser = await client.api("/users").post({
       // NB! Down until given name will no longer be needed when creating in B2C
       identities: [
         {
@@ -78,11 +78,11 @@ const httpTrigger: AzureFunction = async function (
     if (role === "Collector") {
       if (clusterId) {
         await databaseAPI.updateOne<ClusterEntity>("cluster", clusterId, {
-          $addToSet: { collectors: createdCollaborator.id },
+          $addToSet: { collectors: createdUser.id },
         });
       } else {
         // NB! Cleanup!
-        client.api(`users/${createdCollaborator.id}`).delete();
+        client.api(`users/${createdUser.id}`).delete();
         context.res = {
           body:
             "You tried adding a collector without providing a corresponding clusterId. That is an error",
@@ -92,7 +92,7 @@ const httpTrigger: AzureFunction = async function (
     }
 
     context.res = {
-      body: JSON.stringify(createdCollaborator),
+      body: JSON.stringify(createdUser),
     };
   } catch (e) {
     context.res = {

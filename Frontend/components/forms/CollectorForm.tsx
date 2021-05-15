@@ -9,27 +9,24 @@ import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
-import RoleSelector from "../RoleSelector";
-import useAppRoles from "../../hooks/useAppRoles";
 
-export type UserFormData = {
+export type CollectorFormData = {
+  clusterId?: string;
   email: string;
   firstName: string;
   lastName: string;
   // This will overflow a 32-bit integer, and therefore, it has to be a string
   phoneNumber: string;
-  companyName: string;
   street: string;
   // This can contain letters as well (e.g. 4A) and therefore, it has to be a string
   streetNumber: string;
   city: string;
   // Eventually, this will become a string as well
   zipCode?: number;
-  role: string;
 };
 
 type Props = {
-  isPartner: boolean;
+  clusterId?: string;
   submitTitle: string;
   successCallback?: () => void;
 };
@@ -49,37 +46,40 @@ const validationSchema = yup.object().shape({
   phoneNumber: yup
     .string()
     .matches(danishPhoneNumberRegExp, "Telefonnummeret er ugyldigt"),
-  companyName: yup.string().optional(),
   street: yup.string().required("Vejnavn er påkrævet"),
   streetNumber: yup.string().required("Gadenummer er påkrævet"),
   city: yup.string().required("By er påkrævet"),
   zipCode: yup.string().required("Postnummer er påkrævet"),
-  role: yup.string().required("Rolle er påkrævet"),
+  clusterId: yup.string().required(),
 });
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
-const UserForm: FC<Props> = ({ isPartner, submitTitle, successCallback }) => {
+const CollectorForm: FC<Props> = ({
+  clusterId,
+  submitTitle,
+  successCallback,
+  children,
+}) => {
   // const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
 
-  const initialValues: UserFormData = {
+  const initialValues: CollectorFormData = {
     email: "",
     firstName: "",
     lastName: "",
-    companyName: "",
     phoneNumber: "",
     street: "",
     streetNumber: "",
     city: "",
-    role: isPartner ? "" : "Collector",
+    clusterId,
   };
 
   const accessToken = useContext(AccessTokenContext);
-  const createUser = (values: UserFormData, resetForm: () => void) => {
+  const createUser = (values: CollectorFormData, resetForm: () => void) => {
     if (accessToken) {
       axios
         .post("/CreateUser", values, {
           params: {
-            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+            clusterId,
           },
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
@@ -93,14 +93,6 @@ const UserForm: FC<Props> = ({ isPartner, submitTitle, successCallback }) => {
         });
     }
   };
-
-  const { appRoles } = useAppRoles();
-
-  // Empty array as we do not select app roles for non-partner users
-  const appRolesForSelection = isPartner
-    ? appRoles.filter((appRole) => appRole.id !== "Collector")
-    : [];
-
   // TODO: Disable the spreading is forbidden style and spread the view props here!
   return (
     <FormContainer
@@ -112,12 +104,7 @@ const UserForm: FC<Props> = ({ isPartner, submitTitle, successCallback }) => {
       validateOnMount
     >
       <View style={{ width: "95%", margin: "auto" }}>
-        {isPartner ? (
-          <StringField label="Virksomhedsnavn" formKey="companyName" />
-        ) : null}
-        <Subheader>
-          {isPartner ? "Kontaktperson" : "Kontaktoplysninger"}
-        </Subheader>
+        <Subheader>Kontaktoplysninger</Subheader>
         <StringField label="Fornavn" formKey="firstName" />
         <StringField label="Efternavn" formKey="lastName" />
         <StringField label="Email" formKey="email" />
@@ -131,13 +118,11 @@ const UserForm: FC<Props> = ({ isPartner, submitTitle, successCallback }) => {
         </View>
         <StringField label="By" formKey="city" />
         <NumberField label="Postnummer" formKey="zipCode" />
-        {isPartner && (
-          <RoleSelector formKey="role" appRoles={appRolesForSelection} />
-        )}
+        {children}
         <SubmitButton title={submitTitle} />
       </View>
     </FormContainer>
   );
 };
 
-export default UserForm;
+export default CollectorForm;
