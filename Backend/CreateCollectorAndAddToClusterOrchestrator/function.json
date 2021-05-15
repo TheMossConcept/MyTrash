@@ -3,6 +3,7 @@
     {
       "name": "context",
       "type": "orchestrationTrigger",
+      "orchestration": "CreateCollectorAndAddToCluster",
       "direction": "in"
     }
   ],

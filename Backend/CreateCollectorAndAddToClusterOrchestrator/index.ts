@@ -23,7 +23,7 @@ const orchestrator = df.orchestrator(function* (context) {
     zipCode: 8600,
     role: "Administrator",
   };
-  const test = yield context.df.callActivity("TestActivity", testUser);
+  const test = yield context.df.callActivity("CreateUserActivity", testUser);
   // Replace "Hello" with the name of your Durable Activity Function.
   // outputs.push(yield context.df.callActivity("Hello", "Tokyo"));
   /*
