@@ -77,10 +77,7 @@ const CollectorForm: FC<Props> = ({
   const createUser = (values: CollectorFormData, resetForm: () => void) => {
     if (accessToken) {
       axios
-        .post("/CreateUser", values, {
-          params: {
-            clusterId,
-          },
+        .post("/orchestrators/CreateCollectorAndAddToCluster", values, {
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
         .then(() => {

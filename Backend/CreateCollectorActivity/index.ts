@@ -1,32 +1,34 @@
-// NB! This import needs to be here somewhere for the Microsoft Graph API for work properly
-import "isomorphic-fetch";
+﻿/*
+ * This function is not intended to be invoked directly. Instead it will be
+ * triggered by an orchestrator function.
+ *
+ * Before running this sample, please:
+ * - create a Durable orchestration function
+ * - create a Durable HTTP starter function
+ * - run 'npm install durable-functions' from the wwwroot folder of your
+ *   function app in Kudu
+ */
 
-import { AzureFunction, Context, HttpRequest } from "@azure/functions";
+import { AzureFunction, Context } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
-import databaseAPI, {
-  ClusterEntity,
-  UserRole,
-  allUserRoles,
-} from "../utils/DatabaseAPI";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
+import { allUserRoles } from "../utils/DatabaseAPI";
 
-const httpTrigger: AzureFunction = async function (
-  context: Context,
-  req: HttpRequest
-): Promise<void> {
+const CreateCollector: AzureFunction = async function (
+  context: Context
+): Promise<string> {
+  console.log("WE ARE IN CREATE COLLECTOR!");
   try {
-    const requestBody: CollaboratorDTO = req.body;
+    const requestBody: CollectorDTO = context.bindings.collector;
     const {
       firstName,
       lastName,
       email,
       phoneNumber,
-      companyName,
       street,
       streetNumber,
       city,
       zipCode,
-      role,
     } = requestBody;
 
     const customAuthProvider = new CustomAuthenticationProvider();
@@ -41,7 +43,8 @@ const httpTrigger: AzureFunction = async function (
     const extensionsObject = allUserRoles.reduce(
       (accumulator, currentValue) => {
         const newValue = {
-          [`extension_${clientId}_${currentValue}`]: role === currentValue,
+          [`extension_${clientId}_${currentValue}`]:
+            currentValue === "Collector",
         };
         return { ...accumulator, ...newValue };
       },
@@ -70,13 +73,10 @@ const httpTrigger: AzureFunction = async function (
         password: "Test1234!",
       },
       // passwordPolicies: "DisablePasswordExpiration",
-      companyName,
       ...extensionsObject,
     });
 
-    context.res = {
-      body: JSON.stringify(createdUser),
-    };
+    return createdUser.id;
   } catch (e) {
     context.res = {
       body: JSON.stringify(e),
@@ -85,18 +85,16 @@ const httpTrigger: AzureFunction = async function (
   }
 };
 
-type CollaboratorDTO = {
+export default CreateCollector;
+
+export type CollectorDTO = {
   firstName: string;
   lastName: string;
   email: string;
   street: string;
-  // NB! Needs to be a string because it can contain letters such as 4A
   streetNumber: string;
   city: string;
   zipCode: number;
   phoneNumber: string;
-  companyName: string;
-  role: UserRole;
+  clusterId: string;
 };
-
-export default httpTrigger;

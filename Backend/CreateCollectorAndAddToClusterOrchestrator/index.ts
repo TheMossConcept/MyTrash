@@ -10,29 +10,24 @@
  */
 
 import * as df from "durable-functions";
+import { AddCollectorToClusterPayload } from "../AddCollectorToClusterActivity";
+import { CollectorDTO } from "../CreateCollectorActivity";
 
 const orchestrator = df.orchestrator(function* (context) {
-  const testUser = {
-    firstName: "Durable",
-    lastName: "test",
-    email: "durable@test.dk",
-    phoneNumber: "12345678",
-    street: "Test",
-    streetNumber: "4A",
-    city: "Test",
-    zipCode: 8600,
-    role: "Administrator",
-  };
-  const test = yield context.df.callActivity("CreateUserActivity", testUser);
-  // Replace "Hello" with the name of your Durable Activity Function.
-  // outputs.push(yield context.df.callActivity("Hello", "Tokyo"));
-  /*
-  outputs.push(yield context.df.callActivity("Hello", "Seattle"));
-  outputs.push(yield context.df.callActivity("Hello", "London"));
-  */
+  const { clusterId, ...user } = context.bindingData.input as RequestBody;
 
-  // returns ["Hello Tokyo!", "Hello Seattle!", "Hello London!"]
-  return test;
+  const userId = yield context.df.callActivity("CreateCollectorActivity", user);
+  const updatedEntity = yield context.df.callActivity(
+    "AddCollectorToClusterActivity",
+    {
+      userId,
+      clusterId,
+    }
+  );
+
+  return JSON.stringify(updatedEntity);
 });
+
+type RequestBody = Omit<AddCollectorToClusterPayload, "userId"> & CollectorDTO;
 
 export default orchestrator;
