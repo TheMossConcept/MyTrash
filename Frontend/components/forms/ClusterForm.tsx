@@ -1,12 +1,14 @@
 import * as yup from "yup";
 import React, { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
+import { ENV } from "react-native-dotenv";
+import { Formik } from "formik";
 import SelectPartnersForm from "./SelectPartnersForm";
-import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import BooleanField from "../inputs/BooleanField";
+import Container from "../shared/Container";
 
 export type ClusterFormData = {
   isOpen: boolean;
@@ -22,6 +24,7 @@ export type ClusterFormData = {
 
 export type Props = {
   cluster: ClusterFormData;
+  clusterId?: string;
   submit: (Cluster: ClusterFormData, reset: () => void) => void;
   submitTitle: string;
 };
@@ -39,9 +42,23 @@ const validationSchema = yup.object().shape({
   productionPartnerId: yup.string().required("Produktionspartner skal vælges"),
 });
 
-const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
+const ClusterForm: FC<Props> = ({
+  cluster,
+  clusterId,
+  submit,
+  submitTitle,
+}) => {
+  let deepLinkUrl = "";
+  if (clusterId) {
+    // TODO: See if we can do something about the schema hardcoding!
+    deepLinkUrl =
+      ENV === "production"
+        ? `houe-plastic-recycling://tilmeld?clusterId=${clusterId}`
+        : `exp://127.0.0.1:19000/--/tilmeld?clusterId=${clusterId}`;
+  }
+
   return (
-    <FormContainer
+    <Formik
       initialValues={cluster}
       onSubmit={(values, formikHelpers) =>
         submit(values, formikHelpers.resetForm)
@@ -49,40 +66,47 @@ const ClusterForm: FC<Props> = ({ cluster, submit, submitTitle }) => {
       validationSchema={validationSchema}
       validateOnMount
     >
-      <View style={styles.container}>
-        <View style={styles.isOpenCheckboxContainer}>
-          <BooleanField formKey="isOpen" label="Åbent cluster" />
-        </View>
-        <View style={styles.inputContainer}>
-          <View style={styles.inputColumn}>
-            <StringField
-              formKey="name"
-              label="Navn"
-              style={styles.inputField}
-            />
-            <StringField
-              formKey="c5Reference"
-              label="C5 Reference"
-              style={styles.inputField}
-            />
-            <NumberField
-              formKey="necessaryPlastic"
-              label="Plastbehov"
-              style={styles.inputField}
-            />
-            <NumberField
-              formKey="usefulPlasticFactor"
-              label="Beregningsfaktor"
-            />
+      {({ values }) => (
+        <Container>
+          <View style={styles.container}>
+            <View style={styles.isOpenCheckboxContainer}>
+              <BooleanField formKey="isOpen" label="Åbent cluster" />
+              {!values.isOpen && deepLinkUrl && (
+                <Text>Invitationslink: {deepLinkUrl}</Text>
+              )}
+            </View>
+            <View style={styles.inputContainer}>
+              <View style={styles.inputColumn}>
+                <StringField
+                  formKey="name"
+                  label="Navn"
+                  style={styles.inputField}
+                />
+                <StringField
+                  formKey="c5Reference"
+                  label="C5 Reference"
+                  style={styles.inputField}
+                />
+                <NumberField
+                  formKey="necessaryPlastic"
+                  label="Plastbehov"
+                  style={styles.inputField}
+                />
+                <NumberField
+                  formKey="usefulPlasticFactor"
+                  label="Beregningsfaktor"
+                />
+              </View>
+              {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
+              <View style={styles.inputColumn}>
+                <SelectPartnersForm />
+              </View>
+            </View>
+            <SubmitButton title={submitTitle} />
           </View>
-          {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
-          <View style={styles.inputColumn}>
-            <SelectPartnersForm />
-          </View>
-        </View>
-        <SubmitButton title={submitTitle} />
-      </View>
-    </FormContainer>
+        </Container>
+      )}
+    </Formik>
   );
 };
 

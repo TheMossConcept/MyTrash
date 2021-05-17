@@ -12,7 +12,7 @@ import {
   AUTHORIZATION_URL,
   AZURE_AD_CLIENT_ID,
   MOBILE_REDIRECT_URL,
-  TEST,
+  ENV,
 } from "react-native-dotenv";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -26,7 +26,7 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
     DiscoveryDocument | undefined
   >(undefined);
 
-  console.log(TEST);
+  console.log(ENV);
 
   // NB! We cannot use autodiscovery in this case bacause it automatically appends /.well-known/openid-configuration to the URL and does
   // not support explicitly passing query parameters
@@ -122,7 +122,7 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
 
   return (
     <View>
-      <Text>{TEST}</Text>
+      <Text>{ENV}</Text>
       <Button title="Login" onPress={onPress} />
     </View>
   );

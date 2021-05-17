@@ -17,10 +17,12 @@ const styles = StyleSheet.create({
   text: {
     marginBottom: 5,
     paddingBottom: 5,
-    textWeight: 600 as 600,
+    fontWeight: "600",
+    /*
     borderBottomColor: "lightgrey",
     borderBottomWidth: 1,
     borderBottomStyle: "solid" as "solid",
+     */
     width: "fit-content",
   },
 });

@@ -1,7 +1,6 @@
 import { useFormikContext } from "formik";
 import React from "react";
-import { View, Text } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
 import { AppRole } from "../hooks/useAppRoles";
 import Container from "./shared/Container";

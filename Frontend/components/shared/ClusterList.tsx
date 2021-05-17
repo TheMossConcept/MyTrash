@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     padding: 10,
     marginBottom: 15,
-    cursor: "pointer",
+    // cursor: "pointer",
   },
   border: {
     borderColor: "lightgrey",
