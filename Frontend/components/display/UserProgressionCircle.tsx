@@ -1,10 +1,9 @@
 import axios from "axios";
 import React, { FC, useEffect, useState } from "react";
+import { View } from "react-native";
 import ProgressWheel from "react-native-progress-wheel";
-import { Text, View } from "react-native";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
-import Container from "../shared/Container";
 import Subheader from "../styled/Subheader";
 
 type Props = { userId: string; clusterId: string };
@@ -35,7 +34,7 @@ const UserProgressionCircle: FC<Props> = ({ userId, clusterId }) => {
   }, [userId, clusterId, accessToken]);
 
   return (
-    <Container>
+    <View style={{ alignItems: "center" }}>
       <Subheader>Estimeret indsamlingsfremgang</Subheader>
       {collectionProgress ? (
         <ProgressWheel
@@ -46,7 +45,7 @@ const UserProgressionCircle: FC<Props> = ({ userId, clusterId }) => {
       ) : (
         "Ukendt"
       )}
-    </Container>
+    </View>
   );
 };
 
