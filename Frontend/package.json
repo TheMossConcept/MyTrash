@@ -50,6 +50,7 @@
     "react-native-gesture-handler": "~1.9.0",
     "react-native-paper": "^4.7.2",
     "react-native-paper-dates": "^0.4.5",
+    "react-native-progress": "^4.1.2",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~2.15.0",
     "react-native-tab-view": "^2.16.0",

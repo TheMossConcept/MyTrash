@@ -56,7 +56,6 @@ const ClusterForm: FC<Props> = ({
         ? `houe-plastic-recycling://tilmeld?clusterId=${clusterId}`
         : `exp://127.0.0.1:19000/--/tilmeld?clusterId=${clusterId}`;
   }
-
   return (
     <Formik
       initialValues={cluster}
@@ -71,7 +70,7 @@ const ClusterForm: FC<Props> = ({
           <View style={styles.container}>
             <View style={styles.isOpenCheckboxContainer}>
               <BooleanField formKey="isOpen" label="Åbent cluster" />
-              {!values.isOpen && deepLinkUrl && (
+              {!values.isOpen && deepLinkUrl !== "" && (
                 <Text>Invitationslink: {deepLinkUrl}</Text>
               )}
             </View>

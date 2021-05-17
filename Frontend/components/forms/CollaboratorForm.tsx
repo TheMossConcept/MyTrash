@@ -9,7 +9,7 @@ import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
-import RoleSelector from "../RoleSelector";
+import RoleSelector from "./RoleSelector";
 import useAppRoles from "../../hooks/useAppRoles";
 
 export type UserFormData = {

@@ -2,8 +2,8 @@ import { useFormikContext } from "formik";
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
-import { AppRole } from "../hooks/useAppRoles";
-import Container from "./shared/Container";
+import { AppRole } from "../../hooks/useAppRoles";
+import Container from "../shared/Container";
 
 type Props = {
   formKey: string;
