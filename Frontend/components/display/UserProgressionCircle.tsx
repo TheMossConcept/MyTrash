@@ -1,10 +1,11 @@
 import axios from "axios";
 import React, { FC, useEffect, useState } from "react";
-import { ProgressBar } from "react-native-paper";
-import { Text } from "react-native";
+import ProgressWheel from "react-native-progress-wheel";
+import { Text, View } from "react-native";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
 import Container from "../shared/Container";
+import Subheader from "../styled/Subheader";
 
 type Props = { userId: string; clusterId: string };
 
@@ -27,16 +28,21 @@ const UserProgressionCircle: FC<Props> = ({ userId, clusterId }) => {
           collectionGoal,
         } = data as ProgressionData;
 
-        const collectedPercentage = rectifiedCollectionAmount / collectionGoal;
+        const collectedPercentage =
+          (rectifiedCollectionAmount / collectionGoal) * 100;
         setCollectionProgress(collectedPercentage);
       });
   }, [userId, clusterId, accessToken]);
 
   return (
     <Container>
-      <Text>Estimeret indsamlingsfremgang</Text>
+      <Subheader>Estimeret indsamlingsfremgang</Subheader>
       {collectionProgress ? (
-        <ProgressBar progress={collectionProgress} />
+        <ProgressWheel
+          progress={collectionProgress}
+          animateFromValue={0}
+          duration={3000}
+        />
       ) : (
         "Ukendt"
       )}
