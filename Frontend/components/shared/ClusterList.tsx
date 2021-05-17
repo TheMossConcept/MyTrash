@@ -1,6 +1,7 @@
 import React, { FC, ReactElement, useState } from "react";
 import { Text, StyleSheet, View, TouchableWithoutFeedback } from "react-native";
 import { List } from "react-native-paper";
+import Container from "./Container";
 
 export type Cluster = {
   displayName: string;
@@ -13,7 +14,10 @@ type Props = {
 };
 
 const ClusterList: FC<Props> = ({ clusters, children }) => {
-  return (
+  const numberOfClusters = clusters.length;
+  return numberOfClusters === 1 ? (
+    <Container>{children({ cluster: clusters[0] })}</Container>
+  ) : (
     <List.Section title="Clusters" style={styles.container}>
       {clusters.map((cluster) => (
         <ListItem key={cluster.id} cluster={cluster}>
@@ -73,7 +77,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     padding: 10,
     marginBottom: 15,
-    cursor: "pointer",
+    // cursor: "pointer",
   },
   border: {
     borderColor: "lightgrey",

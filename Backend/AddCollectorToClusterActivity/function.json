@@ -1,0 +1,10 @@
+{
+  "bindings": [
+    {
+      "name": "payload",
+      "type": "activityTrigger",
+      "direction": "in"
+    }
+  ],
+  "scriptFile": "../dist/AddCollectorToClusterActivity/index.js"
+}

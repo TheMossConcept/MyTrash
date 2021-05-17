@@ -1,8 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
-import databaseAPI, {
-  UserMetadataEntity,
-  BatchEntity,
-} from "../utils/DatabaseAPI";
+import { Client } from "@microsoft/microsoft-graph-client";
+import databaseAPI, { BatchEntity } from "../utils/DatabaseAPI";
+import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 
 type BatchFromDb = BatchEntity & { _id: string };
 
@@ -10,6 +9,11 @@ const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
+  const customAuthProvider = new CustomAuthenticationProvider();
+  const client = Client.initWithMiddleware({
+    authProvider: customAuthProvider,
+  });
+
   // TODO: Change clusterId to recipientPartnerId as we want all batches for a given recipient
   const { recipientPartnerId, productionPartnerId } = req.query as Payload;
 
@@ -31,18 +35,18 @@ const httpTrigger: AzureFunction = async function (
 
   const returnValuePromises = batchesForRecipient.map(async (batch) => {
     // NB! The recipient partner is always the creator
-    const creator = await databaseAPI.findOne<UserMetadataEntity>(
-      "userMetadata",
-      { azureAdId: batch.recipientPartnerId }
-    );
+    const creator = await client
+      .api(`users/${batch.recipientPartnerId}?$select=companyName,displayName`)
+      .get();
 
-    const productionPartner = await databaseAPI.findOne<UserMetadataEntity>(
-      "userMetadata",
-      { azureAdId: batch.productionPartnerId }
-    );
+    const productionPartner = await client
+      .api(`users/${batch.productionPartnerId}?$select=companyName,displayName`)
+      .get();
 
-    const creatorName = creator?.companyName;
-    const recipientName = productionPartner?.companyName;
+    // The company name should always be there, but fall back to display name just in case
+    const creatorName = creator?.companyName || creator?.displayName;
+    const recipientName =
+      productionPartner?.companyName || productionPartner?.displayName;
 
     const { _id, ...batchToReturn } = batch;
 

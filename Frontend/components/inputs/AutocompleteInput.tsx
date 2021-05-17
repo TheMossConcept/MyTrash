@@ -1,6 +1,14 @@
 import axios from "axios";
 import { ErrorMessage, useFormikContext } from "formik";
-import React, { FC, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  FC,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from "react";
+import { EventRegister } from "react-native-event-listeners";
 import { ActivityIndicator, Text, View, ViewStyle } from "react-native";
 import Autocomplete, {
   AutocompleteProps,
@@ -17,6 +25,7 @@ export type SelectableEntity = {
 type Props = {
   endpoint: string;
   formKey: string;
+  updateEntitiesEventName?: string;
   title?: string;
   style?: ViewStyle;
 } & Pick<AutocompleteProps<any>, "containerStyle">;
@@ -31,6 +40,7 @@ const AutocompleteInput: FC<Props> = ({
   title,
   endpoint,
   containerStyle,
+  updateEntitiesEventName,
   formKey: key,
   style,
 }) => {
@@ -94,14 +104,11 @@ const AutocompleteInput: FC<Props> = ({
 
     const accessToken = useContext(AccessTokenContext);
 
-    useEffect(() => {
+    const updateEntities = useCallback(() => {
       setLoading(true);
 
       axios
         .get(endpoint, {
-          params: {
-            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
-          },
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
         .then((entitiesResult) => {
@@ -112,6 +119,34 @@ const AutocompleteInput: FC<Props> = ({
           setLoading(false);
         });
     }, [endpoint, accessToken]);
+
+    useEffect(() => {
+      // Initialize
+      updateEntities();
+
+      // Update on event
+      if (updateEntitiesEventName) {
+        // Update when a new partner is added
+        // TODO: Find types for this library and make sure all the events are strongly typed!!
+        const updateEntitiesEventListener = EventRegister.addEventListener(
+          updateEntitiesEventName,
+          () => {
+            updateEntities();
+          }
+        );
+
+        // Remember to cleanup or you will live in a dirty codebase full of memory leaks!
+        return () => {
+          if (
+            updateEntitiesEventListener !== false &&
+            updateEntitiesEventListener !== true
+          ) {
+            EventRegister.removeEventListener(updateEntitiesEventListener);
+          }
+        };
+      }
+      return () => {};
+    }, [updateEntities, updateEntitiesEventName]);
 
     const [hideSuggestionList, setHideSuggestionList] = useState(true);
 

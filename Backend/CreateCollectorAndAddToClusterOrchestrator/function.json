@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "context",
+      "type": "orchestrationTrigger",
+      "orchestration": "CreateCollectorAndAddToCluster",
+      "direction": "in"
+    }
+  ],
+  "scriptFile": "../dist/CreateCollectorAndAddToClusterOrchestrator/index.js"
+}

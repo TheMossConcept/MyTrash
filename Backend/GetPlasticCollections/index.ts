@@ -1,8 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
-import databaseAPI, {
-  CollectionEntity,
-  UserMetadataEntity,
-} from "../utils/DatabaseAPI";
+import { Client } from "@microsoft/microsoft-graph-client";
+import databaseAPI, { CollectionEntity } from "../utils/DatabaseAPI";
+import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 
 type CollectionFromDb = CollectionEntity & { _id: string };
 
@@ -10,6 +9,11 @@ const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
+  const customAuthProvider = new CustomAuthenticationProvider();
+  const client = Client.initWithMiddleware({
+    authProvider: customAuthProvider,
+  });
+
   const {
     logisticsPartnerId,
     recipientPartnerId,
@@ -36,10 +40,11 @@ const httpTrigger: AzureFunction = async function (
 
   const returnValuePromises = collectionsForPartner.map(async (collection) => {
     // TODO: Consider how we can do this without querying the database so much
-    const requester = await databaseAPI.findOne<UserMetadataEntity>(
-      "userMetadata",
-      { azureAdId: collection.requesterId }
-    );
+    const requester = await client
+      .api(
+        `users/${collection.requesterId}?$select=streetAddress,city,postalCode,companyName`
+      )
+      .get();
 
     const { _id, ...collectionToReturn } = collection;
 
@@ -48,8 +53,7 @@ const httpTrigger: AzureFunction = async function (
       return {
         ...collectionToReturn,
         id: _id,
-        streetName: requester.street,
-        streetNumber: requester.streetNumber,
+        streetAddress: requester.streetAddress,
         city: requester.city,
         zipCode: requester.zipCode,
         companyName: requester.companyName,

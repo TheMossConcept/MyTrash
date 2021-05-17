@@ -66,8 +66,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   const sortedBatches = sortBatchByStatus(batches);
 
   return (
-    <Container style={{ padding: 25 }}>
-      <CategoryHeadline>Plastindsamlinger</CategoryHeadline>
+    <Container>
       <PlasticCollectionsDetails
         title="Modtaget"
         plasticCollections={sortedCollections.delivered}

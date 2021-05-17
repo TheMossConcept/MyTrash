@@ -1,9 +1,7 @@
-import axios from "axios";
-import React, { FC, useContext, useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
-import axiosUtils from "../../utils/axios";
-import { AccessTokenContext } from "../../navigation/TabNavigator";
+import React, { FC, useEffect, useState } from "react";
+import { View } from "react-native";
 import AutocompleteInput from "../inputs/AutocompleteInput";
+import useAppRoles from "../../hooks/useAppRoles";
 
 type UserInputProps = {
   title?: string;
@@ -18,102 +16,89 @@ type UserInputProps = {
 type Props = {};
 
 const SelectPartnersForm: FC<Props> = () => {
-  const [loading, setLoading] = useState(false);
-  const accessToken = useContext(AccessTokenContext);
-
+  const { appRoles } = useAppRoles();
   const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
     []
   );
+
   useEffect(() => {
-    if (accessToken) {
-      axios
-        .get("/GetAppRoles", {
-          params: {
-            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
-          },
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        })
-        .then((appRolesResult) => {
-          const appRoles: any[] = appRolesResult.data;
-          const localUserSelectionData = appRoles.map((appRole) => {
-            const appRoleId = appRole.id;
-            const appRoleValue = appRole.value;
-            const title: string | undefined = appRole.displayName;
+    const localUserSelectionData = appRoles.reduce<UserInputProps[]>(
+      (accumulator, appRole) => {
+        const appRoleValue = appRole.id;
+        const title: string | undefined = appRole.displayName;
 
-            const usersEndpoint = `/GetUsersByAppRole?appRoleId=${appRoleId}`;
+        const usersEndpoint = `/GetUsersByAppRole?appRole=${appRoleValue}`;
 
-            let formKey;
-            switch (appRoleValue) {
-              case "ProductionPartner":
-                formKey = "productionPartnerId";
-                break;
-              case "CollectionAdministrator":
-                formKey = "collectionAdministratorId";
-                break;
-              case "LogisticsPartner":
-                formKey = "logisticsPartnerId";
-                break;
-              case "RecipientPartner":
-                formKey = "recipientPartnerId";
-                break;
-              default:
-                console.warn("DEFAULT CASE IN CLUSTER CREATION FORM!!");
-                break;
-            }
+        let formKey:
+          | "productionPartnerId"
+          | "collectionAdministratorId"
+          | "logisticsPartnerId"
+          | "recipientPartnerId"
+          | undefined;
 
-            return formKey
-              ? {
-                  title,
-                  usersEndpoint,
-                  formKey,
-                }
-              : undefined;
-          });
+        switch (appRoleValue) {
+          case "ProductionPartner":
+            formKey = "productionPartnerId";
+            break;
+          case "CollectionAdministrator":
+            formKey = "collectionAdministratorId";
+            break;
+          case "LogisticsPartner":
+            formKey = "logisticsPartnerId";
+            break;
+          case "RecipientPartner":
+            formKey = "recipientPartnerId";
+            break;
+          default:
+            formKey = undefined;
+            break;
+        }
 
-          const localUserSelectionDataRectified = localUserSelectionData.filter(
-            (selectionData) => selectionData !== undefined
-          ) as UserInputProps[];
+        return formKey
+          ? [
+              ...accumulator,
+              {
+                title,
+                usersEndpoint,
+                formKey,
+              },
+            ]
+          : accumulator;
+      },
+      []
+    );
 
-          setUserSelectionData(localUserSelectionDataRectified);
-        })
-        .finally(() => setLoading(false));
-
-      setLoading(true);
-    }
-  }, [accessToken]);
+    const appRolesToUse = localUserSelectionData.filter(
+      (item) => item !== undefined
+    );
+    setUserSelectionData(appRolesToUse);
+  }, [appRoles]);
 
   return (
     <View>
-      {loading ? (
-        <ActivityIndicator />
-      ) : (
-        userSelectionData.map((selectionData, index) => {
-          const userSelections = userSelectionData.length;
-          const zIndex = userSelections - index;
+      {userSelectionData.map((selectionData, index) => {
+        const userSelections = userSelectionData.length;
+        const zIndex = userSelections - index;
 
-          const isLastInput = index === userSelections - 1;
+        const isLastInput = index === userSelections - 1;
 
-          return (
-            <View key={selectionData.title} style={{ width: "100%", zIndex }}>
-              <AutocompleteInput
-                containerStyle={{ zIndex }}
-                endpoint={selectionData.usersEndpoint}
-                title={selectionData.title}
-                style={isLastInput ? undefined : styles.inputField}
-                formKey={selectionData.formKey}
-              />
-            </View>
-          );
-        })
-      )}
+        return (
+          <View
+            key={selectionData.title}
+            style={{ width: "100%", zIndex, marginBottom: isLastInput ? 5 : 0 }}
+          >
+            <AutocompleteInput
+              containerStyle={{ zIndex }}
+              endpoint={selectionData.usersEndpoint}
+              updateEntitiesEventName="partnerInvited"
+              title={selectionData.title}
+              formKey={selectionData.formKey}
+            />
+          </View>
+        );
+      })}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  inputField: {
-    marginBottom: 5,
-  },
-});
 
 export default SelectPartnersForm;

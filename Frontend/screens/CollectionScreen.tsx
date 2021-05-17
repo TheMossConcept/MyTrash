@@ -14,6 +14,8 @@ import PlasticCollectionsDetails, {
 } from "../components/collection/PlasticCollectionsDetails";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import Container from "../components/shared/Container";
+import UserProgressionCircle from "../components/display/UserProgressionCircle";
+// import UserProgressionCircle from "../components/display/UserProgressionCircle";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
@@ -49,7 +51,6 @@ const CollectionScreen: FC<Props> = ({ route }) => {
   // Initial plasticCollections fetch
   useEffect(() => {
     const clusterIds = clusters.map((cluster) => cluster.id);
-    console.log(clusterIds);
     clusterIds.forEach((clusterId) => fetchPlasticCollections(clusterId));
   }, [clusters, fetchPlasticCollections]);
 
@@ -63,6 +64,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
 
           return (
             <View>
+              <UserProgressionCircle userId={userId} clusterId={cluster.id} />
               <CollectionForm
                 clusterId={cluster.id}
                 userId={userId}

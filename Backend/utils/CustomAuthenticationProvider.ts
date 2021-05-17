@@ -1,27 +1,20 @@
 import { AuthenticationProvider } from "@microsoft/microsoft-graph-client";
-import { HttpRequestHeaders } from "@azure/functions";
+import { DefaultAzureCredential } from "@azure/identity";
 
 class CustomAuthenticationProvider implements AuthenticationProvider {
-  private accessToken: string;
+  private azureCredential: DefaultAzureCredential;
 
-  constructor(requestHeaders: HttpRequestHeaders) {
-    const accessToken = requestHeaders["access-token"];
-    if (accessToken) {
-      this.accessToken = accessToken;
-    } else {
-      throw new Error("access-token header is missing in request");
-    }
+  constructor() {
+    this.azureCredential = new DefaultAzureCredential();
   }
 
-  getAccessToken() {
-    return new Promise<string>((resolve, reject) => {
-      if (this.accessToken) {
-        resolve(this.accessToken);
-      } else {
-        reject(new Error("access token is missing"));
-      }
-    });
-  }
+  getAccessToken = async () => {
+    const accessToken = await this.azureCredential.getToken([
+      "https://graph.microsoft.com/.default",
+    ]);
+
+    return accessToken.token;
+  };
 }
 
 export default CustomAuthenticationProvider;

@@ -8,7 +8,8 @@ const getMongoClient = async () => {
   if (!globalMongoClientInstace) {
     globalMongoClientInstace = await mongodb.MongoClient.connect(
       // TODO: Move to env!
-      "mongodb://cosmos-houe-plastic-recycling:30OZ6PBjKuwKJfm9S4Wd4Jj1c9zobJbwLKA5j6zcK58UcZ5WCi11mK3tWmppuyiwJbJsxxce6WkvCyFcCtUp0A%3D%3D@cosmos-houe-plastic-recycling.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&maxIdleTimeMS=120000&appName=@cosmos-houe-plastic-recycling@"
+      // \
+      "mongodb://cosmos-houe-mytrash-serverless:gMCgVFsAMYZhJ7Jonq66mCgmv4lYM78LDVzNsa4XhTxyWxJS135MCox9O1d7O9gey5ILDq8XIBLxSMI5TNqPaQ==@cosmos-houe-mytrash-serverless.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@cosmos-houe-mytrash-serverless@"
     );
   }
 
@@ -38,7 +39,10 @@ const mongoAPI = {
 
     return result;
   },
-  async findById<T extends Entities>(entityName: T["entityName"], id: string) {
+  async findById<T extends Entities>(
+    entityName: T["entityName"],
+    id: string
+  ): Promise<T> {
     const client = await getMongoClient();
     const result = await client
       .db(DATABASE_NAME)
@@ -54,7 +58,7 @@ const mongoAPI = {
   async find<T extends Entities>(
     entityName: T["entityName"],
     query?: mongodb.FilterQuery<T>
-  ) {
+  ): Promise<T[]> {
     const client = await getMongoClient();
     const result = await client
       .db(DATABASE_NAME)
@@ -68,7 +72,7 @@ const mongoAPI = {
   async findOne<T extends Entities>(
     entityName: T["entityName"],
     query?: mongodb.FilterQuery<T>
-  ) {
+  ): Promise<T> {
     const client = await getMongoClient();
     const result = await client
       .db(DATABASE_NAME)
@@ -80,12 +84,22 @@ const mongoAPI = {
 };
 
 // TODO: Make these two mutually exclusive so you cannot mix properties from one in the other
-type Entities =
-  | ClusterEntity
-  | UserMetadataEntity
-  | ProductEntity
-  | CollectionEntity
-  | BatchEntity;
+type Entities = ClusterEntity | ProductEntity | CollectionEntity | BatchEntity;
+// TODO: At the moment, this is the source of truth. Eventually, the source of
+// truth should be the names of the actual custom attributes added in the AD
+export const allUserRoles = [
+  "Administrator",
+  "CollectionAdministrator",
+  "Collector",
+  "LogisticsPartner",
+  "RecipientPartner",
+  "ProductionPartner",
+] as const;
+
+// See https://stackoverflow.com/questions/44480644/string-union-to-string-array
+type UserRoleType = typeof allUserRoles;
+
+export type UserRole = UserRoleType[-1];
 
 // TODO: Consider moving these types somewhere else when this file becomes big
 export type ClusterEntity = {
@@ -101,17 +115,6 @@ export type ClusterEntity = {
   c5Reference: string;
   usefulPlasticFactor: number;
   necessaryAmountOfPlastic: number;
-};
-
-// TODO: Look into getting this information into AD as well!
-export type UserMetadataEntity = {
-  entityName: "userMetadata";
-  azureAdId: string;
-  companyName: string;
-  street: string;
-  streetNumber: string;
-  city: string;
-  zipCode: number;
 };
 
 export type CollectionEntity = {

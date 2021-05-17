@@ -58,6 +58,7 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
     <Container>
       <ClusterForm
         cluster={initialValues}
+        clusterId={clusterId}
         submit={updateCluster}
         submitTitle="Opdater cluster"
       />

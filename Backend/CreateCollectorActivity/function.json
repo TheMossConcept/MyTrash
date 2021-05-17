@@ -1,0 +1,10 @@
+{
+  "bindings": [
+    {
+      "name": "collector",
+      "type": "activityTrigger",
+      "direction": "in"
+    }
+  ],
+  "scriptFile": "../dist/CreateCollectorActivity/index.js"
+}
