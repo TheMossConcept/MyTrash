@@ -17,7 +17,11 @@ export default function NumberField<T>({
       "Incorrect use of NumberField. It's used outside a FormContainer which is not allowed as it needs the context crated by Formik!"
     );
   } else {
-    const { values, handleChange, handleBlur } = formikProps;
+    const { values, setFieldValue, handleBlur } = formikProps;
+    const handleNumberChange = (field: string) => (newValue: string) => {
+      setFieldValue(field, Number.parseFloat(newValue));
+    };
+
     return (
       <View style={style}>
         <TextInput
@@ -25,7 +29,7 @@ export default function NumberField<T>({
           /* NB! This is unsafe but I don't know how to statically tell the compiler
           that T should only contain strings */
           value={((values[key] as unknown) as number)?.toString() || ""}
-          onChangeText={handleChange(key)}
+          onChangeText={handleNumberChange(key)}
           onBlur={handleBlur(key)}
         />
         <ErrorMessage name={key} />

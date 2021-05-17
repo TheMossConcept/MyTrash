@@ -39,7 +39,10 @@ const mongoAPI = {
 
     return result;
   },
-  async findById<T extends Entities>(entityName: T["entityName"], id: string) {
+  async findById<T extends Entities>(
+    entityName: T["entityName"],
+    id: string
+  ): Promise<T> {
     const client = await getMongoClient();
     const result = await client
       .db(DATABASE_NAME)
@@ -55,7 +58,7 @@ const mongoAPI = {
   async find<T extends Entities>(
     entityName: T["entityName"],
     query?: mongodb.FilterQuery<T>
-  ) {
+  ): Promise<T[]> {
     const client = await getMongoClient();
     const result = await client
       .db(DATABASE_NAME)
@@ -69,7 +72,7 @@ const mongoAPI = {
   async findOne<T extends Entities>(
     entityName: T["entityName"],
     query?: mongodb.FilterQuery<T>
-  ) {
+  ): Promise<T> {
     const client = await getMongoClient();
     const result = await client
       .db(DATABASE_NAME)
