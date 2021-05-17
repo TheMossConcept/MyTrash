@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
-import React, { FC, useState, useEffect, useCallback } from "react";
+import React, { FC, useState, useEffect, useCallback, useContext } from "react";
 import { Button, View } from "react-native";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import axiosUtils from "../utils/axios";
@@ -16,7 +16,7 @@ import sortBatchByStatus from "../utils/batch";
 import RegisterPlasticCollectionReciept from "../components/collection/RegisterPlasticCollectionReciept";
 import Container from "../components/shared/Container";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
-import DismissableSnackbar from "../components/shared/DismissableSnackbar";
+import { GlobalSnackbarContext } from "../navigation/TabNavigator";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
@@ -108,7 +108,8 @@ const RegisterBatchSent: FC<RegisterBatchSentProps> = ({
   batchId,
   successCallback,
 }) => {
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
+
   const accessToken = useAccessToken();
 
   const markBatchAsSent = () => {
@@ -119,16 +120,13 @@ const RegisterBatchSent: FC<RegisterBatchSentProps> = ({
         { ...axiosUtils.getSharedAxiosConfig(accessToken), params: { batchId } }
       )
       .then(() => {
+        showGlobalSnackbar("Afsendelse registreret");
         successCallback();
       });
   };
   return (
     <View>
       <Button title="Marker som afsendt" onPress={markBatchAsSent} />
-      <DismissableSnackbar
-        showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-        title="Afsendelse registreret"
-      />
     </View>
   );
 };

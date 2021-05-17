@@ -1,13 +1,13 @@
 import axios from "axios";
 import * as yup from "yup";
-import React, { FC, useState } from "react";
+import React, { FC, useContext } from "react";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
 import { PlasticCollection } from "./PlasticCollectionsDetails";
 import FormContainer from "../shared/FormContainer";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
-import DismissableSnackbar from "../shared/DismissableSnackbar";
+import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 
 type Props = {
   plasticCollection: PlasticCollection;
@@ -26,7 +26,7 @@ const RegisterPlasticCollectionReciept: FC<Props> = ({
   plasticCollection,
   successCallback,
 }) => {
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
   const accessToken = useAccessToken();
   const registerReciept = (
@@ -43,7 +43,7 @@ const RegisterPlasticCollectionReciept: FC<Props> = ({
         }
       )
       .then(() => {
-        setShowSuccessSnackbar(true);
+        showGlobalSnackbar("Modtagelse registreret");
         resetForm();
 
         successCallback();
@@ -64,10 +64,6 @@ const RegisterPlasticCollectionReciept: FC<Props> = ({
     >
       <NumberField formKey="weight" label="Vægt" />
       <SubmitButton title="Register modtagelse" />
-      <DismissableSnackbar
-        title="Modtagelse registreret"
-        showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-      />
     </FormContainer>
   );
 };

@@ -12,6 +12,7 @@ import {
 } from "../components/forms/ModifyCluster";
 import CollaboratorForm from "../components/forms/CollaboratorForm";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
+import CollectorForm from "../components/forms/CollectorForm";
 
 type Props = StackScreenProps<TabsParamList, "Administration">;
 
@@ -35,6 +36,10 @@ const AdministrationScreen: FC<Props> = () => {
             <UpdateCluster
               clusterId={cluster.id}
               successCallback={refetchClusters}
+            />
+            <CollectorForm
+              clusterId={cluster.id}
+              submitTitle="Tilføj indsamler"
             />
           </Container>
         )}

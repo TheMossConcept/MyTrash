@@ -1,11 +1,11 @@
 import axios from "axios";
 import { DateTime } from "luxon";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useContext, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
-import DismissableSnackbar from "../shared/DismissableSnackbar";
+import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 
 type Props = {
   plasticCollectionId: string;
@@ -16,7 +16,7 @@ const SchedulePlasticCollection: FC<Props> = ({
   plasticCollectionId,
   plasticCollectionScheduledCallback,
 }) => {
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(true);
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
   const [date, setDate] = useState<DateTime | undefined>(undefined);
   const [timeIsSet, setTimeIsSet] = useState(false);
@@ -73,18 +73,11 @@ const SchedulePlasticCollection: FC<Props> = ({
           }
         )
         .then(() => {
-          setShowSuccessSnackbar(true);
+          showGlobalSnackbar("Afhentning planlagt");
+          plasticCollectionScheduledCallback();
         });
     }
   };
-
-  // Ensure that we don't refetch until the snackbar disappears
-  useEffect(() => {
-    // NB! This  will make a surpurflous call initially. Fix that!
-    if (!showSuccessSnackbar) {
-      plasticCollectionScheduledCallback();
-    }
-  }, [plasticCollectionScheduledCallback, showSuccessSnackbar]);
 
   const dateSelectionString = date
     ? date.toLocaleString({
@@ -135,10 +128,6 @@ const SchedulePlasticCollection: FC<Props> = ({
       />
       <View style={styles.submitBtn}>
         <Button title="Planlæg" onPress={schedule} disabled={!date} />
-        <DismissableSnackbar
-          title="Afhentning planlagt"
-          showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-        />
       </View>
     </View>
   );

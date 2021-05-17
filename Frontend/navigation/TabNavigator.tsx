@@ -2,7 +2,7 @@ import jwtDecode from "jwt-decode";
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 
 import { Appbar } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -15,7 +15,9 @@ import LogisticsScreen from "../screens/LogisticsScreen";
 import ProductionScreen from "../screens/ProductionScreen";
 import RecipientScreen from "../screens/RecipientScreen";
 import { TabsParamList, RootStackParamList } from "../typings/types";
-import DismissableSnackbar from "../components/shared/DismissableSnackbar";
+import DismissableSnackbar, {
+  useSnackbarState,
+} from "../components/shared/DismissableSnackbar";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
@@ -28,6 +30,10 @@ type UserInfo = {
 export const AccessTokenContext = React.createContext<string | undefined>(
   undefined
 );
+
+export const GlobalSnackbarContext = React.createContext<
+  (title: string) => void
+>(() => console.log("No show snackbar function passed along"));
 
 type TabBarIconProps = {
   focused: boolean;
@@ -48,6 +54,7 @@ const TabBarIcon: FC<TabBarIconProps> = ({ color }) => {
 
 type Props = StackScreenProps<RootStackParamList, "Root">;
 
+// TODO: Too much is going on in here! Split it out at some point
 const TabNavigator: FC<Props> = ({ navigation, route }) => {
   const { accessToken, idToken } = route.params;
 
@@ -89,9 +96,19 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
   } = tokenDecoded;
   const name = family_name ? `${given_name} ${family_name}` : given_name;
 
-  console.log(tokenDecoded);
   const userInfo: UserInfo = { roles: [], name, userId: oid };
   const colorScheme = useColorScheme();
+
+  const globalSnackbarState = useSnackbarState();
+  const [, dispatch] = globalSnackbarState;
+
+  const showSnackbar = useCallback(
+    (title: string) => {
+      dispatch({ type: "updateTitle", payload: title });
+      dispatch({ type: "show" });
+    },
+    [dispatch]
+  );
 
   return (
     <AccessTokenContext.Provider value={accessTokenState}>
@@ -99,98 +116,76 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
         <Appbar.Content title={`Velkommen ${userInfo.name}`} />
         <Appbar.Action icon="logout" onPress={logout} />
       </Appbar.Header>
-      <DismissableSnackbar
-        showState={[true, () => console.log("LOL")]}
-        title="This is a test!"
-      />
-      <Tab.Navigator
-        initialRouteName="Administration"
-        tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
-      >
-        {extension_Administrator && (
-          <Tab.Screen
-            name="Administration"
-            component={AdministrationScreen}
-            options={{
-              tabBarIcon: TabBarIcon,
-            }}
-          />
-        )}
-        {extension_CollectionAdministrator && (
-          <Tab.Screen
-            name="Indsamlingsadministration"
-            component={CollectionAdministrationScreen}
-            initialParams={{ userId: userInfo.userId }}
-            options={{
-              tabBarIcon: TabBarIcon,
-            }}
-          />
-        )}
-        {extension_Collector && (
-          <Tab.Screen
-            name="Indsamling"
-            component={CollectionScreen}
-            initialParams={{ userId: userInfo.userId }}
-            options={{
-              tabBarIcon: TabBarIcon,
-            }}
-          />
-        )}
-        {extension_LogisticsPartner && (
-          <Tab.Screen
-            name="Logistik"
-            component={LogisticsScreen}
-            initialParams={{ userId: userInfo.userId }}
-            options={{
-              tabBarIcon: TabBarIcon,
-            }}
-          />
-        )}
-        {extension_RecipientPartner && (
-          <Tab.Screen
-            name="Modtagelse"
-            component={RecipientScreen}
-            initialParams={{ userId: userInfo.userId }}
-            options={{
-              tabBarIcon: TabBarIcon,
-            }}
-          />
-        )}
-        {extension_ProductionPartner && (
-          <Tab.Screen
-            name="Produktion"
-            component={ProductionScreen}
-            initialParams={{ userId: userInfo.userId }}
-            options={{
-              tabBarIcon: TabBarIcon,
-            }}
-          />
-        )}
-      </Tab.Navigator>
+      <GlobalSnackbarContext.Provider value={showSnackbar}>
+        <Tab.Navigator
+          initialRouteName="Administration"
+          tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
+        >
+          {extension_Administrator && (
+            <Tab.Screen
+              name="Administration"
+              component={AdministrationScreen}
+              options={{
+                tabBarIcon: TabBarIcon,
+              }}
+            />
+          )}
+          {extension_CollectionAdministrator && (
+            <Tab.Screen
+              name="Indsamlingsadministration"
+              component={CollectionAdministrationScreen}
+              initialParams={{ userId: userInfo.userId }}
+              options={{
+                tabBarIcon: TabBarIcon,
+              }}
+            />
+          )}
+          {extension_Collector && (
+            <Tab.Screen
+              name="Indsamling"
+              component={CollectionScreen}
+              initialParams={{ userId: userInfo.userId }}
+              options={{
+                tabBarIcon: TabBarIcon,
+              }}
+            />
+          )}
+          {extension_LogisticsPartner && (
+            <Tab.Screen
+              name="Logistik"
+              component={LogisticsScreen}
+              initialParams={{ userId: userInfo.userId }}
+              options={{
+                tabBarIcon: TabBarIcon,
+              }}
+            />
+          )}
+          {extension_RecipientPartner && (
+            <Tab.Screen
+              name="Modtagelse"
+              component={RecipientScreen}
+              initialParams={{ userId: userInfo.userId }}
+              options={{
+                tabBarIcon: TabBarIcon,
+              }}
+            />
+          )}
+          {extension_ProductionPartner && (
+            <Tab.Screen
+              name="Produktion"
+              component={ProductionScreen}
+              initialParams={{ userId: userInfo.userId }}
+              options={{
+                tabBarIcon: TabBarIcon,
+              }}
+            />
+          )}
+        </Tab.Navigator>
+      </GlobalSnackbarContext.Provider>
+      <DismissableSnackbar globalSnackbarState={globalSnackbarState} />
     </AccessTokenContext.Provider>
   );
 };
 /* eslint-enable camelcase */
 
 export default TabNavigator;
-
-// You can explore the built-in icon families and icons on the web at:
-// https://icons.expo.fyi/
-/*
-function TabBarIcon({
-  name,
-  color,
-}: {
-  name: React.ComponentProps<typeof Ionicons>["name"];
-  color: string;
-}) {
-  return (
-    <Ionicons
-      size={30}
-      style={{ marginBottom: -3 }}
-      name={name}
-      color={color}
-    />
-  );
-}
- */

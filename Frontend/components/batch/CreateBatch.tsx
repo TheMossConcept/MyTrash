@@ -1,14 +1,14 @@
 import axios from "axios";
 import * as yup from "yup";
-import React, { FC, useState } from "react";
+import React, { FC, useContext } from "react";
 import { View } from "react-native";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
-import DismissableSnackbar from "../shared/DismissableSnackbar";
 import FormContainer from "../shared/FormContainer";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import AutocompleteInput from "../inputs/AutocompleteInput";
+import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 
 type Props = { batchCreatorId: string; creationCallback: () => void };
 
@@ -27,7 +27,7 @@ const validationSchema = yup.object().shape({
 });
 
 const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
   const initialValues: CreateBatchFormData = {};
 
   const accessToken = useAccessToken();
@@ -47,7 +47,7 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
         }
       )
       .then(() => {
-        setShowSuccessSnackbar(true);
+        showGlobalSnackbar("Batch oprettet");
         resetForm();
         creationCallback();
       });
@@ -74,10 +74,6 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
         <NumberField formKey="outputWeight" label="Batch vægt" />
         <NumberField formKey="additionFactor" label="Tilsætningsfaktor" />
         <SubmitButton title="Opret batch" />
-        <DismissableSnackbar
-          title="Batch oprettet"
-          showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-        />
       </View>
     </FormContainer>
   );

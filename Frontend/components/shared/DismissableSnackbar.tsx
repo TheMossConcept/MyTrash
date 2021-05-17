@@ -1,10 +1,6 @@
 import React, { FC, useReducer } from "react";
-import { StyleSheet, View, useWindowDimensions } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Snackbar } from "react-native-paper";
-
-type Props = {
-  onDismiss?: () => void;
-};
 
 type DismissableSnackbarState = {
   shown: boolean;
@@ -12,7 +8,8 @@ type DismissableSnackbarState = {
 };
 
 type DismissableSnackbarActions =
-  | { type: "toggle" }
+  | { type: "hide" }
+  | { type: "show" }
   | {
       type: "updateTitle";
       payload: string;
@@ -23,8 +20,10 @@ function reducer(
   action: DismissableSnackbarActions
 ) {
   switch (action.type) {
-    case "toggle":
-      return { ...state, shown: !state.shown };
+    case "hide":
+      return { ...state, shown: false };
+    case "show":
+      return { ...state, shown: true };
     case "updateTitle":
       return { ...state, title: action.payload };
     default:
@@ -33,38 +32,48 @@ function reducer(
   }
 }
 
-const initialState: DismissableSnackbarState = { shown: false, title: "" };
+const initialState: DismissableSnackbarState = {
+  shown: false,
+  title: "",
+};
 
-// TODO: Change this such that it is absolutely positioned and always shown at the bottom
-const DismissableSnackbar: FC<Props> = ({ onDismiss }) => {
-  // TODO: Move this out into the topmost component and access it through context
-  const [state, dispatch] = useReducer(reducer, initialState);
+export const useSnackbarState = () => {
+  return useReducer(reducer, initialState);
+};
 
-  const { height } = useWindowDimensions();
+type Props = {
+  globalSnackbarState: [
+    DismissableSnackbarState,
+    React.Dispatch<DismissableSnackbarActions>
+  ];
+};
 
-  const dismiss = () => {
-    dispatch({ type: "toggle" });
-    if (onDismiss) {
-      onDismiss();
-    }
-  };
+const DismissableSnackbar: FC<Props> = ({ globalSnackbarState }) => {
+  if (globalSnackbarState) {
+    const [state, dispatch] = globalSnackbarState;
 
-  return (
-    <View style={styles.snackbarContainer}>
-      <Snackbar
-        // Empirically, it has been determined that 80 works well.
-        style={{ ...styles.snackbar, top: height - 80 }}
-        visible={state.shown}
-        onDismiss={dismiss}
-        action={{
-          label: "OK",
-          onPress: dismiss,
-        }}
-      >
-        {state.title}
-      </Snackbar>
-    </View>
-  );
+    const dismiss = () => {
+      dispatch({ type: "hide" });
+    };
+
+    return (
+      <View style={styles.snackbarContainer}>
+        <Snackbar
+          // Empirically, it has been determined that 5 works well
+          style={{ ...styles.snackbar, top: 5 }}
+          visible={state.shown}
+          onDismiss={dismiss}
+          action={{
+            label: "OK",
+            onPress: dismiss,
+          }}
+        >
+          {state.title}
+        </Snackbar>
+      </View>
+    );
+  }
+  return null;
 };
 
 const styles = StyleSheet.create({

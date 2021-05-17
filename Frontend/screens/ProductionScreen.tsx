@@ -1,15 +1,15 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
-import React, { FC, useEffect, useState } from "react";
-import { Button, View } from "react-native";
+import React, { FC, useContext, useEffect, useState } from "react";
+import { Button } from "react-native";
 import axiosUtils from "../utils/axios";
 import { TabsParamList } from "../typings/types";
 import useAccessToken from "../hooks/useAccessToken";
 import sortBatchByStatus from "../utils/batch";
 import BatchDetails, { Batch } from "../components/batch/BatchDetails";
-import DismissableSnackbar from "../components/shared/DismissableSnackbar";
 import ProductsDetails from "../components/product/ProductsDetails";
 import Container from "../components/shared/Container";
+import { GlobalSnackbarContext } from "../navigation/TabNavigator";
 
 type Props = StackScreenProps<TabsParamList, "Produktion">;
 
@@ -58,7 +58,7 @@ type ConfirmBatchReceptionProps = {
 
 const ConfirmBatchReception: FC<ConfirmBatchReceptionProps> = ({ batchId }) => {
   const accessToken = useAccessToken();
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
   const confirmReception = () => {
     axios
@@ -68,17 +68,9 @@ const ConfirmBatchReception: FC<ConfirmBatchReceptionProps> = ({ batchId }) => {
         { ...axiosUtils.getSharedAxiosConfig(accessToken), params: { batchId } }
       )
       .then(() => {
-        setShowSuccessSnackbar(true);
+        showGlobalSnackbar("Modtagelse bekræftet");
       });
   };
 
-  return (
-    <View>
-      <Button title="Bekræft modtagelse" onPress={confirmReception} />
-      <DismissableSnackbar
-        title="Modtagelse bekræftet"
-        showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-      />
-    </View>
-  );
+  return <Button title="Bekræft modtagelse" onPress={confirmReception} />;
 };

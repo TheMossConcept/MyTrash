@@ -1,10 +1,11 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native-paper";
-import { AccessTokenContext } from "../../navigation/TabNavigator";
+import {
+  AccessTokenContext,
+  GlobalSnackbarContext,
+} from "../../navigation/TabNavigator";
 import axiosUtils from "../../utils/axios";
-import Container from "../shared/Container";
-import DismissableSnackbar from "../shared/DismissableSnackbar";
 import ClusterForm, { ClusterFormData } from "./ClusterForm";
 
 type UpdateFormProps = {
@@ -19,7 +20,7 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
   const [initialValues, setInitialValues] = useState<
     ClusterFormData | undefined
   >(undefined);
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
   const accessToken = useContext(AccessTokenContext);
 
@@ -47,7 +48,7 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
         .then(() => {
-          setShowSuccessSnackbar(true);
+          showGlobalSnackbar("Clusteret blev opdateret");
 
           successCallback();
         });
@@ -55,18 +56,12 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
   };
 
   return initialValues ? (
-    <Container>
-      <ClusterForm
-        cluster={initialValues}
-        clusterId={clusterId}
-        submit={updateCluster}
-        submitTitle="Opdater cluster"
-      />
-      <DismissableSnackbar
-        title="Clusteret blev opdateret"
-        showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-      />
-    </Container>
+    <ClusterForm
+      cluster={initialValues}
+      clusterId={clusterId}
+      submit={updateCluster}
+      submitTitle="Opdater cluster"
+    />
   ) : (
     <ActivityIndicator />
   );
@@ -77,7 +72,7 @@ type CreateFormProps = {
 };
 
 export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
   const initialValues = {
     name: "",
@@ -101,7 +96,7 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
         .then(() => {
-          setShowSuccessSnackbar(true);
+          showGlobalSnackbar("Clusteret blev oprettet");
           reset();
 
           successCallback();
@@ -110,16 +105,10 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
   };
 
   return (
-    <Container>
-      <ClusterForm
-        cluster={initialValues}
-        submit={createCluster}
-        submitTitle="Opret cluster"
-      />
-      <DismissableSnackbar
-        title="Clusteret blev oprettet"
-        showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-      />
-    </Container>
+    <ClusterForm
+      cluster={initialValues}
+      submit={createCluster}
+      submitTitle="Opret cluster"
+    />
   );
 };

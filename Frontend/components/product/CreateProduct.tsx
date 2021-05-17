@@ -1,13 +1,13 @@
 import axios from "axios";
 import * as yup from "yup";
-import React, { FC, useState } from "react";
+import React, { FC, useContext } from "react";
 import { Text } from "react-native";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
 import FormContainer from "../shared/FormContainer";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
-import DismissableSnackbar from "../shared/DismissableSnackbar";
+import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 
 type Props = {
   clusterId: string;
@@ -28,7 +28,7 @@ const CreateProduct: FC<Props> = ({
   productionPartnerId,
   batchId,
 }) => {
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
   const initialFormValues: CreateProductFormData = {};
   const accessToken = useAccessToken();
 
@@ -48,6 +48,7 @@ const CreateProduct: FC<Props> = ({
         { ...axiosUtils.getSharedAxiosConfig(accessToken) }
       )
       .then(() => {
+        showGlobalSnackbar("Produkt oprettet");
         resetForm();
       });
   };
@@ -63,10 +64,6 @@ const CreateProduct: FC<Props> = ({
       <Text>Opret produkt</Text>
       <NumberField formKey="productNumber" label="Varenummer" />
       <SubmitButton title="Opret produkt" />
-      <DismissableSnackbar
-        title="Produkt oprettet"
-        showState={[showSuccessSnackbar, setShowSuccessSnackbar]}
-      />
     </FormContainer>
   );
 };
