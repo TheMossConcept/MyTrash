@@ -32,7 +32,10 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
   // not support explicitly passing query parameters
   useEffect(() => {
     const updateDiscoveryDocument = async () => {
-      const rawDiscoveryDocumentResponse = await axios.get(AUTHORIZATION_URL);
+      // TODO: Remember to append ?p=B2C_1_SignUpAndSignIn at some point when the cache expires
+      const rawDiscoveryDocumentResponse = await axios.get(
+        `${AUTHORIZATION_URL}?p=B2C_1_SignUpAndSignIn`
+      );
       const {
         /* eslint-disable camelcase */
         authorization_endpoint,
