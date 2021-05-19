@@ -6,17 +6,7 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 
 import { Appbar } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  AuthRequest,
-  DiscoveryDocument,
-  makeRedirectUri,
-} from "expo-auth-session";
-import {
-  AUTHORIZATION_URL,
-  AZURE_AD_CLIENT_ID,
-  MOBILE_REDIRECT_URL,
-} from "react-native-dotenv";
-import axios from "axios";
+import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import AdministrationScreen from "../screens/AdministrationScreen";
@@ -29,6 +19,7 @@ import { TabsParamList, RootStackParamList } from "../typings/types";
 import DismissableSnackbar, {
   useSnackbarState,
 } from "../components/shared/DismissableSnackbar";
+import useAzureAdFlows from "../hooks/useAzureAdFlows";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
@@ -79,70 +70,10 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
     navigation.navigate("Login");
   };
 
-  // TODO: ONLY FOR TESTING! IF THIS WORKS, MOVE IT OUT IMMEDIATELY
-  const [discoveryDocument, setDiscoveryDocument] = useState<
-    DiscoveryDocument | undefined
-  >(undefined);
+  const scopes = [AZURE_AD_CLIENT_ID];
 
-  // console.log(ENV);
-
-  // NB! We cannot use autodiscovery in this case bacause it automatically appends /.well-known/openid-configuration to the URL and does
-  // not support explicitly passing query parameters
-  useEffect(() => {
-    const updateDiscoveryDocument = async () => {
-      const rawDiscoveryDocumentResponse = await axios.get(
-        `${AUTHORIZATION_URL}?p=B2C_1_ProfileEdit`
-      );
-      const {
-        /* eslint-disable camelcase */
-        authorization_endpoint,
-        token_endpoint,
-        end_session_endpoint,
-        ...discoveryMetaData
-      } = rawDiscoveryDocumentResponse.data;
-
-      const convertedEndpointValues = {
-        // The auth request assumes these URLs have no query param, which is why
-        // we need to remove the query param here and reintroduce it when doing the requests
-        // TODO: See if you can find a less brittle way to do this!
-        authorizationEndpoint: (authorization_endpoint as string).split("?")[0],
-        tokenEndpoint: token_endpoint,
-        endSessionEndpoint: (end_session_endpoint as string).split("?")[0],
-      };
-      /* eslint-enable camelcase */
-
-      const convertedDiscoveryDocument: DiscoveryDocument = {
-        ...convertedEndpointValues,
-        ...discoveryMetaData,
-      };
-
-      setDiscoveryDocument(convertedDiscoveryDocument);
-    };
-
-    updateDiscoveryDocument();
-  }, []);
-
-  const redirectUri = makeRedirectUri({
-    // For usage in bare and standalone
-    native: MOBILE_REDIRECT_URL,
-  });
-
-  const authRequest = new AuthRequest({
-    clientId: AZURE_AD_CLIENT_ID,
-    scopes: ["openid"],
-    extraParams: { p: "B2C_1_ProfileEdit" },
-    redirectUri,
-  });
-
-  const editProfile = async () => {
-    if (discoveryDocument) {
-      await authRequest.getAuthRequestConfigAsync();
-      const authSessionResult = await authRequest.promptAsync(
-        discoveryDocument
-      );
-      console.log(authSessionResult);
-    }
-  };
+  const editProfile = useAzureAdFlows("B2C_1_ProfileEdit", scopes);
+  const onEditProfilePress = () => editProfile();
 
   useEffect(() => {
     if (accessTokenState) {
@@ -190,7 +121,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
     <AccessTokenContext.Provider value={accessTokenState}>
       <Appbar.Header>
         <Appbar.Content title={`Velkommen ${userInfo.name}`} />
-        <Appbar.Action icon="account-edit" onPress={editProfile} />
+        <Appbar.Action icon="account-edit" onPress={onEditProfilePress} />
         <Appbar.Action icon="logout" onPress={logout} />
       </Appbar.Header>
       <GlobalSnackbarContext.Provider value={showSnackbar}>
