@@ -91,8 +91,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
   const tokenDecoded = jwtDecode(idToken) as any;
   /* eslint-disable camelcase */
   const {
-    given_name,
-    family_name,
+    name,
     oid,
     extension_Administrator,
     extension_CollectionAdministrator,
@@ -101,7 +100,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
     extension_RecipientPartner,
     extension_ProductionPartner,
   } = tokenDecoded;
-  const name = family_name ? `${given_name} ${family_name}` : given_name;
+  // const name = family_name ? `${given_name} ${family_name}` : given_name;
 
   const userInfo: UserInfo = { roles: [], name, userId: oid };
   const colorScheme = useColorScheme();
@@ -120,7 +119,13 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
   return (
     <AccessTokenContext.Provider value={accessTokenState}>
       <Appbar.Header>
-        <Appbar.Content title={`Velkommen ${userInfo.name}`} />
+        <Appbar.Content
+          title={
+            userInfo.name
+              ? `Velkommen ${userInfo.name}`
+              : "Velkommen til MyTrash"
+          }
+        />
         <Appbar.Action icon="account-edit" onPress={onEditProfilePress} />
         <Appbar.Action icon="logout" onPress={logout} />
       </Appbar.Header>

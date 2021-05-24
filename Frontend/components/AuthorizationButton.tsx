@@ -28,7 +28,7 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
     native: MOBILE_REDIRECT_URL,
   });
 
-  const signIn = useAzureAdFlows("B2C_1_SignUpAndSignIn", scopes, redirectUri);
+  const signIn = useAzureAdFlows("B2C_1_SignIn", scopes, redirectUri);
 
   // Request
   const onPress = async () => {
@@ -51,7 +51,7 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
             redirectUri,
             extraParams: {
               code_verifier: authRequest.codeVerifier,
-              p: "B2C_1_SignUpAndSignIn",
+              p: "B2C_1_SignIn",
             },
           },
           discoveryDocument
