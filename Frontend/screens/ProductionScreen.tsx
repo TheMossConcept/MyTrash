@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
-import { Button } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import axiosUtils from "../utils/axios";
 import { TabsParamList } from "../typings/types";
 import useAccessToken from "../hooks/useAccessToken";
@@ -10,6 +10,7 @@ import BatchDetails, { Batch } from "../components/batch/BatchDetails";
 import ProductsDetails from "../components/product/ProductsDetails";
 import Container from "../components/shared/Container";
 import { GlobalSnackbarContext } from "../navigation/TabNavigator";
+import CreateProduct from "../components/product/CreateProduct";
 
 type Props = StackScreenProps<TabsParamList, "Production">;
 
@@ -39,11 +40,16 @@ const ProductionScreen: FC<Props> = ({ route }) => {
       </BatchDetails>
       <BatchDetails batches={sortedBatches.received} title="Bekræftede batches">
         {(batch) => (
-          <ProductsDetails
-            batchId={batch.id}
-            productionPartnerId={userId}
-            clusterId={batch.clusterId}
-          />
+          <View>
+            <View style={styles.createProductView}>
+              <CreateProduct
+                batchId={batch.id}
+                productionPartnerId={userId}
+                clusterId={batch.clusterId}
+              />
+            </View>
+            <ProductsDetails batchId={batch.id} />
+          </View>
         )}
       </BatchDetails>
     </Container>
@@ -74,3 +80,9 @@ const ConfirmBatchReception: FC<ConfirmBatchReceptionProps> = ({ batchId }) => {
 
   return <Button title="Bekræft modtagelse" onPress={confirmReception} />;
 };
+
+const styles = StyleSheet.create({
+  createProductView: {
+    marginBottom: 15,
+  },
+});

@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as yup from "yup";
 import React, { FC, useContext } from "react";
-import { Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
 import FormContainer from "../shared/FormContainer";
@@ -54,18 +54,28 @@ const CreateProduct: FC<Props> = ({
   };
 
   return (
-    <FormContainer
-      initialValues={initialFormValues}
-      onSubmit={(values, formikHelpers) =>
-        createProduct(values, formikHelpers.resetForm)
-      }
-      validationSchema={validationSchema}
-    >
-      <Text>Opret produkt</Text>
-      <NumberField formKey="productNumber" label="Varenummer" />
-      <SubmitButton title="Opret produkt" />
-    </FormContainer>
+    <View style={styles.container}>
+      <FormContainer
+        initialValues={initialFormValues}
+        onSubmit={(values, formikHelpers) =>
+          createProduct(values, formikHelpers.resetForm)
+        }
+        validationSchema={validationSchema}
+      >
+        <NumberField formKey="productNumber" label="Varenummer" />
+        <SubmitButton title="Opret produkt" />
+      </FormContainer>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: "rgb(211, 211, 211)",
+    padding: 15,
+  },
+});
 
 export default CreateProduct;

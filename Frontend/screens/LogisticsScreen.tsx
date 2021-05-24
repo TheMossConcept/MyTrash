@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useCallback, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import axiosUtils from "../utils/axios";
 
 import useAccessToken from "../hooks/useAccessToken";
@@ -16,7 +16,7 @@ import Container from "../components/shared/Container";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
 import InformationText from "../components/styled/InformationText";
 
-type Props = StackScreenProps<TabsParamList, "Logistik">;
+type Props = StackScreenProps<TabsParamList, "Logistics">;
 
 const LogisticsScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
