@@ -20,6 +20,7 @@ import DismissableSnackbar, {
   useSnackbarState,
 } from "../components/shared/DismissableSnackbar";
 import useAzureAdFlows from "../hooks/useAzureAdFlows";
+import NoAccess from "../screens/NoAccess";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
@@ -115,6 +116,14 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
     [dispatch]
   );
 
+  const userHasNoAccess =
+    !extension_Administrator &&
+    !extension_CollectionAdministrator &&
+    !extension_Collector &&
+    !extension_LogisticsPartner &&
+    !extension_RecipientPartner &&
+    !extension_ProductionPartner;
+
   return (
     <AccessTokenContext.Provider value={accessTokenState}>
       <Appbar.Header>
@@ -144,7 +153,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           )}
           {extension_CollectionAdministrator && (
             <Tab.Screen
-              name="Indsamlingsadministration"
+              name="CollectionAdministration"
               component={CollectionAdministrationScreen}
               initialParams={{ userId: userInfo.userId }}
               options={{
@@ -154,7 +163,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           )}
           {extension_Collector && (
             <Tab.Screen
-              name="Indsamling"
+              name="Collection"
               component={CollectionScreen}
               initialParams={{ userId: userInfo.userId }}
               options={{
@@ -164,7 +173,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           )}
           {extension_LogisticsPartner && (
             <Tab.Screen
-              name="Logistik"
+              name="Logistics"
               component={LogisticsScreen}
               initialParams={{ userId: userInfo.userId }}
               options={{
@@ -174,7 +183,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           )}
           {extension_RecipientPartner && (
             <Tab.Screen
-              name="Modtagelse"
+              name="Recipient"
               component={RecipientScreen}
               initialParams={{ userId: userInfo.userId }}
               options={{
@@ -184,13 +193,16 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           )}
           {extension_ProductionPartner && (
             <Tab.Screen
-              name="Produktion"
+              name="Production"
               component={ProductionScreen}
               initialParams={{ userId: userInfo.userId }}
               options={{
                 tabBarIcon: TabBarIcon,
               }}
             />
+          )}
+          {userHasNoAccess && (
+            <Tab.Screen name="NoAccess" component={NoAccess} />
           )}
         </Tab.Navigator>
       </GlobalSnackbarContext.Provider>

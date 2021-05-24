@@ -13,4 +13,5 @@ export type TabsParamList = {
   Logistik: { userId: string };
   Modtagelse: { userId: string };
   Produktion: { userId: string };
+  NoAccess: undefined;
 };

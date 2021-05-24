@@ -7,16 +7,12 @@ export default {
       Login: "login",
       Root: {
         screens: {
-          TabOne: {
-            screens: {
-              TabOneScreen: "one",
-            },
-          },
-          TabTwo: {
-            screens: {
-              TabTwoScreen: "two",
-            },
-          },
+          Administration: "administration",
+          Collection: "indsamling",
+          CollectionAdministration: "indsamlingsadministration",
+          Logistics: "logistik",
+          Recipient: "modtagelse",
+          Production: "produktion",
         },
       },
       Join: "tilmeld",
