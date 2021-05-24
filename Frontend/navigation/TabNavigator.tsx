@@ -100,7 +100,6 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
     extension_RecipientPartner,
     extension_ProductionPartner,
   } = tokenDecoded;
-  // const name = family_name ? `${given_name} ${family_name}` : given_name;
 
   const userInfo: UserInfo = { roles: [], name, userId: oid };
   const colorScheme = useColorScheme();

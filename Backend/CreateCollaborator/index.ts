@@ -3,11 +3,7 @@ import "isomorphic-fetch";
 
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
-import databaseAPI, {
-  ClusterEntity,
-  UserRole,
-  allUserRoles,
-} from "../utils/DatabaseAPI";
+import { UserRole, allUserRoles } from "../utils/DatabaseAPI";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 
 const httpTrigger: AzureFunction = async function (
@@ -28,6 +24,26 @@ const httpTrigger: AzureFunction = async function (
       zipCode,
       role,
     } = requestBody;
+
+    // Fail fast
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !phoneNumber ||
+      !companyName ||
+      !street ||
+      !streetNumber ||
+      !city ||
+      !zipCode ||
+      !role ||
+      !allUserRoles.includes(role)
+    ) {
+      context.res = {
+        body:
+          "Bad request. Required property is missing of the role used is incorrect",
+      };
+    }
 
     const customAuthProvider = new CustomAuthenticationProvider();
     const client = Client.initWithMiddleware({
@@ -79,7 +95,7 @@ const httpTrigger: AzureFunction = async function (
     };
   } catch (e) {
     context.res = {
-      body: JSON.stringify(e),
+      body: e.message,
       statusCode: 500,
     };
   }
