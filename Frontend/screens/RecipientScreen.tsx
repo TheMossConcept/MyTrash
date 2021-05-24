@@ -18,7 +18,7 @@ import Container from "../components/shared/Container";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
 import { GlobalSnackbarContext } from "../navigation/TabNavigator";
 
-type Props = StackScreenProps<TabsParamList, "Modtagelse">;
+type Props = StackScreenProps<TabsParamList, "Recipient">;
 
 const RecipientScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;

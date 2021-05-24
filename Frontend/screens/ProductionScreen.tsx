@@ -11,7 +11,7 @@ import ProductsDetails from "../components/product/ProductsDetails";
 import Container from "../components/shared/Container";
 import { GlobalSnackbarContext } from "../navigation/TabNavigator";
 
-type Props = StackScreenProps<TabsParamList, "Produktion">;
+type Props = StackScreenProps<TabsParamList, "Production">;
 
 const ProductionScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;

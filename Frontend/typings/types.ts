@@ -8,10 +8,10 @@ export type RootStackParamList = {
 
 export type TabsParamList = {
   Administration: undefined;
-  Indsamling: { userId: string };
-  Indsamlingsadministration: { userId: string };
-  Logistik: { userId: string };
-  Modtagelse: { userId: string };
-  Produktion: { userId: string };
+  Collection: { userId: string };
+  CollectionAdministration: { userId: string };
+  Logistics: { userId: string };
+  Recipient: { userId: string };
+  Production: { userId: string };
   NoAccess: undefined;
 };

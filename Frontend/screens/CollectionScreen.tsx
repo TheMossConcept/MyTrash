@@ -15,9 +15,8 @@ import PlasticCollectionsDetails, {
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import Container from "../components/shared/Container";
 import UserProgressionCircle from "../components/display/UserProgressionCircle";
-// import UserProgressionCircle from "../components/display/UserProgressionCircle";
 
-type Props = StackScreenProps<TabsParamList, "Indsamling">;
+type Props = StackScreenProps<TabsParamList, "Collection">;
 
 const CollectionScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
