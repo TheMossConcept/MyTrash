@@ -26,6 +26,7 @@ const httpTrigger: AzureFunction = async function (
     } = requestBody;
 
     // Fail fast
+    // TODO: Consider adding yup validation instead!!
     if (
       !firstName ||
       !lastName ||
@@ -82,7 +83,7 @@ const httpTrigger: AzureFunction = async function (
       mobilePhone: phoneNumber,
       postalCode: zipCode.toString(),
       passwordProfile: {
-        forceChangePasswordNextSignIn: false,
+        forceChangePasswordNextSignIn: true,
         password: "Test1234!",
       },
       // passwordPolicies: "DisablePasswordExpiration",

@@ -12,7 +12,6 @@ class CustomAuthenticationProvider implements AuthenticationProvider {
     const accessToken = await this.azureCredential.getToken([
       "https://graph.microsoft.com/.default",
     ]);
-
     return accessToken.token;
   };
 }
