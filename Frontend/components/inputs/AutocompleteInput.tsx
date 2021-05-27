@@ -14,8 +14,10 @@ import Autocomplete, {
   AutocompleteProps,
 } from "react-native-autocomplete-input";
 import { TextInput } from "react-native-paper";
+import { entries } from "lodash";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import axiosUtils from "../../utils/axios";
+import useQueryState from "../../hooks/useQueryState";
 
 export type SelectableEntity = {
   id: string;
@@ -45,19 +47,7 @@ const AutocompleteInput: FC<Props> = ({
   style,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState("");
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
-
-  const filteredEntities = useMemo(
-    () =>
-      entities.filter((entity) => {
-        const lowerCaseDisplayName = entity.displayName.toLowerCase();
-        const lowerCaseQuery = query.toLowerCase();
-
-        return lowerCaseDisplayName.includes(lowerCaseQuery);
-      }),
-    [entities, query]
-  );
 
   const formikProps = useFormikContext<any>();
 
@@ -73,34 +63,27 @@ const AutocompleteInput: FC<Props> = ({
       setFieldValue(key, newValue);
     };
 
+    console.log(`Entries in AutocompleteInput: ${JSON.stringify(entries)}`);
+
+    const [query, setQuery] = useQueryState(
+      [selectedId, setSelectedId],
+      entities
+    );
+
+    const filteredEntities = useMemo(
+      () =>
+        entities.filter((entity) => {
+          const lowerCaseDisplayName = entity.displayName.toLowerCase();
+          const lowerCaseQuery = query.toLowerCase();
+
+          return lowerCaseDisplayName.includes(lowerCaseQuery);
+        }),
+      [entities, query]
+    );
+
     // ================ UI and selection state consistency ========================
-
-    // This useEffect ensures correct query state on selection both when it happens explicitly
-    // in the component and explicitly from the outside
-    useEffect(() => {
-      // TODO: This is going to be a problem, once we introduce pagination!
-      filteredEntities.forEach((entity) => {
-        if (entity.id === selectedId) {
-          setQuery(entity.displayName);
-        }
-      });
-    }, [filteredEntities, selectedId]);
-
-    // This useEffect enables reset from outside this component (query is local to  this component!)
-    useEffect(() => {
-      if (!selectedId) {
-        setQuery("");
-      }
-    }, [selectedId]);
-
-    // Always reset selection state when changing the query!
-    const setQueryWrapper = (newValue: string) => {
-      // When you re-query, you automatically loose your selection
-      setSelectedId("");
-      setQuery(newValue);
-    };
-
     // ============================================================================
+    // ======================= Update of entries ==================================
 
     const accessToken = useContext(AccessTokenContext);
 
@@ -112,7 +95,9 @@ const AutocompleteInput: FC<Props> = ({
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
         .then((entitiesResult) => {
-          const fetchedEntities: SelectableEntity[] = entitiesResult.data;
+          // TODO TODO TODO: Fix this once you implement pagination for all endpoints returning mor than one value
+          const fetchedEntities: SelectableEntity[] =
+            entitiesResult.data.value || entitiesResult.data;
           setEntities(fetchedEntities);
         })
         .finally(() => {
@@ -150,10 +135,10 @@ const AutocompleteInput: FC<Props> = ({
 
     const [hideSuggestionList, setHideSuggestionList] = useState(true);
 
+    // ============================================================================
+
     const handleItemSelection = (item: SelectableEntity) => () => {
       setSelectedId(item.id);
-      setQuery(item.displayName);
-
       setHideSuggestionList(true);
     };
 
@@ -165,15 +150,15 @@ const AutocompleteInput: FC<Props> = ({
           containerStyle={containerStyle}
           data={filteredEntities}
           value={query}
-          onChangeText={setQueryWrapper}
+          onChangeText={setQuery}
           onFocus={() => setHideSuggestionList(false)}
           onBlur={(event) => {
-            // We need to give the other event handler time to do its job before
-            // hiding the suggestion list.
-            // TODO: Do something less brittle that is not
-            // reliant on timing! Then we can also pass handleBlur(key) directly as a callback!
-            setTimeout(() => setHideSuggestionList(true), 250);
             if (handleBlur) {
+              // We need to give the other event handler time to do its job before
+              // hiding the suggestion list.
+              // TODO: Do something less brittle that is not
+              // reliant on timing! Then we can also pass handleBlur(key) directly as a callback!
+              setTimeout(() => setHideSuggestionList(true), 250);
               handleBlur(key)(event);
             }
           }}

@@ -20,7 +20,7 @@ const useClusters = (queryParams?: Object) => {
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
         .then((clustersResult) => {
-          setClusters(clustersResult.data);
+          setClusters(clustersResult.data.value);
         });
     }
   }, [accessToken]);
