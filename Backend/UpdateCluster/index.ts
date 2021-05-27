@@ -28,7 +28,6 @@ const httpTrigger: AzureFunction = async function (
     );
 
     context.res = {
-      // status: 200, /* Defaults to 200 */
       body: JSON.stringify(insertionReulst),
     };
   } else {
@@ -54,4 +53,3 @@ type ClusterCreationDTO = {
 };
 
 export default httpTrigger;
-

@@ -11,7 +11,11 @@ const httpTrigger: AzureFunction = async function (
       logisticsPartnerId,
       productionPartnerId,
       collectorId,
+      page,
     } = req.query;
+
+    // TODO: Validate this once we start adding end-to-end typing and input validation!
+    const pageNumber = Number.parseInt(page, 10);
 
     const queryIsLimitedToUser =
       collectionAdministratorId ||
@@ -19,8 +23,12 @@ const httpTrigger: AzureFunction = async function (
       productionPartnerId ||
       collectorId;
 
-    const clusters = await databaseAPI.find<ClusterEntity>(
+    const {
+      result: clusters,
+      hasNextPage,
+    } = await databaseAPI.findPaginated<ClusterEntity>(
       "cluster",
+      pageNumber,
       queryIsLimitedToUser
         ? {
             $or: [
@@ -30,7 +38,6 @@ const httpTrigger: AzureFunction = async function (
                   $eq: collectionAdministratorId,
                 },
               },
-              // { logisticsPartnerId },
               {
                 logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId },
               },
@@ -57,13 +64,18 @@ const httpTrigger: AzureFunction = async function (
     });
 
     context.res = {
-      body: JSON.stringify(returnValue),
+      body: JSON.stringify({ value: returnValue, pagination: { hasNextPage } }),
     };
   } catch (e) {
     context.res = {
       body: JSON.stringify(e),
     };
   }
+};
+
+type ReturnValue = {
+  value: GetClustersDTO[];
+  pagination: { hasNextPage: boolean };
 };
 
 type GetClustersDTO = {
