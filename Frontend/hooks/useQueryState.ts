@@ -16,6 +16,9 @@ const useQueryState = (
     if (selectedEntity && selectedEntity.displayName !== query) {
       setSelectedId("");
     }
+    // NB! We ONLY want this to trigger on query changes, not selectedId changes
+    // as its job is to reset the selection when the query is changed
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [entities, query]);
 
   // This useEffect enables query update when an entity is explicitly selected

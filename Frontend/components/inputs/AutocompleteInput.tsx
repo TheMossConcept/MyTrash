@@ -14,7 +14,7 @@ import Autocomplete, {
   AutocompleteProps,
 } from "react-native-autocomplete-input";
 import { TextInput } from "react-native-paper";
-import { entries } from "lodash";
+import { debounce, isEmpty } from "lodash";
 import { AccessTokenContext } from "../../navigation/TabNavigator";
 import axiosUtils from "../../utils/axios";
 import useQueryState from "../../hooks/useQueryState";
@@ -46,8 +46,9 @@ const AutocompleteInput: FC<Props> = ({
   formKey: key,
   style,
 }) => {
-  const [loading, setLoading] = useState(false);
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hideSuggestionList, setHideSuggestionList] = useState(true);
 
   const formikProps = useFormikContext<any>();
 
@@ -62,8 +63,6 @@ const AutocompleteInput: FC<Props> = ({
     const setSelectedId = (newValue: any) => {
       setFieldValue(key, newValue);
     };
-
-    console.log(`Entries in AutocompleteInput: ${JSON.stringify(entries)}`);
 
     const [query, setQuery] = useQueryState(
       [selectedId, setSelectedId],
@@ -81,29 +80,57 @@ const AutocompleteInput: FC<Props> = ({
       [entities, query]
     );
 
-    // ================ UI and selection state consistency ========================
-    // ============================================================================
     // ======================= Update of entries ==================================
 
     const accessToken = useContext(AccessTokenContext);
 
-    const updateEntities = useCallback(() => {
-      setLoading(true);
+    const updateEntities = useCallback(
+      (searchString?: string) => {
+        setLoading(true);
 
-      axios
-        .get(endpoint, {
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        })
-        .then((entitiesResult) => {
-          // TODO TODO TODO: Fix this once you implement pagination for all endpoints returning mor than one value
-          const fetchedEntities: SelectableEntity[] =
-            entitiesResult.data.value || entitiesResult.data;
-          setEntities(fetchedEntities);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    }, [endpoint, accessToken]);
+        axios
+          .get(endpoint, {
+            params: { searchString },
+            ...axiosUtils.getSharedAxiosConfig(accessToken),
+          })
+          .then((entitiesResult) => {
+            // TODO TODO TODO: Fix this once you implement pagination for all endpoints returning mor than one value
+            const fetchedEntities: SelectableEntity[] =
+              entitiesResult.data.value || entitiesResult.data;
+            setEntities(fetchedEntities);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      },
+      [endpoint, accessToken]
+    );
+
+    const [queryStringsTried, setQueryStringsTried] = useState<string[]>([]);
+
+    // Without the useCallback we define a new debounced function pr
+    // render and the debounce does not have the desired effect as it
+    // is then called once pr render
+    const requeryEntities = useCallback(
+      debounce((queryString) => {
+        setLoading(true);
+        updateEntities(queryString);
+      }, 600),
+      [updateEntities]
+    );
+
+    const handleTextChange = (newValue: string) => {
+      setQuery(newValue);
+
+      if (isEmpty(filteredEntities) && !queryStringsTried.includes(newValue)) {
+        requeryEntities(newValue);
+
+        setQueryStringsTried((previousValue) => [...previousValue, newValue]);
+      }
+    };
+
+    // Adding queryStringsTried here is not an issue, because when we update it, we also exclude the function from
+    // being called again
 
     useEffect(() => {
       // Initialize
@@ -133,8 +160,6 @@ const AutocompleteInput: FC<Props> = ({
       return () => {};
     }, [updateEntities, updateEntitiesEventName]);
 
-    const [hideSuggestionList, setHideSuggestionList] = useState(true);
-
     // ============================================================================
 
     const handleItemSelection = (item: SelectableEntity) => () => {
@@ -150,7 +175,7 @@ const AutocompleteInput: FC<Props> = ({
           containerStyle={containerStyle}
           data={filteredEntities}
           value={query}
-          onChangeText={setQuery}
+          onChangeText={handleTextChange}
           onFocus={() => setHideSuggestionList(false)}
           onBlur={(event) => {
             if (handleBlur) {
