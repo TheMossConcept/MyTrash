@@ -11,11 +11,12 @@ const httpTrigger: AzureFunction = async function (
       logisticsPartnerId,
       productionPartnerId,
       collectorId,
+      searchString,
       page,
     } = req.query;
 
     // TODO: Validate this once we start adding end-to-end typing and input validation!
-    const pageNumber = Number.parseInt(page, 10);
+    const pageNumber = Number.parseInt(page, 10) || 0;
 
     const queryIsLimitedToUser =
       collectionAdministratorId ||
@@ -23,34 +24,45 @@ const httpTrigger: AzureFunction = async function (
       productionPartnerId ||
       collectorId;
 
+    const limitUserQuery = queryIsLimitedToUser
+      ? {
+          $or: [
+            {
+              collectionAdministratorId: {
+                $exists: true,
+                $eq: collectionAdministratorId,
+              },
+            },
+            {
+              logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId },
+            },
+            {
+              productionPartnerId: {
+                $exists: true,
+                $eq: productionPartnerId,
+              },
+            },
+            { collectors: { $exists: true, $eq: collectorId } },
+          ],
+        }
+      : undefined;
+
+    const searchStringQuery = searchString
+      ? {
+          name: { $exists: true, $regex: `.*${searchString}.*`, $options: "i" },
+        }
+      : undefined;
+
+    const query = {};
+    Object.assign(query, limitUserQuery, searchStringQuery);
+
     const {
       result: clusters,
       hasNextPage,
     } = await databaseAPI.findPaginated<ClusterEntity>(
       "cluster",
       pageNumber,
-      queryIsLimitedToUser
-        ? {
-            $or: [
-              {
-                collectionAdministratorId: {
-                  $exists: true,
-                  $eq: collectionAdministratorId,
-                },
-              },
-              {
-                logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId },
-              },
-              {
-                productionPartnerId: {
-                  $exists: true,
-                  $eq: productionPartnerId,
-                },
-              },
-              { collectors: { $exists: true, $eq: collectorId } },
-            ],
-          }
-        : undefined
+      query
     );
     // TODO: The frontend relies on this particular return value format. Consider
     // whether that is too hard of a coupling and we need a gateway instead, or

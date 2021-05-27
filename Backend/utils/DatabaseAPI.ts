@@ -8,7 +8,8 @@ const getMongoClient = async () => {
   if (!globalMongoClientInstace) {
     globalMongoClientInstace = await mongodb.MongoClient.connect(
       // TODO: Move to env!
-      "mongodb://cosmos-houe-mytrash-serverless:gMCgVFsAMYZhJ7Jonq66mCgmv4lYM78LDVzNsa4XhTxyWxJS135MCox9O1d7O9gey5ILDq8XIBLxSMI5TNqPaQ==@cosmos-houe-mytrash-serverless.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@cosmos-houe-mytrash-serverless@"
+      "mongodb://cosmos-houe-mytrash-serverless:gMCgVFsAMYZhJ7Jonq66mCgmv4lYM78LDVzNsa4XhTxyWxJS135MCox9O1d7O9gey5ILDq8XIBLxSMI5TNqPaQ==@cosmos-houe-mytrash-serverless.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@cosmos-houe-mytrash-serverless@",
+      { useUnifiedTopology: true }
     );
   }
 
