@@ -47,37 +47,52 @@ const httpTrigger: AzureFunction = async function (
         }
       : undefined;
 
-    const searchStringQuery = searchString
-      ? {
-          name: { $exists: true, $regex: `.*${searchString}.*`, $options: "i" },
-        }
-      : undefined;
+    // TODO: Consider whether it is a good idea to have two different return values
+    // depending on the request issued!
+    if (page) {
+      const {
+        result: clusters,
+        hasNextPage,
+      } = await databaseAPI.findPaginated<ClusterEntity>(
+        "cluster",
+        pageNumber,
+        limitUserQuery
+      );
+      // TODO: The frontend relies on this particular return value format. Consider
+      // whether that is too hard of a coupling and we need a gateway instead, or
+      // if it is acceptable for now, given the scope of the project
+      const returnValue: GetClustersDTO[] = clusters.map((cluster) => {
+        return {
+          // eslint-disable-next-line no-underscore-dangle
+          id: cluster._id,
+          displayName: cluster.name,
+        };
+      });
 
-    const query = {};
-    Object.assign(query, limitUserQuery, searchStringQuery);
-
-    const {
-      result: clusters,
-      hasNextPage,
-    } = await databaseAPI.findPaginated<ClusterEntity>(
-      "cluster",
-      pageNumber,
-      query
-    );
-    // TODO: The frontend relies on this particular return value format. Consider
-    // whether that is too hard of a coupling and we need a gateway instead, or
-    // if it is acceptable for now, given the scope of the project
-    const returnValue: GetClustersDTO[] = clusters.map((cluster) => {
-      return {
-        // eslint-disable-next-line no-underscore-dangle
-        id: cluster._id,
-        displayName: cluster.name,
+      context.res = {
+        body: JSON.stringify({
+          value: returnValue,
+          pagination: { hasNextPage },
+        } as ReturnValue),
       };
-    });
+    } else {
+      const clusters = await databaseAPI.find<ClusterEntity>(
+        "cluster",
+        limitUserQuery
+      );
 
-    context.res = {
-      body: JSON.stringify({ value: returnValue, pagination: { hasNextPage } }),
-    };
+      const returnValue: GetClustersDTO[] = clusters.map((cluster) => {
+        return {
+          // eslint-disable-next-line no-underscore-dangle
+          id: cluster._id,
+          displayName: cluster.name,
+        };
+      });
+
+      context.res = {
+        body: JSON.stringify(returnValue),
+      };
+    }
   } catch (e) {
     context.res = {
       body: JSON.stringify(e),

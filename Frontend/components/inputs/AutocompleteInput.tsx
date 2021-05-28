@@ -8,6 +8,7 @@ import React, {
   useState,
   useCallback,
 } from "react";
+import * as lodash from "lodash";
 import { EventRegister } from "react-native-event-listeners";
 import { ActivityIndicator, Text, View, ViewStyle } from "react-native";
 import Autocomplete, {
@@ -69,68 +70,42 @@ const AutocompleteInput: FC<Props> = ({
       entities
     );
 
-    const filteredEntities = useMemo(
-      () =>
-        entities.filter((entity) => {
-          const lowerCaseDisplayName = entity.displayName.toLowerCase();
-          const lowerCaseQuery = query.toLowerCase();
+    const filteredEntities = useMemo(() => {
+      const entitiesMatchingQuery = entities.filter((entity) => {
+        const lowerCaseDisplayName = entity.displayName.toLowerCase();
+        const lowerCaseQuery = query.toLowerCase();
 
-          return lowerCaseDisplayName.includes(lowerCaseQuery);
-        }),
-      [entities, query]
-    );
+        return lowerCaseDisplayName.includes(lowerCaseQuery);
+      });
+
+      // Make sure the list never contains more than five entries
+      return lodash.take(entitiesMatchingQuery, 5);
+    }, [entities, query]);
 
     // ======================= Update of entries ==================================
 
     const accessToken = useContext(AccessTokenContext);
 
-    const updateEntities = useCallback(
-      (searchString?: string) => {
-        setLoading(true);
+    const updateEntities = useCallback(() => {
+      setLoading(true);
 
-        axios
-          .get(endpoint, {
-            params: { searchString },
-            ...axiosUtils.getSharedAxiosConfig(accessToken),
-          })
-          .then((entitiesResult) => {
-            // TODO TODO TODO: Fix this once you implement pagination for all endpoints returning mor than one value
-            const fetchedEntities: SelectableEntity[] =
-              entitiesResult.data.value || entitiesResult.data;
-            setEntities(fetchedEntities);
-          })
-          .finally(() => {
-            setLoading(false);
+      axios
+        .get(endpoint, {
+          ...axiosUtils.getSharedAxiosConfig(accessToken),
+        })
+        .then((entitiesResult) => {
+          // TODO TODO TODO: Fix this once you implement pagination for all endpoints returning mor than one value
+          const fetchedEntities: SelectableEntity[] =
+            entitiesResult.data.value || entitiesResult.data;
+          // There is no need to throw away the old data
+          setEntities((previousEntities) => {
+            return [...previousEntities, ...fetchedEntities];
           });
-      },
-      [endpoint, accessToken]
-    );
-
-    const [queryStringsTried, setQueryStringsTried] = useState<string[]>([]);
-
-    // Without the useCallback we define a new debounced function pr
-    // render and the debounce does not have the desired effect as it
-    // is then called once pr render
-    const requeryEntities = useCallback(
-      debounce((queryString) => {
-        setLoading(true);
-        updateEntities(queryString);
-      }, 600),
-      [updateEntities]
-    );
-
-    const handleTextChange = (newValue: string) => {
-      setQuery(newValue);
-
-      if (isEmpty(filteredEntities) && !queryStringsTried.includes(newValue)) {
-        requeryEntities(newValue);
-
-        setQueryStringsTried((previousValue) => [...previousValue, newValue]);
-      }
-    };
-
-    // Adding queryStringsTried here is not an issue, because when we update it, we also exclude the function from
-    // being called again
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }, [endpoint, accessToken]);
 
     useEffect(() => {
       // Initialize
@@ -175,7 +150,7 @@ const AutocompleteInput: FC<Props> = ({
           containerStyle={containerStyle}
           data={filteredEntities}
           value={query}
-          onChangeText={handleTextChange}
+          onChangeText={setQuery}
           onFocus={() => setHideSuggestionList(false)}
           onBlur={(event) => {
             if (handleBlur) {
