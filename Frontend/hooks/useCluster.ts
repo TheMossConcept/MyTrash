@@ -8,7 +8,7 @@ import { AccessTokenContext } from "../navigation/TabNavigator";
  * unnecessary repeat queries. It is not an issue at the moment, however, it
  * can be once the app grows. When that happens, consider caching!
  */
-const useClusters = (queryParams?: Object) => {
+const useClusters = (queryParams?: Object, page?: number) => {
   const accessToken = useContext(AccessTokenContext);
   const [clusters, setClusters] = useState<Cluster[]>([]);
 
@@ -16,7 +16,7 @@ const useClusters = (queryParams?: Object) => {
     if (accessToken) {
       axios
         .get("GetClusters", {
-          params: queryParams,
+          params: { ...queryParams, page },
           ...axiosUtils.getSharedAxiosConfig(accessToken),
         })
         .then((clustersResult) => {
