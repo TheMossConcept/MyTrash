@@ -2,9 +2,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
-import axiosUtils from "../utils/axios";
 
-import useAccessToken from "../hooks/useAccessToken";
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
   PlasticCollection,
@@ -15,6 +13,7 @@ import DeliverPlasticCollection from "../components/collection/DeliverPlasticCol
 import Container from "../components/shared/Container";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
 import InformationText from "../components/styled/InformationText";
+import useAxiosConfig from "../hooks/useAxiosConfig";
 
 type Props = StackScreenProps<TabsParamList, "Logistics">;
 
@@ -23,19 +22,19 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
   const [plasticCollections, setPlasticCollections] = useState<
     PlasticCollection[]
   >([]);
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
 
   const fetchPlasticCollections = useCallback(() => {
     axios
       .get("/GetPlasticCollections", {
         params: { logisticsPartnerId: userId },
-        ...axiosUtils.getSharedAxiosConfig(accessToken),
+        ...sharedAxiosConfig,
       })
       .then((axiosResult) => {
         const { data } = axiosResult;
         setPlasticCollections(data);
       });
-  }, [userId, accessToken]);
+  }, [sharedAxiosConfig, userId]);
 
   // Do an initial plastic collections fetch
   useEffect(() => {

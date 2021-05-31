@@ -1,21 +1,13 @@
 import axios from "axios";
 import { ErrorMessage, useFormikContext } from "formik";
-import React, {
-  FC,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-} from "react";
+import React, { FC, useEffect, useMemo, useState, useCallback } from "react";
 import { EventRegister } from "react-native-event-listeners";
 import { ActivityIndicator, Text, View, ViewStyle } from "react-native";
 import Autocomplete, {
   AutocompleteProps,
 } from "react-native-autocomplete-input";
 import { TextInput } from "react-native-paper";
-import { AccessTokenContext } from "../../navigation/TabNavigator";
-import axiosUtils from "../../utils/axios";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 export type SelectableEntity = {
   id: string;
@@ -102,14 +94,14 @@ const AutocompleteInput: FC<Props> = ({
 
     // ============================================================================
 
-    const accessToken = useContext(AccessTokenContext);
+    const sharedAxiosConfig = useAxiosConfig();
 
     const updateEntities = useCallback(() => {
       setLoading(true);
 
       axios
         .get(endpoint, {
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
+          ...sharedAxiosConfig,
         })
         .then((entitiesResult) => {
           const fetchedEntities: SelectableEntity[] = entitiesResult.data;
@@ -118,7 +110,7 @@ const AutocompleteInput: FC<Props> = ({
         .finally(() => {
           setLoading(false);
         });
-    }, [endpoint, accessToken]);
+    }, [endpoint, sharedAxiosConfig]);
 
     useEffect(() => {
       // Initialize

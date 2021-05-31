@@ -2,13 +2,12 @@ import axios from "axios";
 import * as yup from "yup";
 import React, { FC, useContext } from "react";
 import { View } from "react-native";
-import axiosUtils from "../../utils/axios";
-import useAccessToken from "../../hooks/useAccessToken";
 import FormContainer from "../shared/FormContainer";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import AutocompleteInput from "../inputs/AutocompleteInput";
 import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 type Props = { batchCreatorId: string; creationCallback: () => void };
 
@@ -30,7 +29,7 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
   const initialValues: CreateBatchFormData = {};
 
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
   const createBatch = (values: CreateBatchFormData, resetForm: () => void) => {
     axios
       .post(
@@ -43,7 +42,7 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
           creationDate: new Date().toISOString(),
         },
         {
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
+          ...sharedAxiosConfig,
         }
       )
       .then(() => {

@@ -3,12 +3,10 @@ import axios from "axios";
 import React, { FC, useState, useEffect, useCallback, useContext } from "react";
 import { Button, View } from "react-native";
 import sortCollectionsByStatus from "../utils/plasticCollections";
-import axiosUtils from "../utils/axios";
 import PlasticCollectionsDetails, {
   PlasticCollection,
 } from "../components/collection/PlasticCollectionsDetails";
 
-import useAccessToken from "../hooks/useAccessToken";
 import { TabsParamList } from "../typings/types";
 import CreateBatch from "../components/batch/CreateBatch";
 import BatchDetails, { Batch } from "../components/batch/BatchDetails";
@@ -17,6 +15,7 @@ import RegisterPlasticCollectionReciept from "../components/collection/RegisterP
 import Container from "../components/shared/Container";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
 import { GlobalSnackbarContext } from "../navigation/TabNavigator";
+import useAxiosConfig from "../hooks/useAxiosConfig";
 
 type Props = StackScreenProps<TabsParamList, "Recipient">;
 
@@ -27,19 +26,19 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   >([]);
   const [batches, setBatches] = useState<Batch[]>([]);
 
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
 
   const fetchPlasticCollections = useCallback(() => {
     axios
       .get("/GetPlasticCollections", {
         params: { recipientPartnerId: userId },
-        ...axiosUtils.getSharedAxiosConfig(accessToken),
+        ...sharedAxiosConfig,
       })
       .then((axiosResult) => {
         const { data } = axiosResult;
         setPlasticCollections(data);
       });
-  }, [accessToken, userId]);
+  }, [sharedAxiosConfig, userId]);
 
   useEffect(() => {
     fetchPlasticCollections();
@@ -49,13 +48,13 @@ const RecipientScreen: FC<Props> = ({ route }) => {
     axios
       .get("/GetBatches", {
         params: { recipientPartnerId: userId },
-        ...axiosUtils.getSharedAxiosConfig(accessToken),
+        ...sharedAxiosConfig,
       })
       .then((axiosResult) => {
         const { data } = axiosResult;
         setBatches(data);
       });
-  }, [accessToken, userId]);
+  }, [sharedAxiosConfig, userId]);
 
   // Initial fetch
   useEffect(() => {
@@ -110,14 +109,14 @@ const RegisterBatchSent: FC<RegisterBatchSentProps> = ({
 }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
 
   const markBatchAsSent = () => {
     axios
       .post(
         "/RegisterBatchSent",
         {},
-        { ...axiosUtils.getSharedAxiosConfig(accessToken), params: { batchId } }
+        { ...sharedAxiosConfig, params: { batchId } }
       )
       .then(() => {
         showGlobalSnackbar("Afsendelse registreret");

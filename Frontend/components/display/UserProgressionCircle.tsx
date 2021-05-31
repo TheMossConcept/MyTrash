@@ -2,10 +2,9 @@ import axios from "axios";
 import React, { FC, useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import ProgressWheel from "react-native-progress-wheel";
-import axiosUtils from "../../utils/axios";
-import useAccessToken from "../../hooks/useAccessToken";
 import Subheader from "../styled/Subheader";
 import InformationText from "../styled/InformationText";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 type Props = { userId: string; clusterId: string };
 
@@ -14,7 +13,7 @@ const UserProgressionCircle: FC<Props> = ({ userId, clusterId }) => {
   const [collectionProgress, setCollectionProgress] = useState<
     number | undefined
   >();
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
 
   useEffect(() => {
     setIsLoading(true);
@@ -22,7 +21,7 @@ const UserProgressionCircle: FC<Props> = ({ userId, clusterId }) => {
     axios
       .get("/GetUserProgressData", {
         params: { userId, clusterId },
-        ...axiosUtils.getSharedAxiosConfig(accessToken),
+        ...sharedAxiosConfig,
       })
       .then((axiosResult) => {
         const { data } = axiosResult;
@@ -38,7 +37,7 @@ const UserProgressionCircle: FC<Props> = ({ userId, clusterId }) => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [userId, clusterId, accessToken]);
+  }, [userId, clusterId, sharedAxiosConfig]);
 
   return isLoading ? (
     <ActivityIndicator />

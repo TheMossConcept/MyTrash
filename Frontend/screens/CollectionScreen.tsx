@@ -3,10 +3,8 @@ import axios from "axios";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { DateTime } from "luxon";
-import axiosUtils from "../utils/axios";
 import CollectionForm from "../components/forms/OrderCollectionForm";
 import ClusterList from "../components/shared/ClusterList";
-import useAccessToken from "../hooks/useAccessToken";
 import useClusters from "../hooks/useCluster";
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
@@ -15,6 +13,7 @@ import PlasticCollectionsDetails, {
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import Container from "../components/shared/Container";
 import UserProgressionCircle from "../components/display/UserProgressionCircle";
+import useAxiosConfig from "../hooks/useAxiosConfig";
 
 type Props = StackScreenProps<TabsParamList, "Collection">;
 
@@ -27,14 +26,14 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     { [clusterId: string]: PlasticCollection[] } | undefined
   >(undefined);
 
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
 
   const fetchPlasticCollections = useCallback(
     (clusterId: string) => {
       axios
         .get("/GetPlasticCollections", {
           params: { collectorId: userId, clusterId },
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
+          ...sharedAxiosConfig,
         })
         .then((axiosResult) => {
           const { data } = axiosResult;
@@ -44,7 +43,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
           }));
         });
     },
-    [accessToken, userId]
+    [sharedAxiosConfig, userId]
   );
 
   // Initial plasticCollections fetch

@@ -1,13 +1,12 @@
 import axios from "axios";
 import * as yup from "yup";
 import React, { FC, useContext } from "react";
-import axiosUtils from "../../utils/axios";
-import useAccessToken from "../../hooks/useAccessToken";
 import { PlasticCollection } from "./PlasticCollectionsDetails";
 import FormContainer from "../shared/FormContainer";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 type Props = {
   plasticCollection: PlasticCollection;
@@ -28,7 +27,7 @@ const RegisterPlasticCollectionReciept: FC<Props> = ({
 }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
   const registerReciept = (
     values: RegisterWeightFormData,
     resetForm: () => void
@@ -39,7 +38,7 @@ const RegisterPlasticCollectionReciept: FC<Props> = ({
         { ...values },
         {
           params: { collectionId: plasticCollection.id },
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
+          ...sharedAxiosConfig,
         }
       )
       .then(() => {

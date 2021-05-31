@@ -1,29 +1,27 @@
 import axios from "axios";
-import { useContext, useState, useEffect, useCallback } from "react";
-import axiosUtils from "../utils/axios";
+import { useState, useEffect, useCallback } from "react";
 import { Cluster } from "../components/shared/ClusterList";
-import { AccessTokenContext } from "../navigation/TabNavigator";
+import useAxiosConfig from "./useAxiosConfig";
 
 /* NB! Be aware that even though this pattern is convinient, it will lead to
  * unnecessary repeat queries. It is not an issue at the moment, however, it
  * can be once the app grows. When that happens, consider caching!
  */
 const useClusters = (queryParams?: Object) => {
-  const accessToken = useContext(AccessTokenContext);
+  const sharedAxiosConfig = useAxiosConfig();
   const [clusters, setClusters] = useState<Cluster[]>([]);
 
   const fetchClusters = useCallback(() => {
-    if (accessToken) {
-      axios
-        .get("GetClusters", {
-          params: queryParams,
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        })
-        .then((clustersResult) => {
-          setClusters(clustersResult.data);
-        });
-    }
-  }, [accessToken]);
+    axios
+      .get("GetClusters", {
+        params: queryParams,
+        ...sharedAxiosConfig,
+      })
+      .then((clustersResult) => {
+        setClusters(clustersResult.data);
+      });
+    // TODO: Fix this by storing in local state and checking for object equality before updating value!
+  }, [sharedAxiosConfig]);
 
   // Fetch whenever the function updates!
   useEffect(() => {

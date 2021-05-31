@@ -2,14 +2,13 @@ import axios from "axios";
 import React, { FC, useContext } from "react";
 // TODO: Fix it so that we use buttons from react-native-paper instead
 import * as yup from "yup";
-import axiosUtils from "../../utils/axios";
-import useAccessToken from "../../hooks/useAccessToken";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import BooleanField from "../inputs/BooleanField";
 import SubmitButton from "../inputs/SubmitButton";
 import NumberField from "../inputs/NumberField";
 import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 type CollectionFormData = {
   numberOfUnits?: number;
@@ -40,7 +39,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     comment: "",
   };
 
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
   const createCollectionRequest = (
     values: CollectionFormData,
     reset: () => void
@@ -49,7 +48,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
       .post(
         "/CreatePlasticCollection",
         { clusterId, requesterId: userId, ...values },
-        { ...axiosUtils.getSharedAxiosConfig(accessToken) }
+        { ...sharedAxiosConfig }
       )
       .then(() => {
         showGlobalSnackbar("Afhentning bestilt");
