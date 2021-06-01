@@ -1,11 +1,13 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
+import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import {
   AccessTokenContext,
   GlobalSnackbarContext,
 } from "../../navigation/TabNavigator";
 import axiosUtils from "../../utils/axios";
+import CategoryHeadline from "../styled/Subheader";
 import ClusterForm, { ClusterFormData } from "./ClusterForm";
 
 type UpdateFormProps = {

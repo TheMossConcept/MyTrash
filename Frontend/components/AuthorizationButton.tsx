@@ -72,7 +72,7 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
   return (
     <View>
       <Text>{ENV}</Text>
-      <Button title="Login" onPress={onPress} />
+      <Button title="LOGIN" onPress={onPress} />
     </View>
   );
 }

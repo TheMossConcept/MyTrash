@@ -23,20 +23,22 @@ const AdministrationScreen: FC<Props> = () => {
 
   return (
     <Container>
-      <CategoryHeadline>Inviter partner</CategoryHeadline>
+      <CategoryHeadline>INVITER PARTNER</CategoryHeadline>
       <CollaboratorForm
         submitTitle="Inviter partner"
         successCallback={handlePartnerInvited}
       />
-      <CategoryHeadline>Opret cluster</CategoryHeadline>
+      <CategoryHeadline>OPRET CLUSTER</CategoryHeadline>
       <CreateCluster successCallback={refetchClusters} />
       <ClusterList clusters={clusters}>
         {({ cluster }) => (
           <Container>
+            <CategoryHeadline>REDIGER CLUSTER</CategoryHeadline>
             <UpdateCluster
               clusterId={cluster.id}
               successCallback={refetchClusters}
             />
+            <CategoryHeadline>TILFØJ INDSAMLER</CategoryHeadline>
             <CollectorForm
               clusterId={cluster.id}
               submitTitle="Tilføj indsamler"

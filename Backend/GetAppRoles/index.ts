@@ -12,9 +12,9 @@ const httpTrigger: AzureFunction = async function (
     // move display name to the role definitions
     const returnValue = allUserRoles.map((userRole) => {
       if (userRole === "Administrator")
-        return { id: userRole, displayName: "Administrator" };
+        return { id: userRole, displayName: "Adm. - HOUE" };
       if (userRole === "CollectionAdministrator")
-        return { id: userRole, displayName: "Indsamlingsadministrator" };
+        return { id: userRole, displayName: "Adm. - Partner" };
       if (userRole === "Collector")
         return { id: userRole, displayName: "Indsamler" };
       if (userRole === "LogisticsPartner")
