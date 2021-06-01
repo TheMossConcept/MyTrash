@@ -31,8 +31,8 @@ export type Props = {
 
 const validationSchema = yup.object().shape({
   name: yup.string().required("Navn skal angives"),
-  c5Reference: yup.string().required("C5 reference skal angives"),
-  necessaryPlastic: yup.number().required("Plastbehov skal angives"),
+  c5Reference: yup.string(),
+  necessaryPlastic: yup.number(),
   usefulPlasticFactor: yup.number().required("Beregningsfaktor skal angives"),
   collectionAdministratorId: yup
     .string()
