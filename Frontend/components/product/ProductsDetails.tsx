@@ -43,7 +43,7 @@ const ProductsDetails: FC<Props> = ({ batchId }) => {
           <View key={product.id} style={styles.productContainer}>
             <View style={styles.productNumber}>
               <InformationText>
-                Varenummer ${product.productNumber}
+                Varenummer {product.productNumber}
               </InformationText>
             </View>
             <View style={styles.productStatus}>

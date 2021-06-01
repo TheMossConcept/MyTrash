@@ -5,9 +5,9 @@ import { StyleSheet, View } from "react-native";
 import axiosUtils from "../../utils/axios";
 import useAccessToken from "../../hooks/useAccessToken";
 import FormContainer from "../shared/FormContainer";
-import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
+import StringField from "../inputs/StringField";
 
 type Props = {
   clusterId: string;
@@ -20,7 +20,7 @@ type CreateProductFormData = {
 };
 
 const validationSchema = yup.object().shape({
-  productNumber: yup.number().required("Varenummer er påkrævet"),
+  productNumber: yup.string().required("Varenummer er påkrævet"),
 });
 
 const CreateProduct: FC<Props> = ({
@@ -62,7 +62,7 @@ const CreateProduct: FC<Props> = ({
         }
         validationSchema={validationSchema}
       >
-        <NumberField formKey="productNumber" label="Varenummer" />
+        <StringField formKey="productNumber" label="Varenummer" />
         <SubmitButton title="Opret produkt" />
       </FormContainer>
     </View>

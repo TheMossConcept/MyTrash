@@ -1,7 +1,9 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
+import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
 import AuthorizationButton from "../components/AuthorizationButton";
+import useAzureAdFlows from "../hooks/useAzureAdFlows";
 import { RootStackParamList } from "../typings/types";
 
 const styles = StyleSheet.create({
@@ -23,9 +25,15 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
       idToken: tokenResponse.idToken,
     });
   };
+
+  const scopes = [AZURE_AD_CLIENT_ID];
+  const resetPassword = useAzureAdFlows("B2C_1_PasswordReset", scopes);
+  const onResetPasswordPress = () => resetPassword();
+
   return (
     <View style={styles.container}>
       <AuthorizationButton handleAuthorization={handleAuthorizationSuccess} />
+      <Button title="NULSTIL KODEORD" onPress={onResetPasswordPress} />
     </View>
   );
 };
