@@ -7,14 +7,14 @@ import useAxiosConfig from "./useAxiosConfig";
  * unnecessary repeat queries. It is not an issue at the moment, however, it
  * can be once the app grows. When that happens, consider caching!
  */
-const useClusters = (queryParams?: Object) => {
+const useClusters = (queryParams?: Object, page?: number) => {
   const sharedAxiosConfig = useAxiosConfig();
   const [clusters, setClusters] = useState<Cluster[]>([]);
 
   const fetchClusters = useCallback(() => {
     axios
       .get("GetClusters", {
-        params: queryParams,
+        params: { ...queryParams, page },
         ...sharedAxiosConfig,
       })
       .then((clustersResult) => {

@@ -113,7 +113,7 @@ const CollectorForm: FC<Props> = ({
         <StringField label="By" formKey="city" />
         <NumberField label="Postnummer" formKey="zipCode" />
         {children}
-        <SubmitButton title={submitTitle} />
+        {/* <SubmitButton title={submitTitle} /> */}
       </View>
     </FormContainer>
   );

@@ -11,7 +11,12 @@ const httpTrigger: AzureFunction = async function (
       logisticsPartnerId,
       productionPartnerId,
       collectorId,
+      searchString,
+      page,
     } = req.query;
+
+    // TODO: Validate this once we start adding end-to-end typing and input validation!
+    const pageNumber = Number.parseInt(page, 10) || 0;
 
     const queryIsLimitedToUser =
       collectionAdministratorId ||
@@ -19,51 +24,85 @@ const httpTrigger: AzureFunction = async function (
       productionPartnerId ||
       collectorId;
 
-    const clusters = await databaseAPI.find<ClusterEntity>(
-      "cluster",
-      queryIsLimitedToUser
-        ? {
-            $or: [
-              {
-                collectionAdministratorId: {
-                  $exists: true,
-                  $eq: collectionAdministratorId,
-                },
+    const limitUserQuery = queryIsLimitedToUser
+      ? {
+          $or: [
+            {
+              collectionAdministratorId: {
+                $exists: true,
+                $eq: collectionAdministratorId,
               },
-              // { logisticsPartnerId },
-              {
-                logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId },
+            },
+            {
+              logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId },
+            },
+            {
+              productionPartnerId: {
+                $exists: true,
+                $eq: productionPartnerId,
               },
-              {
-                productionPartnerId: {
-                  $exists: true,
-                  $eq: productionPartnerId,
-                },
-              },
-              { collectors: { $exists: true, $eq: collectorId } },
-            ],
-          }
-        : undefined
-    );
-    // TODO: The frontend relies on this particular return value format. Consider
-    // whether that is too hard of a coupling and we need a gateway instead, or
-    // if it is acceptable for now, given the scope of the project
-    const returnValue: GetClustersDTO[] = clusters.map((cluster) => {
-      return {
-        // eslint-disable-next-line no-underscore-dangle
-        id: cluster._id,
-        displayName: cluster.name,
-      };
-    });
+            },
+            { collectors: { $exists: true, $eq: collectorId } },
+          ],
+        }
+      : undefined;
 
-    context.res = {
-      body: JSON.stringify(returnValue),
-    };
+    // TODO: Consider whether it is a good idea to have two different return values
+    // depending on the request issued!
+    if (page) {
+      const {
+        result: clusters,
+        hasNextPage,
+      } = await databaseAPI.findPaginated<ClusterEntity>(
+        "cluster",
+        pageNumber,
+        limitUserQuery
+      );
+      // TODO: The frontend relies on this particular return value format. Consider
+      // whether that is too hard of a coupling and we need a gateway instead, or
+      // if it is acceptable for now, given the scope of the project
+      const returnValue: GetClustersDTO[] = clusters.map((cluster) => {
+        return {
+          // eslint-disable-next-line no-underscore-dangle
+          id: cluster._id,
+          displayName: cluster.name,
+        };
+      });
+
+      context.res = {
+        body: JSON.stringify({
+          value: returnValue,
+          pagination: { hasNextPage },
+        } as ReturnValue),
+      };
+    } else {
+      const clusters = await databaseAPI.find<ClusterEntity>(
+        "cluster",
+        limitUserQuery
+      );
+
+      const returnValue: GetClustersDTO[] = clusters.map((cluster) => {
+        return {
+          // eslint-disable-next-line no-underscore-dangle
+          id: cluster._id,
+          displayName: cluster.name,
+        };
+      });
+
+      context.res = {
+        body: JSON.stringify(returnValue),
+      };
+    }
   } catch (e) {
     context.res = {
       body: JSON.stringify(e),
     };
   }
+};
+
+type ReturnValue = {
+  value: GetClustersDTO[];
+  pagination: { hasNextPage: boolean };
 };
 
 type GetClustersDTO = {
