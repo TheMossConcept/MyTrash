@@ -57,7 +57,9 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
           discoveryDocument
         )
           .then((tokenResponse) => {
+            // NB! This is where we can pass along a refresh token funciton!
             handleAuthorization(tokenResponse);
+            // TODO: Add global refresh token event handler here
           })
           .catch((error) => {
             // eslint-disable-next-line no-console
