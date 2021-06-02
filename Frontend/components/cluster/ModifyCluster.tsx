@@ -1,8 +1,7 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
-import { View } from "react-native";
+import { Button } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
-import CategoryHeadline from "../styled/Subheader";
 import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import ClusterForm, { ClusterFormData } from "./ClusterForm";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
@@ -38,7 +37,6 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
     axios
       .put("/UpdateCluster", values, {
         params: {
-          code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
           clusterId,
         },
         ...sharedAxiosConfig,
@@ -82,19 +80,12 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
   const sharedAxiosConfig = useAxiosConfig();
 
   const createCluster = (values: ClusterFormData, reset: () => void) => {
-    axios
-      .post("/CreateCluster", values, {
-        params: {
-          code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
-        },
-        ...sharedAxiosConfig,
-      })
-      .then(() => {
-        showGlobalSnackbar("Clusteret blev oprettet");
-        reset();
+    axios.post("/CreateCluster", values, sharedAxiosConfig).then(() => {
+      showGlobalSnackbar("Clusteret blev oprettet");
+      reset();
 
-        successCallback();
-      });
+      successCallback();
+    });
   };
 
   return (
@@ -104,4 +95,26 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
       submitTitle="Opret cluster"
     />
   );
+};
+
+type CloseClusterProps = {
+  title?: string;
+  successCallback?: () => void;
+};
+
+export const CloseCluster: FC<CloseClusterProps> = ({
+  successCallback,
+  title,
+}) => {
+  const sharedAxiosConfig = useAxiosConfig();
+
+  const closeCluster = () => {
+    axios.post("/CloseCluster", {}, sharedAxiosConfig).then(() => {
+      if (successCallback) {
+        successCallback();
+      }
+    });
+  };
+
+  return <Button onPress={closeCluster} title={title || "Luk cluster"} />;
 };

@@ -154,7 +154,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
           )}
           {userInfo.isCollectionAdministrator && (
             <Tab.Screen
-              name="CollectionAdministration"
+              name="Indsamlingsadministration"
               component={CollectionAdministrationScreen}
               initialParams={{ userId: userInfo.userId }}
               options={{
@@ -164,7 +164,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
           )}
           {userInfo.isCollector && (
             <Tab.Screen
-              name="Collection"
+              name="Indsamling"
               component={CollectionScreen}
               initialParams={{ userId: userInfo.userId }}
               options={{
@@ -174,7 +174,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
           )}
           {userInfo.isLogisticsPartner && (
             <Tab.Screen
-              name="Logistics"
+              name="Logistik"
               component={LogisticsScreen}
               initialParams={{ userId: userInfo.userId }}
               options={{
@@ -184,7 +184,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
           )}
           {userInfo.isRecipientPartner && (
             <Tab.Screen
-              name="Recipient"
+              name="Modtagelse"
               component={RecipientScreen}
               initialParams={{ userId: userInfo.userId }}
               options={{
@@ -194,7 +194,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
           )}
           {userInfo.isProductionPartner && (
             <Tab.Screen
-              name="Production"
+              name="Produktion"
               component={ProductionScreen}
               initialParams={{ userId: userInfo.userId }}
               options={{
