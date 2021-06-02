@@ -2,10 +2,9 @@ import axios from "axios";
 import React, { FC, useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { Divider } from "react-native-paper";
-import axiosUtils from "../../utils/axios";
 import Subheader from "../styled/Subheader";
-import useAccessToken from "../../hooks/useAccessToken";
 import InformationText from "../styled/InformationText";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 type Props = {
   batchId: string;
@@ -18,20 +17,20 @@ export type Product = {
 };
 
 const ProductsDetails: FC<Props> = ({ batchId }) => {
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
 
   const [products, setProducts] = useState<Product[]>([]);
   useEffect(() => {
     axios
       .get("GetProducts/", {
-        ...axiosUtils.getSharedAxiosConfig(accessToken),
+        ...sharedAxiosConfig,
         params: { batchId },
       })
       .then((productsResponse) => {
         const productsFromResponse = productsResponse.data;
         setProducts(productsFromResponse);
       });
-  }, [accessToken, batchId]);
+  }, [batchId, sharedAxiosConfig]);
 
   return (
     <View style={styles.container}>
@@ -68,13 +67,13 @@ type MarkProductAsSentButtonProps = {
 const MarkProductAsSentButton: FC<MarkProductAsSentButtonProps> = ({
   productId,
 }) => {
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
 
   const markProductAsSent = () => {
     axios.post(
       "/RegisterProductSent",
       {},
-      { ...axiosUtils.getSharedAxiosConfig(accessToken), params: { productId } }
+      { ...sharedAxiosConfig, params: { productId } }
     );
   };
 

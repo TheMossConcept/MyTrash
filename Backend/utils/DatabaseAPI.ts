@@ -8,12 +8,17 @@ const getMongoClient = async () => {
   if (!globalMongoClientInstace) {
     globalMongoClientInstace = await mongodb.MongoClient.connect(
       // TODO: Move to env!
-      // \
-      "mongodb://cosmos-houe-mytrash-serverless:gMCgVFsAMYZhJ7Jonq66mCgmv4lYM78LDVzNsa4XhTxyWxJS135MCox9O1d7O9gey5ILDq8XIBLxSMI5TNqPaQ==@cosmos-houe-mytrash-serverless.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@cosmos-houe-mytrash-serverless@"
+      "mongodb://cosmos-houe-mytrash-serverless:gMCgVFsAMYZhJ7Jonq66mCgmv4lYM78LDVzNsa4XhTxyWxJS135MCox9O1d7O9gey5ILDq8XIBLxSMI5TNqPaQ==@cosmos-houe-mytrash-serverless.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@cosmos-houe-mytrash-serverless@",
+      { useUnifiedTopology: true }
     );
   }
 
   return globalMongoClientInstace;
+};
+
+type PaginationResult<T> = {
+  result: Array<T & DatabaseEntity>;
+  hasNextPage: boolean;
 };
 
 const mongoAPI = {
@@ -42,12 +47,12 @@ const mongoAPI = {
   async findById<T extends Entities>(
     entityName: T["entityName"],
     id: string
-  ): Promise<T> {
+  ): Promise<T & DatabaseEntity> {
     const client = await getMongoClient();
     const result = await client
       .db(DATABASE_NAME)
       .collection(entityName)
-      .findOne<T>(new mongodb.ObjectId(id));
+      .findOne<T & DatabaseEntity>(new mongodb.ObjectId(id));
 
     return result;
   },
@@ -58,7 +63,7 @@ const mongoAPI = {
   async find<T extends Entities>(
     entityName: T["entityName"],
     query?: mongodb.FilterQuery<T>
-  ): Promise<T[]> {
+  ): Promise<(T & DatabaseEntity)[]> {
     const client = await getMongoClient();
     const result = await client
       .db(DATABASE_NAME)
@@ -69,19 +74,48 @@ const mongoAPI = {
 
     return result;
   },
-  async findOne<T extends Entities>(
+
+  // TODO: Implement cursor pagination at some point as well!
+  async findPaginated<T extends Entities>(
     entityName: T["entityName"],
-    query?: mongodb.FilterQuery<T>
-  ): Promise<T> {
+    // NB! Starts a 0
+    page: number,
+    query?: mongodb.FilterQuery<T>,
+    limit: number = 5
+  ): Promise<PaginationResult<T>> {
+    const skipEntities = page * limit;
+
     const client = await getMongoClient();
     const result = await client
       .db(DATABASE_NAME)
       .collection(entityName)
-      .findOne<T>(query);
+      // TODO: Add the type here!
+      .find(query, { sort: { _id: 1 }, skip: skipEntities, limit })
+      .toArray();
+
+    // NB! This is not entirely true. If the last page has
+    // exactly 5 entries, the next page might be empty, however,
+    // we cannot know from the information available. This will
+    // prevent next page queries in all cases where the number of
+    // entries in the current page is less than 5
+    const hasNextPage = !(result.length < limit);
+    return { result, hasNextPage };
+  },
+  async findOne<T extends Entities>(
+    entityName: T["entityName"],
+    query?: mongodb.FilterQuery<T>
+  ): Promise<T & DatabaseEntity> {
+    const client = await getMongoClient();
+    const result = await client
+      .db(DATABASE_NAME)
+      .collection(entityName)
+      .findOne<T & DatabaseEntity>(query);
 
     return result;
   },
 };
+
+type DatabaseEntity = { _id: string };
 
 // TODO: Make these two mutually exclusive so you cannot mix properties from one in the other
 type Entities = ClusterEntity | ProductEntity | CollectionEntity | BatchEntity;

@@ -6,7 +6,10 @@ import {
   DiscoveryDocument,
   exchangeCodeAsync,
   makeRedirectUri,
+  refreshAsync,
+  TokenResponse,
 } from "expo-auth-session";
+
 import { Button, Text, View } from "react-native";
 import {
   AZURE_AD_CLIENT_ID,
@@ -18,7 +21,10 @@ import useAzureAdFlows from "../hooks/useAzureAdFlows";
 WebBrowser.maybeCompleteAuthSession();
 
 type Props = {
-  handleAuthorization: (tokenResponse: any) => void;
+  handleAuthorization: (
+    tokenResponse: TokenResponse,
+    refreshTokenIfNecessary: () => Promise<TokenResponse> | undefined
+  ) => void;
 };
 
 export default function AuthorizationButton({ handleAuthorization }: Props) {
@@ -57,7 +63,22 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
           discoveryDocument
         )
           .then((tokenResponse) => {
-            handleAuthorization(tokenResponse);
+            const refreshTokenIfNecessary = () => {
+              if (tokenResponse.shouldRefresh()) {
+                return refreshAsync(
+                  {
+                    clientId: AZURE_AD_CLIENT_ID,
+                    scopes,
+                    refreshToken: tokenResponse.refreshToken,
+                  },
+                  discoveryDocument
+                );
+              }
+              return undefined;
+            };
+
+            handleAuthorization(tokenResponse, refreshTokenIfNecessary);
+            // TODO: Add global refresh token event handler here
           })
           .catch((error) => {
             // eslint-disable-next-line no-console

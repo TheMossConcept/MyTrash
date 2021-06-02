@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -5,8 +6,9 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useCallback, useEffect, useState } from "react";
 
 import { Appbar } from "react-native-paper";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
+import { View, Text } from "react-native";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import AdministrationScreen from "../screens/AdministrationScreen";
@@ -26,13 +28,15 @@ const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
 type UserInfo = {
   name: string;
-  roles: string[];
   userId: string;
+  isAdministrator: boolean;
+  isCollectionAdministrator: boolean;
+  isCollector: boolean;
+  isLogisticsPartner: boolean;
+  isRecipientPartner: boolean;
+  isProductionPartner: boolean;
+  userHasNoAccess: boolean;
 };
-
-export const AccessTokenContext = React.createContext<string | undefined>(
-  undefined
-);
 
 export const GlobalSnackbarContext = React.createContext<
   (title: string) => void
@@ -58,16 +62,55 @@ const TabBarIcon: FC<TabBarIconProps> = ({ color }) => {
 type Props = StackScreenProps<RootStackParamList, "Root">;
 
 // TODO: Too much is going on in here! Split it out at some point
-const TabNavigator: FC<Props> = ({ navigation, route }) => {
-  const { accessToken, idToken } = route.params;
+const TabNavigator: FC<Props> = ({ navigation }) => {
+  const [userInfo, setUserInfo] = useState<UserInfo | undefined>();
 
-  // TODO: Extend this to handle refreshing the access token. Consider making it as a separate hook
-  // that handles everything related to access and refresh tokens
-  const [accessTokenState, setAccessToken] = useState<string | undefined>(
-    accessToken
-  );
+  useEffect(() => {
+    const updateUserInfo = async () => {
+      const idToken = await AsyncStorage.getItem("idToken");
+      if (idToken) {
+        const tokenDecoded = jwtDecode(idToken) as any;
+        /* eslint-disable camelcase */
+        const {
+          name,
+          oid,
+          extension_Administrator,
+          extension_CollectionAdministrator,
+          extension_Collector,
+          extension_LogisticsPartner,
+          extension_RecipientPartner,
+          extension_ProductionPartner,
+        } = tokenDecoded;
+
+        const userHasNoAccess =
+          !extension_Administrator &&
+          !extension_CollectionAdministrator &&
+          !extension_Collector &&
+          !extension_LogisticsPartner &&
+          !extension_RecipientPartner &&
+          !extension_ProductionPartner;
+
+        setUserInfo({
+          name,
+          userId: oid,
+          isAdministrator: extension_Administrator,
+          isCollectionAdministrator: extension_CollectionAdministrator,
+          isCollector: extension_Collector,
+          isLogisticsPartner: extension_LogisticsPartner,
+          isRecipientPartner: extension_RecipientPartner,
+          isProductionPartner: extension_ProductionPartner,
+          userHasNoAccess,
+        });
+        /* eslint-enable camelcase */
+      }
+    };
+
+    updateUserInfo();
+  }, []);
+
   const logout = () => {
-    setAccessToken(undefined);
+    AsyncStorage.removeItem("accessToken");
+    AsyncStorage.removeItem("idToken");
     navigation.navigate("Login");
   };
 
@@ -76,33 +119,6 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
   const editProfile = useAzureAdFlows("B2C_1_ProfileEdit", scopes);
   const onEditProfilePress = () => editProfile();
 
-  useEffect(() => {
-    if (accessTokenState) {
-      AsyncStorage.setItem("accessToken", accessTokenState);
-    } else {
-      AsyncStorage.removeItem("accessToken");
-    }
-
-    // TODO: Consider whether we need to clear this as well. For now, I
-    // don't think so as we always get a new id token when logging in, however
-    // potential stale state is always dangerous
-    AsyncStorage.setItem("idToken", idToken);
-  }, [accessTokenState, idToken]);
-
-  const tokenDecoded = jwtDecode(idToken) as any;
-  /* eslint-disable camelcase */
-  const {
-    name,
-    oid,
-    extension_Administrator,
-    extension_CollectionAdministrator,
-    extension_Collector,
-    extension_LogisticsPartner,
-    extension_RecipientPartner,
-    extension_ProductionPartner,
-  } = tokenDecoded;
-
-  const userInfo: UserInfo = { roles: [], name, userId: oid };
   const colorScheme = useColorScheme();
 
   const globalSnackbarState = useSnackbarState();
@@ -116,16 +132,8 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
     [dispatch]
   );
 
-  const userHasNoAccess =
-    !extension_Administrator &&
-    !extension_CollectionAdministrator &&
-    !extension_Collector &&
-    !extension_LogisticsPartner &&
-    !extension_RecipientPartner &&
-    !extension_ProductionPartner;
-
-  return (
-    <AccessTokenContext.Provider value={accessTokenState}>
+  return userInfo ? (
+    <View>
       <Appbar.Header>
         <Appbar.Content
           title={
@@ -142,7 +150,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
           initialRouteName="Administration"
           tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
         >
-          {extension_Administrator && (
+          {userInfo.isAdministrator && (
             <Tab.Screen
               name="Administration"
               component={AdministrationScreen}
@@ -151,7 +159,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
               }}
             />
           )}
-          {extension_CollectionAdministrator && (
+          {userInfo.isCollectionAdministrator && (
             <Tab.Screen
               name="CollectionAdministration"
               component={CollectionAdministrationScreen}
@@ -161,7 +169,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
               }}
             />
           )}
-          {extension_Collector && (
+          {userInfo.isCollector && (
             <Tab.Screen
               name="Collection"
               component={CollectionScreen}
@@ -171,7 +179,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
               }}
             />
           )}
-          {extension_LogisticsPartner && (
+          {userInfo.isLogisticsPartner && (
             <Tab.Screen
               name="Logistics"
               component={LogisticsScreen}
@@ -181,7 +189,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
               }}
             />
           )}
-          {extension_RecipientPartner && (
+          {userInfo.isRecipientPartner && (
             <Tab.Screen
               name="Recipient"
               component={RecipientScreen}
@@ -191,7 +199,7 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
               }}
             />
           )}
-          {extension_ProductionPartner && (
+          {userInfo.isProductionPartner && (
             <Tab.Screen
               name="Production"
               component={ProductionScreen}
@@ -201,15 +209,16 @@ const TabNavigator: FC<Props> = ({ navigation, route }) => {
               }}
             />
           )}
-          {userHasNoAccess && (
+          {userInfo.userHasNoAccess && (
             <Tab.Screen name="NoAccess" component={NoAccess} />
           )}
         </Tab.Navigator>
       </GlobalSnackbarContext.Provider>
       <DismissableSnackbar globalSnackbarState={globalSnackbarState} />
-    </AccessTokenContext.Provider>
+    </View>
+  ) : (
+    <Text>No user info</Text>
   );
 };
-/* eslint-enable camelcase */
 
 export default TabNavigator;

@@ -1,14 +1,13 @@
 import axios from "axios";
-import React, { FC, useContext } from "react";
+import React, { FC } from "react";
 import { View } from "react-native";
 import * as yup from "yup";
-import axiosUtils from "../../utils/axios";
-import { AccessTokenContext } from "../../navigation/TabNavigator";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 export type CollectorFormData = {
   clusterId?: string;
@@ -73,22 +72,20 @@ const CollectorForm: FC<Props> = ({
     clusterId,
   };
 
-  const accessToken = useContext(AccessTokenContext);
+  const sharedAxiosConfig = useAxiosConfig();
   const createUser = (values: CollectorFormData, resetForm: () => void) => {
-    if (accessToken) {
-      axios
-        .post("/orchestrators/CreateCollectorAndAddToCluster", values, {
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        })
-        .then(() => {
-          // setShowSnackbar(true);
-          resetForm();
+    axios
+      .post("/orchestrators/CreateCollectorAndAddToCluster", values, {
+        ...sharedAxiosConfig,
+      })
+      .then(() => {
+        // setShowSnackbar(true);
+        resetForm();
 
-          if (successCallback) {
-            successCallback();
-          }
-        });
-    }
+        if (successCallback) {
+          successCallback();
+        }
+      });
   };
   // TODO: Disable the spreading is forbidden style and spread the view props here!
   return (
@@ -116,7 +113,7 @@ const CollectorForm: FC<Props> = ({
         <StringField label="By" formKey="city" />
         <NumberField label="Postnummer" formKey="zipCode" />
         {children}
-        <SubmitButton title={submitTitle} />
+        {/* <SubmitButton title={submitTitle} /> */}
       </View>
     </FormContainer>
   );

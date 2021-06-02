@@ -1,21 +1,15 @@
 import axios from "axios";
 import { ErrorMessage, useFormikContext } from "formik";
-import React, {
-  FC,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-} from "react";
+import React, { FC, useEffect, useMemo, useState, useCallback } from "react";
+import * as lodash from "lodash";
 import { EventRegister } from "react-native-event-listeners";
 import { ActivityIndicator, Text, View, ViewStyle } from "react-native";
 import Autocomplete, {
   AutocompleteProps,
 } from "react-native-autocomplete-input";
 import { TextInput } from "react-native-paper";
-import { AccessTokenContext } from "../../navigation/TabNavigator";
-import axiosUtils from "../../utils/axios";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
+import useQueryState from "../../hooks/useQueryState";
 
 export type SelectableEntity = {
   id: string;
@@ -44,20 +38,9 @@ const AutocompleteInput: FC<Props> = ({
   formKey: key,
   style,
 }) => {
-  const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState("");
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
-
-  const filteredEntities = useMemo(
-    () =>
-      entities.filter((entity) => {
-        const lowerCaseDisplayName = entity.displayName.toLowerCase();
-        const lowerCaseQuery = query.toLowerCase();
-
-        return lowerCaseDisplayName.includes(lowerCaseQuery);
-      }),
-    [entities, query]
-  );
+  const [loading, setLoading] = useState(false);
+  const [hideSuggestionList, setHideSuggestionList] = useState(true);
 
   const formikProps = useFormikContext<any>();
 
@@ -73,52 +56,45 @@ const AutocompleteInput: FC<Props> = ({
       setFieldValue(key, newValue);
     };
 
-    // ================ UI and selection state consistency ========================
+    const [query, setQuery] = useQueryState(
+      [selectedId, setSelectedId],
+      entities
+    );
 
-    // This useEffect ensures correct query state on selection both when it happens explicitly
-    // in the component and explicitly from the outside
-    useEffect(() => {
-      // TODO: This is going to be a problem, once we introduce pagination!
-      filteredEntities.forEach((entity) => {
-        if (entity.id === selectedId) {
-          setQuery(entity.displayName);
-        }
+    const filteredEntities = useMemo(() => {
+      const entitiesMatchingQuery = entities.filter((entity) => {
+        const lowerCaseDisplayName = entity.displayName.toLowerCase();
+        const lowerCaseQuery = query.toLowerCase();
+
+        return lowerCaseDisplayName.includes(lowerCaseQuery);
       });
-    }, [filteredEntities, selectedId]);
 
-    // This useEffect enables reset from outside this component (query is local to  this component!)
-    useEffect(() => {
-      if (!selectedId) {
-        setQuery("");
-      }
-    }, [selectedId]);
+      // Make sure the list never contains more than five entries
+      return lodash.take(entitiesMatchingQuery, 5);
+    }, [entities, query]);
 
-    // Always reset selection state when changing the query!
-    const setQueryWrapper = (newValue: string) => {
-      // When you re-query, you automatically loose your selection
-      setSelectedId("");
-      setQuery(newValue);
-    };
+    // ======================= Update of entries ==================================
 
-    // ============================================================================
-
-    const accessToken = useContext(AccessTokenContext);
+    const sharedAxiosConfig = useAxiosConfig();
 
     const updateEntities = useCallback(() => {
       setLoading(true);
 
       axios
         .get(endpoint, {
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
+          ...sharedAxiosConfig,
         })
         .then((entitiesResult) => {
-          const fetchedEntities: SelectableEntity[] = entitiesResult.data;
+          // TODO TODO TODO: Fix this once you implement pagination for all endpoints returning mor than one value
+          const fetchedEntities: SelectableEntity[] =
+            entitiesResult.data.value || entitiesResult.data;
+          // There is no need to throw away the old data
           setEntities(fetchedEntities);
         })
         .finally(() => {
           setLoading(false);
         });
-    }, [endpoint, accessToken]);
+    }, [endpoint, sharedAxiosConfig]);
 
     useEffect(() => {
       // Initialize
@@ -148,12 +124,10 @@ const AutocompleteInput: FC<Props> = ({
       return () => {};
     }, [updateEntities, updateEntitiesEventName]);
 
-    const [hideSuggestionList, setHideSuggestionList] = useState(true);
+    // ============================================================================
 
     const handleItemSelection = (item: SelectableEntity) => () => {
       setSelectedId(item.id);
-      setQuery(item.displayName);
-
       setHideSuggestionList(true);
     };
 
@@ -165,15 +139,15 @@ const AutocompleteInput: FC<Props> = ({
           containerStyle={containerStyle}
           data={filteredEntities}
           value={query}
-          onChangeText={setQueryWrapper}
+          onChangeText={setQuery}
           onFocus={() => setHideSuggestionList(false)}
           onBlur={(event) => {
-            // We need to give the other event handler time to do its job before
-            // hiding the suggestion list.
-            // TODO: Do something less brittle that is not
-            // reliant on timing! Then we can also pass handleBlur(key) directly as a callback!
-            setTimeout(() => setHideSuggestionList(true), 250);
             if (handleBlur) {
+              // We need to give the other event handler time to do its job before
+              // hiding the suggestion list.
+              // TODO: Do something less brittle that is not
+              // reliant on timing! Then we can also pass handleBlur(key) directly as a callback!
+              setTimeout(() => setHideSuggestionList(true), 250);
               handleBlur(key)(event);
             }
           }}

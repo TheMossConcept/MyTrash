@@ -3,9 +3,8 @@ import { DateTime } from "luxon";
 import React, { FC, useContext, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
-import axiosUtils from "../../utils/axios";
-import useAccessToken from "../../hooks/useAccessToken";
 import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 type Props = {
   plasticCollectionId: string;
@@ -60,7 +59,7 @@ const SchedulePlasticCollection: FC<Props> = ({
     setTimePickerOpen(false);
   };
 
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
   const schedule = () => {
     if (date) {
       axios
@@ -68,7 +67,7 @@ const SchedulePlasticCollection: FC<Props> = ({
           "SchedulePlasticCollection",
           { pickupDate: date.toJSDate() },
           {
-            ...axiosUtils.getSharedAxiosConfig(accessToken),
+            ...sharedAxiosConfig,
             params: { collectionId: plasticCollectionId },
           }
         )

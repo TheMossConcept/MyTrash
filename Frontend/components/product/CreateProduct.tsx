@@ -2,12 +2,11 @@ import axios from "axios";
 import * as yup from "yup";
 import React, { FC, useContext } from "react";
 import { StyleSheet, View } from "react-native";
-import axiosUtils from "../../utils/axios";
-import useAccessToken from "../../hooks/useAccessToken";
 import FormContainer from "../shared/FormContainer";
 import SubmitButton from "../inputs/SubmitButton";
 import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import StringField from "../inputs/StringField";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 type Props = {
   clusterId: string;
@@ -30,7 +29,7 @@ const CreateProduct: FC<Props> = ({
 }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
   const initialFormValues: CreateProductFormData = {};
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
 
   const createProduct = (
     values: CreateProductFormData,
@@ -45,7 +44,7 @@ const CreateProduct: FC<Props> = ({
           batchId,
           productNumber: values.productNumber,
         },
-        { ...axiosUtils.getSharedAxiosConfig(accessToken) }
+        { ...sharedAxiosConfig }
       )
       .then(() => {
         showGlobalSnackbar("Produkt oprettet");

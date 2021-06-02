@@ -1,6 +1,6 @@
 // Navigation
 export type RootStackParamList = {
-  Root: { accessToken: string; idToken: string };
+  Root: undefined;
   Join: { clusterId?: string };
   Login: undefined;
   NotFound: undefined;

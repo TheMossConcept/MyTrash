@@ -2,13 +2,10 @@ import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
-import {
-  AccessTokenContext,
-  GlobalSnackbarContext,
-} from "../../navigation/TabNavigator";
-import axiosUtils from "../../utils/axios";
 import CategoryHeadline from "../styled/Subheader";
+import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import ClusterForm, { ClusterFormData } from "./ClusterForm";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 type UpdateFormProps = {
   successCallback: () => void;
@@ -24,37 +21,33 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
   >(undefined);
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
-  const accessToken = useContext(AccessTokenContext);
+  const sharedAxiosConfig = useAxiosConfig();
 
   useEffect(() => {
-    if (accessToken) {
-      axios
-        .get("/GetCluster", {
-          params: { clusterId },
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        })
-        .then((clusterResult) => {
-          setInitialValues(clusterResult.data);
-        });
-    }
-  }, [accessToken, clusterId]);
+    axios
+      .get("/GetCluster", {
+        params: { clusterId },
+        ...sharedAxiosConfig,
+      })
+      .then((clusterResult) => {
+        setInitialValues(clusterResult.data);
+      });
+  }, [sharedAxiosConfig, clusterId]);
 
   const updateCluster = (values: ClusterFormData) => {
-    if (accessToken) {
-      axios
-        .put("/UpdateCluster", values, {
-          params: {
-            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
-            clusterId,
-          },
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        })
-        .then(() => {
-          showGlobalSnackbar("Clusteret blev opdateret");
+    axios
+      .put("/UpdateCluster", values, {
+        params: {
+          code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+          clusterId,
+        },
+        ...sharedAxiosConfig,
+      })
+      .then(() => {
+        showGlobalSnackbar("Clusteret blev opdateret");
 
-          successCallback();
-        });
-    }
+        successCallback();
+      });
   };
 
   return initialValues ? (
@@ -86,24 +79,22 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
     collectionAdministratorId: "",
   };
 
-  const accessToken = useContext(AccessTokenContext);
+  const sharedAxiosConfig = useAxiosConfig();
 
   const createCluster = (values: ClusterFormData, reset: () => void) => {
-    if (accessToken) {
-      axios
-        .post("/CreateCluster", values, {
-          params: {
-            code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
-          },
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        })
-        .then(() => {
-          showGlobalSnackbar("Clusteret blev oprettet");
-          reset();
+    axios
+      .post("/CreateCluster", values, {
+        params: {
+          code: "aWOynA5/NVsQKHbFKrMS5brpi5HtVZM3oaw4BEiIWDaHxAb0OdBi2Q==",
+        },
+        ...sharedAxiosConfig,
+      })
+      .then(() => {
+        showGlobalSnackbar("Clusteret blev oprettet");
+        reset();
 
-          successCallback();
-        });
-    }
+        successCallback();
+      });
   };
 
   return (

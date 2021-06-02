@@ -1,9 +1,7 @@
 import axios from "axios";
-import React, { FC, useContext } from "react";
+import React, { FC } from "react";
 import { View } from "react-native";
 import * as yup from "yup";
-import axiosUtils from "../../utils/axios";
-import { AccessTokenContext } from "../../navigation/TabNavigator";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
@@ -11,6 +9,7 @@ import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
 import RoleSelector from "./RoleSelector";
 import useAppRoles from "../../hooks/useAppRoles";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 export type UserFormData = {
   email: string;
@@ -72,22 +71,20 @@ const CollaboratorForm: FC<Props> = ({ submitTitle, successCallback }) => {
     role: "",
   };
 
-  const accessToken = useContext(AccessTokenContext);
+  const sharedAxiosConfig = useAxiosConfig();
   const createUser = (values: UserFormData, resetForm: () => void) => {
-    if (accessToken) {
-      axios
-        .post("/CreateCollaborator", values, {
-          ...axiosUtils.getSharedAxiosConfig(accessToken),
-        })
-        .then(() => {
-          // setShowSnackbar(true);
-          resetForm();
+    axios
+      .post("/CreateCollaborator", values, {
+        ...sharedAxiosConfig,
+      })
+      .then(() => {
+        // setShowSnackbar(true);
+        resetForm();
 
-          if (successCallback) {
-            successCallback();
-          }
-        });
-    }
+        if (successCallback) {
+          successCallback();
+        }
+      });
   };
 
   const { appRoles } = useAppRoles();

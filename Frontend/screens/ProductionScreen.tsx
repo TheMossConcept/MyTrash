@@ -2,21 +2,20 @@ import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { Button, StyleSheet, View } from "react-native";
-import axiosUtils from "../utils/axios";
 import { TabsParamList } from "../typings/types";
-import useAccessToken from "../hooks/useAccessToken";
 import sortBatchByStatus from "../utils/batch";
 import BatchDetails, { Batch } from "../components/batch/BatchDetails";
 import ProductsDetails from "../components/product/ProductsDetails";
 import Container from "../components/shared/Container";
 import { GlobalSnackbarContext } from "../navigation/TabNavigator";
 import CreateProduct from "../components/product/CreateProduct";
+import useAxiosConfig from "../hooks/useAxiosConfig";
 
 type Props = StackScreenProps<TabsParamList, "Production">;
 
 const ProductionScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
 
   const [batches, setBatches] = useState<Batch[]>([]);
 
@@ -24,13 +23,13 @@ const ProductionScreen: FC<Props> = ({ route }) => {
     axios
       .get("/GetBatches", {
         params: { recipientPartnerId: userId },
-        ...axiosUtils.getSharedAxiosConfig(accessToken),
+        ...sharedAxiosConfig,
       })
       .then((axiosResult) => {
         const { data } = axiosResult;
         setBatches(data);
       });
-  }, [accessToken, userId]);
+  }, [sharedAxiosConfig, userId]);
 
   const sortedBatches = sortBatchByStatus(batches);
   return (
@@ -63,7 +62,7 @@ type ConfirmBatchReceptionProps = {
 };
 
 const ConfirmBatchReception: FC<ConfirmBatchReceptionProps> = ({ batchId }) => {
-  const accessToken = useAccessToken();
+  const sharedAxiosConfig = useAxiosConfig();
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
   const confirmReception = () => {
@@ -71,7 +70,7 @@ const ConfirmBatchReception: FC<ConfirmBatchReceptionProps> = ({ batchId }) => {
       .post(
         "/RegisterBatchReception",
         {},
-        { ...axiosUtils.getSharedAxiosConfig(accessToken), params: { batchId } }
+        { ...sharedAxiosConfig, params: { batchId } }
       )
       .then(() => {
         showGlobalSnackbar("Modtagelse bekræftet");

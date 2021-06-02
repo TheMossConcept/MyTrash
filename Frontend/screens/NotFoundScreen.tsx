@@ -10,10 +10,10 @@ export default function NotFoundScreen({
 }: StackScreenProps<RootStackParamList, "NotFound">) {
   const navigateToHomeScreen = async () => {
     const accessToken = await AsyncStorage.getItem("accessToken");
-    const idToken = (await AsyncStorage.getItem("idToken")) || "";
+    const idToken = await AsyncStorage.getItem("idToken");
 
-    if (accessToken) {
-      navigation.replace("Root", { accessToken, idToken });
+    if (accessToken && idToken) {
+      navigation.replace("Root");
     } else {
       navigation.replace("Login");
     }
