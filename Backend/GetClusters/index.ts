@@ -1,4 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
+import { omit } from "lodash";
 import databaseAPI, { ClusterEntity } from "../utils/DatabaseAPI";
 
 const httpTrigger: AzureFunction = async function (
@@ -11,7 +12,6 @@ const httpTrigger: AzureFunction = async function (
       logisticsPartnerId,
       productionPartnerId,
       collectorId,
-      searchString,
       page,
     } = req.query;
 
@@ -62,10 +62,13 @@ const httpTrigger: AzureFunction = async function (
       // whether that is too hard of a coupling and we need a gateway instead, or
       // if it is acceptable for now, given the scope of the project
       const returnValue: GetClustersDTO[] = clusters.map((cluster) => {
+        const clusterValuesToReturn = omit(cluster, ["_id", "entityName"]);
+
         return {
           // eslint-disable-next-line no-underscore-dangle
           id: cluster._id,
           displayName: cluster.name,
+          ...clusterValuesToReturn,
         };
       });
 
@@ -82,10 +85,12 @@ const httpTrigger: AzureFunction = async function (
       );
 
       const returnValue: GetClustersDTO[] = clusters.map((cluster) => {
+        const clusterValuesToReturn = omit(cluster, ["_id", "entityName"]);
         return {
           // eslint-disable-next-line no-underscore-dangle
           id: cluster._id,
           displayName: cluster.name,
+          ...clusterValuesToReturn,
         };
       });
 
@@ -108,6 +113,8 @@ type ReturnValue = {
 type GetClustersDTO = {
   id: string;
   displayName: string;
-};
+  // We don't have to omit _id on the type as
+  // it is added by the type DatabaseEntity
+} & Omit<ClusterEntity, "entityName">;
 
 export default httpTrigger;

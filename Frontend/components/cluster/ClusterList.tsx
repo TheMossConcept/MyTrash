@@ -10,12 +10,25 @@ export type Cluster = {
 
 type Props = {
   clusters: Cluster[];
-  children: ({ cluster }: { cluster: Cluster }) => ReactElement;
+  showSingleClusterExpanded?: boolean;
+  // TODO: Put a proper type on the cluster! It needs to contain all cluster properties
+  // and should probably be generic
+  children: ({ cluster }: { cluster: any }) => ReactElement;
 };
 
-const ClusterList: FC<Props> = ({ clusters, children }) => {
+const ClusterList: FC<Props> = ({
+  clusters,
+  showSingleClusterExpanded = true,
+  children,
+}) => {
   const numberOfClusters = clusters.length;
-  return numberOfClusters === 1 ? (
+  if (numberOfClusters === 0) {
+    return (
+      <Text style={{ textAlign: "center" }}>Ingen clustere tilgængelige</Text>
+    );
+  }
+
+  return numberOfClusters === 1 && showSingleClusterExpanded ? (
     <Container>{children({ cluster: clusters[0] })}</Container>
   ) : (
     <List.Section title="Clusters" style={styles.container}>

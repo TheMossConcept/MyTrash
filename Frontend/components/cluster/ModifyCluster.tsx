@@ -70,6 +70,7 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
   const initialValues = {
     name: "",
     isOpen: false,
+    closedForCollection: false,
     c5Reference: "",
     logisticsPartnerId: "",
     recipientPartnerId: "",
@@ -97,23 +98,31 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
   );
 };
 
-type CloseClusterProps = {
+type CloseClusterBtnProps = {
+  clusterId: string;
   title?: string;
   successCallback?: () => void;
 };
 
-export const CloseCluster: FC<CloseClusterProps> = ({
+export const CloseClusterBtn: FC<CloseClusterBtnProps> = ({
+  clusterId,
   successCallback,
   title,
 }) => {
   const sharedAxiosConfig = useAxiosConfig();
 
   const closeCluster = () => {
-    axios.post("/CloseCluster", {}, sharedAxiosConfig).then(() => {
-      if (successCallback) {
-        successCallback();
-      }
-    });
+    axios
+      .post(
+        "/CloseCluster",
+        {},
+        { ...sharedAxiosConfig, params: { clusterId } }
+      )
+      .then(() => {
+        if (successCallback) {
+          successCallback();
+        }
+      });
   };
 
   return <Button onPress={closeCluster} title={title || "Luk cluster"} />;

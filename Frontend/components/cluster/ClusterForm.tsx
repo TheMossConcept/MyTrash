@@ -12,6 +12,7 @@ import Container from "../shared/Container";
 
 export type ClusterFormData = {
   isOpen: boolean;
+  closedForCollection: boolean;
   name: string;
   c5Reference: string;
   necessaryPlastic?: number;
@@ -25,8 +26,8 @@ export type ClusterFormData = {
 export type Props = {
   cluster: ClusterFormData;
   clusterId?: string;
-  submit: (Cluster: ClusterFormData, reset: () => void) => void;
-  submitTitle: string;
+  submit?: (Cluster: ClusterFormData, reset: () => void) => void;
+  submitTitle?: string;
 };
 
 const validationSchema = yup.object().shape({
@@ -59,9 +60,11 @@ const ClusterForm: FC<Props> = ({
   return (
     <Formik
       initialValues={cluster}
-      onSubmit={(values, formikHelpers) =>
-        submit(values, formikHelpers.resetForm)
-      }
+      onSubmit={(values, formikHelpers) => {
+        if (submit) {
+          submit(values, formikHelpers.resetForm);
+        }
+      }}
       validationSchema={validationSchema}
       validateOnMount
     >
@@ -101,7 +104,7 @@ const ClusterForm: FC<Props> = ({
                 <SelectPartnersForm />
               </View>
             </View>
-            <SubmitButton title={submitTitle} />
+            {submit && <SubmitButton title={submitTitle || "Indsend"} />}
           </View>
         </Container>
       )}

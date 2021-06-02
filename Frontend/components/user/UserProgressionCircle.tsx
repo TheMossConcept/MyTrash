@@ -44,7 +44,7 @@ const UserProgressionCircle: FC<Props> = ({ userId, clusterId }) => {
   ) : (
     <View style={{ alignItems: "center" }}>
       <Subheader>Estimeret indsamlingsfremgang</Subheader>
-      {collectionProgress ? (
+      {collectionProgress !== undefined ? (
         <ProgressWheel
           progress={collectionProgress}
           animateFromValue={0}

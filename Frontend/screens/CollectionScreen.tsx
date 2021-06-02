@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState, useMemo } from "react";
 import { View, Text } from "react-native";
 import { DateTime } from "luxon";
 import CollectionForm from "../components/collection/OrderCollectionForm";
@@ -21,6 +21,10 @@ const CollectionScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
 
   const { clusters } = useClusters({ collectorId: userId });
+  const activeClusters = useMemo(
+    () => clusters.filter((cluster) => !cluster.closedForCollection),
+    [clusters]
+  );
 
   const [plasticCollections, setPlasticCollections] = useState<
     { [clusterId: string]: PlasticCollection[] } | undefined
@@ -48,13 +52,13 @@ const CollectionScreen: FC<Props> = ({ route }) => {
 
   // Initial plasticCollections fetch
   useEffect(() => {
-    const clusterIds = clusters.map((cluster) => cluster.id);
+    const clusterIds = activeClusters.map((cluster) => cluster.id);
     clusterIds.forEach((clusterId) => fetchPlasticCollections(clusterId));
-  }, [clusters, fetchPlasticCollections]);
+  }, [activeClusters, fetchPlasticCollections]);
 
   return (
     <Container style={{ justifyContent: "center" }}>
-      <ClusterList clusters={clusters}>
+      <ClusterList clusters={activeClusters}>
         {({ cluster }) => {
           const fetchPlasticCollectionsForCluster = () => {
             fetchPlasticCollections(cluster.id);

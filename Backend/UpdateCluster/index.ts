@@ -28,7 +28,7 @@ const httpTrigger: AzureFunction = async function (
     );
 
     context.res = {
-      body: JSON.stringify(insertionReulst),
+      body: JSON.stringify(updateResult),
     };
   } else {
     context.res = {

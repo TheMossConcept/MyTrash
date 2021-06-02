@@ -1,7 +1,10 @@
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
+import { ClusterFormData } from "../components/cluster/ClusterForm";
 import { Cluster } from "../components/cluster/ClusterList";
 import useAxiosConfig from "./useAxiosConfig";
+
+type FullCluster = Cluster & ClusterFormData;
 
 /* NB! Be aware that even though this pattern is convinient, it will lead to
  * unnecessary repeat queries. It is not an issue at the moment, however, it
@@ -9,7 +12,7 @@ import useAxiosConfig from "./useAxiosConfig";
  */
 const useClusters = (queryParams?: Object, page?: number) => {
   const sharedAxiosConfig = useAxiosConfig();
-  const [clusters, setClusters] = useState<Cluster[]>([]);
+  const [clusters, setClusters] = useState<FullCluster[]>([]);
 
   const fetchClusters = useCallback(() => {
     axios
