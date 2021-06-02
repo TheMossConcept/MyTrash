@@ -15,6 +15,7 @@ const httpTrigger: AzureFunction = async function (
     const insertionReulst = await databaseAPI.insert({
       entityName: "cluster",
       open: isOpen,
+      closedForCollection: false,
       necessaryAmountOfPlastic: necessaryPlastic,
       collectors: [],
       ...clusterPayload,

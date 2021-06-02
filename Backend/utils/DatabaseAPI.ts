@@ -112,6 +112,7 @@ export type ClusterEntity = {
   collectors: string[];
   name: string;
   open: boolean;
+  closedForCollection: boolean;
   c5Reference: string;
   usefulPlasticFactor: number;
   necessaryAmountOfPlastic: number;

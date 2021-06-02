@@ -7,13 +7,13 @@ const httpTrigger: AzureFunction = async function (
 ): Promise<void> {
   context.log("HTTP trigger function processed a request.");
   const { clusterId } = req.query as Payload;
-  const requestBody: ClusterCreationDTO = req.body;
+  const requestBody: ClusterUpdateDTO = req.body;
 
   const { isOpen, necessaryPlastic, ...clusterPayload } = requestBody;
 
   // TODO: Add request body validation here (in the form of a type guard) as well!
   if (requestBody) {
-    const insertionReulst = await databaseAPI.updateOne<ClusterEntity>(
+    const updateResult = await databaseAPI.updateOne<ClusterEntity>(
       "cluster",
       clusterId,
       {
@@ -29,7 +29,7 @@ const httpTrigger: AzureFunction = async function (
 
     context.res = {
       // status: 200, /* Defaults to 200 */
-      body: JSON.stringify(insertionReulst),
+      body: JSON.stringify(updateResult),
     };
   } else {
     context.res = {
@@ -41,7 +41,7 @@ const httpTrigger: AzureFunction = async function (
 
 type Payload = { clusterId: string };
 
-type ClusterCreationDTO = {
+type ClusterUpdateDTO = {
   collectionAdministratorId: string;
   recipientPartnerId: string;
   logisticsPartnerId: string;
@@ -54,4 +54,3 @@ type ClusterCreationDTO = {
 };
 
 export default httpTrigger;
-
