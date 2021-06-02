@@ -15,7 +15,7 @@ import CategoryHeadline from "../components/styled/CategoryHeadline";
 import InformationText from "../components/styled/InformationText";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 
-type Props = StackScreenProps<TabsParamList, "Logistics">;
+type Props = StackScreenProps<TabsParamList, "Logistik">;
 
 const LogisticsScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;

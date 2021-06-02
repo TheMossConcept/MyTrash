@@ -15,7 +15,7 @@ import Container from "../components/shared/Container";
 import UserProgressionCircle from "../components/user/UserProgressionCircle";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 
-type Props = StackScreenProps<TabsParamList, "Collection">;
+type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
 const CollectionScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;

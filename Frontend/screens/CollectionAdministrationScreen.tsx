@@ -8,7 +8,7 @@ import Container from "../components/shared/Container";
 import { UpdateCluster } from "../components/cluster/ModifyCluster";
 import CollectorForm from "../components/user/CollectorForm";
 
-type Props = StackScreenProps<TabsParamList, "CollectionAdministration">;
+type Props = StackScreenProps<TabsParamList, "Indsamlingsadministration">;
 
 const CollectionAdministrationScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;

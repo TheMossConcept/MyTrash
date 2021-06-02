@@ -17,7 +17,7 @@ import CategoryHeadline from "../components/styled/CategoryHeadline";
 import { GlobalSnackbarContext } from "../navigation/TabNavigator";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 
-type Props = StackScreenProps<TabsParamList, "Recipient">;
+type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
 const RecipientScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;

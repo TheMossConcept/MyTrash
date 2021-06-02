@@ -11,7 +11,7 @@ import { GlobalSnackbarContext } from "../navigation/TabNavigator";
 import CreateProduct from "../components/product/CreateProduct";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 
-type Props = StackScreenProps<TabsParamList, "Production">;
+type Props = StackScreenProps<TabsParamList, "Produktion">;
 
 const ProductionScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
