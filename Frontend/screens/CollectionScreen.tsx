@@ -3,8 +3,8 @@ import axios from "axios";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { DateTime } from "luxon";
-import CollectionForm from "../components/forms/OrderCollectionForm";
-import ClusterList from "../components/shared/ClusterList";
+import CollectionForm from "../components/collection/OrderCollectionForm";
+import ClusterList from "../components/cluster/ClusterList";
 import useClusters from "../hooks/useCluster";
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
@@ -12,7 +12,7 @@ import PlasticCollectionsDetails, {
 } from "../components/collection/PlasticCollectionsDetails";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import Container from "../components/shared/Container";
-import UserProgressionCircle from "../components/display/UserProgressionCircle";
+import UserProgressionCircle from "../components/user/UserProgressionCircle";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 
 type Props = StackScreenProps<TabsParamList, "Collection">;

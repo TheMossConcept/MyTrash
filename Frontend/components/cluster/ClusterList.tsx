@@ -1,7 +1,7 @@
 import React, { FC, ReactElement, useState } from "react";
 import { Text, StyleSheet, View, TouchableWithoutFeedback } from "react-native";
 import { List } from "react-native-paper";
-import Container from "./Container";
+import Container from "../shared/Container";
 
 export type Cluster = {
   displayName: string;

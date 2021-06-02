@@ -3,16 +3,16 @@ import { EventRegister } from "react-native-event-listeners";
 import React, { FC } from "react";
 
 import { TabsParamList } from "../typings/types";
-import ClusterList from "../components/shared/ClusterList";
+import ClusterList from "../components/cluster/ClusterList";
 import useClusters from "../hooks/useCluster";
 import Container from "../components/shared/Container";
 import {
   CreateCluster,
   UpdateCluster,
-} from "../components/forms/ModifyCluster";
-import CollaboratorForm from "../components/forms/CollaboratorForm";
+} from "../components/cluster/ModifyCluster";
+import CollaboratorForm from "../components/user/CollaboratorForm";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
-import CollectorForm from "../components/forms/CollectorForm";
+import CollectorForm from "../components/user/CollectorForm";
 
 type Props = StackScreenProps<TabsParamList, "Administration">;
 

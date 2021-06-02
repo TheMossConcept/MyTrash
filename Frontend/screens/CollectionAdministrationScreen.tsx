@@ -1,12 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC } from "react";
-import ClusterList from "../components/shared/ClusterList";
+import ClusterList from "../components/cluster/ClusterList";
 
 import { TabsParamList } from "../typings/types";
 import useClusters from "../hooks/useCluster";
 import Container from "../components/shared/Container";
-import { UpdateCluster } from "../components/forms/ModifyCluster";
-import CollectorForm from "../components/forms/CollectorForm";
+import { UpdateCluster } from "../components/cluster/ModifyCluster";
+import CollectorForm from "../components/user/CollectorForm";
 
 type Props = StackScreenProps<TabsParamList, "CollectionAdministration">;
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useEffect, useCallback } from "react";
-import { Cluster } from "../components/shared/ClusterList";
+import { Cluster } from "../components/cluster/ClusterList";
 import useAxiosConfig from "./useAxiosConfig";
 
 /* NB! Be aware that even though this pattern is convinient, it will lead to

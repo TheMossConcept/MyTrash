@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { ENV } from "react-native-dotenv";
 import { Formik } from "formik";
-import SelectPartnersForm from "./SelectPartnersForm";
+import SelectPartnersForm from "../user/SelectPartnersForm";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";

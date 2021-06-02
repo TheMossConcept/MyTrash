@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import AutocompleteInput from "../components/inputs/AutocompleteInput";
 import { RootStackParamList } from "../typings/types";
-import CollectorForm from "../components/forms/CollectorForm";
+import CollectorForm from "../components/user/CollectorForm";
 
 type Props = StackScreenProps<RootStackParamList, "Join">;
 
