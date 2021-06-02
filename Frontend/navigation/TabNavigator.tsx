@@ -9,8 +9,6 @@ import { Appbar } from "react-native-paper";
 
 import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
 import { View, Text } from "react-native";
-import Colors from "../constants/Colors";
-import useColorScheme from "../hooks/useColorScheme";
 import AdministrationScreen from "../screens/AdministrationScreen";
 import CollectionAdministrationScreen from "../screens/CollectionAdministrationScreen";
 import CollectionScreen from "../screens/CollectionScreen";
@@ -119,8 +117,6 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
   const editProfile = useAzureAdFlows("B2C_1_ProfileEdit", scopes);
   const onEditProfilePress = () => editProfile();
 
-  const colorScheme = useColorScheme();
-
   const globalSnackbarState = useSnackbarState();
   const [, dispatch] = globalSnackbarState;
 
@@ -146,10 +142,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
         <Appbar.Action icon="logout" onPress={logout} />
       </Appbar.Header>
       <GlobalSnackbarContext.Provider value={showSnackbar}>
-        <Tab.Navigator
-          initialRouteName="Administration"
-          tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
-        >
+        <Tab.Navigator initialRouteName="Administration">
           {userInfo.isAdministrator && (
             <Tab.Screen
               name="Administration"
