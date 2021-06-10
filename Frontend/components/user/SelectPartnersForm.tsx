@@ -27,6 +27,7 @@ const SelectPartnersForm: FC<Props> = () => {
         const appRoleValue = appRole.id;
         const title: string | undefined = appRole.displayName;
 
+        // TODO: It would be very nice if we did NOT have to call this endpoint once for each app role!
         const usersEndpoint = `/GetUsersByAppRole?appRole=${appRoleValue}`;
 
         let formKey:

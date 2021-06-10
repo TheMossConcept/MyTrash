@@ -91,7 +91,7 @@ const ClusterForm: FC<Props> = ({
                 />
                 <NumberField
                   formKey="necessaryPlastic"
-                  label="Plastbehov"
+                  label="Målsætning"
                   style={styles.inputField}
                 />
                 <NumberField

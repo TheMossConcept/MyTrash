@@ -75,7 +75,8 @@ const httpTrigger: AzureFunction = async function (
           issuerAssignedId: email,
         },
       ],
-      displayName: `${firstName} ${lastName}`,
+      // Display a collaborator by using its company!
+      displayName: companyName,
       givenName: firstName,
       surname: lastName,
       streetAddress: `${street} ${streetNumber.toString()}`,
