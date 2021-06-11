@@ -5,7 +5,7 @@ import { View, Text } from "react-native";
 import { DateTime } from "luxon";
 import CollectionForm from "../components/collection/OrderCollectionForm";
 import ClusterList from "../components/cluster/ClusterList";
-import useClusters from "../hooks/useCluster";
+import useClusters from "../hooks/useClusters";
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
   PlasticCollection,

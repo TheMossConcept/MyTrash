@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import ClusterList from "../components/cluster/ClusterList";
 
 import { TabsParamList } from "../typings/types";
-import useClusters from "../hooks/useCluster";
+import useClusters from "../hooks/useClusters";
 import Container from "../components/shared/Container";
 import { UpdateCluster } from "../components/cluster/ModifyCluster";
 import CollectorForm from "../components/user/CollectorForm";

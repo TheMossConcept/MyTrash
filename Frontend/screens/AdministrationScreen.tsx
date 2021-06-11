@@ -1,10 +1,11 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { EventRegister } from "react-native-event-listeners";
+import { Text } from "react-native";
 import React, { FC } from "react";
 
 import { TabsParamList } from "../typings/types";
 import ClusterList from "../components/cluster/ClusterList";
-import useClusters from "../hooks/useCluster";
+import useClusters from "../hooks/useClusters";
 import Container from "../components/shared/Container";
 import {
   CloseClusterBtn,
@@ -15,6 +16,7 @@ import CollaboratorForm from "../components/user/CollaboratorForm";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
 import CollectorForm from "../components/user/CollectorForm";
 import ClusterForm from "../components/cluster/ClusterForm";
+import CollectorList from "../components/user/CollectorList";
 
 type Props = StackScreenProps<TabsParamList, "Administration">;
 
@@ -52,6 +54,8 @@ const AdministrationScreen: FC<Props> = () => {
               clusterId={cluster.id}
               successCallback={refetchClusters}
             />
+            <CategoryHeadline>INDSAMLERE</CategoryHeadline>
+            <CollectorList clusterId={cluster.id} />
             <CategoryHeadline>TILFØJ INDSAMLER</CategoryHeadline>
             <CollectorForm
               clusterId={cluster.id}

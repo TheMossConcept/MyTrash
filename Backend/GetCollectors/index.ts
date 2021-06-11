@@ -28,12 +28,13 @@ const httpTrigger: AzureFunction = async function (
       "'"
     );
 
+    // TODO: We should also find a way to have type safety towards the Graph API
     const collectors = await client
       .api(`/users?$filter=id in ${rectifiedFilteringArray}`)
       .get();
 
     context.res = {
-      body: JSON.stringify(collectors),
+      body: JSON.stringify(collectors.value),
     };
   } catch (e) {
     context.res = {
