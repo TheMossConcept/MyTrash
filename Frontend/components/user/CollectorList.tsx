@@ -1,10 +1,11 @@
-import React, { FC, useContext } from "react";
+import React, { FC, useContext, useState } from "react";
 import { isEmpty } from "lodash";
 import { Button, StyleSheet, Text, View } from "react-native";
 import axios from "axios";
 import useCollectors, { Collector } from "../../hooks/useCollectors";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
+import ConfirmationDialog from "../shared/ConfirmationDialog";
 
 type Props = { clusterId: string };
 
@@ -42,6 +43,10 @@ const CollectorView: FC<CollectorViewProps> = ({
 }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
+  const showConfirmationDialogState = useState(false);
+  const [, setShowConfirmationDialog] = showConfirmationDialogState;
+  const showConfirmationDialog = () => setShowConfirmationDialog(true);
+
   const sharedAxiosConfig = useAxiosConfig();
 
   const deleteUser = () => {
@@ -62,7 +67,12 @@ const CollectorView: FC<CollectorViewProps> = ({
   return (
     <View style={styles.collectorContainer}>
       <Text>{collector.displayName}</Text>
-      <Button title="Slet bruger" onPress={deleteUser} />
+      <Button title="Slet bruger" onPress={showConfirmationDialog} />
+      <ConfirmationDialog
+        description="Indsamleren fjernes fra clusteret og slettes fra MyTrash"
+        showState={showConfirmationDialogState}
+        actionToConfirm={deleteUser}
+      />
     </View>
   );
 };
