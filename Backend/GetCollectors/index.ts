@@ -22,11 +22,15 @@ const httpTrigger: AzureFunction = async function (
       collectors: idsOfCollectors,
     } = await databaseAPI.findById<ClusterEntity>("cluster", clusterId);
 
-    const filterClause = `/users?$filter=id in ${JSON.stringify(
-      idsOfCollectors
-    ).replace('/"/g', "'")}`;
+    // Make sure the array is valid for use in the graph filtering query!
+    const rectifiedFilteringArray = JSON.stringify(idsOfCollectors).replace(
+      '/"/g',
+      "'"
+    );
 
-    const collectors = await client.api(filterClause).get();
+    const collectors = await client
+      .api(`/users?$filter=id in ${rectifiedFilteringArray}`)
+      .get();
 
     context.res = {
       body: JSON.stringify(collectors),
