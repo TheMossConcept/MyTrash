@@ -1,9 +1,10 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { isEmpty } from "lodash";
 import { Button, StyleSheet, Text, View } from "react-native";
 import axios from "axios";
 import useCollectors, { Collector } from "../../hooks/useCollectors";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 
 type Props = { clusterId: string };
 
@@ -39,6 +40,8 @@ const CollectorView: FC<CollectorViewProps> = ({
   clusterId,
   deletionCallback,
 }) => {
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
+
   const sharedAxiosConfig = useAxiosConfig();
 
   const deleteUser = () => {
@@ -48,7 +51,8 @@ const CollectorView: FC<CollectorViewProps> = ({
         ...sharedAxiosConfig,
       })
       .then(() => {
-        // TODO: Provide feedback here as well!
+        showGlobalSnackbar(`Indsamleren ${collector.displayName} er slettet`);
+
         if (deletionCallback) {
           deletionCallback();
         }
