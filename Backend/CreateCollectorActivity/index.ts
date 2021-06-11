@@ -17,7 +17,6 @@ import { allUserRoles } from "../utils/DatabaseAPI";
 const CreateCollector: AzureFunction = async function (
   context: Context
 ): Promise<string> {
-  console.log("WE ARE IN CREATE COLLECTOR!");
   try {
     const requestBody: CollectorDTO = context.bindings.collector;
     const {
@@ -69,10 +68,9 @@ const CreateCollector: AzureFunction = async function (
       mobilePhone: phoneNumber,
       postalCode: zipCode.toString(),
       passwordProfile: {
-        forceChangePasswordNextSignIn: false,
+        forceChangePasswordNextSignIn: true,
         password: "Test1234!",
       },
-      // passwordPolicies: "DisablePasswordExpiration",
       ...extensionsObject,
     });
 

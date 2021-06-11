@@ -1,6 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { EventRegister } from "react-native-event-listeners";
-import { Text } from "react-native";
 import React, { FC } from "react";
 
 import { TabsParamList } from "../typings/types";

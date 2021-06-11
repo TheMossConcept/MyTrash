@@ -1,7 +1,9 @@
 import React, { FC } from "react";
 import { isEmpty } from "lodash";
 import { Button, StyleSheet, Text, View } from "react-native";
+import axios from "axios";
 import useCollectors, { Collector } from "../../hooks/useCollectors";
+import useAxiosConfig from "../../hooks/useAxiosConfig";
 
 type Props = { clusterId: string };
 
@@ -16,6 +18,7 @@ const CollectorList: FC<Props> = ({ clusterId }) => {
         collectors.map((collector) => (
           <CollectorView
             collector={collector}
+            clusterId={clusterId}
             key={collector.id}
             deletionCallback={refetchCollectors}
           />
@@ -27,18 +30,29 @@ const CollectorList: FC<Props> = ({ clusterId }) => {
 
 type CollectorViewProps = {
   collector: Collector;
+  clusterId: string;
   deletionCallback?: () => void;
 };
 
 const CollectorView: FC<CollectorViewProps> = ({
   collector,
+  clusterId,
   deletionCallback,
 }) => {
+  const sharedAxiosConfig = useAxiosConfig();
+
   const deleteUser = () => {
-    // TODO: Call delete endpoint with collector.id
-    if (deletionCallback) {
-      deletionCallback();
-    }
+    axios
+      .delete("/DeleteCollector", {
+        params: { clusterId, collectorId: collector.id },
+        ...sharedAxiosConfig,
+      })
+      .then(() => {
+        // TODO: Provide feedback here as well!
+        if (deletionCallback) {
+          deletionCallback();
+        }
+      });
   };
 
   return (
