@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 type Props = { style?: ViewStyle };
+export type ContainerProps = Props;
 
 const Container: FC<Props> = ({ children, style }) => {
   // TODO: Add global view context here!

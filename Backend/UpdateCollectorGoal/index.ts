@@ -8,7 +8,7 @@ const httpTrigger: AzureFunction = async function (
 ): Promise<void> {
   try {
     const { collectorId } = req.query;
-    const { newCollectionRequirement } = req.body;
+    const { collectionGoal } = req.body;
 
     const customAuthProvider = new CustomAuthenticationProvider();
     const client = Client.initWithMiddleware({
@@ -20,7 +20,7 @@ const httpTrigger: AzureFunction = async function (
     const clientId = "efe81d2e0be34a3e87eb2cffd57626ce";
 
     await client.api(`/users/${collectorId}`).patch({
-      [`extension_${clientId}_CollectionRequirement`]: newCollectionRequirement,
+      [`extension_${clientId}_CollectionGoal`]: collectionGoal,
     });
 
     context.res = {
@@ -35,4 +35,3 @@ const httpTrigger: AzureFunction = async function (
 };
 
 export default httpTrigger;
-

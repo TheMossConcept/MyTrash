@@ -6,6 +6,9 @@ import useCollectors, { Collector } from "../../hooks/useCollectors";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import ConfirmationDialog from "../shared/ConfirmationDialog";
+import FormContainer from "../shared/FormContainer";
+import NumberField from "../inputs/NumberField";
+import SubmitButton from "../inputs/SubmitButton";
 
 type Props = { clusterId: string };
 
@@ -64,10 +67,44 @@ const CollectorView: FC<CollectorViewProps> = ({
       });
   };
 
+  const updateCollectionGoal = (
+    collectorId: string,
+    collectionGoal: number
+  ) => {
+    axios
+      .post(
+        "/UpdateCollectorGoal",
+        { collectionGoal },
+        {
+          params: { collectorId },
+          ...sharedAxiosConfig,
+        }
+      )
+      .then(() => {
+        showGlobalSnackbar("Indsamlingsmål opdateret");
+      });
+  };
+
   return (
     <View style={styles.collectorContainer}>
       <Text>{collector.displayName}</Text>
-      <Button title="Slet bruger" onPress={showConfirmationDialog} />
+      <View style={styles.actionContainer}>
+        <FormContainer
+          initialValues={{ collectionGoal: collector.collectionGoal }}
+          onSubmit={(values) =>
+            updateCollectionGoal(collector.id, values.collectionGoal)
+          }
+          style={styles.updateGoalContainer}
+        >
+          <NumberField
+            formKey="collectionGoal"
+            key={collector.id}
+            label="Indsamlingsmål"
+          />
+          <SubmitButton title="Opdater" />
+        </FormContainer>
+        <Button title="Slet bruger" onPress={showConfirmationDialog} />
+      </View>
       <ConfirmationDialog
         description="Indsamleren fjernes fra clusteret og slettes fra MyTrash"
         showState={showConfirmationDialogState}
@@ -83,6 +120,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 10,
+  },
+  actionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    margin: 5,
+  },
+  updateGoalContainer: {
+    // NB! Be explicit to indicate that it differs from the other containers
+    flexDirection: "column",
+    margin: 5,
   },
 });
 

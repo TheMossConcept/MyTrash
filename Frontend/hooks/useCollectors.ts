@@ -7,6 +7,7 @@ import useAxiosConfig from "./useAxiosConfig";
 export type Collector = {
   displayName: string;
   id: string;
+  collectionGoal: number;
 };
 
 // NB! All these data querying hooks can easily be reused by simply including the endpoint

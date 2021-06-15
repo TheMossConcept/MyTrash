@@ -38,7 +38,7 @@ const httpTrigger: AzureFunction = async function (
 
       // TODO: Fix the hardcoding
       const clientId = "efe81d2e0be34a3e87eb2cffd57626ce";
-      const selectionString = `extension_${clientId}_CollectionRequirement,id,displayName`;
+      const selectionString = `extension_${clientId}_CollectionGoal,id,displayName`;
 
       // TODO: We should also find a way to have type safety towards the Graph API
       const collectors = await client
@@ -47,8 +47,18 @@ const httpTrigger: AzureFunction = async function (
         )
         .get();
 
+      // Right here it is not worth it to explicitly define the type since it depends on clientId and is already implicitly defined by the selectionString
+      const returnValue = collectors.value.map((collector: any) => {
+        // Make the return value understandable for the client. TODO: Investigate whether this can be done automatically in the graph query! (it probably can)
+        return {
+          collectionGoal: collector[`extension_${clientId}_CollectionGoal`],
+          displayName: collector.displayName,
+          id: collector.id,
+        };
+      });
+
       context.res = {
-        body: JSON.stringify(collectors.value),
+        body: JSON.stringify(returnValue),
       };
     }
   } catch (e) {
