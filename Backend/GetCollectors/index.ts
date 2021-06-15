@@ -36,9 +36,15 @@ const httpTrigger: AzureFunction = async function (
         "'"
       );
 
+      // TODO: Fix the hardcoding
+      const clientId = "efe81d2e0be34a3e87eb2cffd57626ce";
+      const selectionString = `extension_${clientId}_CollectionRequirement,id,displayName`;
+
       // TODO: We should also find a way to have type safety towards the Graph API
       const collectors = await client
-        .api(`/users?$filter=id in ${rectifiedFilteringArray}`)
+        .api(
+          `/users?$select=${selectionString}&$filter=id in ${rectifiedFilteringArray}`
+        )
         .get();
 
       context.res = {

@@ -3,6 +3,7 @@ import { Client } from "@microsoft/microsoft-graph-client";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 import { allUserRoles } from "../utils/DatabaseAPI";
 
+// TODO: This function should be deleted, as we are getting this information from the id token
 const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
@@ -42,4 +43,3 @@ const httpTrigger: AzureFunction = async function (
 type Payload = { userId: string };
 
 export default httpTrigger;
-
