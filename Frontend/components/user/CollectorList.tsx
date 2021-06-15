@@ -1,4 +1,5 @@
 import React, { FC, useContext, useState } from "react";
+import * as yup from "yup";
 import { isEmpty } from "lodash";
 import { Button, StyleSheet, Text, View } from "react-native";
 import axios from "axios";
@@ -39,6 +40,10 @@ type CollectorViewProps = {
   deletionCallback?: () => void;
 };
 
+const collectionGoalSchema = yup
+  .object()
+  .shape({ collectionGoal: yup.number().required() });
+
 const CollectorView: FC<CollectorViewProps> = ({
   collector,
   clusterId,
@@ -71,18 +76,24 @@ const CollectorView: FC<CollectorViewProps> = ({
     collectorId: string,
     collectionGoal: number
   ) => {
-    axios
-      .post(
-        "/UpdateCollectorGoal",
-        { collectionGoal },
-        {
-          params: { collectorId },
-          ...sharedAxiosConfig,
-        }
-      )
-      .then(() => {
-        showGlobalSnackbar("Indsamlingsmål opdateret");
-      });
+    return new Promise((resolve, reject) => {
+      axios
+        .post(
+          "/UpdateCollectorGoal",
+          { collectionGoal },
+          {
+            params: { collectorId },
+            ...sharedAxiosConfig,
+          }
+        )
+        .then(() => {
+          showGlobalSnackbar("Indsamlingsmål opdateret");
+          resolve();
+        })
+        .catch(() => {
+          reject();
+        });
+    });
   };
 
   return (
@@ -91,9 +102,11 @@ const CollectorView: FC<CollectorViewProps> = ({
       <View style={styles.actionContainer}>
         <FormContainer
           initialValues={{ collectionGoal: collector.collectionGoal }}
-          onSubmit={(values) =>
+          onSubmit={async (values) =>
             updateCollectionGoal(collector.id, values.collectionGoal)
           }
+          validationSchema={collectionGoalSchema}
+          validateOnMount
           style={styles.updateGoalContainer}
         >
           <NumberField
