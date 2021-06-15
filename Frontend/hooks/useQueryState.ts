@@ -28,6 +28,8 @@ const useQueryState = (
     const selectedEntity = entities.find((entity) => entity.id === selectedId);
     if (selectedEntity) {
       setQuery(selectedEntity.displayName);
+    } else {
+      setQuery("");
     }
   }, [entities, selectedId]);
 
