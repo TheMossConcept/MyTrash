@@ -12,6 +12,7 @@ type Props = {
   clusterId: string;
   productionPartnerId: string;
   batchId: string;
+  successCallback?: () => void;
 };
 
 type CreateProductFormData = {
@@ -26,6 +27,7 @@ const CreateProduct: FC<Props> = ({
   clusterId,
   productionPartnerId,
   batchId,
+  successCallback,
 }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
   const initialFormValues: CreateProductFormData = {};
@@ -49,6 +51,10 @@ const CreateProduct: FC<Props> = ({
       .then(() => {
         showGlobalSnackbar("Produkt oprettet");
         resetForm();
+
+        if (successCallback) {
+          successCallback();
+        }
       });
   };
 

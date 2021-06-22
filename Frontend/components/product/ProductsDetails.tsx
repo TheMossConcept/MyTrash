@@ -1,37 +1,18 @@
 import axios from "axios";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { Divider } from "react-native-paper";
 import Subheader from "../styled/Subheader";
 import InformationText from "../styled/InformationText";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import { Product } from "../../hooks/useProducts";
 
 type Props = {
-  batchId: string;
+  products: Product[];
+  refetchProducts?: () => void;
 };
 
-export type Product = {
-  id: string;
-  productNumber: number;
-  hasBeenSent: boolean;
-};
-
-const ProductsDetails: FC<Props> = ({ batchId }) => {
-  const sharedAxiosConfig = useAxiosConfig();
-
-  const [products, setProducts] = useState<Product[]>([]);
-  useEffect(() => {
-    axios
-      .get("GetProducts/", {
-        ...sharedAxiosConfig,
-        params: { batchId },
-      })
-      .then((productsResponse) => {
-        const productsFromResponse = productsResponse.data;
-        setProducts(productsFromResponse);
-      });
-  }, [batchId, sharedAxiosConfig]);
-
+const ProductsDetails: FC<Props> = ({ products, refetchProducts }) => {
   return (
     <View style={styles.container}>
       <Subheader>Produkter lavet ud af batch</Subheader>
@@ -49,7 +30,10 @@ const ProductsDetails: FC<Props> = ({ batchId }) => {
               {product.hasBeenSent ? (
                 <Text>Produktet er afsendt</Text>
               ) : (
-                <MarkProductAsSentButton productId={product.id} />
+                <MarkProductAsSentButton
+                  productId={product.id}
+                  successCallback={refetchProducts}
+                />
               )}
             </View>
             {!isLastProduct && <Divider />}
@@ -62,19 +46,27 @@ const ProductsDetails: FC<Props> = ({ batchId }) => {
 
 type MarkProductAsSentButtonProps = {
   productId: string;
+  successCallback?: () => void;
 };
 
 const MarkProductAsSentButton: FC<MarkProductAsSentButtonProps> = ({
   productId,
+  successCallback,
 }) => {
   const sharedAxiosConfig = useAxiosConfig();
 
   const markProductAsSent = () => {
-    axios.post(
-      "/RegisterProductSent",
-      {},
-      { ...sharedAxiosConfig, params: { productId } }
-    );
+    axios
+      .post(
+        "/RegisterProductSent",
+        {},
+        { ...sharedAxiosConfig, params: { productId } }
+      )
+      .then(() => {
+        if (successCallback) {
+          successCallback();
+        }
+      });
   };
 
   return <Button title="Marker som afsendt" onPress={markProductAsSent} />;

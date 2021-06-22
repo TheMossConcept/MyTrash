@@ -5,6 +5,7 @@ import { TextInput } from "react-native-paper";
 
 type Props<T> = { formKey: keyof T & string; label: string; style?: ViewStyle };
 
+// TODO: Make this less funky! And fix the issue when the first character is greater than 1!
 export default function NumberField<T>({
   formKey: key,
   label,
