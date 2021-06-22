@@ -12,8 +12,11 @@ import PlasticCollectionsDetails, {
 } from "../components/collection/PlasticCollectionsDetails";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import Container from "../components/shared/Container";
-import UserProgressionCircle from "../components/user/UserProgressionCircle";
+import ProgressionCircle, {
+  ProgressionData,
+} from "../components/shared/ProgressionCircle";
 import useAxiosConfig from "../hooks/useAxiosConfig";
+import useQueriedData from "../hooks/useQueriedData";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
@@ -26,62 +29,86 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     [clusters]
   );
 
-  const [plasticCollections, setPlasticCollections] = useState<
-    { [clusterId: string]: PlasticCollection[] } | undefined
-  >(undefined);
-
-  const sharedAxiosConfig = useAxiosConfig();
-
-  const fetchPlasticCollections = useCallback(
-    (clusterId: string) => {
-      axios
-        .get("/GetPlasticCollections", {
-          params: { collectorId: userId, clusterId },
-          ...sharedAxiosConfig,
-        })
-        .then((axiosResult) => {
-          const { data } = axiosResult;
-          setPlasticCollections((previousCollections) => ({
-            ...previousCollections,
-            [clusterId]: data,
-          }));
-        });
-    },
-    [sharedAxiosConfig, userId]
-  );
-
-  // Initial plasticCollections fetch
-  useEffect(() => {
-    const clusterIds = activeClusters.map((cluster) => cluster.id);
-    clusterIds.forEach((clusterId) => fetchPlasticCollections(clusterId));
-  }, [activeClusters, fetchPlasticCollections]);
-
   return (
     <Container style={{ justifyContent: "center" }}>
       <ClusterList clusters={activeClusters}>
-        {({ cluster }) => {
-          const fetchPlasticCollectionsForCluster = () => {
-            fetchPlasticCollections(cluster.id);
-          };
-
-          return (
-            <View>
-              <UserProgressionCircle userId={userId} clusterId={cluster.id} />
-              <CollectionForm
-                clusterId={cluster.id}
-                userId={userId}
-                successCallback={fetchPlasticCollectionsForCluster}
-              />
-              {plasticCollections && (
-                <UserCollectionsForCluster
-                  plasticCollections={plasticCollections[cluster.id]}
-                />
-              )}
-            </View>
-          );
-        }}
+        {({ cluster }) => (
+          <ClusterViewForCollector userId={userId} clusterId={cluster.id} />
+        )}
       </ClusterList>
     </Container>
+  );
+};
+
+type ClusterViewForCollectorProps = {
+  userId: string;
+  clusterId: string;
+};
+
+const ClusterViewForCollector: FC<ClusterViewForCollectorProps> = ({
+  userId,
+  clusterId,
+}) => {
+  const [plasticCollections, setPlasticCollections] = useState<
+    PlasticCollection[]
+  >([]);
+  // TODO: Move this to useQueriedData
+  const sharedAxiosConfig = useAxiosConfig();
+  const fetchPlasticCollections = useCallback(() => {
+    axios
+      .get("/GetPlasticCollections", {
+        params: { collectorId: userId, clusterId },
+        ...sharedAxiosConfig,
+      })
+      .then((axiosResult) => {
+        const { data } = axiosResult;
+        setPlasticCollections(data);
+      });
+  }, [sharedAxiosConfig, userId]);
+
+  useEffect(() => {
+    fetchPlasticCollections();
+  }, [fetchPlasticCollections]);
+
+  const {
+    data: userProgressData,
+    isLoading: userProgressDataIsLoading,
+  } = useQueriedData<ProgressionData>("/GetUserProgressData", {
+    userId,
+    clusterId,
+  });
+  const {
+    data: clusterProgressData,
+    isLoading: clusterProgressDataIsLoading,
+  } = useQueriedData<ProgressionData>("/GetClusterProgressData", {
+    clusterId,
+  });
+
+  return (
+    <View>
+      {userProgressData ? (
+        <ProgressionCircle
+          headline="Personlig indsamlingsfremgang"
+          progressData={userProgressData}
+          isLoading={userProgressDataIsLoading}
+        />
+      ) : null}
+      {clusterProgressData ? (
+        <ProgressionCircle
+          headline="Cirklens samlede indsamlingsfremgang"
+          progressData={clusterProgressData}
+          isLoading={clusterProgressDataIsLoading}
+        />
+      ) : null}
+      <CollectionForm
+        clusterId={clusterId}
+        userId={userId}
+        successCallback={fetchPlasticCollections}
+      />
+      {plasticCollections && (
+        <UserCollectionsForCluster plasticCollections={plasticCollections} />
+      )}
+    </View>
   );
 };
 
