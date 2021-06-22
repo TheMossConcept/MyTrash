@@ -10,6 +10,7 @@ type Props = {
   headline?: string;
 };
 
+// TODO: Move isLoading outside of this!
 const UserProgressionCircle: FC<Props> = ({
   progressData,
   isLoading,
