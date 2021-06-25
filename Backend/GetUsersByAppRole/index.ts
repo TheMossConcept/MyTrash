@@ -16,8 +16,9 @@ const httpTrigger: AzureFunction = async function (
 
     const { appRole } = req.query as QueryParams;
 
-    // TODO: Fix hardcoding!
-    const clientId = "efe81d2e0be34a3e87eb2cffd57626ce";
+    // Please note that t his is the client id of the b2c-extensions-app and NOT of the actual app registration itself!
+    // Also note that the -'s have been removed
+    const clientId = process.env.ClientId;
 
     const usersResult = await client
       .api(`/users?$filter=extension_${clientId}_${appRole} eq true`)

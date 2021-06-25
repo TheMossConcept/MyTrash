@@ -35,9 +35,11 @@ const CreateCollector: AzureFunction = async function (
       authProvider: customAuthProvider,
     });
 
-    // TODO: Fix hardcoding. Please note that t his is the client id of the b2c-extensions-app
-    // and NOT of the actual app registration itself! Also note that the -'s have been removed
-    const clientId = "efe81d2e0be34a3e87eb2cffd57626ce";
+    // Please note that this is the client id of the b2c-extensions-app and NOT of the actual app registration itself!
+    // Also note that the -'s have been removed
+    const clientId = process.env.ClientId;
+    // This is linked to hte Azure B2C instance used
+    const issuer = process.env.ADIssuer;
 
     const extensionsObject = allUserRoles.reduce(
       (accumulator, currentValue) => {
@@ -55,8 +57,7 @@ const CreateCollector: AzureFunction = async function (
       identities: [
         {
           signInType: "emailAddress",
-          // TODO: Fix hardcoding
-          issuer: "mossconsultingorg.onmicrosoft.com",
+          issuer,
           issuerAssignedId: email,
         },
       ],

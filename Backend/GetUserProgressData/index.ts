@@ -18,8 +18,9 @@ const httpTrigger: AzureFunction = async function (
       authProvider: customAuthProvider,
     });
 
-    // TODO: Fix the hardcoding
-    const clientId = "efe81d2e0be34a3e87eb2cffd57626ce";
+    // Please note that this is the client id of the b2c-extensions-app and NOT of the actual app registration itself!
+    // Also note that the -'s have been removed
+    const clientId = process.env.ClientId;
 
     const collector = await client
       .api(`/users/${userId}?$select=extension_${clientId}_CollectionGoal`)
@@ -80,4 +81,3 @@ type Payload = {
 };
 
 export default httpTrigger;
-
