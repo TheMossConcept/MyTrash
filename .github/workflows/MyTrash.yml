@@ -27,7 +27,6 @@ jobs:
     # checkout the repo
     - name: 'Checkout Github Action'
       uses: actions/checkout@v2
-          submodules: true
     - name: Build and deploy webapp
       id: builddeploy
       uses: Azure/static-web-apps-deploy@v1
