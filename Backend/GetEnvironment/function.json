@@ -15,5 +15,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/GetEnvironmentName/index.js"
+  "scriptFile": "../dist/GetEnvironment/index.js"
 }

@@ -5,9 +5,8 @@ const httpTrigger: AzureFunction = async function (
 ): Promise<void> {
   context.res = {
     // status: 200, /* Defaults to 200 */
-    body: process.env.EnvironmentName,
+    body: JSON.stringify(process.env),
   };
 };
 
 export default httpTrigger;
-
