@@ -33,6 +33,7 @@ const AdministrationScreen: FC<Props> = () => {
 
   return (
     <Container>
+      <CategoryHeadline>THIS IS A QUICK TEST</CategoryHeadline>
       <CategoryHeadline>INVITER PARTNER</CategoryHeadline>
       <CollaboratorForm
         submitTitle="Inviter partner"
