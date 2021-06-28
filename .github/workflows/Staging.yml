@@ -5,9 +5,10 @@ name: MyTrash - Staging
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     branches:
-      - develop
+      - master
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: './Backend' # set this to the path to your web app project, defaults to the repository root
   AZURE_FRONTEND_PACKAGE_PATH: './Frontend' # set this to the path to your web app project, defaults to the repository root
