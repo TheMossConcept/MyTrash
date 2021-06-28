@@ -68,4 +68,4 @@ jobs:
         app-name: 'houe-plastic-recycling-windows'
         slot-name: 'staging'
         package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_29f69be658954b5b965bfe817cb1c90f }}
+        publish-profile: ${{ secrets.STAGING_PUBLISH_PROFILE }}
