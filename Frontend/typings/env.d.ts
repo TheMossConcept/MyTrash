@@ -5,5 +5,5 @@ declare module "react-native-dotenv" {
   export const AZURE_AD_CLIENT_ID: string;
   export const MOBILE_REDIRECT_URL: string;
   // TODO: Introduce staging here as well!
-  export const ENV: "development" | "production";
+  export const ENV: "development" | "production" | "staging";
 }
