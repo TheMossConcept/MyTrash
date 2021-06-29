@@ -7,8 +7,8 @@ import StringField from "../inputs/StringField";
 import BooleanField from "../inputs/BooleanField";
 import SubmitButton from "../inputs/SubmitButton";
 import NumberField from "../inputs/NumberField";
-import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import GlobalSnackbarContext from "../../utils/globalContext";
 
 type CollectionFormData = {
   numberOfUnits?: number;

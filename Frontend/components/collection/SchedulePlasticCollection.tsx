@@ -3,8 +3,8 @@ import { DateTime } from "luxon";
 import React, { FC, useContext, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
-import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import GlobalSnackbarContext from "../../utils/globalContext";
 
 type Props = {
   plasticCollectionId: string;

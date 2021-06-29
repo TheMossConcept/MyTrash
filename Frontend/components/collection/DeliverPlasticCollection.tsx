@@ -4,8 +4,8 @@ import React, { FC, useContext } from "react";
 import FormContainer from "../shared/FormContainer";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
-import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import GlobalSnackbarContext from "../../utils/globalContext";
 
 type Props = { plasticCollectionId: string; successCallback: () => void };
 

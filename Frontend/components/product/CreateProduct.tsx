@@ -4,9 +4,9 @@ import React, { FC, useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import FormContainer from "../shared/FormContainer";
 import SubmitButton from "../inputs/SubmitButton";
-import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import StringField from "../inputs/StringField";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import GlobalSnackbarContext from "../../utils/globalContext";
 
 type Props = {
   clusterId: string;

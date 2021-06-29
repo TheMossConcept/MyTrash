@@ -14,8 +14,8 @@ import sortBatchByStatus from "../utils/batch";
 import RegisterPlasticCollectionReciept from "../components/collection/RegisterPlasticCollectionReciept";
 import Container from "../components/shared/Container";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
-import { GlobalSnackbarContext } from "../navigation/TabNavigator";
 import useAxiosConfig from "../hooks/useAxiosConfig";
+import GlobalSnackbarContext from "../utils/globalContext";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 

@@ -6,10 +6,10 @@ import { TabsParamList } from "../typings/types";
 import sortBatchByStatus from "../utils/batch";
 import BatchDetails from "../components/batch/BatchDetails";
 import Container from "../components/shared/Container";
-import { GlobalSnackbarContext } from "../navigation/TabNavigator";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 import useBatches from "../hooks/useBatches";
 import ProductsForBatch from "../components/product/ProductsForBatch";
+import GlobalSnackbarContext from "../utils/globalContext";
 
 type Props = StackScreenProps<TabsParamList, "Produktion">;
 

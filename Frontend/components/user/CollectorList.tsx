@@ -5,11 +5,11 @@ import { Button, StyleSheet, Text, View } from "react-native";
 import axios from "axios";
 import useCollectors, { Collector } from "../../hooks/useCollectors";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
-import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import ConfirmationDialog from "../shared/ConfirmationDialog";
 import FormContainer from "../shared/FormContainer";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
+import GlobalSnackbarContext from "../../utils/globalContext";
 
 type Props = { clusterId: string };
 

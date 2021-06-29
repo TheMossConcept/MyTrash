@@ -2,9 +2,9 @@ import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { Button } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
-import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import ClusterForm, { ClusterFormData } from "./ClusterForm";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import GlobalSnackbarContext from "../../utils/globalContext";
 
 type UpdateFormProps = {
   successCallback: () => void;

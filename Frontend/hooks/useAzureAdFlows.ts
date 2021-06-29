@@ -28,7 +28,7 @@ export default function useAzureAdFlows(
   useEffect(() => {
     const updateDiscoveryDocument = async () => {
       const rawDiscoveryDocumentResponse = await axios.get(
-        `${AUTHORIZATION_URL}?p=${flowName}`
+        `https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${flowName}`
       );
       const {
         /* eslint-disable camelcase */

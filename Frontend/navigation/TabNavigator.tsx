@@ -21,6 +21,7 @@ import DismissableSnackbar, {
 } from "../components/shared/DismissableSnackbar";
 import useAzureAdFlows from "../hooks/useAzureAdFlows";
 import NoAccess from "../screens/NoAccess";
+import GlobalSnackbarContext from "../utils/globalContext";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
@@ -35,11 +36,6 @@ type UserInfo = {
   isProductionPartner: boolean;
   userHasNoAccess: boolean;
 };
-
-export const GlobalSnackbarContext = React.createContext<
-  (title: string) => void
->(() => console.log("No show snackbar function passed along"));
-
 type TabBarIconProps = {
   focused: boolean;
   color: string;
@@ -142,6 +138,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
         <Appbar.Action icon="logout" onPress={logout} />
       </Appbar.Header>
       <GlobalSnackbarContext.Provider value={showSnackbar}>
+        <Text>This is a test text!</Text>
         <Tab.Navigator initialRouteName="Administration">
           {userInfo.isAdministrator && (
             <Tab.Screen
