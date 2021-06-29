@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useCallback, useEffect, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Appbar } from "react-native-paper";
 
@@ -125,7 +126,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
   );
 
   return userInfo ? (
-    <View>
+    <SafeAreaProvider>
       <Appbar.Header>
         <Appbar.Content
           title={
@@ -138,9 +139,8 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
         <Appbar.Action icon="logout" onPress={logout} />
       </Appbar.Header>
       <GlobalSnackbarContext.Provider value={showSnackbar}>
-        <Text>This is a test text!</Text>
-        <Tab.Navigator initialRouteName="Administration">
-          {userInfo.isAdministrator && (
+        <Tab.Navigator initialRouteName="Administration" tabBar={() => null}>
+          {false && userInfo.isAdministrator && (
             <Tab.Screen
               name="Administration"
               component={AdministrationScreen}
@@ -149,7 +149,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {userInfo.isCollectionAdministrator && (
+          {false && userInfo.isCollectionAdministrator && (
             <Tab.Screen
               name="Indsamlingsadministration"
               component={CollectionAdministrationScreen}
@@ -159,7 +159,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {userInfo.isCollector && (
+          {(userInfo.isCollector || true) && (
             <Tab.Screen
               name="Indsamling"
               component={CollectionScreen}
@@ -169,7 +169,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {userInfo.isLogisticsPartner && (
+          {false && userInfo.isLogisticsPartner && (
             <Tab.Screen
               name="Logistik"
               component={LogisticsScreen}
@@ -179,7 +179,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {userInfo.isRecipientPartner && (
+          {false && userInfo.isRecipientPartner && (
             <Tab.Screen
               name="Modtagelse"
               component={RecipientScreen}
@@ -189,7 +189,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {userInfo.isProductionPartner && (
+          {false && userInfo.isProductionPartner && (
             <Tab.Screen
               name="Produktion"
               component={ProductionScreen}
@@ -199,13 +199,13 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {userInfo.userHasNoAccess && (
+          {false && userInfo.userHasNoAccess && (
             <Tab.Screen name="NoAccess" component={NoAccess} />
           )}
         </Tab.Navigator>
       </GlobalSnackbarContext.Provider>
       <DismissableSnackbar globalSnackbarState={globalSnackbarState} />
-    </View>
+    </SafeAreaProvider>
   ) : (
     <Text>No user info</Text>
   );
