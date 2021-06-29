@@ -69,9 +69,20 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
           */}
       </ImageBackground>
       <View style={styles.bottomButtonContainer}>
-        <Button style={styles.bottomButton} />
-        <Button style={styles.bottomButton} />
-        <Button />
+        <Button
+          text="Login."
+          icon={require("../assets/icons/circle_grey.png")}
+          style={styles.bottomButton}
+        />
+        <Button
+          text="Opret bruger."
+          icon={require("../assets/icons/checkmark_grey.png")}
+          style={styles.bottomButton}
+        />
+        <Button
+          text="Projekt."
+          icon={require("../assets/icons/leaf_grey.png")}
+        />
       </View>
     </View>
   );
