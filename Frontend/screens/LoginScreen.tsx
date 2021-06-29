@@ -69,10 +69,9 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
           */}
       </ImageBackground>
       <View style={styles.bottomButtonContainer}>
-        <StyledButton
-          text="Login."
-          icon={require("../assets/icons/circle_grey.png")}
+        <AuthorizationButton
           style={styles.bottomButton}
+          handleAuthorization={handleAuthorizationSuccess}
         />
         <StyledButton
           text="Opret bruger."

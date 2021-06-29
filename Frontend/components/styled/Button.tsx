@@ -10,9 +10,17 @@ import {
 type Props = { text: string; icon: any } & TouchableOpacityProps;
 export type StyledButtonProps = Props;
 
-const StyledButton: FC<Props> = ({ style, text, icon }) => {
+const StyledButton: FC<Props> = ({
+  style,
+  text,
+  icon,
+  ...touchableOpacityProps
+}) => {
   return (
-    <TouchableOpacity style={[styles.container, style]}>
+    <TouchableOpacity
+      style={[styles.container, style]}
+      {...touchableOpacityProps}
+    >
       <Image source={icon} style={{ width: 32, height: 32 }} />
       <Text style={{ fontSize: 15, color: "#7b8463" }}>{text}</Text>
     </TouchableOpacity>

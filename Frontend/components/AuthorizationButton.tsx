@@ -10,13 +10,9 @@ import {
   TokenResponse,
 } from "expo-auth-session";
 
-import { Button, Text, View } from "react-native";
-import {
-  AZURE_AD_CLIENT_ID,
-  MOBILE_REDIRECT_URL,
-  ENV,
-} from "react-native-dotenv";
+import { AZURE_AD_CLIENT_ID, MOBILE_REDIRECT_URL } from "react-native-dotenv";
 import useAzureAdFlows from "../hooks/useAzureAdFlows";
+import StyledButton, { StyledButtonProps } from "./styled/Button";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -25,9 +21,12 @@ type Props = {
     tokenResponse: TokenResponse,
     refreshTokenIfNecessary: () => Promise<TokenResponse> | undefined
   ) => void;
-};
+} & Omit<StyledButtonProps, "text" | "icon">;
 
-export default function AuthorizationButton({ handleAuthorization }: Props) {
+export default function AuthorizationButton({
+  handleAuthorization,
+  ...StyledButtonProps
+}: Props) {
   const scopes = [AZURE_AD_CLIENT_ID, "profile", "email", "offline_access"];
   const redirectUri = makeRedirectUri({
     // For usage in bare and standalone
@@ -91,9 +90,11 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
   };
 
   return (
-    <View>
-      <Text>{ENV}</Text>
-      <Button title="LOGIN" onPress={onPress} />
-    </View>
+    <StyledButton
+      text="Login"
+      icon={require("../assets/icons/circle_grey.png")}
+      onPress={onPress}
+      {...StyledButtonProps}
+    />
   );
 }
