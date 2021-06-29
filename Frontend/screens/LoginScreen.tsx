@@ -7,7 +7,7 @@ import React, { FC, useEffect, useState } from "react";
 import AuthorizationButton from "../components/AuthorizationButton";
 import useAzureAdFlows from "../hooks/useAzureAdFlows";
 import { RootStackParamList } from "../typings/types";
-import Button from "../components/styled/Button";
+import StyledButton from "../components/styled/Button";
 
 type Props = StackScreenProps<RootStackParamList, "Login">;
 
@@ -69,17 +69,17 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
           */}
       </ImageBackground>
       <View style={styles.bottomButtonContainer}>
-        <Button
+        <StyledButton
           text="Login."
           icon={require("../assets/icons/circle_grey.png")}
           style={styles.bottomButton}
         />
-        <Button
+        <StyledButton
           text="Opret bruger."
           icon={require("../assets/icons/checkmark_grey.png")}
           style={styles.bottomButton}
         />
-        <Button
+        <StyledButton
           text="Projekt."
           icon={require("../assets/icons/leaf_grey.png")}
         />

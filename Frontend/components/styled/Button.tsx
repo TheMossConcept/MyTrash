@@ -8,8 +8,9 @@ import {
 } from "react-native";
 
 type Props = { text: string; icon: any } & TouchableOpacityProps;
+export type StyledButtonProps = Props;
 
-const Button: FC<Props> = ({ style, text, icon }) => {
+const StyledButton: FC<Props> = ({ style, text, icon }) => {
   return (
     <TouchableOpacity style={[styles.container, style]}>
       <Image source={icon} style={{ width: 32, height: 32 }} />
@@ -38,4 +39,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Button;
+export default StyledButton;
