@@ -1,12 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackScreenProps } from "@react-navigation/stack";
-import { Button, StyleSheet, View } from "react-native";
+import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
 import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
 import { TokenResponse } from "expo-auth-session";
 import React, { FC, useEffect, useState } from "react";
 import AuthorizationButton from "../components/AuthorizationButton";
 import useAzureAdFlows from "../hooks/useAzureAdFlows";
 import { RootStackParamList } from "../typings/types";
+import Button from "../components/styled/Button";
 
 type Props = StackScreenProps<RootStackParamList, "Login">;
 
@@ -51,19 +52,52 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
   const scopes = [AZURE_AD_CLIENT_ID];
   const resetPassword = useAzureAdFlows("B2C_1_PasswordReset", scopes);
   const onResetPasswordPress = () => resetPassword();
+
   return (
     <View style={styles.container}>
-      <AuthorizationButton handleAuthorization={handleAuthorizationSuccess} />
-      <Button title="NULSTIL KODEORD" onPress={onResetPasswordPress} />
+      <ImageBackground
+        style={styles.imageBackground}
+        source={require("../assets/images/backgrond.png")}
+      >
+        <Image source={require("../assets/icons/arrow.png")} />
+        {/* <View style={styles.container}>
+          <AuthorizationButton
+            handleAuthorization={handleAuthorizationSuccess}
+          />
+          <Button title="NULSTIL KODEORD" onPress={onResetPasswordPress} />
+        </View>
+          */}
+      </ImageBackground>
+      <View style={styles.bottomButtonContainer}>
+        <Button style={styles.bottomButton} />
+        <Button style={styles.bottomButton} />
+        <Button />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: "100%",
+    width: "100%",
+  },
+  imageBackground: {
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
+    flex: 85,
+  },
+  bottomButtonContainer: {
+    backgroundColor: "#e7e7e8",
+    flex: 15,
+    width: "100%",
+    flexDirection: "row",
+    paddingVertical: 39,
+    paddingHorizontal: 20,
+  },
+  bottomButton: {
+    marginRight: 10,
   },
 });
 
