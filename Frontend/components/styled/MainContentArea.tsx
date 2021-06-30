@@ -6,7 +6,7 @@ import {
   StyleSheet,
 } from "react-native";
 
-type Props = {} & ImageBackgroundProps;
+type Props = {} & Omit<ImageBackgroundProps, "source">;
 
 const MainContentArea: FC<Props> = ({
   children,
@@ -15,6 +15,7 @@ const MainContentArea: FC<Props> = ({
 }) => {
   return (
     <ImageBackground
+      source={require("../../assets/images/backgrond.png")}
       style={[styles.imageBackground, style]}
       {...imageBackgroundProps}
     >

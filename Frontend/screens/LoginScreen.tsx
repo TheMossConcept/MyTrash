@@ -54,7 +54,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <MainContentArea source={require("../assets/images/backgrond.png")}>
+      <MainContentArea>
         <Menu />
         <HeadlineText />
         <View style={styles.textContainer}>

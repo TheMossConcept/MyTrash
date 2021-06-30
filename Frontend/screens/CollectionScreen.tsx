@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useCallback, useEffect, useState, useMemo } from "react";
-import { View, Text, StyleSheet, ImageBackground } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { DateTime } from "luxon";
 import CollectionForm from "../components/collection/OrderCollectionForm";
 import useClusters from "../hooks/useClusters";
@@ -18,16 +18,25 @@ import useAxiosConfig from "../hooks/useAxiosConfig";
 import useQueriedData from "../hooks/useQueriedData";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import StyledButton from "../components/styled/Button";
+import MainContentArea from "../components/styled/MainContentArea";
+import Menu from "../components/shared/Menu";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
+const iconBasePath = "../assets/icons";
+
 const CollectionScreen: FC<Props> = ({ route }) => {
+  const [selectedScreen, setSelectedScreen] = useState<"status" | "collection">(
+    "status"
+  );
+  const statusSelected = selectedScreen === "status";
+  const collectionSelected = selectedScreen === "collection";
+
   const { userId } = route.params;
 
   const { clusters } = useClusters({ collectorId: userId });
-  const activeClusters = useMemo(
-    () => clusters.filter((cluster) => !cluster.closedForCollection),
-    [clusters]
+  const activeClusters = clusters.filter(
+    (cluster) => !cluster.closedForCollection
   );
 
   // For now, it is an invariant that a collector can only ever be associated with
@@ -37,22 +46,23 @@ const CollectionScreen: FC<Props> = ({ route }) => {
 
   return activeCluster ? (
     <View style={styles.container}>
-      <ImageBackground
-        source={require("../assets/images/backgrond.png")}
-        style={{ flex: 85, justifyContent: "center", alignItems: "center" }}
-      >
-        <Text>Test</Text>
-      </ImageBackground>
+      <MainContentArea>
+        <Menu />
+      </MainContentArea>
       <BottomButtonContainer style={{ paddingVertical: 20 }}>
         <View style={{ flex: 1, paddingHorizontal: 7 }}>
           <StyledButton
             text={`Status \n indsamling.`}
             icon={{
-              src: require("../assets/icons/graph_grey.png"),
+              src: statusSelected
+                ? require(`${iconBasePath}/graph_green.png`)
+                : require(`${iconBasePath}/graph_grey.png`),
               width: 36,
               height: 26.5,
             }}
             isVerticalButton
+            isSelected={statusSelected}
+            onPress={() => setSelectedScreen("status")}
             style={{
               marginBottom: 9,
             }}
@@ -71,11 +81,15 @@ const CollectionScreen: FC<Props> = ({ route }) => {
           <StyledButton
             text={`Afhentning \n plastik.`}
             icon={{
-              src: require("../assets/icons/truck_grey.png"),
+              src: collectionSelected
+                ? require(`${iconBasePath}/truck_green.png`)
+                : require(`${iconBasePath}/truck_grey.png`),
               width: 44,
               height: 25,
             }}
             isVerticalButton
+            isSelected={collectionSelected}
+            onPress={() => setSelectedScreen("collection")}
             style={{
               marginBottom: 9,
             }}
