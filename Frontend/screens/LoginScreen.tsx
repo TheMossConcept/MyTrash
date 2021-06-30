@@ -56,7 +56,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
     <View style={styles.container}>
       <MainContentArea>
         <Menu />
-        <HeadlineText />
+        <HeadlineText style={{ marginTop: 54 }} />
         <View style={styles.textContainer}>
           <AppText
             text=" Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que

@@ -1,9 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import axios from "axios";
-import React, { FC, useCallback, useEffect, useState, useMemo } from "react";
+import React, { FC, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { DateTime } from "luxon";
-import CollectionForm from "../components/collection/OrderCollectionForm";
 import useClusters from "../hooks/useClusters";
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
@@ -11,15 +9,12 @@ import PlasticCollectionsDetails, {
 } from "../components/collection/PlasticCollectionsDetails";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import Container from "../components/shared/Container";
-import ProgressionCircle, {
-  ProgressionData,
-} from "../components/shared/ProgressionCircle";
-import useAxiosConfig from "../hooks/useAxiosConfig";
-import useQueriedData from "../hooks/useQueriedData";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import StyledButton from "../components/styled/Button";
 import MainContentArea from "../components/styled/MainContentArea";
 import Menu from "../components/shared/Menu";
+import HeadlineText from "../components/styled/HeadlineText";
+import CollectorProgression from "../components/progression/CollectorProgression";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
@@ -48,6 +43,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     <View style={styles.container}>
       <MainContentArea>
         <Menu />
+        <HeadlineText style={{ marginTop: 54 }} />
       </MainContentArea>
       <BottomButtonContainer style={{ paddingVertical: 20 }}>
         <View style={{ flex: 1, paddingHorizontal: 7 }}>
@@ -108,74 +104,6 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     </View>
   ) : (
     <Text>Ingen aktive clustere</Text>
-  );
-};
-
-type ClusterViewForCollectorProps = {
-  userId: string;
-  clusterId: string;
-};
-
-const ClusterViewForCollector: FC<ClusterViewForCollectorProps> = ({
-  userId,
-  clusterId,
-}) => {
-  const [plasticCollections, setPlasticCollections] = useState<
-    PlasticCollection[]
-  >([]);
-  // TODO: Move this to useQueriedData
-  const sharedAxiosConfig = useAxiosConfig();
-  const fetchPlasticCollections = useCallback(() => {
-    axios
-      .get("/GetPlasticCollections", {
-        params: { collectorId: userId, clusterId },
-        ...sharedAxiosConfig,
-      })
-      .then((axiosResult) => {
-        const { data } = axiosResult;
-        setPlasticCollections(data);
-      });
-  }, [sharedAxiosConfig, userId]);
-
-  useEffect(() => {
-    fetchPlasticCollections();
-  }, [fetchPlasticCollections]);
-
-  const { data: userProgressData, isLoading: userProgressDataIsLoading } =
-    useQueriedData<ProgressionData>("/GetUserProgressData", {
-      userId,
-      clusterId,
-    });
-  const { data: clusterProgressData, isLoading: clusterProgressDataIsLoading } =
-    useQueriedData<ProgressionData>("/GetClusterProgressData", {
-      clusterId,
-    });
-
-  return (
-    <View>
-      {userProgressData ? (
-        <ProgressionCircle
-          headline="Personlig indsamlingsfremgang"
-          progressData={userProgressData}
-          isLoading={userProgressDataIsLoading}
-        />
-      ) : null}
-      {clusterProgressData ? (
-        <ProgressionCircle
-          headline="Cirklens samlede indsamlingsfremgang"
-          progressData={clusterProgressData}
-          isLoading={clusterProgressDataIsLoading}
-        />
-      ) : null}
-      <CollectionForm
-        clusterId={clusterId}
-        userId={userId}
-        successCallback={fetchPlasticCollections}
-      />
-      {plasticCollections && (
-        <UserCollectionsForCluster plasticCollections={plasticCollections} />
-      )}
-    </View>
   );
 };
 

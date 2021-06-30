@@ -1,11 +1,11 @@
 import React, { FC } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ViewProps } from "react-native";
 
-type Props = { text?: string };
+type Props = { text?: string } & ViewProps;
 
-const HeadlineText: FC<Props> = ({ text = "HOUE" }) => {
+const HeadlineText: FC<Props> = ({ text = "HOUE", style, ...viewProps }) => {
   return (
-    <View style={styles.textContainer}>
+    <View style={[styles.textContainer, style]} {...viewProps}>
       <Text style={styles.text}>{text}</Text>
     </View>
   );
@@ -13,7 +13,6 @@ const HeadlineText: FC<Props> = ({ text = "HOUE" }) => {
 
 const styles = StyleSheet.create({
   textContainer: {
-    marginTop: 54,
     width: "100%",
     alignItems: "center",
   },
