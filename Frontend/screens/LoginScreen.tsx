@@ -1,13 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackScreenProps } from "@react-navigation/stack";
-import { Image, ImageBackground, StyleSheet, Text, View } from "react-native";
-import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
+import { Image, StyleSheet, View, Text } from "react-native";
 import { TokenResponse } from "expo-auth-session";
 import React, { FC, useEffect, useState } from "react";
 import AuthorizationButton from "../components/AuthorizationButton";
-import useAzureAdFlows from "../hooks/useAzureAdFlows";
 import { RootStackParamList } from "../typings/types";
 import StyledButton from "../components/styled/Button";
+import BottomButtonContainer from "../components/styled/BottomButtonContainer";
+import MainContentArea from "../components/styled/MainContentArea";
 
 type Props = StackScreenProps<RootStackParamList, "Login">;
 
@@ -49,26 +49,55 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
     loginWithTokenResponse(tokenResponse);
   };
 
-  const scopes = [AZURE_AD_CLIENT_ID];
-  const resetPassword = useAzureAdFlows("B2C_1_PasswordReset", scopes);
-  const onResetPasswordPress = () => resetPassword();
-
   return (
     <View style={styles.container}>
-      <ImageBackground
-        style={styles.imageBackground}
-        source={require("../assets/images/backgrond.png")}
-      >
-        <Image source={require("../assets/icons/arrow.png")} />
-        {/* <View style={styles.container}>
-          <AuthorizationButton
-            handleAuthorization={handleAuthorizationSuccess}
+      <MainContentArea source={require("../assets/images/backgrond.png")}>
+        <View style={styles.menuArea}>
+          <Image
+            source={require("../assets/icons/menu.png")}
+            style={styles.menuIcon}
           />
-          <Button title="NULSTIL KODEORD" onPress={onResetPasswordPress} />
         </View>
-          */}
-      </ImageBackground>
-      <View style={styles.bottomButtonContainer}>
+        <View
+          style={{
+            marginTop: 54,
+            width: "100%",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 42.5,
+              color: "#898c8e",
+              fontFamily: "HelveticaNeueLTPro-Hv",
+            }}
+          >
+            HOUE
+          </Text>
+        </View>
+        <View style={{ marginTop: 60 }}>
+          <Text
+            style={{
+              fontSize: 17.5,
+              color: "#898c8e",
+              fontFamily: "HelveticaNeueLTPro-Bd",
+              textAlign: "center",
+            }}
+          >
+            Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que
+            in pa doloren imaios recescid et, quo doloria nis dellabore dolut
+            hilla dit pos quidia volecto beatempero dolent. Ut omnit, sam et ex
+            ex exero
+          </Text>
+        </View>
+        <View style={styles.mainContentArea}>
+          <Image
+            source={require("../assets/icons/arrow.png")}
+            style={{ width: 49.5, height: 41.5 }}
+          />
+        </View>
+      </MainContentArea>
+      <BottomButtonContainer>
         <AuthorizationButton
           style={styles.bottomButton}
           handleAuthorization={handleAuthorizationSuccess}
@@ -82,7 +111,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
           text="Projekt."
           icon={require("../assets/icons/leaf_grey.png")}
         />
-      </View>
+      </BottomButtonContainer>
     </View>
   );
 };
@@ -92,19 +121,17 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
   },
-  imageBackground: {
-    width: "100%",
+  mainContentArea: {
+    // The image itself constitutes 4 % of the area
+    marginTop: "46%",
     alignItems: "center",
-    justifyContent: "center",
-    flex: 85,
   },
-  bottomButtonContainer: {
-    backgroundColor: "#e7e7e8",
-    flex: 15,
-    width: "100%",
-    flexDirection: "row",
-    paddingVertical: 39,
-    paddingHorizontal: 20,
+  menuArea: {
+    alignItems: "flex-end",
+  },
+  menuIcon: {
+    width: 40,
+    height: 25,
   },
   bottomButton: {
     marginRight: 10,

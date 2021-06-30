@@ -1,10 +1,9 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useCallback, useEffect, useState, useMemo } from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet, ImageBackground } from "react-native";
 import { DateTime } from "luxon";
 import CollectionForm from "../components/collection/OrderCollectionForm";
-import ClusterList from "../components/cluster/ClusterList";
 import useClusters from "../hooks/useClusters";
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
@@ -17,6 +16,7 @@ import ProgressionCircle, {
 } from "../components/shared/ProgressionCircle";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 import useQueriedData from "../hooks/useQueriedData";
+import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
@@ -29,14 +29,25 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     [clusters]
   );
 
-  return (
-    <Container style={{ justifyContent: "center" }}>
-      <ClusterList clusters={activeClusters}>
-        {({ cluster }) => (
-          <ClusterViewForCollector userId={userId} clusterId={cluster.id} />
-        )}
-      </ClusterList>
-    </Container>
+  // For now, it is an invariant that a collector can only ever be associated with
+  // on active cluster at a time
+  const activeCluster =
+    activeClusters.length > 0 ? activeClusters[0] : undefined;
+
+  return activeCluster ? (
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("../assets/images/backgrond.png")}
+        style={{ flex: 85, justifyContent: "center", alignItems: "center" }}
+      >
+        <Text>Test</Text>
+      </ImageBackground>
+      <BottomButtonContainer>
+        <Text>Test 2</Text>
+      </BottomButtonContainer>
+    </View>
+  ) : (
+    <Text>Ingen aktive clustere</Text>
   );
 };
 
@@ -70,19 +81,15 @@ const ClusterViewForCollector: FC<ClusterViewForCollectorProps> = ({
     fetchPlasticCollections();
   }, [fetchPlasticCollections]);
 
-  const {
-    data: userProgressData,
-    isLoading: userProgressDataIsLoading,
-  } = useQueriedData<ProgressionData>("/GetUserProgressData", {
-    userId,
-    clusterId,
-  });
-  const {
-    data: clusterProgressData,
-    isLoading: clusterProgressDataIsLoading,
-  } = useQueriedData<ProgressionData>("/GetClusterProgressData", {
-    clusterId,
-  });
+  const { data: userProgressData, isLoading: userProgressDataIsLoading } =
+    useQueriedData<ProgressionData>("/GetUserProgressData", {
+      userId,
+      clusterId,
+    });
+  const { data: clusterProgressData, isLoading: clusterProgressDataIsLoading } =
+    useQueriedData<ProgressionData>("/GetClusterProgressData", {
+      clusterId,
+    });
 
   return (
     <View>
@@ -161,5 +168,12 @@ const UserCollectionsForCluster: FC<UserCollectionsForClusterProps> = ({
     </Container>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    height: "100%",
+  },
+});
 
 export default CollectionScreen;
