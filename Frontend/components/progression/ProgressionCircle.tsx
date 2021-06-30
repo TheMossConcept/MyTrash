@@ -1,20 +1,19 @@
 import React, { FC } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View, ViewProps, Text } from "react-native";
 import ProgressWheel from "react-native-progress-wheel";
-import Subheader from "../styled/Subheader";
 import InformationText from "../styled/InformationText";
 
 type Props = {
   progressData: ProgressionData;
   isLoading: boolean;
-  headline?: string;
-};
+} & ViewProps;
 
 // TODO: Move isLoading outside of this!
 const UserProgressionCircle: FC<Props> = ({
   progressData,
   isLoading,
-  headline,
+  style,
+  ...viewProps
 }) => {
   const { rectifiedCollectionAmount, collectionGoal } = progressData;
 
@@ -24,14 +23,45 @@ const UserProgressionCircle: FC<Props> = ({
   return isLoading ? (
     <ActivityIndicator />
   ) : (
-    <View style={{ alignItems: "center" }}>
-      <Subheader>{headline || "Estimeret indsamlingsfremgang"}</Subheader>
+    <View style={[{ flex: 1 }, style]} {...viewProps}>
       {collectedPercentage !== undefined ? (
-        <ProgressWheel
-          progress={collectedPercentage}
-          animateFromValue={0}
-          duration={3000}
-        />
+        <View>
+          <Text
+            style={{
+              position: "absolute",
+              top: 35,
+              left: 35,
+              fontSize: 60,
+              color: "#b0bd78",
+              fontFamily: "AvantGarde-Medium",
+            }}
+          >
+            {collectedPercentage <= 9
+              ? `0${collectedPercentage}`
+              : collectedPercentage}
+          </Text>
+          <Text
+            style={{
+              position: "absolute",
+              top: 50,
+              left: 105,
+              fontSize: 15,
+              color: "#748c43",
+              fontFamily: "AvantGarde-Medium",
+            }}
+          >
+            %
+          </Text>
+          <ProgressWheel
+            progress={collectedPercentage}
+            animateFromValue={0}
+            width={3}
+            size={140}
+            color="#748c43"
+            backgroundColor="#ffffff"
+            duration={3000}
+          />
+        </View>
       ) : (
         <InformationText>Kunne ikke hentes</InformationText>
       )}

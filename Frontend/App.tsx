@@ -21,6 +21,7 @@ export default function App() {
     "HelveticaNeueLTPro-Bd": require("./assets/fonts/HelveticaNeueLTPro-Bd.otf"),
     "HelveticaNeueLTPro-Hv": require("./assets/fonts/HelveticaNeueLTPro-Hv.otf"),
     "HelveticaNeueLTPro-Md": require("./assets/fonts/HelveticaNeueLTPro-Md.otf"),
+    "AvantGarde-Medium": require("./assets/fonts/AvantGarde-Medium.ttf"),
   });
 
   return (

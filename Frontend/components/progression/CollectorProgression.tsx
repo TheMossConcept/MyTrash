@@ -1,16 +1,19 @@
 import React, { FC } from "react";
-import { View } from "react-native";
+import { StyleSheet, View, ViewProps } from "react-native";
 import useQueriedData from "../../hooks/useQueriedData";
+import AppText from "../styled/AppText";
 import ProgressionCircle, { ProgressionData } from "./ProgressionCircle";
 
 type ClusterViewForCollectorProps = {
   userId: string;
   clusterId: string;
-};
+} & ViewProps;
 
 const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
   userId,
   clusterId,
+  style,
+  ...viewProps
 }) => {
   // TODO: This is for the pop-up component!
   /*
@@ -47,23 +50,35 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
     });
 
   return (
-    <View>
-      {userProgressData ? (
-        <ProgressionCircle
-          headline="Personlig indsamlingsfremgang"
-          progressData={userProgressData}
-          isLoading={userProgressDataIsLoading}
+    <View style={style} {...viewProps}>
+      <View style={[{ flexDirection: "row" }]}>
+        {userProgressData ? (
+          <ProgressionCircle
+            progressData={userProgressData}
+            isLoading={userProgressDataIsLoading}
+          />
+        ) : null}
+        {clusterProgressData ? (
+          <ProgressionCircle
+            progressData={clusterProgressData}
+            isLoading={clusterProgressDataIsLoading}
+          />
+        ) : null}
+      </View>
+      <View style={styles.textContainer}>
+        <AppText
+          text="You have already collected dia volut et
+          vel is sandanimus coreptur."
         />
-      ) : null}
-      {clusterProgressData ? (
-        <ProgressionCircle
-          headline="Cirklens samlede indsamlingsfremgang"
-          progressData={clusterProgressData}
-          isLoading={clusterProgressDataIsLoading}
-        />
-      ) : null}
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  textContainer: {
+    marginTop: 70,
+  },
+});
 
 export default CollectorProgression;

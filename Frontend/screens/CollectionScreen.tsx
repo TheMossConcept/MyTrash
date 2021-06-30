@@ -44,6 +44,11 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       <MainContentArea>
         <Menu />
         <HeadlineText style={{ marginTop: 54 }} />
+        <CollectorProgression
+          userId={userId}
+          clusterId={activeCluster.id}
+          style={{ marginTop: 62.5 }}
+        />
       </MainContentArea>
       <BottomButtonContainer style={{ paddingVertical: 20 }}>
         <View style={{ flex: 1, paddingHorizontal: 7 }}>
