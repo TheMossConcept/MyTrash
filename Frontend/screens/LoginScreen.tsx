@@ -67,7 +67,11 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         </View>
         <View style={styles.iconContainer}>
           <Image
-            source={require("../assets/icons/arrow.png")}
+            source={{
+              src: require("../assets/icons/arrow.png"),
+              width: 31,
+              height: 31,
+            }}
             style={styles.icon}
           />
         </View>
@@ -79,12 +83,20 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         />
         <StyledButton
           text="Opret bruger."
-          icon={require("../assets/icons/checkmark_grey.png")}
+          icon={{
+            src: require("../assets/icons/checkmark_grey.png"),
+            width: 31,
+            height: 31,
+          }}
           style={styles.bottomButton}
         />
         <StyledButton
           text="Projekt."
-          icon={require("../assets/icons/leaf_grey.png")}
+          icon={{
+            src: require("../assets/icons/leaf_grey.png"),
+            width: 20.5,
+            height: 32.5,
+          }}
         />
       </BottomButtonContainer>
     </View>

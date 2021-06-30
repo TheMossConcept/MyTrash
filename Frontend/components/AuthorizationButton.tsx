@@ -28,8 +28,7 @@ export default function AuthorizationButton({
   ...StyledButtonProps
 }: Props) {
   const scopes = [AZURE_AD_CLIENT_ID, "profile", "email", "offline_access"];
-  const redirectUri =
-    "exp://login"; /* makeRedirectUri({
+  const redirectUri = "exp://login"; /* makeRedirectUri({
     // For usage in bare and standalone
     native: MOBILE_REDIRECT_URL,
   }); */
@@ -93,7 +92,11 @@ export default function AuthorizationButton({
   return (
     <StyledButton
       text="Login"
-      icon={require("../assets/icons/circle_grey.png")}
+      icon={{
+        src: require("../assets/icons/circle_grey.png"),
+        width: 31,
+        height: 31,
+      }}
       onPress={onPress}
       {...StyledButtonProps}
     />

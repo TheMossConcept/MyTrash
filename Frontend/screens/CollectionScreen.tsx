@@ -17,6 +17,7 @@ import ProgressionCircle, {
 import useAxiosConfig from "../hooks/useAxiosConfig";
 import useQueriedData from "../hooks/useQueriedData";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
+import StyledButton from "../components/styled/Button";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
@@ -42,8 +43,53 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       >
         <Text>Test</Text>
       </ImageBackground>
-      <BottomButtonContainer>
-        <Text>Test 2</Text>
+      <BottomButtonContainer style={{ paddingVertical: 20 }}>
+        <View style={{ flex: 1, paddingHorizontal: 7 }}>
+          <StyledButton
+            text={`Status \n indsamling.`}
+            icon={{
+              src: require("../assets/icons/graph_grey.png"),
+              width: 36,
+              height: 26.5,
+            }}
+            isVerticalButton
+            style={{
+              marginBottom: 9,
+            }}
+          />
+          <StyledButton
+            text="Projekt."
+            icon={{
+              src: require("../assets/icons/leaf_grey.png"),
+              width: 20.5,
+              height: 32.5,
+            }}
+            isVerticalButton
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          <StyledButton
+            text={`Afhentning \n plastik.`}
+            icon={{
+              src: require("../assets/icons/truck_grey.png"),
+              width: 44,
+              height: 25,
+            }}
+            isVerticalButton
+            style={{
+              marginBottom: 9,
+            }}
+          />
+          <StyledButton
+            text="Produkter."
+            icon={{
+              src: require("../assets/icons/chair_grey.png"),
+              width: 19.5,
+              height: 29,
+            }}
+            isVerticalButton
+          />
+        </View>
       </BottomButtonContainer>
     </View>
   ) : (

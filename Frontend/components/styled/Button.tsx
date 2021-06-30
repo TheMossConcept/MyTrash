@@ -7,22 +7,43 @@ import {
   TouchableOpacityProps,
 } from "react-native";
 
-type Props = { text: string; icon: any } & TouchableOpacityProps;
+type Props = {
+  text: string;
+  icon: { src: any; width?: number; height?: number };
+  isVerticalButton?: boolean;
+} & TouchableOpacityProps;
 export type StyledButtonProps = Props;
 
 const StyledButton: FC<Props> = ({
   style,
   text,
   icon,
+  isVerticalButton = false,
   ...touchableOpacityProps
 }) => {
   return (
     <TouchableOpacity
-      style={[styles.container, style]}
+      style={
+        isVerticalButton
+          ? [styles.container, styles.verticalButtonContainer, style]
+          : [styles.container, style]
+      }
       {...touchableOpacityProps}
     >
-      <Image source={icon} style={{ width: 32, height: 32 }} />
-      <Text style={{ fontSize: 15, color: "#7b8463" }}>{text}</Text>
+      <Image
+        source={icon.src}
+        style={{ width: icon.width || 32, height: icon.height || 32 }}
+      />
+      <Text
+        style={{
+          fontSize: 15,
+          color: "#a3a5a8",
+          textAlign: isVerticalButton ? "right" : undefined,
+          fontFamily: "HelveticaNeueLTPro-Bd",
+        }}
+      >
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -43,7 +64,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     paddingVertical: 13,
-    paddingLeft: 13,
+    paddingHorizontal: 13,
+  },
+  verticalButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 });
 

@@ -9,7 +9,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Appbar } from "react-native-paper";
 
 import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
-import { View, Text } from "react-native";
+import { Text } from "react-native";
 import AdministrationScreen from "../screens/AdministrationScreen";
 import CollectionAdministrationScreen from "../screens/CollectionAdministrationScreen";
 import CollectionScreen from "../screens/CollectionScreen";
@@ -127,7 +127,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
 
   return userInfo ? (
     <SafeAreaProvider>
-      <Appbar.Header>
+      {/* <Appbar.Header>
         <Appbar.Content
           title={
             userInfo.name
@@ -137,7 +137,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
         />
         <Appbar.Action icon="account-edit" onPress={onEditProfilePress} />
         <Appbar.Action icon="logout" onPress={logout} />
-      </Appbar.Header>
+      </Appbar.Header> */}
       <GlobalSnackbarContext.Provider value={showSnackbar}>
         <Tab.Navigator initialRouteName="Administration" tabBar={() => null}>
           {false && userInfo.isAdministrator && (
