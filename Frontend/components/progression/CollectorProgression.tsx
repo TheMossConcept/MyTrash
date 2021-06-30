@@ -55,12 +55,14 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
         {userProgressData ? (
           <ProgressionCircle
             progressData={userProgressData}
+            explanationText="Your share"
             isLoading={userProgressDataIsLoading}
           />
         ) : null}
         {clusterProgressData ? (
           <ProgressionCircle
             progressData={clusterProgressData}
+            explanationText="Total share"
             isLoading={clusterProgressDataIsLoading}
           />
         ) : null}
