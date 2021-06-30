@@ -8,6 +8,9 @@ import { RootStackParamList } from "../typings/types";
 import StyledButton from "../components/styled/Button";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import MainContentArea from "../components/styled/MainContentArea";
+import Menu from "../components/shared/Menu";
+import HeadlineText from "../components/styled/HeadlineText";
+import AppText from "../components/styled/AppText";
 
 type Props = StackScreenProps<RootStackParamList, "Login">;
 
@@ -52,48 +55,20 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <MainContentArea source={require("../assets/images/backgrond.png")}>
-        <View style={styles.menuArea}>
-          <Image
-            source={require("../assets/icons/menu.png")}
-            style={styles.menuIcon}
-          />
-        </View>
-        <View
-          style={{
-            marginTop: 54,
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 42.5,
-              color: "#898c8e",
-              fontFamily: "HelveticaNeueLTPro-Hv",
-            }}
-          >
-            HOUE
-          </Text>
-        </View>
-        <View style={{ marginTop: 60 }}>
-          <Text
-            style={{
-              fontSize: 17.5,
-              color: "#898c8e",
-              fontFamily: "HelveticaNeueLTPro-Bd",
-              textAlign: "center",
-            }}
-          >
-            Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que
+        <Menu />
+        <HeadlineText />
+        <View style={styles.textContainer}>
+          <AppText
+            text=" Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que
             in pa doloren imaios recescid et, quo doloria nis dellabore dolut
             hilla dit pos quidia volecto beatempero dolent. Ut omnit, sam et ex
-            ex exero
-          </Text>
+            ex exero"
+          />
         </View>
-        <View style={styles.mainContentArea}>
+        <View style={styles.iconContainer}>
           <Image
             source={require("../assets/icons/arrow.png")}
-            style={{ width: 49.5, height: 41.5 }}
+            style={styles.icon}
           />
         </View>
       </MainContentArea>
@@ -121,17 +96,17 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
   },
-  mainContentArea: {
-    // The image itself constitutes 4 % of the area
+  textContainer: {
+    marginTop: 60,
+  },
+  iconContainer: {
+    // The image itself constitutes 4 % of the space
     marginTop: "46%",
     alignItems: "center",
   },
-  menuArea: {
-    alignItems: "flex-end",
-  },
-  menuIcon: {
-    width: 40,
-    height: 25,
+  icon: {
+    width: 49.5,
+    height: 41.5,
   },
   bottomButton: {
     marginRight: 10,
