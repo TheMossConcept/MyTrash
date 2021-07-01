@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackScreenProps } from "@react-navigation/stack";
-import { Image, StyleSheet, View, Text } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { TokenResponse } from "expo-auth-session";
+import { ENV } from "react-native-dotenv";
 import React, { FC, useEffect, useState } from "react";
 import AuthorizationButton from "../components/AuthorizationButton";
 import { RootStackParamList } from "../typings/types";
@@ -59,10 +60,12 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         <HeadlineText style={{ marginTop: 54 }} />
         <View style={styles.textContainer}>
           <AppText
-            text=" Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que
+            text={`${JSON.stringify(
+              process.env
+            )}. Environment: ${ENV}. a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que
             in pa doloren imaios recescid et, quo doloria nis dellabore dolut
             hilla dit pos quidia volecto beatempero dolent. Ut omnit, sam et ex
-            ex exero"
+            ex exero`}
           />
         </View>
         <View style={styles.iconContainer}>

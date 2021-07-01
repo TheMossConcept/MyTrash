@@ -1,8 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { DateTime } from "luxon";
-import useClusters from "../hooks/useClusters";
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
   PlasticCollection,
@@ -15,8 +14,13 @@ import MainContentArea from "../components/styled/MainContentArea";
 import Menu from "../components/shared/Menu";
 import HeadlineText from "../components/styled/HeadlineText";
 import CollectorProgression from "../components/progression/CollectorProgression";
+import useQueriedData from "../hooks/useQueriedData";
+import { Cluster } from "../components/cluster/ClusterList";
+import { ClusterFormData } from "../components/cluster/ClusterForm";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
+
+type FullCluster = Cluster & ClusterFormData;
 
 const iconBasePath = "../assets/icons";
 
@@ -29,17 +33,27 @@ const CollectionScreen: FC<Props> = ({ route }) => {
 
   const { userId } = route.params;
 
-  const { clusters } = useClusters({ collectorId: userId });
-  const activeClusters = clusters.filter(
-    (cluster) => !cluster.closedForCollection
+  const { data: clusters, isLoading } = useQueriedData<FullCluster[]>(
+    "GetClusters",
+    {
+      collectorId: userId,
+    }
   );
+
+  const activeClusters = clusters
+    ? clusters.filter((cluster) => !cluster.closedForCollection)
+    : [];
 
   // For now, it is an invariant that a collector can only ever be associated with
   // on active cluster at a time
   const activeCluster =
     activeClusters.length > 0 ? activeClusters[0] : undefined;
 
-  return activeCluster ? (
+  return isLoading ? (
+    <View>
+      <ActivityIndicator />
+    </View>
+  ) : activeCluster ? (
     <View style={styles.container}>
       <MainContentArea>
         <Menu />
@@ -108,7 +122,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       </BottomButtonContainer>
     </View>
   ) : (
-    <Text>Ingen aktive clustere</Text>
+    <HeadlineText text="Ingen aktive clustere" />
   );
 };
 
