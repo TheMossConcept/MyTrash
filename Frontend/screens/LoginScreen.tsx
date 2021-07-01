@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     // The image itself constitutes 4 % of the space
-    marginTop: "46%",
+    marginTop: 100,
     alignItems: "center",
   },
   icon: {

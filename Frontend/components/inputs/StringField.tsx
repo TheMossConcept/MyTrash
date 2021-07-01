@@ -1,7 +1,7 @@
 import { ErrorMessage, useFormikContext } from "formik";
 import React, { PropsWithChildren } from "react";
-import { View, ViewStyle } from "react-native";
-import { TextInput } from "react-native-paper";
+import { View, ViewStyle, TextInput, Text } from "react-native";
+import globalStyles from "../../utils/globalStyles";
 
 type Props<T> = { formKey: keyof T & string; label: string; style?: ViewStyle };
 
@@ -23,12 +23,16 @@ export default function StringField<T>({
         <TextInput
           /* NB! This is unsafe but I don't know how to statically tell the compiler
           that T should only contain strings */
-          value={(values[key] as unknown) as string}
+          value={values[key] as unknown as string}
           onChangeText={handleChange(key)}
           onBlur={handleBlur(key)}
-          label={label}
+          placeholder={label}
+          style={globalStyles.textField}
         />
-        <ErrorMessage name={key} />
+        <ErrorMessage
+          name={key}
+          render={(errorMessage) => <Text>{errorMessage}</Text>}
+        />
       </View>
     );
   }

@@ -27,7 +27,7 @@ const MainContentArea: FC<Props> = ({
 const styles = StyleSheet.create({
   imageBackground: {
     width: "100%",
-    flex: 85,
+    height: "85%",
     paddingTop: 64,
     paddingHorizontal: 49,
   },

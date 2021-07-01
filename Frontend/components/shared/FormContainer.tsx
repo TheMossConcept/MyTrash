@@ -1,8 +1,8 @@
 import { Formik, FormikConfig } from "formik";
 import React, { PropsWithChildren } from "react";
-import Container, { ContainerProps } from "./Container";
+import { View, ViewProps } from "react-native";
 
-type Props<T> = FormikConfig<T> & Pick<ContainerProps, "style">;
+type Props<T> = FormikConfig<T> & Pick<ViewProps, "style">;
 
 export default function FormContainer<T>({
   children,
@@ -13,7 +13,7 @@ export default function FormContainer<T>({
   return (
     <Formik {...formikConfig}>
       {() => {
-        return <Container style={style}>{children}</Container>;
+        return <View style={style}>{children}</View>;
       }}
     </Formik>
   );
