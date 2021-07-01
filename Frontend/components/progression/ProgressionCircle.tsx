@@ -1,24 +1,16 @@
 import React, { FC } from "react";
-import {
-  ActivityIndicator,
-  View,
-  ViewProps,
-  Text,
-  StyleSheet,
-} from "react-native";
+import { View, ViewProps, Text, StyleSheet } from "react-native";
 import ProgressWheel from "react-native-progress-wheel";
 import InformationText from "../styled/InformationText";
 
 type Props = {
   explanationText: string;
   progressData: ProgressionData;
-  isLoading: boolean;
 } & ViewProps;
 
 // TODO: Move isLoading outside of this!
 const UserProgressionCircle: FC<Props> = ({
   progressData,
-  isLoading,
   style,
   explanationText,
   ...viewProps
@@ -28,9 +20,7 @@ const UserProgressionCircle: FC<Props> = ({
   const collectedPercentage =
     (rectifiedCollectionAmount / collectionGoal) * 100;
 
-  return isLoading ? (
-    <ActivityIndicator />
-  ) : (
+  return (
     <View style={[{ flex: 1 }, style]} {...viewProps}>
       {collectedPercentage !== undefined ? (
         <View>

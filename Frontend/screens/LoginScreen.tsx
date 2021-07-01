@@ -59,14 +59,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         <Menu />
         <HeadlineText style={{ marginTop: 54 }} />
         <View style={styles.textContainer}>
-          <AppText
-            text={`${JSON.stringify(
-              process.env
-            )}. Environment: ${ENV}. a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que
-            in pa doloren imaios recescid et, quo doloria nis dellabore dolut
-            hilla dit pos quidia volecto beatempero dolent. Ut omnit, sam et ex
-            ex exero`}
-          />
+          <AppText text="Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero" />
         </View>
         <View style={styles.iconContainer}>
           <Image

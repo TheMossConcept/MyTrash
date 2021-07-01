@@ -34,7 +34,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
 
   const { data: clusters, isLoading } = useQueriedData<FullCluster[]>(
-    "GetClusters",
+    "/GetClusters",
     {
       collectorId: userId,
     }
@@ -49,8 +49,9 @@ const CollectionScreen: FC<Props> = ({ route }) => {
   const activeCluster =
     activeClusters.length > 0 ? activeClusters[0] : undefined;
 
+  /* eslint-disable no-nested-ternary */
   return isLoading ? (
-    <View>
+    <View style={styles.fullScreenCentered}>
       <ActivityIndicator />
     </View>
   ) : activeCluster ? (
@@ -122,8 +123,11 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       </BottomButtonContainer>
     </View>
   ) : (
-    <HeadlineText text="Ingen aktive clustere" />
+    <View style={styles.fullScreenCentered}>
+      <HeadlineText text="Ingen aktive clustere" />
+    </View>
   );
+  /* eslint-enable no-nested-ternary */
 };
 
 type UserCollectionsForClusterProps = {
@@ -180,6 +184,12 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "100%",
+  },
+  fullScreenCentered: {
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

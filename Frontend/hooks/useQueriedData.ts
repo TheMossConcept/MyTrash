@@ -4,7 +4,7 @@ import { isEqual } from "lodash";
 import useAxiosConfig from "./useAxiosConfig";
 
 function useQueriedData<T>(endpoint: string, queryParams?: Object) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [queryParamsUsed, setQueryParamsUsed] = useState<Object | undefined>();
   const [queriedData, setQueriedData] = useState<T>();
 

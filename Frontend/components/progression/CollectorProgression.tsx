@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { StyleSheet, View, ViewProps } from "react-native";
+import { ActivityIndicator, StyleSheet, View, ViewProps } from "react-native";
 import useQueriedData from "../../hooks/useQueriedData";
 import AppText from "../styled/AppText";
 import ProgressionCircle, { ProgressionData } from "./ProgressionCircle";
@@ -51,21 +51,32 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
 
   return (
     <View style={style} {...viewProps}>
-      <View style={[{ flexDirection: "row" }]}>
-        {userProgressData ? (
+      <View
+        style={[
+          {
+            flexDirection: "row",
+            justifyContent: "center",
+          },
+        ]}
+      >
+        {/* eslint-disable no-nested-ternary */}
+        {userProgressDataIsLoading ? (
+          <ActivityIndicator />
+        ) : userProgressData ? (
           <ProgressionCircle
             progressData={userProgressData}
             explanationText="Your share"
-            isLoading={userProgressDataIsLoading}
           />
         ) : null}
-        {clusterProgressData ? (
+        {clusterProgressDataIsLoading ? (
+          <ActivityIndicator />
+        ) : clusterProgressData ? (
           <ProgressionCircle
             progressData={clusterProgressData}
             explanationText="Total share"
-            isLoading={clusterProgressDataIsLoading}
           />
         ) : null}
+        {/* eslint-enable no-nested-ternary */}
       </View>
       <View style={styles.textContainer}>
         <AppText
