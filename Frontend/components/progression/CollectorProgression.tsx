@@ -65,7 +65,7 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
         ) : userProgressData ? (
           <ProgressionCircle
             progressData={userProgressData}
-            explanationText="Your share"
+            explanationText="YOUR SHARE"
           />
         ) : null}
         {clusterProgressDataIsLoading ? (
@@ -73,7 +73,7 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
         ) : clusterProgressData ? (
           <ProgressionCircle
             progressData={clusterProgressData}
-            explanationText="Total share"
+            explanationText="TOTAL SHARE"
           />
         ) : null}
         {/* eslint-enable no-nested-ternary */}
