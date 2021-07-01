@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { FC, useContext } from "react";
+import { Text } from "react-native";
 // TODO: Fix it so that we use buttons from react-native-paper instead
 import * as yup from "yup";
 import FormContainer from "../shared/FormContainer";
@@ -59,7 +60,18 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   };
 
   return (
-    <FormContainer
+    <Text
+      style={{
+        marginTop: 70,
+        fontFamily: "HelveticaNeueLTPro-Hv",
+        color: "#898c8e",
+        fontSize: 32.5,
+      }}
+    >
+      Book afhentning.
+    </Text>
+  );
+  /* <FormContainer
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values, formikHelpers) => {
@@ -67,13 +79,14 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
       }}
       validateOnMount
     >
+      
       <NumberField label="Antal enheder" formKey="numberOfUnits" />
       <StringField label="Kommentar" formKey="comment" />
       <BooleanField label="Sidste opsamling" formKey="isLastCollection" />
 
       <SubmitButton title="Bestil afhentning" />
-    </FormContainer>
-  );
+        
+    </FormContainer> */
 };
 
 export default CollectionForm;

@@ -17,6 +17,7 @@ import CollectorProgression from "../components/progression/CollectorProgression
 import useQueriedData from "../hooks/useQueriedData";
 import { Cluster } from "../components/cluster/ClusterList";
 import { ClusterFormData } from "../components/cluster/ClusterForm";
+import CollectionForm from "../components/collection/OrderCollectionForm";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
@@ -59,11 +60,19 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       <MainContentArea>
         <Menu />
         <HeadlineText style={{ marginTop: 54 }} />
-        <CollectorProgression
-          userId={userId}
-          clusterId={activeCluster.id}
-          style={{ marginTop: 62.5 }}
-        />
+        {statusSelected ? (
+          <CollectorProgression
+            userId={userId}
+            clusterId={activeCluster.id}
+            style={{ marginTop: 62.5 }}
+          />
+        ) : (
+          <CollectionForm
+            userId={userId}
+            clusterId={activeCluster.id}
+            successCallback={() => console.log("Not implemented yet!")}
+          />
+        )}
       </MainContentArea>
       <BottomButtonContainer style={{ paddingVertical: 20 }}>
         <View style={{ flex: 1, paddingHorizontal: 7 }}>
