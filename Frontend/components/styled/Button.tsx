@@ -19,6 +19,7 @@ const StyledButton: FC<Props> = ({
   style,
   text,
   icon,
+  disabled,
   isSelected = false,
   // TODO: Consider the pros/cons to making the vertical button its own
   // component as opposed to this boolean toggle
@@ -30,16 +31,28 @@ const StyledButton: FC<Props> = ({
   if (isVerticalButton) {
     containerStyles.push(styles.verticalButtonContainer);
   }
+
   if (isSelected) {
     containerStyles.push(styles.selected);
   } else {
     containerStyles.push(styles.unselected);
+
+    // disabled/enabled styling only applies to non selected buttons. I am sure we can do this way more elegantly!!
+    if (disabled) {
+      containerStyles.push(styles.disabled);
+    } else {
+      containerStyles.push(styles.enabled);
+    }
   }
 
   containerStyles.push(style);
 
   return (
-    <TouchableOpacity style={containerStyles} {...touchableOpacityProps}>
+    <TouchableOpacity
+      style={containerStyles}
+      disabled={disabled}
+      {...touchableOpacityProps}
+    >
       <Image
         source={icon.src}
         style={{ width: icon.width || 32, height: icon.height || 32 }}
@@ -67,8 +80,13 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 13,
   },
-  unselected: {
+  disabled: {
+    backgroundColor: "#d7d7d8",
+  },
+  enabled: {
     backgroundColor: "#e7e7e8",
+  },
+  unselected: {
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
