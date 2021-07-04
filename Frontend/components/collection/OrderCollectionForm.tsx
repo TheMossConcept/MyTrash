@@ -6,10 +6,11 @@ import * as yup from "yup";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import BooleanField from "../inputs/BooleanField";
-import SubmitButton from "../inputs/SubmitButton";
 import NumberField from "../inputs/NumberField";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
+import SubmitButton from "../inputs/SubmitButton";
+import Button from "../styled/Button";
 
 type CollectionFormData = {
   numberOfUnits?: number;
@@ -91,25 +92,30 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           formKey="isLastCollection"
           style={{ marginTop: 26.5 }}
         />
+        <View style={{ marginTop: 58.5, height: 68, flexDirection: "row" }}>
+          <SubmitButton
+            title={`Book \n afhentning.`}
+            style={{ flex: 1, marginRight: 7.5 }}
+            icon={{
+              src: require("../../assets/icons/calendar_grey.png"),
+              width: 28,
+              height: 27.5,
+            }}
+          />
+          <Button
+            text={`Status på \n afhentninger.`}
+            isVerticalButton
+            style={{ flex: 1 }}
+            icon={{
+              src: require("../../assets/icons/notepad_grey.png"),
+              height: 30,
+              width: 33,
+            }}
+          />
+        </View>
       </FormContainer>
     </View>
   );
-  /* <FormContainer
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={(values, formikHelpers) => {
-        createCollectionRequest(values, formikHelpers.resetForm);
-      }}
-      validateOnMount
-    >
-      
-      <NumberField label="Antal enheder" formKey="numberOfUnits" />
-      <StringField label="Kommentar" formKey="comment" />
-      <BooleanField label="Sidste opsamling" formKey="isLastCollection" />
-
-      <SubmitButton title="Bestil afhentning" />
-        
-    </FormContainer> */
 };
 
 export default CollectionForm;

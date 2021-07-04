@@ -56,12 +56,15 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
           {
             flexDirection: "row",
             justifyContent: "center",
+            alignItems: "center",
           },
         ]}
       >
         {/* eslint-disable no-nested-ternary */}
         {userProgressDataIsLoading ? (
-          <ActivityIndicator />
+          <View style={{ flex: 1 }}>
+            <ActivityIndicator />
+          </View>
         ) : userProgressData ? (
           <ProgressionCircle
             progressData={userProgressData}

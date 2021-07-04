@@ -1,10 +1,11 @@
 import { useFormikContext } from "formik";
 import React, { FC } from "react";
-import { Button } from "react-native";
+import Button, { StyledButtonProps } from "../styled/Button";
 
-type Props = { title: string };
+// TODO: Change this so title just comes from StyledButtonProps as well
+type Props = { title: string } & Omit<StyledButtonProps, "text">;
 
-const SubmitButton: FC<Props> = ({ title }) => {
+const SubmitButton: FC<Props> = ({ title, ...styledButtonProps }) => {
   const formikProps = useFormikContext<any>();
 
   if (!formikProps) {
@@ -15,9 +16,11 @@ const SubmitButton: FC<Props> = ({ title }) => {
     const { handleSubmit, isValid, isSubmitting } = formikProps;
     return (
       <Button
-        title={title}
+        text={title}
         disabled={!isValid || isSubmitting}
         onPress={() => handleSubmit()}
+        isVerticalButton
+        {...styledButtonProps}
       />
     );
   }
