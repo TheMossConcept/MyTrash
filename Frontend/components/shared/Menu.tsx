@@ -2,6 +2,8 @@ import React, { FC, useRef, useState } from "react";
 import { Image, StyleSheet, View, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Popover from "react-native-popover-view";
+import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
+import useAzureAdFlows from "../../hooks/useAzureAdFlows";
 
 type Props = {};
 
@@ -9,6 +11,11 @@ const Menu: FC<Props> = () => {
   const [popoverIsShown, setPopoverIsShown] = useState(false);
   const dismissPopover = () => setPopoverIsShown(false);
   const popoverRef = useRef<Image>();
+
+  const scopes = [AZURE_AD_CLIENT_ID];
+
+  const editProfile = useAzureAdFlows("B2C_1_ProfileEdit", scopes);
+  const onEditProfilePress = () => editProfile();
 
   return (
     <View style={styles.menuArea}>
@@ -25,7 +32,9 @@ const Menu: FC<Props> = () => {
         onRequestClose={dismissPopover}
       >
         <View style={styles.popoverContainer}>
-          <Text style={styles.popoverText}>Rediger profil.</Text>
+          <TouchableOpacity onPress={onEditProfilePress}>
+            <Text style={styles.popoverText}>Rediger profil.</Text>
+          </TouchableOpacity>
           <Text style={styles.popoverText}>Log ud.</Text>
         </View>
       </Popover>
