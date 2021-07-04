@@ -3,6 +3,8 @@ import { Image, StyleSheet, View, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Popover from "react-native-popover-view";
 import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 import useAzureAdFlows from "../../hooks/useAzureAdFlows";
 
 type Props = {};
@@ -16,6 +18,14 @@ const Menu: FC<Props> = () => {
 
   const editProfile = useAzureAdFlows("B2C_1_ProfileEdit", scopes);
   const onEditProfilePress = () => editProfile();
+
+  const navigation = useNavigation();
+
+  const logout = () => {
+    AsyncStorage.removeItem("accessToken");
+    AsyncStorage.removeItem("idToken");
+    navigation.navigate("Login");
+  };
 
   return (
     <View style={styles.menuArea}>
@@ -35,7 +45,9 @@ const Menu: FC<Props> = () => {
           <TouchableOpacity onPress={onEditProfilePress}>
             <Text style={styles.popoverText}>Rediger profil.</Text>
           </TouchableOpacity>
-          <Text style={styles.popoverText}>Log ud.</Text>
+          <TouchableOpacity onPress={logout}>
+            <Text style={styles.popoverText}>Log ud.</Text>
+          </TouchableOpacity>
         </View>
       </Popover>
     </View>
