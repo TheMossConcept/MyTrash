@@ -33,7 +33,7 @@ function reducer(
 }
 
 const initialState: DismissableSnackbarState = {
-  shown: true,
+  shown: false,
   title: "",
 };
 
