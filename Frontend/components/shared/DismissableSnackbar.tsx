@@ -33,7 +33,7 @@ function reducer(
 }
 
 const initialState: DismissableSnackbarState = {
-  shown: false,
+  shown: true,
   title: "",
 };
 
@@ -60,7 +60,7 @@ const DismissableSnackbar: FC<Props> = ({ globalSnackbarState }) => {
       <View style={styles.snackbarContainer}>
         <Snackbar
           // Empirically, it has been determined that 5 works well
-          style={{ ...styles.snackbar, top: 5 }}
+          style={{ ...styles.snackbar }}
           visible={state.shown}
           onDismiss={dismiss}
           action={{
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     margin: "auto",
   },
   snackbar: {
+    bottom: 20,
     position: "absolute",
     zIndex: 1,
     width: "100%",

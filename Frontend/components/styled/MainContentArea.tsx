@@ -19,7 +19,7 @@ const MainContentArea: FC<Props> = ({
       style={[styles.imageBackground, style]}
       {...imageBackgroundProps}
     >
-      <SafeAreaView>{children}</SafeAreaView>
+      <SafeAreaView style={{ height: "100%" }}>{children}</SafeAreaView>
     </ImageBackground>
   );
 };
@@ -27,7 +27,7 @@ const MainContentArea: FC<Props> = ({
 const styles = StyleSheet.create({
   imageBackground: {
     width: "100%",
-    height: "85%",
+    height: "80%",
     paddingTop: 64,
     paddingHorizontal: 49,
   },

@@ -153,6 +153,7 @@ export type ClusterEntity = {
 
 export type CollectionEntity = {
   entityName: "collection";
+  createdAt: Date;
   isFirstCollection: boolean;
   isLastCollection: boolean;
   requesterId: string;

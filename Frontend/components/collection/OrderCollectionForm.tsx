@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { FC, useContext, useRef, useState } from "react";
 import Popover from "react-native-popover-view";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 // TODO: Fix it so that we use buttons from react-native-paper instead
 import * as yup from "yup";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -70,16 +70,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
 
   return (
     <View>
-      <Text
-        style={{
-          marginTop: 70,
-          fontFamily: "HelveticaNeueLTPro-Hv",
-          color: "#898c8e",
-          fontSize: 32.5,
-        }}
-      >
-        Book afhentninger.
-      </Text>
+      <Text style={styles.headlineText}>Book afhentninger.</Text>
       <FormContainer
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -87,23 +78,23 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           createCollectionRequest(values, formikHelpers.resetForm);
         }}
         validateOnMount
-        style={{ marginTop: 40.5 }}
+        style={styles.formContainer}
       >
         <NumberField label="Antal enheder" formKey="numberOfUnits" />
         <StringField
           label="Kommentar"
           formKey="comment"
-          style={{ marginTop: 26.5 }}
+          style={styles.inputField}
         />
         <BooleanField
           label="Sidste opsamling"
           formKey="isLastCollection"
-          style={{ marginTop: 26.5 }}
+          style={styles.inputField}
         />
-        <View style={{ marginTop: 58.5, height: 68, flexDirection: "row" }}>
+        <View style={styles.buttonsContainer}>
           <SubmitButton
             title={`Book \n afhentning.`}
-            style={{ flex: 1, marginRight: 7.5 }}
+            style={[styles.button, { marginRight: 7.5 }]}
             icon={{
               src: require("../../assets/icons/calendar_grey.png"),
               width: 28,
@@ -115,7 +106,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
             ref={popoverRef}
             onPress={() => setPopoverIsShown(true)}
             isVerticalButton
-            style={{ flex: 1 }}
+            style={styles.button}
             icon={{
               src: require("../../assets/icons/notepad_grey.png"),
               height: 30,
@@ -134,5 +125,28 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  headlineText: {
+    marginTop: 70,
+    fontFamily: "HelveticaNeueLTPro-Hv",
+    color: "#898c8e",
+    fontSize: 32.5,
+  },
+  formContainer: {
+    marginTop: 40.5,
+  },
+  buttonsContainer: {
+    marginTop: 58.5,
+    height: 68,
+    flexDirection: "row",
+  },
+  button: {
+    flex: 1,
+  },
+  inputField: {
+    marginTop: 26.5,
+  },
+});
 
 export default CollectionForm;
