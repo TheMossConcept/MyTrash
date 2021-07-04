@@ -13,6 +13,7 @@ import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
 import SubmitButton from "../inputs/SubmitButton";
 import Button from "../styled/Button";
+import CollectionStatusPopover from "./CollectionStatusPopover";
 
 type CollectionFormData = {
   numberOfUnits?: number;
@@ -64,6 +65,8 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         successCallback();
       });
   };
+
+  const dismissPopover = () => setPopoverIsShown(false);
 
   return (
     <View>
@@ -124,9 +127,9 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
       <Popover
         from={popoverRef}
         isVisible={popoverIsShown}
-        onRequestClose={() => setPopoverIsShown(false)}
+        onRequestClose={dismissPopover}
       >
-        <Text>This is a test of the popover</Text>
+        <CollectionStatusPopover dismissPopover={dismissPopover} />
       </Popover>
     </View>
   );
