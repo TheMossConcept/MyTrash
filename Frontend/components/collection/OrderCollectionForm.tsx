@@ -86,6 +86,11 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           formKey="comment"
           style={{ marginTop: 26.5 }}
         />
+        <BooleanField
+          label="Sidste opsamling"
+          formKey="isLastCollection"
+          style={{ marginTop: 26.5 }}
+        />
       </FormContainer>
     </View>
   );
