@@ -1,8 +1,10 @@
 import axios from "axios";
-import React, { FC, useContext } from "react";
+import React, { FC, useContext, useRef, useState } from "react";
+import Popover from "react-native-popover-view";
 import { Text, View } from "react-native";
 // TODO: Fix it so that we use buttons from react-native-paper instead
 import * as yup from "yup";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import BooleanField from "../inputs/BooleanField";
@@ -40,6 +42,9 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     isLastCollection: false,
     comment: "",
   };
+
+  const [popoverIsShown, setPopoverIsShown] = useState(false);
+  const popoverRef = useRef<TouchableOpacity>();
 
   const sharedAxiosConfig = useAxiosConfig();
   const createCollectionRequest = (
@@ -103,7 +108,9 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
             }}
           />
           <Button
-            text={`Status på \n afhentninger.`}
+            text={`Status på \n afhentning.`}
+            ref={popoverRef}
+            onPress={() => setPopoverIsShown(true)}
             isVerticalButton
             style={{ flex: 1 }}
             icon={{
@@ -114,6 +121,13 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           />
         </View>
       </FormContainer>
+      <Popover
+        from={popoverRef}
+        isVisible={popoverIsShown}
+        onRequestClose={() => setPopoverIsShown(false)}
+      >
+        <Text>This is a test of the popover</Text>
+      </Popover>
     </View>
   );
 };

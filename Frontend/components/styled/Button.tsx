@@ -15,61 +15,69 @@ type Props = {
 } & TouchableOpacityProps;
 export type StyledButtonProps = Props;
 
-const StyledButton: FC<Props> = ({
-  style,
-  text,
-  icon,
-  disabled,
-  isSelected = false,
-  // TODO: Consider the pros/cons to making the vertical button its own
-  // component as opposed to this boolean toggle
-  isVerticalButton = false,
-  ...touchableOpacityProps
-}) => {
-  const containerStyles: any[] = [styles.container];
+/* eslint-disable react/display-name */
+const StyledButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
+  (
+    {
+      style,
+      text,
+      icon,
+      disabled,
+      isSelected = false,
+      // TODO: Consider the pros/cons to making the vertical button its own
+      // component as opposed to this boolean toggle
+      isVerticalButton = false,
+      ...touchableOpacityProps
+    },
+    ref
+  ) => {
+    const containerStyles: any[] = [styles.container];
 
-  if (isVerticalButton) {
-    containerStyles.push(styles.verticalButtonContainer);
-  }
-
-  if (isSelected) {
-    containerStyles.push(styles.selected);
-  } else {
-    containerStyles.push(styles.unselected);
-
-    // disabled/enabled styling only applies to non selected buttons. I am sure we can do this way more elegantly!!
-    if (disabled) {
-      containerStyles.push(styles.disabled);
-    } else {
-      containerStyles.push(styles.enabled);
+    if (isVerticalButton) {
+      containerStyles.push(styles.verticalButtonContainer);
     }
-  }
 
-  containerStyles.push(style);
+    if (isSelected) {
+      containerStyles.push(styles.selected);
+    } else {
+      containerStyles.push(styles.unselected);
 
-  return (
-    <TouchableOpacity
-      style={containerStyles}
-      disabled={disabled}
-      {...touchableOpacityProps}
-    >
-      <Image
-        source={icon.src}
-        style={{ width: icon.width || 32, height: icon.height || 32 }}
-      />
-      <Text
-        style={{
-          fontSize: 15,
-          color: isSelected ? "#7b8463" : "#a3a5a8",
-          textAlign: isVerticalButton ? "right" : undefined,
-          fontFamily: "HelveticaNeueLTPro-Bd",
-        }}
+      // disabled/enabled styling only applies to non selected buttons. I am sure we can do this way more elegantly!!
+      if (disabled) {
+        containerStyles.push(styles.disabled);
+      } else {
+        containerStyles.push(styles.enabled);
+      }
+    }
+
+    containerStyles.push(style);
+
+    return (
+      <TouchableOpacity
+        style={containerStyles}
+        disabled={disabled}
+        ref={ref}
+        {...touchableOpacityProps}
       >
-        {text}
-      </Text>
-    </TouchableOpacity>
-  );
-};
+        <Image
+          source={icon.src}
+          style={{ width: icon.width || 32, height: icon.height || 32 }}
+        />
+        <Text
+          style={{
+            fontSize: 15,
+            color: isSelected ? "#7b8463" : "#a3a5a8",
+            textAlign: isVerticalButton ? "right" : undefined,
+            fontFamily: "HelveticaNeueLTPro-Bd",
+          }}
+        >
+          {text}
+        </Text>
+      </TouchableOpacity>
+    );
+  }
+);
+/* eslint-enable react/display-name */
 
 const styles = StyleSheet.create({
   container: {
