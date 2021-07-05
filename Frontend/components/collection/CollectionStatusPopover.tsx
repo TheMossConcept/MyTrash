@@ -1,7 +1,15 @@
 import React, { FC } from "react";
 import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
 
-type Props = { dismissPopover: () => void };
+// TODO: This becomes unnecessary when we introduce end-to-end typings
+export type CollectionStatusData = {
+  numberOfUnits: number;
+  createdAt: Date;
+  scheduledPickupDate?: Date;
+  collectionStatus: "pending" | "scheduled" | "delivered" | "received";
+};
+
+type Props = { dismissPopover: () => void; data: CollectionStatusData };
 
 const CollectionStatusPopover: FC<Props> = ({ dismissPopover }) => {
   return (

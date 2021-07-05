@@ -15,30 +15,6 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
   style,
   ...viewProps
 }) => {
-  // TODO: This is for the pop-up component!
-  /*
-  const [plasticCollections, setPlasticCollections] = useState<
-    PlasticCollection[]
-  >([]);
-  // TODO: Move this to useQueriedData
-  const sharedAxiosConfig = useAxiosConfig();
-  const fetchPlasticCollections = useCallback(() => {
-    axios
-      .get("/GetPlasticCollections", {
-        params: { collectorId: userId, clusterId },
-        ...sharedAxiosConfig,
-      })
-      .then((axiosResult) => {
-        const { data } = axiosResult;
-        setPlasticCollections(data);
-      });
-  }, [sharedAxiosConfig, userId]);
-
-  useEffect(() => {
-    fetchPlasticCollections();
-  }, [fetchPlasticCollections]);
-   */
-
   const { data: userProgressData, isLoading: userProgressDataIsLoading } =
     useQueriedData<ProgressionData>("/GetUserProgressData", {
       userId,

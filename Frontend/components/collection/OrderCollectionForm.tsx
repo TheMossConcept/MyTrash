@@ -14,8 +14,9 @@ import GlobalSnackbarContext from "../../utils/globalContext";
 import SubmitButton from "../inputs/SubmitButton";
 import Button from "../styled/Button";
 import CollectionStatusPopover from "./CollectionStatusPopover";
+import useLatestPlasticCollection from "../../hooks/useLatestPlasticCollection";
 
-type CollectionFormData = {
+export type CollectionFormData = {
   numberOfUnits?: number;
   comment?: string;
   isLastCollection: boolean;
@@ -39,7 +40,7 @@ const validationSchema = yup.object().shape({
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
 const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
-  const initialValues: CollectionFormData = {
+  const initialValues = {
     isLastCollection: false,
     comment: "",
   };
@@ -47,7 +48,11 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   const [popoverIsShown, setPopoverIsShown] = useState(false);
   const popoverRef = useRef<TouchableOpacity>();
 
+  const { update, formValues, statusValues, refresh } =
+    useLatestPlasticCollection(userId);
+
   const sharedAxiosConfig = useAxiosConfig();
+
   const createCollectionRequest = (
     values: CollectionFormData,
     reset: () => void
@@ -59,6 +64,8 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         { ...sharedAxiosConfig }
       )
       .then(() => {
+        refresh();
+
         showGlobalSnackbar("Afhentning bestilt");
         reset();
 
@@ -72,12 +79,17 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     <View>
       <Text style={styles.headlineText}>Book afhentninger.</Text>
       <FormContainer
-        initialValues={initialValues}
+        initialValues={formValues || initialValues}
         validationSchema={validationSchema}
         onSubmit={(values, formikHelpers) => {
-          createCollectionRequest(values, formikHelpers.resetForm);
+          if (update) {
+            update(values);
+          } else {
+            createCollectionRequest(values, formikHelpers.resetForm);
+          }
         }}
         validateOnMount
+        enableReinitialize
         style={styles.formContainer}
       >
         <NumberField label="Antal enheder" formKey="numberOfUnits" />
@@ -93,7 +105,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         />
         <View style={styles.buttonsContainer}>
           <SubmitButton
-            title={`Book \n afhentning.`}
+            title={update ? `Ret \n afhentning` : `Book \n afhentning.`}
             style={[styles.button, { marginRight: 7.5 }]}
             icon={{
               src: require("../../assets/icons/calendar_grey.png"),
@@ -105,6 +117,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
             text={`Status på \n afhentning.`}
             ref={popoverRef}
             onPress={() => setPopoverIsShown(true)}
+            disabled={!statusValues}
             isVerticalButton
             style={styles.button}
             icon={{
@@ -115,13 +128,18 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           />
         </View>
       </FormContainer>
-      <Popover
-        from={popoverRef}
-        isVisible={popoverIsShown}
-        onRequestClose={dismissPopover}
-      >
-        <CollectionStatusPopover dismissPopover={dismissPopover} />
-      </Popover>
+      {statusValues && (
+        <Popover
+          from={popoverRef}
+          isVisible={popoverIsShown}
+          onRequestClose={dismissPopover}
+        >
+          <CollectionStatusPopover
+            dismissPopover={dismissPopover}
+            data={statusValues}
+          />
+        </Popover>
+      )}
     </View>
   );
 };

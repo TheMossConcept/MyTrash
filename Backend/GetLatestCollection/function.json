@@ -15,5 +15,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/GetOpenClusters/index.js"
+  "scriptFile": "../dist/GetLatestCollection/index.js"
 }

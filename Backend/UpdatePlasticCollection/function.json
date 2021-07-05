@@ -6,7 +6,7 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "get"
+        "put"
       ]
     },
     {
@@ -15,5 +15,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/GetOpenClusters/index.js"
+  "scriptFile": "../dist/UpdatePlasticCollection/index.js"
 }

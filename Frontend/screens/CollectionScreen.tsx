@@ -23,8 +23,6 @@ type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
 type FullCluster = Cluster & ClusterFormData;
 
-const iconBasePath = "../assets/icons";
-
 const CollectionScreen: FC<Props> = ({ route }) => {
   const [selectedScreen, setSelectedScreen] = useState<"status" | "collection">(
     "status"
@@ -80,8 +78,8 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             text={`Status \n indsamling.`}
             icon={{
               src: statusSelected
-                ? require(`${iconBasePath}/graph_green.png`)
-                : require(`${iconBasePath}/graph_grey.png`),
+                ? require("../assets/icons/graph_green.png")
+                : require("../assets/icons/graph_grey.png"),
               width: 36,
               height: 26.5,
             }}
@@ -107,8 +105,8 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             text={`Afhentning \n plastik.`}
             icon={{
               src: collectionSelected
-                ? require(`${iconBasePath}/truck_green.png`)
-                : require(`${iconBasePath}/truck_grey.png`),
+                ? require("../assets/icons/truck_green.png")
+                : require("../assets/icons/truck_grey.png"),
               width: 44,
               height: 25,
             }}
@@ -137,56 +135,6 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     </View>
   );
   /* eslint-enable no-nested-ternary */
-};
-
-type UserCollectionsForClusterProps = {
-  plasticCollections: PlasticCollection[];
-};
-
-const UserCollectionsForCluster: FC<UserCollectionsForClusterProps> = ({
-  plasticCollections,
-}) => {
-  // TODO: Make this into a getPlasticCollections hook with an option for
-  // grouping based on the status
-
-  const sortedCollections = sortCollectionsByStatus(plasticCollections);
-  return (
-    <Container>
-      <PlasticCollectionsDetails
-        title="Afventer"
-        plasticCollections={sortedCollections.pending}
-      />
-      <PlasticCollectionsDetails
-        title="Planlagt"
-        plasticCollections={sortedCollections.scheduled}
-      >
-        {(collection) => {
-          const scheduledPickupDateString = collection.scheduledPickupDate
-            ? DateTime.fromISO(collection.scheduledPickupDate).toLocaleString({
-                month: "long",
-                day: "2-digit",
-                minute: "2-digit",
-                hour: "2-digit",
-                hour12: false,
-              })
-            : undefined;
-
-          if (scheduledPickupDateString !== undefined) {
-            <Text>Afhentning planlagt til {scheduledPickupDateString}</Text>;
-          }
-          return null;
-        }}
-      </PlasticCollectionsDetails>
-      <PlasticCollectionsDetails
-        title="Afleveret"
-        plasticCollections={sortedCollections.delivered}
-      />
-      <PlasticCollectionsDetails
-        title="Bekræftet"
-        plasticCollections={sortedCollections.received}
-      />
-    </Container>
-  );
 };
 
 const styles = StyleSheet.create({

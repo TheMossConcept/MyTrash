@@ -61,7 +61,8 @@ const mongoAPI = {
   // value)
   async find<T extends Entities>(
     entityName: T["entityName"],
-    query?: mongodb.FilterQuery<T>
+    query?: mongodb.FilterQuery<T>,
+    sort?: { [key: string]: 1 | -1 }
   ): Promise<(T & DatabaseEntity)[]> {
     const client = await getMongoClient();
     const result = await client
@@ -69,6 +70,7 @@ const mongoAPI = {
       .collection(entityName)
       // TODO: Add the type here!
       .find(query)
+      .sort(sort || {})
       .toArray();
 
     return result;
