@@ -9,6 +9,7 @@ type ReturnValue = {
   update?: (newValues: CollectionFormData) => void;
   formValues?: CollectionFormData;
   statusValues?: CollectionStatusData;
+  collectionIsOver?: boolean;
   refresh: () => void;
 };
 
@@ -60,6 +61,9 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
       update: updateCollectionRequest,
       statusValues: existingCollection,
       formValues: existingCollection,
+      // If the last collection has been handled, the collection is over
+      collectionIsOver:
+        !collectionHasYetToBeHandled && existingCollection.isLastCollection,
       refresh: getLatestCollection,
     };
   }

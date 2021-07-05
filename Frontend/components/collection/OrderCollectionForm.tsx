@@ -48,7 +48,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   const [popoverIsShown, setPopoverIsShown] = useState(false);
   const popoverRef = useRef<TouchableOpacity>();
 
-  const { update, formValues, statusValues, refresh } =
+  const { update, formValues, statusValues, refresh, collectionIsOver } =
     useLatestPlasticCollection(userId);
 
   const sharedAxiosConfig = useAxiosConfig();
@@ -75,7 +75,18 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
 
   const dismissPopover = () => setPopoverIsShown(false);
 
-  return (
+  return collectionIsOver ? (
+    <View>
+      <Text style={styles.headlineText}>Indsamlingen er overstået</Text>
+      {statusValues && (
+        <CollectionStatusPopover
+          style={styles.contentContainer}
+          dismissPopover={dismissPopover}
+          data={statusValues}
+        />
+      )}
+    </View>
+  ) : (
     <View>
       <Text style={styles.headlineText}>Book afhentninger.</Text>
       <FormContainer
@@ -90,7 +101,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         }}
         validateOnMount
         enableReinitialize
-        style={styles.formContainer}
+        style={styles.contentContainer}
       >
         <NumberField label="Antal enheder" formKey="numberOfUnits" />
         <StringField
@@ -151,7 +162,7 @@ const styles = StyleSheet.create({
     color: "#898c8e",
     fontSize: 32.5,
   },
-  formContainer: {
+  contentContainer: {
     marginTop: 40.5,
   },
   buttonsContainer: {

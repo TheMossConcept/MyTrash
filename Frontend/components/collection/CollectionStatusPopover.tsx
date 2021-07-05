@@ -1,5 +1,12 @@
 import React, { FC } from "react";
-import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  ViewProps,
+} from "react-native";
 
 // TODO: This becomes unnecessary when we introduce end-to-end typings
 export type CollectionStatusData = {
@@ -9,11 +16,18 @@ export type CollectionStatusData = {
   collectionStatus: "pending" | "scheduled" | "delivered" | "received";
 };
 
-type Props = { dismissPopover: () => void; data: CollectionStatusData };
+type Props = {
+  dismissPopover: () => void;
+  data: CollectionStatusData;
+} & ViewProps;
 
-const CollectionStatusPopover: FC<Props> = ({ dismissPopover }) => {
+const CollectionStatusPopover: FC<Props> = ({
+  dismissPopover,
+  style,
+  ...viewProps
+}) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]} {...viewProps}>
       <View style={styles.crossContainer}>
         <TouchableOpacity onPress={dismissPopover}>
           <Image
