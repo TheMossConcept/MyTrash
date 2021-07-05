@@ -30,7 +30,9 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
         params: { collectorId },
       })
       .then((response) => {
-        setExistingCollection(response.data);
+        if (response.data) {
+          setExistingCollection(response.data);
+        }
       });
   };
 
