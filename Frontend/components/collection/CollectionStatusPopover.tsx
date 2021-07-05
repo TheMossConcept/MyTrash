@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import React, { FC } from "react";
 import {
   StyleSheet,
@@ -13,8 +14,10 @@ type CollectionStatus = "pending" | "scheduled" | "delivered" | "received";
 // TODO: This becomes unnecessary when we introduce end-to-end typings
 export type CollectionStatusData = {
   numberOfUnits: number;
-  createdAt: Date;
-  scheduledPickupDate?: Date;
+  createdAt: string;
+  scheduledPickupDate?: string;
+  deliveryDate?: string;
+  receivedDate?: string;
   collectionStatus: CollectionStatus;
 };
 
@@ -62,20 +65,32 @@ const StatusLine: FC<StatusLineProps> = ({
   ...viewProps
 }) => {
   const isCurrentStatus = data.collectionStatus === collectionStatus;
+
+  let dateToDisplay: DateTime | undefined;
   let statusText = "";
 
   switch (collectionStatus) {
     case "pending":
       statusText = "Afventer.";
+      dateToDisplay = DateTime.fromISO(data.createdAt);
       break;
     case "scheduled":
       statusText = `Afhentning \nplanlagt.`;
+      dateToDisplay = data.scheduledPickupDate
+        ? DateTime.fromISO(data.scheduledPickupDate)
+        : undefined;
       break;
     case "delivered":
       statusText = `Afhentning \nbekræftet.`;
+      dateToDisplay = data.deliveryDate
+        ? DateTime.fromISO(data.deliveryDate)
+        : undefined;
       break;
     case "received":
       statusText = "Modtaget.";
+      dateToDisplay = data.receivedDate
+        ? DateTime.fromISO(data.receivedDate)
+        : undefined;
       break;
     default:
       statusText = "";
@@ -92,7 +107,20 @@ const StatusLine: FC<StatusLineProps> = ({
         />
         <Text style={styles.statusText}>{statusText}</Text>
       </View>
-      <View style={styles.statusInformationContainer} />
+      <View style={styles.statusInformationContainer}>
+        {isCurrentStatus && (
+          <View style={{ justifyContent: "center" }}>
+            <Text style={styles.informationText}>
+              {data.numberOfUnits} Stk.
+            </Text>
+            {dateToDisplay && (
+              <Text style={styles.informationText}>
+                {`${dateToDisplay.toFormat("dd LLLL yyyy", { locale: "da" })}.`}
+              </Text>
+            )}
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -118,6 +146,7 @@ const styles = StyleSheet.create({
   },
   statusInformationContainer: {
     flex: 1,
+    paddingLeft: 18,
   },
   statusIndicatorContainer: {
     flex: 2,
@@ -137,6 +166,12 @@ const styles = StyleSheet.create({
     color: "#898c8e",
     fontFamily: "HelveticaNeueLTPro-Bd",
     fontSize: 16,
+  },
+  informationText: {
+    color: "#898c8e",
+    fontSize: 16.5,
+    fontFamily: "HelveticaNeueLTPro-Md",
+    marginBottom: 5,
   },
   headline: {
     fontFamily: "HelveticaNeueLTPro-Hv",

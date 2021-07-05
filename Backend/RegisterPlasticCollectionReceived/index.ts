@@ -19,7 +19,11 @@ const httpTrigger: AzureFunction = async function (
       "collection",
       collectionId,
       {
-        $set: { weight, collectionStatus: "received" },
+        $set: {
+          weight,
+          collectionStatus: "received",
+          receivedDate: new Date(),
+        },
       }
     );
 

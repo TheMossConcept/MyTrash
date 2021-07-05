@@ -155,7 +155,6 @@ export type ClusterEntity = {
 
 export type CollectionEntity = {
   entityName: "collection";
-  createdAt: Date;
   isFirstCollection: boolean;
   isLastCollection: boolean;
   requesterId: string;
@@ -165,7 +164,10 @@ export type CollectionEntity = {
   numberOfUnits: number;
   weight?: number;
   comment?: string;
+  createdAt: Date;
   scheduledPickupDate?: Date;
+  deliveryDate?: Date;
+  receivedDate?: Date;
   collectionStatus: "pending" | "scheduled" | "delivered" | "received";
 };
 
