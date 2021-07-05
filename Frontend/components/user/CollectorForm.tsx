@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { FC } from "react";
-import { View } from "react-native";
+import { ImageBackground, StyleSheet, View } from "react-native";
 import * as yup from "yup";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
@@ -8,6 +8,8 @@ import NumberField from "../inputs/NumberField";
 import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import HeadlineText from "../styled/HeadlineText";
+import MainContentArea from "../styled/MainContentArea";
 
 export type CollectorFormData = {
   clusterId?: string;
@@ -97,26 +99,54 @@ const CollectorForm: FC<Props> = ({
       }
       validateOnMount
     >
-      <View style={{ width: "95%", margin: "auto" }}>
-        <Subheader>Kontaktoplysninger</Subheader>
-        <StringField label="Fornavn" formKey="firstName" />
-        <StringField label="Efternavn" formKey="lastName" />
-        <StringField label="Email" formKey="email" />
-        <StringField label="Telefonnummer" formKey="phoneNumber" />
-        <Subheader>Addresseoplysninger</Subheader>
-        <View style={{ flex: 2 }}>
+      <HeadlineText text="Kontakt" />
+      <StringField
+        label="Fornavn"
+        formKey="firstName"
+        style={styles.inputField}
+      />
+      <StringField
+        label="Efternavn"
+        formKey="lastName"
+        style={styles.inputField}
+      />
+      <StringField label="Email" formKey="email" style={styles.inputField} />
+      <StringField
+        label="Telefonnummer"
+        formKey="phoneNumber"
+        style={styles.inputField}
+      />
+      <HeadlineText text="Addresse" style={styles.inputField} />
+      <View style={[styles.inputField, { flexDirection: "row" }]}>
+        <View style={{ flex: 2, marginRight: 10 }}>
           <StringField label="Gadenavn" formKey="street" />
         </View>
         <View style={{ flex: 1 }}>
           <StringField label="Husnummer" formKey="streetNumber" />
         </View>
-        <StringField label="By" formKey="city" />
-        <NumberField label="Postnummer" formKey="zipCode" />
-        {children}
-        <SubmitButton title={submitTitle} />
       </View>
+      <StringField label="By" formKey="city" style={styles.inputField} />
+      <NumberField
+        label="Postnummer"
+        formKey="zipCode"
+        style={styles.inputField}
+      />
+      {children}
+      <SubmitButton
+        title={submitTitle}
+        icon={{ src: require("../../assets/icons/notepad_grey.png") }}
+      />
     </FormContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  inputField: {
+    marginBottom: 10,
+  },
+  submitButton: {
+    marginTop: 10,
+  },
+});
 
 export default CollectorForm;

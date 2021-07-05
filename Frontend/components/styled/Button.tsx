@@ -59,10 +59,12 @@ const StyledButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
         ref={ref}
         {...touchableOpacityProps}
       >
-        <Image
-          source={icon.src}
-          style={{ width: icon.width || 32, height: icon.height || 32 }}
-        />
+        {icon && (
+          <Image
+            source={icon.src}
+            style={{ width: icon.width || 32, height: icon.height || 32 }}
+          />
+        )}
         <Text
           style={{
             fontSize: 15,

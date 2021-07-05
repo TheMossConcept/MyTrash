@@ -4,6 +4,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import AutocompleteInput from "../components/inputs/AutocompleteInput";
 import { RootStackParamList } from "../typings/types";
 import CollectorForm from "../components/user/CollectorForm";
+import MainContentArea from "../components/styled/MainContentArea";
 
 type Props = StackScreenProps<RootStackParamList, "Join">;
 
@@ -13,20 +14,19 @@ const JoinClusterForm: FC<Props> = ({ route }) => {
   const { clusterId } = route.params || {};
 
   return (
-    <View style={styles.container}>
+    <MainContentArea>
       <CollectorForm submitTitle="Tilmeld" clusterId={clusterId}>
         {clusterId === undefined && (
           <AutocompleteInput formKey="clusterId" endpoint="/GetOpenClusters" />
         )}
       </CollectorForm>
-    </View>
+    </MainContentArea>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: "80%",
-    margin: "auto",
+    paddingHorizontal: 20,
   },
 });
 
