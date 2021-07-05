@@ -115,7 +115,7 @@ const StatusLine: FC<StatusLineProps> = ({
             </Text>
             {dateToDisplay && (
               <Text style={styles.informationText}>
-                {`${dateToDisplay.toFormat("dd LLLL yyyy", { locale: "da" })}.`}
+                {`${dateToDisplay.toFormat("dd LLLL yyyy")}.`}
               </Text>
             )}
           </View>
