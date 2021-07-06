@@ -13,6 +13,7 @@ import {
 import Constants from "expo-constants";
 import useAzureAdFlows from "../hooks/useAzureAdFlows";
 import StyledButton, { StyledButtonProps } from "./styled/Button";
+import getDefaultRedirectUri from "../utils/authorization";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -30,7 +31,9 @@ export default function AuthorizationButton({
   const { AZURE_AD_CLIENT_ID } = Constants.manifest.extra;
   const scopes = [AZURE_AD_CLIENT_ID, "profile", "email", "offline_access"];
 
-  const signIn = useAzureAdFlows("B2C_1_SignIn", scopes);
+  const defaultRedirectUrl = getDefaultRedirectUri();
+
+  const signIn = useAzureAdFlows("B2C_1_SignIn", scopes, defaultRedirectUrl);
 
   // Request
   const onPress = async () => {
@@ -50,7 +53,7 @@ export default function AuthorizationButton({
             code: authSessionResult.params.code,
             scopes,
             clientId: AZURE_AD_CLIENT_ID,
-            redirectUri,
+            redirectUri: defaultRedirectUrl,
             extraParams: {
               code_verifier: authRequest.codeVerifier,
               p: "B2C_1_SignIn",
