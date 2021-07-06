@@ -5,7 +5,7 @@ const localConfig = {
     "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration",
   AZURE_AD_CLIENT_ID: "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412",
   BACKEND_URL: "http://localhost:7071/api",
-  MOBILE_REDIRECT_URL: "expo://login",
+  MOBILE_REDIRECT_URL: "exp://127.0.0.1:19000",
   ENVIRONMENT_NAME: "local",
 };
 const stagingConfig = {
@@ -13,7 +13,7 @@ const stagingConfig = {
     "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration",
   AZURE_AD_CLIENT_ID: "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412",
   BACKEND_URL: "https://houe-plastic-recycling-windows.azurewebsites.net/api",
-  MOBILE_REDIRECT_URL: "expo://login",
+  MOBILE_REDIRECT_URL: "exp://127.0.0.1:19000",
   ENVIRONMENT_NAME: "development",
 };
 const productionConfig = {

@@ -15,8 +15,7 @@ const Menu: FC<Props> = () => {
   const dismissPopover = () => setPopoverIsShown(false);
   const popoverRef = useRef<Image>();
 
-  const scopes = [AZURE_AD_CLIENT_ID]; // [AZURE_AD_CLIENT_ID];
-  // const redirectUri = "exp://login";
+  const scopes = [AZURE_AD_CLIENT_ID];
 
   const editProfile = useAzureAdFlows("B2C_1_ProfileEdit", scopes);
   const onEditProfilePress = () => editProfile();

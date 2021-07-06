@@ -6,8 +6,6 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { Appbar } from "react-native-paper";
-
 import { Text } from "react-native";
 import AdministrationScreen from "../screens/AdministrationScreen";
 import CollectionAdministrationScreen from "../screens/CollectionAdministrationScreen";
@@ -19,7 +17,6 @@ import { TabsParamList, RootStackParamList } from "../typings/types";
 import DismissableSnackbar, {
   useSnackbarState,
 } from "../components/shared/DismissableSnackbar";
-import useAzureAdFlows from "../hooks/useAzureAdFlows";
 import NoAccess from "../screens/NoAccess";
 import GlobalSnackbarContext from "../utils/globalContext";
 
@@ -102,19 +99,6 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
     updateUserInfo();
   }, []);
 
-  /*
-  const logout = () => {
-    AsyncStorage.removeItem("accessToken");
-    AsyncStorage.removeItem("idToken");
-    navigation.navigate("Login");
-  };
-
-  const scopes = [Constants.manifest.extra.AZURE_AD_CLIENT_ID];
-
-  const editProfile = useAzureAdFlows("B2C_1_ProfileEdit", scopes);
-  const onEditProfilePress = () => editProfile();
-  */
-
   const globalSnackbarState = useSnackbarState();
   const [, dispatch] = globalSnackbarState;
 
@@ -128,17 +112,6 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
 
   return userInfo ? (
     <SafeAreaProvider>
-      {/* <Appbar.Header>
-        <Appbar.Content
-          title={
-            userInfo.name
-              ? `Velkommen ${userInfo.name}`
-              : "Velkommen til MyTrash"
-          }
-        />
-        <Appbar.Action icon="account-edit" onPress={onEditProfilePress} />
-        <Appbar.Action icon="logout" onPress={logout} />
-      </Appbar.Header> */}
       <GlobalSnackbarContext.Provider value={showSnackbar}>
         <Tab.Navigator initialRouteName="Administration" tabBar={() => null}>
           {false && userInfo.isAdministrator && (

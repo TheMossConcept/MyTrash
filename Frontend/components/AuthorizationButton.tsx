@@ -27,14 +27,10 @@ export default function AuthorizationButton({
   handleAuthorization,
   ...StyledButtonProps
 }: Props) {
-  const { AZURE_AD_CLIENT_ID, MOBILE_REDIRECT_URL } = Constants.manifest.extra;
+  const { AZURE_AD_CLIENT_ID } = Constants.manifest.extra;
   const scopes = [AZURE_AD_CLIENT_ID, "profile", "email", "offline_access"];
-  const redirectUri = makeRedirectUri({
-    // For usage in bare and standalone
-    native: MOBILE_REDIRECT_URL,
-  });
 
-  const signIn = useAzureAdFlows("B2C_1_SignIn", scopes, redirectUri);
+  const signIn = useAzureAdFlows("B2C_1_SignIn", scopes);
 
   // Request
   const onPress = async () => {
