@@ -6,29 +6,25 @@ import {
   makeRedirectUri,
 } from "expo-auth-session";
 import { useEffect, useState } from "react";
-import {
-  AUTHORIZATION_URL,
-  AZURE_AD_CLIENT_ID,
-  MOBILE_REDIRECT_URL,
-} from "react-native-dotenv";
+import Constants from "expo-constants";
 
 export default function useAzureAdFlows(
   flowName: string,
   scopes: string[],
   redirectUri?: string
 ) {
+  const { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID, MOBILE_REDIRECT_URL } =
+    Constants.manifest.extra;
   const [discoveryDocument, setDiscoveryDocument] = useState<
     DiscoveryDocument | undefined
   >(undefined);
-
-  // console.log(ENV);
 
   // NB! We cannot use autodiscovery in this case bacause it automatically appends /.well-known/openid-configuration to the URL and does
   // not support explicitly passing query parameters
   useEffect(() => {
     const updateDiscoveryDocument = async () => {
       const rawDiscoveryDocumentResponse = await axios.get(
-        `https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${flowName}`
+        `${AUTHORIZATION_URL}?p=${flowName}`
       );
       const {
         /* eslint-disable camelcase */

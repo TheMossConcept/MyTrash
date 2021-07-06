@@ -2,7 +2,7 @@ import React, { FC, useRef, useState } from "react";
 import { Image, StyleSheet, View, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Popover from "react-native-popover-view";
-import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
+import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import useAzureAdFlows from "../../hooks/useAzureAdFlows";
@@ -10,11 +10,12 @@ import useAzureAdFlows from "../../hooks/useAzureAdFlows";
 type Props = {};
 
 const Menu: FC<Props> = () => {
+  const { AZURE_AD_CLIENT_ID } = Constants.manifest.extra;
   const [popoverIsShown, setPopoverIsShown] = useState(false);
   const dismissPopover = () => setPopoverIsShown(false);
   const popoverRef = useRef<Image>();
 
-  const scopes = ["93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412"]; // [AZURE_AD_CLIENT_ID];
+  const scopes = [AZURE_AD_CLIENT_ID]; // [AZURE_AD_CLIENT_ID];
   // const redirectUri = "exp://login";
 
   const editProfile = useAzureAdFlows("B2C_1_ProfileEdit", scopes);

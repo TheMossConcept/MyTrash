@@ -8,7 +8,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Appbar } from "react-native-paper";
 
-import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
 import { Text } from "react-native";
 import AdministrationScreen from "../screens/AdministrationScreen";
 import CollectionAdministrationScreen from "../screens/CollectionAdministrationScreen";
@@ -103,16 +102,18 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
     updateUserInfo();
   }, []);
 
+  /*
   const logout = () => {
     AsyncStorage.removeItem("accessToken");
     AsyncStorage.removeItem("idToken");
     navigation.navigate("Login");
   };
 
-  const scopes = [AZURE_AD_CLIENT_ID];
+  const scopes = [Constants.manifest.extra.AZURE_AD_CLIENT_ID];
 
   const editProfile = useAzureAdFlows("B2C_1_ProfileEdit", scopes);
   const onEditProfilePress = () => editProfile();
+  */
 
   const globalSnackbarState = useSnackbarState();
   const [, dispatch] = globalSnackbarState;

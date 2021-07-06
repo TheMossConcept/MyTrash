@@ -1,7 +1,6 @@
 import * as yup from "yup";
 import React, { FC } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { ENV } from "react-native-dotenv";
 import { Formik } from "formik";
 import SelectPartnersForm from "../user/SelectPartnersForm";
 import StringField from "../inputs/StringField";
@@ -52,8 +51,9 @@ const ClusterForm: FC<Props> = ({
   let deepLinkUrl = "";
   if (clusterId) {
     // TODO: See if we can do something about the schema hardcoding!
+    // TODO: This should probably be in the environment files!
     deepLinkUrl =
-      ENV === "production"
+      process.env.BLABLA === "production"
         ? `houe-plastic-recycling://tilmeld?clusterId=${clusterId}`
         : `exp://127.0.0.1:19000/--/tilmeld?clusterId=${clusterId}`;
   }
