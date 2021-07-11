@@ -20,14 +20,27 @@ const UserProgressionCircle: FC<Props> = ({
   const collectedPercentage =
     (rectifiedCollectionAmount / collectionGoal) * 100;
 
+  // It does not ever make sense to show decimals or percentages larger than
+  // 100 or less than 0 to the user
+  const collectedPercentageRectified = Math.max(
+    Math.min(Math.round(collectedPercentage), 100),
+    0
+  );
+
   return (
-    <View style={[{ flex: 1 }, style]} {...viewProps}>
+    <View style={[styles.container, style]} {...viewProps}>
       {collectedPercentage !== undefined ? (
         <View>
-          <Text style={styles.numberText}>
+          <Text
+            // TODO: Consider a way to make this conditional styling nicer!
+            style={[
+              styles.numberText,
+              collectedPercentageRectified === 100 && { left: 2.5 },
+            ]}
+          >
             {collectedPercentage <= 9
-              ? `0${collectedPercentage}`
-              : collectedPercentage}
+              ? `0${collectedPercentageRectified}`
+              : collectedPercentageRectified}
           </Text>
           <Text style={styles.percentageText}>%</Text>
           <Text style={styles.explanationText}>{explanationText}</Text>
@@ -49,6 +62,9 @@ const UserProgressionCircle: FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   numberText: {
     position: "absolute",
     top: 35,

@@ -3,7 +3,6 @@ import {
   AuthRequest,
   AuthSessionResult,
   DiscoveryDocument,
-  makeRedirectUri,
 } from "expo-auth-session";
 import { useEffect, useState } from "react";
 import Constants from "expo-constants";
@@ -14,8 +13,7 @@ export default function useAzureAdFlows(
   scopes: string[],
   redirectUri?: string
 ) {
-  const { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID, MOBILE_REDIRECT_URL } =
-    Constants.manifest.extra;
+  const { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID } = Constants.manifest.extra;
   const [discoveryDocument, setDiscoveryDocument] = useState<
     DiscoveryDocument | undefined
   >(undefined);

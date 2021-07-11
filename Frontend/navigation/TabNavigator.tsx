@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useCallback, useEffect, useState } from "react";
+import Constants from "expo-constants";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Text } from "react-native";
@@ -55,6 +56,11 @@ type Props = StackScreenProps<RootStackParamList, "Root">;
 // TODO: Too much is going on in here! Split it out at some point
 const TabNavigator: FC<Props> = ({ navigation }) => {
   const [userInfo, setUserInfo] = useState<UserInfo | undefined>();
+
+  // This is not the nicest way of doing it, but it gets the job done reliably (and also using
+  // a mechanism actually meant to provide information about the relevant platform. We cannot use
+  // isDevice, as we want the simulator to behave like the device in this case
+  const platformName = Object.keys(Constants.platform || {})[0];
 
   useEffect(() => {
     const updateUserInfo = async () => {
@@ -113,8 +119,8 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
   return userInfo ? (
     <SafeAreaProvider>
       <GlobalSnackbarContext.Provider value={showSnackbar}>
-        <Tab.Navigator initialRouteName="Administration" tabBar={() => null}>
-          {false && userInfo.isAdministrator && (
+        <Tab.Navigator initialRouteName="Administration">
+          {userInfo.isAdministrator && platformName === "web" && (
             <Tab.Screen
               name="Administration"
               component={AdministrationScreen}
@@ -123,7 +129,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {false && userInfo.isCollectionAdministrator && (
+          {userInfo.isCollectionAdministrator && platformName === "web" && (
             <Tab.Screen
               name="Indsamlingsadministration"
               component={CollectionAdministrationScreen}
@@ -133,7 +139,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {(userInfo.isCollector || true) && (
+          {userInfo.isCollector && platformName !== "web" && (
             <Tab.Screen
               name="Indsamling"
               component={CollectionScreen}
@@ -143,7 +149,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {false && userInfo.isLogisticsPartner && (
+          {userInfo.isLogisticsPartner && platformName === "web" && (
             <Tab.Screen
               name="Logistik"
               component={LogisticsScreen}
@@ -153,7 +159,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {false && userInfo.isRecipientPartner && (
+          {userInfo.isRecipientPartner && platformName === "web" && (
             <Tab.Screen
               name="Modtagelse"
               component={RecipientScreen}
@@ -163,7 +169,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {false && userInfo.isProductionPartner && (
+          {userInfo.isProductionPartner && platformName === "web" && (
             <Tab.Screen
               name="Produktion"
               component={ProductionScreen}
@@ -173,7 +179,7 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
               }}
             />
           )}
-          {false && userInfo.userHasNoAccess && (
+          {userInfo.userHasNoAccess && (
             <Tab.Screen name="NoAccess" component={NoAccess} />
           )}
         </Tab.Navigator>
