@@ -44,7 +44,7 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
 
   return (
-    <Container style={{ padding: 25 }}>
+    <Container>
       <CategoryHeadline>Plastindsamlinger</CategoryHeadline>
       <PlasticCollectionsDetails
         title="Afventer"

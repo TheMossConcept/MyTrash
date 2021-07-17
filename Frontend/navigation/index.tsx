@@ -21,11 +21,28 @@ export default function Navigation({
 }: {
   colorScheme: ColorSchemeName;
 }) {
+  const theme =
+    colorScheme === "dark"
+      ? {
+          ...DarkTheme,
+          colors: {
+            ...DarkTheme.colors,
+            // The actual color does not matter as it is completely opaque
+            // but make it black in dark theme for good measure
+            background: "rgba(0, 0, 0, 0.0)",
+          },
+        }
+      : {
+          ...DefaultTheme,
+          colors: {
+            ...DefaultTheme.colors,
+            // The actual color does not matter as it is completely opaque
+            // but make it white in default theme for good measure
+            background: "rgba(255, 255, 255, 0.0)",
+          },
+        };
   return (
-    <NavigationContainer
-      linking={LinkingConfiguration}
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-    >
+    <NavigationContainer linking={LinkingConfiguration} theme={theme}>
       <RootNavigator />
     </NavigationContainer>
   );

@@ -1,13 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
-import { DateTime } from "luxon";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { TabsParamList } from "../typings/types";
-import PlasticCollectionsDetails, {
-  PlasticCollection,
-} from "../components/collection/PlasticCollectionsDetails";
-import sortCollectionsByStatus from "../utils/plasticCollections";
-import Container from "../components/shared/Container";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import StyledButton from "../components/styled/Button";
 import MainContentArea from "../components/styled/MainContentArea";
@@ -18,6 +12,7 @@ import useQueriedData from "../hooks/useQueriedData";
 import { Cluster } from "../components/cluster/ClusterList";
 import { ClusterFormData } from "../components/cluster/ClusterForm";
 import CollectionForm from "../components/collection/OrderCollectionForm";
+import Container from "../components/shared/Container";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
@@ -50,11 +45,11 @@ const CollectionScreen: FC<Props> = ({ route }) => {
 
   /* eslint-disable no-nested-ternary */
   return isLoading ? (
-    <View style={styles.fullScreenCentered}>
+    <Container style={styles.centered}>
       <ActivityIndicator />
-    </View>
+    </Container>
   ) : activeCluster ? (
-    <View style={styles.container}>
+    <Container>
       <MainContentArea>
         <Menu />
         <HeadlineText style={{ marginTop: 54 }} />
@@ -128,23 +123,17 @@ const CollectionScreen: FC<Props> = ({ route }) => {
           />
         </View>
       </BottomButtonContainer>
-    </View>
+    </Container>
   ) : (
-    <View style={styles.fullScreenCentered}>
+    <Container style={styles.centered}>
       <HeadlineText text="Ingen aktive clustere" />
-    </View>
+    </Container>
   );
   /* eslint-enable no-nested-ternary */
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    height: "100%",
-  },
-  fullScreenCentered: {
-    width: "100%",
-    height: "100%",
+  centered: {
     alignItems: "center",
     justifyContent: "center",
   },

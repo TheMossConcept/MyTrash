@@ -20,6 +20,7 @@ import DismissableSnackbar, {
 } from "../components/shared/DismissableSnackbar";
 import NoAccess from "../screens/NoAccess";
 import GlobalSnackbarContext from "../utils/globalContext";
+import MainContentArea from "../components/styled/MainContentArea";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
@@ -54,7 +55,7 @@ const TabBarIcon: FC<TabBarIconProps> = ({ color }) => {
 type Props = StackScreenProps<RootStackParamList, "Root">;
 
 // TODO: Too much is going on in here! Split it out at some point
-const TabNavigator: FC<Props> = ({ navigation }) => {
+const TabNavigator: FC<Props> = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | undefined>();
 
   // This is not the nicest way of doing it, but it gets the job done reliably (and also using
@@ -119,70 +120,72 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
   return userInfo ? (
     <SafeAreaProvider>
       <GlobalSnackbarContext.Provider value={showSnackbar}>
-        <Tab.Navigator initialRouteName="Administration">
-          {userInfo.isAdministrator && platformName === "web" && (
-            <Tab.Screen
-              name="Administration"
-              component={AdministrationScreen}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.isCollectionAdministrator && platformName === "web" && (
-            <Tab.Screen
-              name="Indsamlingsadministration"
-              component={CollectionAdministrationScreen}
-              initialParams={{ userId: userInfo.userId }}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.isCollector && platformName !== "web" && (
-            <Tab.Screen
-              name="Indsamling"
-              component={CollectionScreen}
-              initialParams={{ userId: userInfo.userId }}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.isLogisticsPartner && platformName === "web" && (
-            <Tab.Screen
-              name="Logistik"
-              component={LogisticsScreen}
-              initialParams={{ userId: userInfo.userId }}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.isRecipientPartner && platformName === "web" && (
-            <Tab.Screen
-              name="Modtagelse"
-              component={RecipientScreen}
-              initialParams={{ userId: userInfo.userId }}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.isProductionPartner && platformName === "web" && (
-            <Tab.Screen
-              name="Produktion"
-              component={ProductionScreen}
-              initialParams={{ userId: userInfo.userId }}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.userHasNoAccess && (
-            <Tab.Screen name="NoAccess" component={NoAccess} />
-          )}
-        </Tab.Navigator>
+        <MainContentArea>
+          <Tab.Navigator initialRouteName="Administration">
+            {userInfo.isAdministrator && platformName === "web" && (
+              <Tab.Screen
+                name="Administration"
+                component={AdministrationScreen}
+                options={{
+                  tabBarIcon: TabBarIcon,
+                }}
+              />
+            )}
+            {userInfo.isCollectionAdministrator && platformName === "web" && (
+              <Tab.Screen
+                name="Indsamlingsadministration"
+                component={CollectionAdministrationScreen}
+                initialParams={{ userId: userInfo.userId }}
+                options={{
+                  tabBarIcon: TabBarIcon,
+                }}
+              />
+            )}
+            {userInfo.isCollector && platformName !== "web" && (
+              <Tab.Screen
+                name="Indsamling"
+                component={CollectionScreen}
+                initialParams={{ userId: userInfo.userId }}
+                options={{
+                  tabBarIcon: TabBarIcon,
+                }}
+              />
+            )}
+            {userInfo.isLogisticsPartner && platformName === "web" && (
+              <Tab.Screen
+                name="Logistik"
+                component={LogisticsScreen}
+                initialParams={{ userId: userInfo.userId }}
+                options={{
+                  tabBarIcon: TabBarIcon,
+                }}
+              />
+            )}
+            {userInfo.isRecipientPartner && platformName === "web" && (
+              <Tab.Screen
+                name="Modtagelse"
+                component={RecipientScreen}
+                initialParams={{ userId: userInfo.userId }}
+                options={{
+                  tabBarIcon: TabBarIcon,
+                }}
+              />
+            )}
+            {userInfo.isProductionPartner && platformName === "web" && (
+              <Tab.Screen
+                name="Produktion"
+                component={ProductionScreen}
+                initialParams={{ userId: userInfo.userId }}
+                options={{
+                  tabBarIcon: TabBarIcon,
+                }}
+              />
+            )}
+            {userInfo.userHasNoAccess && (
+              <Tab.Screen name="NoAccess" component={NoAccess} />
+            )}
+          </Tab.Navigator>
+        </MainContentArea>
       </GlobalSnackbarContext.Provider>
       <DismissableSnackbar globalSnackbarState={globalSnackbarState} />
     </SafeAreaProvider>
