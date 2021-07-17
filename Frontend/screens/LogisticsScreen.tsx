@@ -11,9 +11,9 @@ import sortCollectionsByStatus from "../utils/plasticCollections";
 import SchedulePlasticCollection from "../components/collection/SchedulePlasticCollection";
 import DeliverPlasticCollection from "../components/collection/DeliverPlasticCollection";
 import Container from "../components/shared/Container";
-import CategoryHeadline from "../components/styled/CategoryHeadline";
 import InformationText from "../components/styled/InformationText";
 import useAxiosConfig from "../hooks/useAxiosConfig";
+import ContextSelector from "../components/styled/ContextSelector";
 
 type Props = StackScreenProps<TabsParamList, "Logistik">;
 
@@ -43,9 +43,14 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
 
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
 
+  const contextSelectionState = useState("Modtaget");
+
   return (
     <Container>
-      <CategoryHeadline>Plastindsamlinger</CategoryHeadline>
+      <ContextSelector
+        options={["Modtaget", "Bekræftet", "Oprettet", "Afsendte", "Modtaget"]}
+        selectionState={contextSelectionState}
+      />
       <PlasticCollectionsDetails
         title="Afventer"
         plasticCollections={sortedCollections.pending}
