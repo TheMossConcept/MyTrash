@@ -7,7 +7,7 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 import Constants from "expo-constants";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import AdministrationScreen from "../screens/AdministrationScreen";
 import CollectionAdministrationScreen from "../screens/CollectionAdministrationScreen";
 import CollectionScreen from "../screens/CollectionScreen";
@@ -21,6 +21,9 @@ import DismissableSnackbar, {
 import NoAccess from "../screens/NoAccess";
 import GlobalSnackbarContext from "../utils/globalContext";
 import MainContentArea from "../components/styled/MainContentArea";
+import HeadlineText from "../components/styled/HeadlineText";
+import Menu from "../components/shared/Menu";
+import TabBar from "../components/styled/TabBar";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
@@ -117,11 +120,23 @@ const TabNavigator: FC<Props> = () => {
     [dispatch]
   );
 
+  const welcomeText = userInfo?.name
+    ? `Velkommen ${userInfo.name}.`
+    : "Velkommen.";
+
   return userInfo ? (
     <SafeAreaProvider>
       <GlobalSnackbarContext.Provider value={showSnackbar}>
         <MainContentArea>
-          <Tab.Navigator initialRouteName="Administration">
+          <View style={styles.menuSection}>
+            <HeadlineText />
+            <Menu />
+          </View>
+          <HeadlineText text={welcomeText} style={styles.nameText} />
+          <Tab.Navigator
+            initialRouteName="Administration"
+            tabBar={(props) => <TabBar {...props} />}
+          >
             {userInfo.isAdministrator && platformName === "web" && (
               <Tab.Screen
                 name="Administration"
@@ -193,5 +208,18 @@ const TabNavigator: FC<Props> = () => {
     <Text>No user info</Text>
   );
 };
+
+const styles = StyleSheet.create({
+  menuSection: {
+    marginTop: 86,
+    marginBottom: 38,
+    paddingHorizontal: 107,
+    flexDirection: "row",
+  },
+  nameText: {
+    alignItems: "flex-start",
+    marginBottom: 24,
+  },
+});
 
 export default TabNavigator;
