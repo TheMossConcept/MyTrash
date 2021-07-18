@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useCallback, useEffect, useState } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
@@ -14,6 +14,7 @@ import Container from "../components/shared/Container";
 import InformationText from "../components/styled/InformationText";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 import ContextSelector from "../components/styled/ContextSelector";
+import StyledButton from "../components/styled/Button";
 
 type Props = StackScreenProps<TabsParamList, "Logistik">;
 
@@ -43,52 +44,70 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
 
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
 
-  const contextSelectionState = useState("Modtaget");
+  const contextSelectionState = useState("Afventer");
+  const [selectedContext] = contextSelectionState;
 
   return (
     <Container>
       <ContextSelector
-        options={["Modtaget", "Bekræftet", "Oprettet", "Afsendte", "Modtaget"]}
+        // TODO: Change to an ENUM and make the ContextSelector generic!
+        options={["Afventer", "Planlagt", "Afhentet", "Bekræftet"]}
         selectionState={contextSelectionState}
-      />
-      <PlasticCollectionsDetails
-        title="Afventer"
-        plasticCollections={sortedCollections.pending}
       >
-        {(collection) => (
-          <View>
-            {collection.isFirstCollection && (
-              <InformationText>Dette er første opsamling</InformationText>
-            )}
-            {collection.isLastCollection && (
-              <InformationText>Dette er sidste opsamling</InformationText>
-            )}
-            <SchedulePlasticCollection
-              plasticCollectionId={collection.id}
-              plasticCollectionScheduledCallback={fetchPlasticCollections}
-            />
-          </View>
-        )}
-      </PlasticCollectionsDetails>
-      <PlasticCollectionsDetails
-        title="Planlagt"
-        plasticCollections={sortedCollections.scheduled}
-      >
-        {(collection) => (
-          <DeliverPlasticCollection
-            plasticCollectionId={collection.id}
-            successCallback={fetchPlasticCollections}
+        <View style={{ flex: 1 }}>
+          <StyledButton
+            text="Booking dato"
+            isVerticalButton
+            icon={{
+              src: require("../assets/icons/calendar_grey.png"),
+              width: 25,
+              height: 25,
+            }}
           />
-        )}
-      </PlasticCollectionsDetails>
-      <PlasticCollectionsDetails
-        title="Afleveret"
-        plasticCollections={sortedCollections.delivered}
-      />
-      <PlasticCollectionsDetails
-        title="Bekræftet"
-        plasticCollections={sortedCollections.received}
-      />
+        </View>
+        <View style={{ flex: 1 }}>
+          {selectedContext === "Afventer" && (
+            <PlasticCollectionsDetails
+              title="Afventer"
+              plasticCollections={sortedCollections.pending}
+            >
+              {(collection) => (
+                <View>
+                  {collection.isFirstCollection && (
+                    <InformationText>Dette er første opsamling</InformationText>
+                  )}
+                  {collection.isLastCollection && (
+                    <InformationText>Dette er sidste opsamling</InformationText>
+                  )}
+                  <SchedulePlasticCollection
+                    plasticCollectionId={collection.id}
+                    plasticCollectionScheduledCallback={fetchPlasticCollections}
+                  />
+                </View>
+              )}
+            </PlasticCollectionsDetails>
+          )}
+        </View>
+        <PlasticCollectionsDetails
+          title="Planlagt"
+          plasticCollections={sortedCollections.scheduled}
+        >
+          {(collection) => (
+            <DeliverPlasticCollection
+              plasticCollectionId={collection.id}
+              successCallback={fetchPlasticCollections}
+            />
+          )}
+        </PlasticCollectionsDetails>
+        <PlasticCollectionsDetails
+          title="Afleveret"
+          plasticCollections={sortedCollections.delivered}
+        />
+        <PlasticCollectionsDetails
+          title="Bekræftet"
+          plasticCollections={sortedCollections.received}
+        />
+      </ContextSelector>
     </Container>
   );
 };

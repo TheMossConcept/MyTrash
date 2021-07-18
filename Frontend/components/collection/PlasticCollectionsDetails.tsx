@@ -1,6 +1,7 @@
 import React, { FC, useState } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { Badge, Card, List, useTheme } from "react-native-paper";
+import StyledButton from "../styled/Button";
 import InformationText from "../styled/InformationText";
 import Subheader from "../styled/Subheader";
 
@@ -53,6 +54,23 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
   const title = companyName || `${streetName} ${streetNumber}`;
 
   return (
+    <View>
+      <StyledButton
+        icon={{
+          src: require("../../assets/icons/dropdown_grey.png"),
+          width: 29,
+          height: 29,
+        }}
+        // TODO: Make it such that vertical is standard
+        isWebButton
+        isSelected={showDetails}
+        onPress={toggleDetails}
+        style={{ width: 512 }}
+        text={title}
+      />
+      {showDetails && <Text>This is them details!</Text>}
+    </View>
+    /* (
     <Card style={styles.card}>
       <TouchableOpacity onPress={toggleDetails}>
         <Card.Title title={title} />
@@ -83,8 +101,8 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
           {children}
         </Card.Content>
       )}
-      {/* TODO: Make a button to register schedule pick-up and another to register delivery */}
     </Card>
+  ) */
   );
 };
 
