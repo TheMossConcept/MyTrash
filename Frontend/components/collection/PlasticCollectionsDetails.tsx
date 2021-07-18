@@ -52,12 +52,7 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
       : `${streetAddress || ""} ${zipCode || ""} ${city || ""}`;
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "flex-start",
-      }}
-    >
+    <View style={styles.container}>
       <View style={{ flex: 1 }}>
         <WebButton
           icon={{
@@ -88,43 +83,13 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
               style={[styles.line, styles.commentField]}
             />
           )}
+          {weight && !hideWeight && (
+            <InformationField value={`${weight}kg`} style={styles.line} />
+          )}
           {children}
         </View>
       )}
     </View>
-    /* (
-    <Card style={styles.card}>
-      <TouchableOpacity onPress={toggleDetails}>
-        <Card.Title title={title} />
-      </TouchableOpacity>
-      {showDetails && (
-        <Card.Content style={styles.cardContent}>
-          {companyName && <InformationText>{companyName}</InformationText>}
-          <InformationText>
-            {streetName} {streetNumber}
-          </InformationText>
-          <InformationText>
-            {city} {zipCode}
-          </InformationText>
-          {comment && <InformationText>{comment}</InformationText>}
-          {weight && !hideWeight && (
-            <InformationText>Vægt: {weight}kg</InformationText>
-          )}
-          <Text>
-            Antal enheder{" "}
-            <Badge
-              visible
-              style={{ backgroundColor: colors.primary }}
-              size={30}
-            >
-              {numberOfUnits}
-            </Badge>
-          </Text>
-          {children}
-        </Card.Content>
-      )}
-    </Card>
-  ) */
   );
 };
 
@@ -163,6 +128,10 @@ const PlasticCollectionsDetails: FC<Props> = ({
 };
 
 const styles = {
+  container: {
+    flexDirection: "row" as "row",
+    alignItems: "flex-start" as "flex-start",
+  },
   line: {
     marginBottom: 23,
   },
@@ -172,7 +141,7 @@ const styles = {
   },
   commentField: {
     height: 68,
-    textAlignVertical: "center",
+    textAlignVertical: "center" as "center",
   },
 };
 

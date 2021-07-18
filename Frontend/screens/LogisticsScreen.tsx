@@ -92,25 +92,28 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
             </PlasticCollectionsDetails>
           )}
         </View>
-        <PlasticCollectionsDetails
-          title="Planlagt"
-          plasticCollections={sortedCollections.scheduled}
-        >
-          {(collection) => (
-            <DeliverPlasticCollection
-              plasticCollectionId={collection.id}
-              successCallback={fetchPlasticCollections}
-            />
-          )}
-        </PlasticCollectionsDetails>
-        <PlasticCollectionsDetails
-          title="Afleveret"
-          plasticCollections={sortedCollections.delivered}
-        />
-        <PlasticCollectionsDetails
-          title="Bekræftet"
-          plasticCollections={sortedCollections.received}
-        />
+        {selectedContext === "Planlagt" && (
+          <PlasticCollectionsDetails
+            plasticCollections={sortedCollections.scheduled}
+          >
+            {(collection) => (
+              <DeliverPlasticCollection
+                plasticCollectionId={collection.id}
+                successCallback={fetchPlasticCollections}
+              />
+            )}
+          </PlasticCollectionsDetails>
+        )}
+        {selectedContext === "Afhentet" && (
+          <PlasticCollectionsDetails
+            plasticCollections={sortedCollections.delivered}
+          />
+        )}
+        {selectedContext === "Bekræftet" && (
+          <PlasticCollectionsDetails
+            plasticCollections={sortedCollections.received}
+          />
+        )}
       </ContextSelector>
     </Container>
   );

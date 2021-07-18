@@ -54,8 +54,8 @@ const DeliverPlasticCollection: FC<Props> = ({
       }
       validationSchema={validationSchema}
     >
-      <NumberField formKey="weight" label="Vægt" />
-      <SubmitButton title="Register aflevering" />
+      <NumberField formKey="weight" label="Vægt" style={{ marginBottom: 23 }} />
+      <SubmitButton title="Register aflevering" isWeb />
     </FormContainer>
   );
 };

@@ -9,7 +9,7 @@ import {
 
 type Props = {
   text: string;
-  icon: { src: any; width?: number; height?: number };
+  icon?: { src: any; width?: number; height?: number };
   isSelected?: boolean;
   isVerticalButton?: boolean;
 } & TouchableOpacityProps;

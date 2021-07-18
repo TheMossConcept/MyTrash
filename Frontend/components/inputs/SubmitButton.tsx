@@ -1,11 +1,19 @@
 import { useFormikContext } from "formik";
 import React, { FC } from "react";
 import MobileButton, { MobileButtonProps } from "../styled/MobileButton";
+import WebButton from "../styled/WebButton";
 
 // TODO: Change this so title just comes from StyledButtonProps as well
-type Props = { title: string } & Omit<MobileButtonProps, "text">;
+type Props = { title: string; isWeb?: boolean } & Omit<
+  MobileButtonProps,
+  "text"
+>;
 
-const SubmitButton: FC<Props> = ({ title, ...mobileButtonProps }) => {
+const SubmitButton: FC<Props> = ({
+  title,
+  isWeb = false,
+  ...mobileButtonProps
+}) => {
   const formikProps = useFormikContext<any>();
 
   if (!formikProps) {
@@ -14,7 +22,13 @@ const SubmitButton: FC<Props> = ({ title, ...mobileButtonProps }) => {
     );
   } else {
     const { handleSubmit, isValid, isSubmitting } = formikProps;
-    return (
+    return isWeb ? (
+      <WebButton
+        text={title}
+        disabled={!isValid || isSubmitting}
+        onPress={() => handleSubmit()}
+      />
+    ) : (
       <MobileButton
         text={title}
         disabled={!isValid || isSubmitting}

@@ -133,6 +133,9 @@ const SchedulePlasticCollection: FC<Props> = ({
           onDismiss={onDismissDate}
           date={date?.toJSDate()}
           onConfirm={onConfirmDate}
+          validRange={{
+            startDate: new Date(),
+          }}
           label="Vælg afhentningsdato" // optional, default 'Select time'
           cancelLabel="Annuller" // optional, default: 'Cancel'
           confirmLabel="Vælg" // optional, default: 'Ok'
