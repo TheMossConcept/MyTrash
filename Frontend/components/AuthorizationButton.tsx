@@ -5,14 +5,13 @@ import {
   AuthSessionResult,
   DiscoveryDocument,
   exchangeCodeAsync,
-  makeRedirectUri,
   refreshAsync,
   TokenResponse,
 } from "expo-auth-session";
 
 import Constants from "expo-constants";
 import useAzureAdFlows from "../hooks/useAzureAdFlows";
-import StyledButton, { StyledButtonProps } from "./styled/Button";
+import MobileButton, { MobileButtonProps } from "./styled/MobileButton";
 import getDefaultRedirectUri from "../utils/authorization";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -22,11 +21,11 @@ type Props = {
     tokenResponse: TokenResponse,
     refreshTokenIfNecessary: () => Promise<TokenResponse> | undefined
   ) => void;
-} & Omit<StyledButtonProps, "text" | "icon">;
+} & Omit<MobileButtonProps, "text" | "icon">;
 
 export default function AuthorizationButton({
   handleAuthorization,
-  ...StyledButtonProps
+  ...MobileButtonProps
 }: Props) {
   const { AZURE_AD_CLIENT_ID } = Constants.manifest.extra;
   const scopes = [AZURE_AD_CLIENT_ID, "profile", "email", "offline_access"];
@@ -90,7 +89,7 @@ export default function AuthorizationButton({
   };
 
   return (
-    <StyledButton
+    <MobileButton
       text="Login"
       icon={{
         src: require("../assets/icons/circle_grey.png"),
@@ -98,7 +97,7 @@ export default function AuthorizationButton({
         height: 31,
       }}
       onPress={onPress}
-      {...StyledButtonProps}
+      {...MobileButtonProps}
     />
   );
 }

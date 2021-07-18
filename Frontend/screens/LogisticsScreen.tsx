@@ -14,7 +14,7 @@ import Container from "../components/shared/Container";
 import InformationText from "../components/styled/InformationText";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 import ContextSelector from "../components/styled/ContextSelector";
-import StyledButton from "../components/styled/Button";
+import WebButton from "../components/styled/WebButton";
 
 type Props = StackScreenProps<TabsParamList, "Logistik">;
 
@@ -55,9 +55,8 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
         selectionState={contextSelectionState}
       >
         <View style={{ flex: 1 }}>
-          <StyledButton
+          <WebButton
             text="Booking dato"
-            isVerticalButton
             icon={{
               src: require("../assets/icons/calendar_grey.png"),
               width: 25,

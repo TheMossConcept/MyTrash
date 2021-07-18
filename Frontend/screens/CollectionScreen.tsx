@@ -3,7 +3,7 @@ import React, { FC, useState } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { TabsParamList } from "../typings/types";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
-import StyledButton from "../components/styled/Button";
+import MobileButton from "../components/styled/MobileButton";
 import MainContentArea from "../components/styled/MainContentArea";
 import Menu from "../components/shared/Menu";
 import HeadlineText from "../components/styled/HeadlineText";
@@ -69,7 +69,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       </MainContentArea>
       <BottomButtonContainer style={{ paddingVertical: 20 }}>
         <View style={{ flex: 1, paddingHorizontal: 7 }}>
-          <StyledButton
+          <MobileButton
             text={`Status \n indsamling.`}
             icon={{
               src: statusSelected
@@ -85,7 +85,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
               marginBottom: 9,
             }}
           />
-          <StyledButton
+          <MobileButton
             text="Projekt."
             icon={{
               src: require("../assets/icons/leaf_grey.png"),
@@ -96,7 +96,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
           />
         </View>
         <View style={{ flex: 1 }}>
-          <StyledButton
+          <MobileButton
             text={`Afhentning \n plastik.`}
             icon={{
               src: collectionSelected
@@ -112,7 +112,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
               marginBottom: 9,
             }}
           />
-          <StyledButton
+          <MobileButton
             text="Produkter."
             icon={{
               src: require("../assets/icons/chair_grey.png"),

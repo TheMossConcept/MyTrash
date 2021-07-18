@@ -1,11 +1,11 @@
 import { useFormikContext } from "formik";
 import React, { FC } from "react";
-import Button, { StyledButtonProps } from "../styled/Button";
+import MobileButton, { MobileButtonProps } from "../styled/MobileButton";
 
 // TODO: Change this so title just comes from StyledButtonProps as well
-type Props = { title: string } & Omit<StyledButtonProps, "text">;
+type Props = { title: string } & Omit<MobileButtonProps, "text">;
 
-const SubmitButton: FC<Props> = ({ title, ...styledButtonProps }) => {
+const SubmitButton: FC<Props> = ({ title, ...mobileButtonProps }) => {
   const formikProps = useFormikContext<any>();
 
   if (!formikProps) {
@@ -15,12 +15,12 @@ const SubmitButton: FC<Props> = ({ title, ...styledButtonProps }) => {
   } else {
     const { handleSubmit, isValid, isSubmitting } = formikProps;
     return (
-      <Button
+      <MobileButton
         text={title}
         disabled={!isValid || isSubmitting}
         onPress={() => handleSubmit()}
         isVerticalButton
-        {...styledButtonProps}
+        {...mobileButtonProps}
       />
     );
   }

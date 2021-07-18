@@ -12,11 +12,13 @@ type Props = {
   icon: { src: any; width?: number; height?: number };
   isSelected?: boolean;
   isVerticalButton?: boolean;
+  isWebButton?: boolean;
 } & TouchableOpacityProps;
-export type StyledButtonProps = Props;
+export type MobileButtonProps = Props;
 
+// TODO: Consider making a WebButton and a MobileButton
 /* eslint-disable react/display-name */
-const StyledButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
+const MobileButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
   (
     {
       style,
@@ -24,18 +26,11 @@ const StyledButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
       icon,
       disabled,
       isSelected = false,
-      // TODO: Consider the pros/cons to making the vertical button its own
-      // component as opposed to this boolean toggle
-      isVerticalButton = false,
       ...touchableOpacityProps
     },
     ref
   ) => {
     const containerStyles: any[] = [styles.container];
-
-    if (isVerticalButton) {
-      containerStyles.push(styles.verticalButtonContainer);
-    }
 
     if (isSelected) {
       containerStyles.push(styles.selected);
@@ -68,8 +63,8 @@ const StyledButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
         <Text
           style={{
             fontSize: 15,
-            color: isSelected ? "#7b8463" : "#a3a5a8",
-            textAlign: isVerticalButton ? "right" : undefined,
+            color: isSelected ? "#44542d" : "#a3a5a8",
+            marginLeft: 11,
             fontFamily: "HelveticaNeueLTPro-Bd",
           }}
         >
@@ -85,8 +80,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     borderRadius: 20,
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
     paddingVertical: 13,
     paddingHorizontal: 13,
   },
@@ -107,7 +103,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   selected: {
-    backgroundColor: "#c7d494",
+    backgroundColor: "#728b3b",
     shadowColor: "#000",
     shadowOffset: {
       width: -1,
@@ -118,11 +114,6 @@ const styles = StyleSheet.create({
 
     elevation: 2,
   },
-  verticalButtonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
 });
 
-export default StyledButton;
+export default MobileButton;

@@ -12,7 +12,7 @@ import NumberField from "../inputs/NumberField";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
 import SubmitButton from "../inputs/SubmitButton";
-import Button from "../styled/Button";
+import MobileButton from "../styled/MobileButton";
 import CollectionStatusPopover from "./CollectionStatusPopover";
 import useLatestPlasticCollection from "../../hooks/useLatestPlasticCollection";
 
@@ -124,7 +124,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
               height: 27.5,
             }}
           />
-          <Button
+          <MobileButton
             text={`Status på \n afhentning.`}
             ref={popoverRef}
             onPress={() => setPopoverIsShown(true)}

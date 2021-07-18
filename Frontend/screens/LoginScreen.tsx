@@ -6,7 +6,7 @@ import { TokenResponse } from "expo-auth-session";
 import React, { FC, useEffect, useState } from "react";
 import AuthorizationButton from "../components/AuthorizationButton";
 import { RootStackParamList } from "../typings/types";
-import StyledButton from "../components/styled/Button";
+import MobileButton from "../components/styled/MobileButton";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import MainContentArea from "../components/styled/MainContentArea";
 import Menu from "../components/shared/Menu";
@@ -81,7 +81,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
           style={styles.bottomButton}
           handleAuthorization={handleAuthorizationSuccess}
         />
-        <StyledButton
+        <MobileButton
           text="Opret bruger."
           onPress={() => navigation.push("Join", { clusterId: undefined })}
           icon={{
@@ -91,7 +91,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
           }}
           style={styles.bottomButton}
         />
-        <StyledButton
+        <MobileButton
           text="Projekt."
           icon={{
             src: require("../assets/icons/leaf_grey.png"),

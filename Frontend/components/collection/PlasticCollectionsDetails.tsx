@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Badge, Card, List, useTheme } from "react-native-paper";
-import StyledButton from "../styled/Button";
+import WebButton from "../styled/WebButton";
 import InformationText from "../styled/InformationText";
 import Subheader from "../styled/Subheader";
 
@@ -55,16 +55,14 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
 
   return (
     <View>
-      <StyledButton
+      <WebButton
         icon={{
           src: require("../../assets/icons/dropdown_grey.png"),
           width: 29,
           height: 29,
         }}
-        // TODO: Make it such that vertical is standard
-        isWebButton
-        isSelected={showDetails}
         onPress={toggleDetails}
+        isSelected={showDetails}
         style={{ width: 512 }}
         text={title}
       />
