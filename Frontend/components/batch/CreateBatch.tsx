@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "flex-start",
+    width: 1024,
   },
   inputField: {
     marginRight: 12,

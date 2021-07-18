@@ -17,6 +17,7 @@ import CategoryHeadline from "../components/styled/CategoryHeadline";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../utils/globalContext";
 import ContextSelector from "../components/styled/ContextSelector";
+import WebButton from "../components/styled/WebButton";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
@@ -99,29 +100,31 @@ const RecipientScreen: FC<Props> = ({ route }) => {
           />
         )}
         {selectedContext === "Oprettede batches" && (
-          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-            <View>
-              <CreateBatch
-                batchCreatorId={userId}
-                creationCallback={fetchBatches}
-              />
-            </View>
-            <View>
-              <BatchDetails batches={sortedBatches.created} title="Oprettede">
-                {(batch) => (
-                  <RegisterBatchSent
-                    batchId={batch.id}
-                    successCallback={fetchBatches}
-                  />
-                )}
-              </BatchDetails>
-            </View>
+          <View>
+            <CreateBatch
+              batchCreatorId={userId}
+              creationCallback={fetchBatches}
+            />
+            <BatchDetails
+              batches={sortedBatches.created}
+              style={{ marginTop: 23 }}
+            >
+              {(batch) => (
+                <RegisterBatchSent
+                  batchId={batch.id}
+                  successCallback={fetchBatches}
+                />
+              )}
+            </BatchDetails>
           </View>
         )}
+        {selectedContext === "Afsendte batches" && (
+          <BatchDetails batches={sortedBatches.sent} />
+        )}
+        {selectedContext === "Bekræftede batches" && (
+          <BatchDetails batches={sortedBatches.received} />
+        )}
       </ContextSelector>
-      {/*
-      <BatchDetails batches={sortedBatches.sent} title="Afsendte" />
-      <BatchDetails batches={sortedBatches.received} title="Modtaget" /> */}
     </Container>
   );
 };
@@ -152,9 +155,12 @@ const RegisterBatchSent: FC<RegisterBatchSentProps> = ({
       });
   };
   return (
-    <View>
-      <Button title="Marker som afsendt" onPress={markBatchAsSent} />
-    </View>
+    <WebButton
+      text="Marker som afsendt"
+      disabled={false}
+      onPress={markBatchAsSent}
+      style={{ height: 25 }}
+    />
   );
 };
 
