@@ -54,16 +54,15 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
         options={["Afventer", "Planlagt", "Afhentet", "Bekræftet"]}
         selectionState={contextSelectionState}
       >
-        <View style={{ flex: 1 }}>
-          <WebButton
-            text="Booking dato"
-            icon={{
-              src: require("../assets/icons/calendar_grey.png"),
-              width: 25,
-              height: 25,
-            }}
-          />
-        </View>
+        <WebButton
+          text="Booking dato"
+          icon={{
+            src: require("../assets/icons/calendar_grey.png"),
+            width: 25,
+            height: 25,
+          }}
+          style={{ width: 512 }}
+        />
         <View style={{ flex: 1 }}>
           {selectedContext === "Afventer" && (
             <PlasticCollectionsDetails

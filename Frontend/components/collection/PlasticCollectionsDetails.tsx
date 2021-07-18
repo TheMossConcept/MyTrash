@@ -4,6 +4,8 @@ import { Badge, Card, List, useTheme } from "react-native-paper";
 import WebButton from "../styled/WebButton";
 import InformationText from "../styled/InformationText";
 import Subheader from "../styled/Subheader";
+import StringField from "../inputs/StringField";
+import InformationField from "../styled/InformationField";
 
 type PlasticCollectionDetailProps = {
   plasticCollection: PlasticCollection;
@@ -54,19 +56,28 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
   const title = companyName || `${streetName} ${streetNumber}`;
 
   return (
-    <View>
-      <WebButton
-        icon={{
-          src: require("../../assets/icons/dropdown_grey.png"),
-          width: 29,
-          height: 29,
-        }}
-        onPress={toggleDetails}
-        isSelected={showDetails}
-        style={{ width: 512 }}
-        text={title}
-      />
-      {showDetails && <Text>This is them details!</Text>}
+    <View style={{ flexDirection: "row" }}>
+      <View style={{ flex: 1 }}>
+        <WebButton
+          icon={{
+            src: require("../../assets/icons/dropdown_grey.png"),
+            width: 29,
+            height: 29,
+          }}
+          onPress={toggleDetails}
+          isSelected={showDetails}
+          style={{ width: 512 }}
+          text={title}
+        />
+      </View>
+      {showDetails && (
+        <View style={{ flex: 1, marginLeft: 14 }}>
+          <InformationField
+            value={`${streetName} ${streetNumber}, ${zipCode} ${city}`}
+            style={{ width: 512 }}
+          />
+        </View>
+      )}
     </View>
     /* (
     <Card style={styles.card}>
