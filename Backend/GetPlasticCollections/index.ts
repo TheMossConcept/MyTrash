@@ -55,7 +55,7 @@ const httpTrigger: AzureFunction = async function (
         id: _id,
         streetAddress: requester.streetAddress,
         city: requester.city,
-        zipCode: requester.zipCode,
+        zipCode: requester.postalCode,
         companyName: requester.companyName,
       };
     }

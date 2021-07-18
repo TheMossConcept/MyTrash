@@ -10,6 +10,7 @@ const InformationField: FC<Props> = ({ value, style, ...textInputProps }) => {
       value={value}
       style={[globalStyles.textField, styles.informationTextField, style]}
       editable={false}
+      multiline
       {...textInputProps}
     />
   );
@@ -20,6 +21,9 @@ const styles = StyleSheet.create({
     height: 55,
     color: "#898c8e",
     backgroundColor: "#ebecee",
+    fontSize: 14,
+    fontFamily: "HelveticaNeueLTPro-Md",
+    overflow: "hidden",
   },
 });
 

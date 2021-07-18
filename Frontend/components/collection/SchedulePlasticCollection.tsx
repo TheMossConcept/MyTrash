@@ -1,10 +1,12 @@
 import axios from "axios";
 import { DateTime } from "luxon";
 import React, { FC, useContext, useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
+import InformationField from "../styled/InformationField";
+import WebButton from "../styled/WebButton";
 
 type Props = {
   plasticCollectionId: string;
@@ -18,7 +20,6 @@ const SchedulePlasticCollection: FC<Props> = ({
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
   const [date, setDate] = useState<DateTime | undefined>(undefined);
-  const [timeIsSet, setTimeIsSet] = useState(false);
 
   const [datePickerOpen, setDatePickerOpen] = React.useState(false);
   const [timePickerOpen, setTimePickerOpen] = React.useState(false);
@@ -32,8 +33,10 @@ const SchedulePlasticCollection: FC<Props> = ({
   // TODO: Fix these typings so they come from the library itself!
   const onConfirmDate = (params: { date: Date }) => {
     const { date: selectedDate } = params;
+    const selectedDateTime = DateTime.fromJSDate(selectedDate);
+
     if (selectedDate) {
-      setDate(DateTime.fromJSDate(selectedDate));
+      setDate(selectedDateTime);
     }
 
     setDatePickerOpen(false);
@@ -53,7 +56,6 @@ const SchedulePlasticCollection: FC<Props> = ({
         minute: minutes,
       });
       setDate(dateWithTime);
-      setTimeIsSet(true);
     }
 
     setTimePickerOpen(false);
@@ -78,69 +80,98 @@ const SchedulePlasticCollection: FC<Props> = ({
     }
   };
 
-  const dateSelectionString = date
-    ? date.toLocaleString({
-        month: "long",
-        day: "2-digit",
-      })
-    : "Ikke valgt";
-
+  const dateSelectionString = date ? date.toFormat("dd.MM.yyyy") : "";
   const timeSelectionString =
-    date?.minute && date?.hour
-      ? date.toLocaleString({
-          minute: timeIsSet ? "2-digit" : undefined,
-          hour: timeIsSet ? "2-digit" : undefined,
-          hour12: false,
-        })
-      : "Tidspunkt ikke valgt";
+    date?.minute && date?.hour ? date.toFormat("HH.mm") : "";
+
+  const selectedDateTimeString = dateSelectionString
+    ? `Afhentes: ${dateSelectionString} ${
+        timeSelectionString ? "kl." : ""
+      } ${timeSelectionString}`
+    : "";
 
   return (
     <View>
-      <Text>
-        Afhentningsdato{" "}
-        <Button title={dateSelectionString} onPress={selectPickupDate} />
-        {date && (
-          <View style={styles.pickTimeBtn}>
-            <Button title={timeSelectionString} onPress={selectPickupTime} />
+      <View style={styles.selectPickupDateTimeContainer}>
+        {date !== undefined && (
+          <View style={styles.dateStringInformationFieldContainer}>
+            <InformationField value={selectedDateTimeString} />
           </View>
         )}
-      </Text>
-      <DatePickerModal
-        mode="single"
-        visible={datePickerOpen}
-        onDismiss={onDismissDate}
-        date={date?.toJSDate()}
-        onConfirm={onConfirmDate}
-        label="Vælg afhentningsdato" // optional, default 'Select time'
-        cancelLabel="Annuller" // optional, default: 'Cancel'
-        confirmLabel="Vælg" // optional, default: 'Ok'
-        animationType="fade" // optional, default is 'none'
-      />
-      <TimePickerModal
-        visible={timePickerOpen}
-        onDismiss={onDismissTime}
-        onConfirm={onConfirmTime}
-        label="Vælg afhentningstidspunkt" // optional, default 'Select time'
-        cancelLabel="Annuller" // optional, default: 'Cancel'
-        confirmLabel="Vælg" // optional, default: 'Ok'
-        animationType="fade" // optional, default is 'none'
-      />
-      <View style={styles.submitBtn}>
-        <Button title="Planlæg" onPress={schedule} disabled={!date} />
+        <View
+          style={[
+            { flex: 1 },
+            date !== undefined ? { marginLeft: 12 } : { marginLeft: 0 },
+          ]}
+        >
+          <WebButton
+            text="Vælg dato"
+            onPress={selectPickupDate}
+            disabled={false}
+            icon={{
+              src: require("../../assets/icons/calendar_grey.png"),
+              width: 25,
+              height: 25,
+            }}
+          />
+        </View>
+        <View style={styles.selectTimeButton}>
+          <WebButton
+            text="Vælg tid"
+            onPress={selectPickupTime}
+            disabled={date === undefined}
+            icon={{
+              src: require("../../assets/icons/calendar_grey.png"),
+              width: 25,
+              height: 25,
+            }}
+          />
+        </View>
+        <DatePickerModal
+          mode="single"
+          visible={datePickerOpen}
+          onDismiss={onDismissDate}
+          date={date?.toJSDate()}
+          onConfirm={onConfirmDate}
+          label="Vælg afhentningsdato" // optional, default 'Select time'
+          cancelLabel="Annuller" // optional, default: 'Cancel'
+          confirmLabel="Vælg" // optional, default: 'Ok'
+          animationType="fade" // optional, default is 'none'
+        />
+        <TimePickerModal
+          visible={timePickerOpen}
+          onDismiss={onDismissTime}
+          onConfirm={onConfirmTime}
+          label="Vælg afhentningstidspunkt" // optional, default 'Select time'
+          cancelLabel="Annuller" // optional, default: 'Cancel'
+          confirmLabel="Vælg" // optional, default: 'Ok'
+          animationType="fade" // optional, default is 'none'
+        />
       </View>
+      <WebButton
+        text="Planlæg."
+        disabled={date === undefined}
+        onPress={schedule}
+        style={styles.submitButton}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  pickTimeBtn: {
-    marginLeft: 5,
+  submitButton: {
+    width: 256,
   },
-  submitBtn: {
-    marginTop: 10,
-    width: "fit-content",
-    marginLeft: "auto",
-    marginRight: "auto",
+  selectPickupDateTimeContainer: {
+    flexDirection: "row",
+    marginBottom: 23,
+  },
+  selectTimeButton: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  dateStringInformationFieldContainer: {
+    flex: 2,
   },
 });
 

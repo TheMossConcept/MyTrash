@@ -1,10 +1,6 @@
 import React, { FC, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { Badge, Card, List, useTheme } from "react-native-paper";
+import { View } from "react-native";
 import WebButton from "../styled/WebButton";
-import InformationText from "../styled/InformationText";
-import Subheader from "../styled/Subheader";
-import StringField from "../inputs/StringField";
 import InformationField from "../styled/InformationField";
 
 type PlasticCollectionDetailProps = {
@@ -19,8 +15,7 @@ export type PlasticCollection = {
   requesterId: string;
   recipientPartnerId: string;
   numberOfUnits: number;
-  streetName: string;
-  streetNumber: string;
+  streetAddress: string;
   city: string;
   zipCode: string;
   isFirstCollection: boolean;
@@ -40,8 +35,7 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
 }) => {
   const {
     companyName,
-    streetName,
-    streetNumber,
+    streetAddress,
     zipCode,
     city,
     numberOfUnits,
@@ -51,12 +45,19 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
   const [showDetails, setShowDetails] = useState(false);
   const toggleDetails = () => setShowDetails(!showDetails);
 
-  const { colors } = useTheme();
-
-  const title = companyName || `${streetName} ${streetNumber}`;
+  const title = companyName || streetAddress;
+  const addressString =
+    streetAddress && (zipCode || city)
+      ? `${streetAddress || ""}, ${zipCode || ""} ${city || ""}`
+      : `${streetAddress || ""} ${zipCode || ""} ${city || ""}`;
 
   return (
-    <View style={{ flexDirection: "row" }}>
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "flex-start",
+      }}
+    >
       <View style={{ flex: 1 }}>
         <WebButton
           icon={{
@@ -71,11 +72,23 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
         />
       </View>
       {showDetails && (
-        <View style={{ flex: 1, marginLeft: 14 }}>
-          <InformationField
-            value={`${streetName} ${streetNumber}, ${zipCode} ${city}`}
-            style={{ width: 512 }}
-          />
+        <View style={styles.detailsContainer}>
+          {addressString && (
+            <InformationField value={addressString} style={[styles.line]} />
+          )}
+          {numberOfUnits !== undefined && numberOfUnits !== null && (
+            <InformationField
+              value={`${numberOfUnits} enheder`}
+              style={[styles.line]}
+            />
+          )}
+          {comment && (
+            <InformationField
+              value={comment}
+              style={[styles.line, styles.commentField]}
+            />
+          )}
+          {children}
         </View>
       )}
     </View>
@@ -117,43 +130,49 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
 
 type Props = {
   plasticCollections: PlasticCollection[];
-  title: string;
   hideWeight?: boolean;
   children?: (plasticCollection: PlasticCollection) => React.ReactNode;
 };
 
 const PlasticCollectionsDetails: FC<Props> = ({
   plasticCollections,
-  title,
   hideWeight = false,
   children,
 }) => {
   return (
-    <List.Section>
-      <Subheader>{title}</Subheader>
-      {plasticCollections.map((collection) => (
-        <PlasticCollectionDetail
-          key={collection.id}
-          plasticCollection={collection}
-          hideWeight={hideWeight}
-        >
-          {children && children(collection)}
-        </PlasticCollectionDetail>
-      ))}
-    </List.Section>
+    <View>
+      {plasticCollections.map((collection, index) => {
+        const isLastCollection = index === plasticCollections.length - 1;
+
+        return (
+          <View
+            style={!isLastCollection ? styles.line : undefined}
+            key={collection.id}
+          >
+            <PlasticCollectionDetail
+              plasticCollection={collection}
+              hideWeight={hideWeight}
+            >
+              {children && children(collection)}
+            </PlasticCollectionDetail>
+          </View>
+        );
+      })}
+    </View>
   );
 };
 
 const styles = {
-  card: {
-    marginBottom: 15,
+  line: {
+    marginBottom: 23,
   },
-  cardContent: {
-    borderWidth: 0.3,
-    padding: 15,
-    margin: 15,
-    borderColor: "lightgrey",
-    borderStyle: "solid" as "solid",
+  detailsContainer: {
+    marginLeft: 14,
+    width: 512,
+  },
+  commentField: {
+    height: 68,
+    textAlignVertical: "center",
   },
 };
 

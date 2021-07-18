@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useCallback, useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
@@ -15,6 +15,7 @@ import InformationText from "../components/styled/InformationText";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 import ContextSelector from "../components/styled/ContextSelector";
 import WebButton from "../components/styled/WebButton";
+import InformationField from "../components/styled/InformationField";
 
 type Props = StackScreenProps<TabsParamList, "Logistik">;
 
@@ -61,21 +62,26 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
             width: 25,
             height: 25,
           }}
-          style={{ width: 512 }}
+          style={styles.filterButton}
         />
         <View style={{ flex: 1 }}>
           {selectedContext === "Afventer" && (
             <PlasticCollectionsDetails
-              title="Afventer"
               plasticCollections={sortedCollections.pending}
             >
               {(collection) => (
                 <View>
                   {collection.isFirstCollection && (
-                    <InformationText>Dette er første opsamling</InformationText>
+                    <InformationField
+                      value="NB! Dette er første opsamling"
+                      style={styles.informationTextField}
+                    />
                   )}
                   {collection.isLastCollection && (
-                    <InformationText>Dette er sidste opsamling</InformationText>
+                    <InformationField
+                      value="NB! Dette er sidste opsamling"
+                      style={styles.informationTextField}
+                    />
                   )}
                   <SchedulePlasticCollection
                     plasticCollectionId={collection.id}
@@ -109,5 +115,15 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
     </Container>
   );
 };
+
+const styles = StyleSheet.create({
+  filterButton: {
+    width: 512,
+    marginBottom: 23,
+  },
+  informationTextField: {
+    marginBottom: 23,
+  },
+});
 
 export default LogisticsScreen;

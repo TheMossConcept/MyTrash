@@ -9,16 +9,14 @@ import {
 
 type Props = {
   text: string;
-  icon: { src: any; width?: number; height?: number };
+  icon?: { src: any; width?: number; height?: number };
   isSelected?: boolean;
-  isVerticalButton?: boolean;
-  isWebButton?: boolean;
 } & TouchableOpacityProps;
 export type MobileButtonProps = Props;
 
 // TODO: Consider making a WebButton and a MobileButton
 /* eslint-disable react/display-name */
-const MobileButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
+const WebButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
   (
     {
       style,
@@ -31,17 +29,23 @@ const MobileButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
     ref
   ) => {
     const containerStyles: any[] = [styles.container];
+    let textColor = "#a3a5a8";
 
     if (isSelected) {
       containerStyles.push(styles.selected);
+      textColor = "#44542d";
     } else {
       containerStyles.push(styles.unselected);
 
       // disabled/enabled styling only applies to non selected buttons. I am sure we can do this way more elegantly!!
-      if (disabled) {
+      if (disabled === true) {
         containerStyles.push(styles.disabled);
-      } else {
+        textColor = "#7b8463";
+      } else if (disabled === false) {
         containerStyles.push(styles.enabled);
+        textColor = "#44542d";
+      } else {
+        containerStyles.push(styles.notDisableable);
       }
     }
 
@@ -63,7 +67,7 @@ const MobileButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
         <Text
           style={{
             fontSize: 15,
-            color: isSelected ? "#44542d" : "#a3a5a8",
+            color: textColor,
             marginLeft: 11,
             fontFamily: "HelveticaNeueLTPro-Bd",
           }}
@@ -86,11 +90,16 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 13,
   },
+  notDisableable: {
+    backgroundColor: "#e7e7e8",
+  },
   disabled: {
-    backgroundColor: "#d7d7d8",
+    color: "#7b8463",
+    backgroundColor: "#cdd89e",
   },
   enabled: {
-    backgroundColor: "#e7e7e8",
+    color: "#44542d",
+    backgroundColor: "#728b3b",
   },
   unselected: {
     shadowColor: "#000",
@@ -116,4 +125,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MobileButton;
+export default WebButton;

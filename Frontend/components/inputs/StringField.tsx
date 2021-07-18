@@ -1,14 +1,19 @@
 import { ErrorMessage, useFormikContext } from "formik";
 import React, { PropsWithChildren } from "react";
-import { View, ViewStyle, TextInput, Text } from "react-native";
+import { View, ViewStyle, TextInput, Text, TextInputProps } from "react-native";
 import globalStyles from "../../utils/globalStyles";
 
-type Props<T> = { formKey: keyof T & string; label: string; style?: ViewStyle };
+type Props<T> = {
+  formKey: keyof T & string;
+  label: string;
+  style?: ViewStyle;
+} & Omit<TextInputProps, "style">;
 
 export default function StringField<T>({
   formKey: key,
   label,
   style,
+  ...textInputProps
 }: PropsWithChildren<Props<T>>) {
   const formikProps = useFormikContext<T>();
 
@@ -28,6 +33,7 @@ export default function StringField<T>({
           onBlur={handleBlur(key)}
           placeholder={label}
           style={globalStyles.textField}
+          {...textInputProps}
         />
         <ErrorMessage
           name={key}

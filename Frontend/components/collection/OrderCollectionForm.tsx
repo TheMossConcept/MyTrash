@@ -107,6 +107,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         <StringField
           label="Kommentar"
           formKey="comment"
+          maxLength={140}
           style={styles.inputField}
         />
         <BooleanField
