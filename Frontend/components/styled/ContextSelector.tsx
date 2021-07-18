@@ -78,12 +78,14 @@ const styles = StyleSheet.create({
     marginTop: 39,
   },
   selectionImageContainer: {
-    width: "fit-content",
-    marginLeft: 96.5,
+    width: "100%",
+    height: 27,
   },
   selectionImage: {
     width: 14,
     height: 27,
+    position: "absolute",
+    right: -12,
   },
   selectionText: {
     fontSize: 34,

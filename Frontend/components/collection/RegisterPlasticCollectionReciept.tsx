@@ -1,6 +1,7 @@
 import axios from "axios";
 import * as yup from "yup";
 import React, { FC, useContext } from "react";
+import { StyleSheet } from "react-native";
 import { PlasticCollection } from "./PlasticCollectionsDetails";
 import FormContainer from "../shared/FormContainer";
 import NumberField from "../inputs/NumberField";
@@ -60,11 +61,18 @@ const RegisterPlasticCollectionReciept: FC<Props> = ({
         registerReciept(values, formikHelpers.resetForm)
       }
       validationSchema={validationSchema}
+      validateOnMount
     >
-      <NumberField formKey="weight" label="Vægt" />
-      <SubmitButton title="Register modtagelse" />
+      <NumberField formKey="weight" label="Vægt" style={styles.weightField} />
+      <SubmitButton title="Register modtagelse" isWeb />
     </FormContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  weightField: {
+    marginBottom: 29,
+  },
+});
 
 export default RegisterPlasticCollectionReciept;

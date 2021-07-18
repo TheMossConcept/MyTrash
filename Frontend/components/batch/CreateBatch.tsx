@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as yup from "yup";
 import React, { FC, useContext } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import FormContainer from "../shared/FormContainer";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
@@ -59,9 +59,10 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
         createBatch(values, formikHelpers.resetForm)
       }
       validationSchema={validationSchema}
+      validateOnMount
     >
-      <View>
-        <View style={{ zIndex: 1 }}>
+      <View style={styles.container}>
+        <View style={[{ zIndex: 1 }, styles.inputField]}>
           <AutocompleteInput
             formKey="clusterId"
             endpoint="/GetClusters"
@@ -69,13 +70,39 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
             containerStyle={{ zIndex: 1 }}
           />
         </View>
-        <NumberField formKey="inputWeight" label="Forbrugt plast" />
-        <NumberField formKey="outputWeight" label="Batch vægt" />
-        <NumberField formKey="additionFactor" label="Tilsætningsfaktor" />
-        <SubmitButton title="Opret batch" />
+        <NumberField
+          formKey="inputWeight"
+          label="Forbrugt plast"
+          style={styles.inputField}
+        />
+        <NumberField
+          formKey="outputWeight"
+          label="Batch vægt"
+          style={styles.inputField}
+        />
+        <NumberField
+          formKey="additionFactor"
+          label="Tilsætningsfaktor"
+          style={styles.inputField}
+        />
+        <SubmitButton title="Opret batch" style={styles.submitButton} isWeb />
       </View>
     </FormContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  inputField: {
+    marginRight: 12,
+    flex: 1,
+  },
+  submitButton: {
+    flex: 1,
+  },
+});
 
 export default CreateBatch;

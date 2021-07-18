@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useCallback, useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import { TabsParamList } from "../typings/types";
 import PlasticCollectionsDetails, {
@@ -11,7 +11,6 @@ import sortCollectionsByStatus from "../utils/plasticCollections";
 import SchedulePlasticCollection from "../components/collection/SchedulePlasticCollection";
 import DeliverPlasticCollection from "../components/collection/DeliverPlasticCollection";
 import Container from "../components/shared/Container";
-import InformationText from "../components/styled/InformationText";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 import ContextSelector from "../components/styled/ContextSelector";
 import WebButton from "../components/styled/WebButton";

@@ -84,7 +84,7 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
             />
           )}
           {weight && !hideWeight && (
-            <InformationField value={`${weight}kg`} style={styles.line} />
+            <InformationField value={`${weight} kg`} style={styles.line} />
           )}
           {children}
         </View>

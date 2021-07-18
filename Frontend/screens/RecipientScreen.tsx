@@ -16,6 +16,7 @@ import Container from "../components/shared/Container";
 import CategoryHeadline from "../components/styled/CategoryHeadline";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../utils/globalContext";
+import ContextSelector from "../components/styled/ContextSelector";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
@@ -64,36 +65,63 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
   const sortedBatches = sortBatchByStatus(batches);
 
+  const contextSelectionState = useState("Modtaget");
+  const [selectedContext] = contextSelectionState;
+
   return (
     <Container>
-      <PlasticCollectionsDetails
-        title="Modtaget"
-        plasticCollections={sortedCollections.delivered}
-        hideWeight
+      <ContextSelector
+        options={[
+          "Modtaget",
+          "Bekræftet",
+          "Oprettede batches",
+          "Afsendte batches",
+          "Bekræftede batches",
+        ]}
+        selectionState={contextSelectionState}
       >
-        {(collection) => (
-          <RegisterPlasticCollectionReciept
-            plasticCollection={collection}
-            successCallback={fetchPlasticCollections}
+        {selectedContext === "Modtaget" && (
+          <PlasticCollectionsDetails
+            plasticCollections={sortedCollections.delivered}
+            hideWeight
+          >
+            {(collection) => (
+              <RegisterPlasticCollectionReciept
+                plasticCollection={collection}
+                successCallback={fetchPlasticCollections}
+              />
+            )}
+          </PlasticCollectionsDetails>
+        )}
+        {selectedContext === "Bekræftet" && (
+          <PlasticCollectionsDetails
+            plasticCollections={sortedCollections.received}
           />
         )}
-      </PlasticCollectionsDetails>
-      <PlasticCollectionsDetails
-        title="Bekræftet"
-        plasticCollections={sortedCollections.received}
-      />
-      <CategoryHeadline>Batches</CategoryHeadline>
-      <CreateBatch batchCreatorId={userId} creationCallback={fetchBatches} />
-      <BatchDetails batches={sortedBatches.created} title="Oprettede">
-        {(batch) => (
-          <RegisterBatchSent
-            batchId={batch.id}
-            successCallback={fetchBatches}
-          />
+        {selectedContext === "Oprettede batches" && (
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            <View>
+              <CreateBatch
+                batchCreatorId={userId}
+                creationCallback={fetchBatches}
+              />
+            </View>
+            <View>
+              <BatchDetails batches={sortedBatches.created} title="Oprettede">
+                {(batch) => (
+                  <RegisterBatchSent
+                    batchId={batch.id}
+                    successCallback={fetchBatches}
+                  />
+                )}
+              </BatchDetails>
+            </View>
+          </View>
         )}
-      </BatchDetails>
+      </ContextSelector>
+      {/*
       <BatchDetails batches={sortedBatches.sent} title="Afsendte" />
-      <BatchDetails batches={sortedBatches.received} title="Modtaget" />
+      <BatchDetails batches={sortedBatches.received} title="Modtaget" /> */}
     </Container>
   );
 };
