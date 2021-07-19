@@ -70,6 +70,7 @@ const WebButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
             color: textColor,
             marginLeft: 11,
             fontFamily: "HelveticaNeueLTPro-Bd",
+            wordBreak: "break-word",
           }}
         >
           {text}

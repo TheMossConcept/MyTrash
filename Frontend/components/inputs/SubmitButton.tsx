@@ -27,6 +27,8 @@ const SubmitButton: FC<Props> = ({
         text={title}
         disabled={!isValid || isSubmitting}
         onPress={() => handleSubmit()}
+        // It almost the same props that occur in the WebButton as in the MobileButton
+        {...mobileButtonProps}
       />
     ) : (
       <MobileButton

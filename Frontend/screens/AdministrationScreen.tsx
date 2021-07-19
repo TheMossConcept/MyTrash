@@ -2,6 +2,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { EventRegister } from "react-native-event-listeners";
 import React, { FC } from "react";
 
+import { View } from "react-native";
 import { TabsParamList } from "../typings/types";
 import ClusterList from "../components/cluster/ClusterList";
 import useClusters from "../hooks/useClusters";
@@ -33,13 +34,17 @@ const AdministrationScreen: FC<Props> = () => {
 
   return (
     <Container>
-      <CategoryHeadline>INVITER PARTNER</CategoryHeadline>
-      <CollaboratorForm
-        submitTitle="Inviter partner"
-        successCallback={handlePartnerInvited}
-      />
-      <CategoryHeadline>OPRET CLUSTER</CategoryHeadline>
-      <CreateCluster successCallback={refetchClusters} />
+      <View style={{ flexDirection: "row" }}>
+        <View style={{ flex: 1 }}>
+          <CollaboratorForm
+            submitTitle="Inviter partner"
+            successCallback={handlePartnerInvited}
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          <CreateCluster successCallback={refetchClusters} />
+        </View>
+      </View>
       <CategoryHeadline>AKTIVE CLUSTERE</CategoryHeadline>
       <ClusterList clusters={activeClusters}>
         {({ cluster }) => (

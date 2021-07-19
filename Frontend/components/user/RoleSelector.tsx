@@ -4,6 +4,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { useTheme } from "react-native-paper";
 import { AppRole } from "../../hooks/useAppRoles";
 import Container from "../shared/Container";
+import WebButton from "../styled/WebButton";
 
 type Props = {
   formKey: string;
@@ -27,7 +28,7 @@ export default function RoleSelector({ formKey: key, appRoles }: Props) {
     };
 
     return (
-      <Container style={{ flexDirection: "row", justifyContent: "center" }}>
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
         {appRoles.map((availableAppRole: AppRole) => {
           const roleIsSelected = selectedRole === availableAppRole.id;
           const selectRole = () => {
@@ -35,21 +36,16 @@ export default function RoleSelector({ formKey: key, appRoles }: Props) {
           };
 
           return (
-            <TouchableOpacity onPress={selectRole} key={availableAppRole.id}>
-              <View
-                style={{
-                  marginRight: 10,
-                  padding: 10,
-                  borderRadius: 4,
-                  backgroundColor: roleIsSelected ? colors.primary : "grey",
-                }}
-              >
-                <Text>{availableAppRole.displayName}</Text>
-              </View>
-            </TouchableOpacity>
+            <WebButton
+              text={availableAppRole.displayName}
+              onPress={selectRole}
+              key={availableAppRole.id}
+              isSelected={roleIsSelected}
+              style={{ marginRight: 10 }}
+            />
           );
         })}
-      </Container>
+      </View>
     );
   }
 }
