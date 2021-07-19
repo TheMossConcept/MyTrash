@@ -1,6 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import axios from "axios";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { TabsParamList } from "../typings/types";
@@ -11,37 +10,21 @@ import sortCollectionsByStatus from "../utils/plasticCollections";
 import SchedulePlasticCollection from "../components/collection/SchedulePlasticCollection";
 import DeliverPlasticCollection from "../components/collection/DeliverPlasticCollection";
 import Container from "../components/shared/Container";
-import useAxiosConfig from "../hooks/useAxiosConfig";
 import ContextSelector from "../components/styled/ContextSelector";
 import InformationField from "../components/styled/InformationField";
+import useQueriedData from "../hooks/useQueriedData";
+import LoadingIndicator from "../components/styled/LoadingIndicator";
 
 type Props = StackScreenProps<TabsParamList, "Logistik">;
 
 const LogisticsScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
-  const [plasticCollections, setPlasticCollections] = useState<
-    PlasticCollection[]
-  >([]);
-  const sharedAxiosConfig = useAxiosConfig();
 
-  const fetchPlasticCollections = useCallback(() => {
-    axios
-      .get("/GetPlasticCollections", {
-        params: { logisticsPartnerId: userId },
-        ...sharedAxiosConfig,
-      })
-      .then((axiosResult) => {
-        const { data } = axiosResult;
-        setPlasticCollections(data);
-      });
-  }, [sharedAxiosConfig, userId]);
-
-  // Do an initial plastic collections fetch
-  useEffect(() => {
-    fetchPlasticCollections();
-  }, [fetchPlasticCollections]);
-
-  const sortedCollections = sortCollectionsByStatus(plasticCollections);
+  const { data, refetch, isLoading } = useQueriedData<PlasticCollection[]>(
+    "/GetPlasticCollections",
+    { logisticsPartnerId: userId }
+  );
+  const sortedCollections = sortCollectionsByStatus(data || []);
 
   const contextSelectionState = useState("Afventer");
   const [selectedContext] = contextSelectionState;
@@ -53,7 +36,8 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
         options={["Afventer", "Planlagt", "Afhentet", "Bekræftet"]}
         selectionState={contextSelectionState}
       >
-        <View style={{ flex: 1 }}>
+        <View>
+          {isLoading && <LoadingIndicator />}
           {selectedContext === "Afventer" && (
             <PlasticCollectionsDetails
               plasticCollections={sortedCollections.pending}
@@ -74,7 +58,7 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
                   )}
                   <SchedulePlasticCollection
                     plasticCollectionId={collection.id}
-                    plasticCollectionScheduledCallback={fetchPlasticCollections}
+                    plasticCollectionScheduledCallback={refetch}
                   />
                 </View>
               )}
@@ -88,7 +72,7 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
             {(collection) => (
               <DeliverPlasticCollection
                 plasticCollectionId={collection.id}
-                successCallback={fetchPlasticCollections}
+                successCallback={refetch}
               />
             )}
           </PlasticCollectionsDetails>
