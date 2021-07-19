@@ -46,9 +46,13 @@ type Props = {
     DismissableSnackbarState,
     React.Dispatch<DismissableSnackbarActions>
   ];
+  isWeb?: boolean;
 };
 
-const DismissableSnackbar: FC<Props> = ({ globalSnackbarState }) => {
+const DismissableSnackbar: FC<Props> = ({
+  globalSnackbarState,
+  isWeb = false,
+}) => {
   if (globalSnackbarState) {
     const [state, dispatch] = globalSnackbarState;
 
@@ -56,11 +60,15 @@ const DismissableSnackbar: FC<Props> = ({ globalSnackbarState }) => {
       dispatch({ type: "hide" });
     };
 
+    const bottomPositionStyle = isWeb
+      ? { bottom: 20 - global.window.pageYOffset }
+      : { bottom: 20 };
+
     return (
       <View style={styles.snackbarContainer}>
         <Snackbar
           // Empirically, it has been determined that 5 works well
-          style={{ ...styles.snackbar }}
+          style={[styles.snackbar, bottomPositionStyle]}
           visible={state.shown}
           onDismiss={dismiss}
           action={{

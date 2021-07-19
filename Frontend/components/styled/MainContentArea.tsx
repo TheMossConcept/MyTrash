@@ -23,12 +23,14 @@ const MainContentArea: FC<Props> = ({
   return (
     <View style={containerStyle}>
       <ImageBackground
-        source={require("../../assets/images/backgrond.png")}
+        // TODO: Do something less brittle here than relying on the naming convention!
+        source={
+          isWeb
+            ? require("../../assets/images/background_web.png")
+            : require("../../assets/images/background.png")
+        }
         // If this is not an array, the width does not go all the way out for whatever reason
-        style={[
-          styles.imageBackground,
-          isWeb ? { height: "100vh" } : { height: "100%" },
-        ]}
+        style={[styles.imageBackground]}
         {...imageBackgroundProps}
       >
         <SafeAreaView style={{ height: "100%" }}>{children}</SafeAreaView>
@@ -40,6 +42,7 @@ const MainContentArea: FC<Props> = ({
 const styles = StyleSheet.create({
   imageBackground: {
     width: "100%",
+    height: "100%",
     paddingTop: 64,
     paddingHorizontal: 49,
   },

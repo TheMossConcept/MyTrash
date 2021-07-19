@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginHorizontal: "22%",
+    marginBottom: 103,
   },
   tabText: {
     fontFamily: "HelveticaNeueLTPro-Md",

@@ -128,19 +128,24 @@ const TabNavigator: FC<Props> = () => {
     <SafeAreaProvider>
       <GlobalSnackbarContext.Provider value={showSnackbar}>
         {platformName === "web" ? (
-          <MainContentArea isWeb>
-            <View style={styles.menuSection}>
-              <HeadlineText />
-              <Menu />
-            </View>
-            <HeadlineText text={welcomeText} style={styles.nameText} />
-            <Navigator userInfo={userInfo} isWeb />
-          </MainContentArea>
+          <View style={{ height: "100vh" }}>
+            <MainContentArea isWeb>
+              <View style={styles.menuSection}>
+                <HeadlineText />
+                <Menu />
+              </View>
+              <HeadlineText text={welcomeText} style={styles.nameText} />
+              <Navigator userInfo={userInfo} isWeb />
+            </MainContentArea>
+          </View>
         ) : (
           <Navigator userInfo={userInfo} />
         )}
       </GlobalSnackbarContext.Provider>
-      <DismissableSnackbar globalSnackbarState={globalSnackbarState} />
+      <DismissableSnackbar
+        globalSnackbarState={globalSnackbarState}
+        isWeb={platformName === "web"}
+      />
     </SafeAreaProvider>
   ) : (
     <Text>No user info</Text>
