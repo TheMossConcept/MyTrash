@@ -1,6 +1,7 @@
 import { DateTime } from "luxon";
 import React, { FC, useState } from "react";
 import { View, ViewProps } from "react-native";
+import EmptyView from "../styled/EmptyView";
 import InformationField from "../styled/InformationField";
 import WebButton from "../styled/WebButton";
 
@@ -68,17 +69,40 @@ const BatchDetail: FC<BatchDetailProps> = ({ batch, children }) => {
 
 type Props = {
   batches: Batch[];
+  sorting?: {
+    displayName: string;
+    sortState: [boolean, (newValue: boolean) => void];
+  };
   children?: (batch: Batch) => React.ReactNode;
 } & ViewProps;
 
 const BatchDetails: FC<Props> = ({
   batches,
+  sorting,
   children,
   style,
   ...viewProps
 }) => {
-  return (
+  const [sort, setSort] = sorting ? sorting.sortState : [false, undefined];
+  const toggleSort = setSort ? () => setSort(!sort) : undefined;
+
+  return batches.length === 0 ? (
+    <EmptyView />
+  ) : (
     <View style={style} {...viewProps}>
+      {sorting && (
+        <WebButton
+          text={`Sorter efter ${sorting.displayName}`}
+          icon={{
+            src: require("../../assets/icons/calendar_grey.png"),
+            width: 25,
+            height: 25,
+          }}
+          onPress={toggleSort}
+          isSelected={sort}
+          style={styles.filterButton}
+        />
+      )}
       {batches.map((batch, index) => {
         const isLastBatch = index === batches.length - 1;
 
@@ -99,6 +123,10 @@ const styles = {
     marginBottom: 23,
   },
   line: {
+    marginBottom: 23,
+  },
+  filterButton: {
+    width: 512,
     marginBottom: 23,
   },
 };

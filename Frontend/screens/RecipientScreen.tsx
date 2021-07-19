@@ -24,19 +24,48 @@ type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
 const RecipientScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
+
+  // TODO: Consider making this its own hook at some point!
+  const [plasticCollectionsSortKey, setPlasticCollectionsSortKey] = useState<
+    string | undefined
+  >();
+  const togglePlasticCollectionsSorting =
+    (localSortKey: string) => (shouldSort: boolean) => {
+      if (shouldSort) {
+        setPlasticCollectionsSortKey(localSortKey);
+      } else {
+        setPlasticCollectionsSortKey(undefined);
+      }
+    };
+
   const {
     data: plasticCollections,
     refetch: refetchPlasticCollections,
     isLoading: plasticCollectionsIsLoading,
   } = useQueriedData<PlasticCollection[]>("/GetPlasticCollections", {
     recipientPartnerId: userId,
+    sortKey: plasticCollectionsSortKey,
   });
+
+  // TODO: Consider making this its own hook at some point!
+  const [batchesSortKey, setBatchesSortKey] = useState<string | undefined>();
+  const toggleBatchSorting =
+    (localSortKey: string) => (shouldSort: boolean) => {
+      if (shouldSort) {
+        setBatchesSortKey(localSortKey);
+      } else {
+        setBatchesSortKey(undefined);
+      }
+    };
 
   const {
     data: batches,
     refetch: refetchBatches,
     isLoading: batchesIsLoading,
-  } = useQueriedData<Batch[]>("/GetBatches", { recipientPartnerId: userId });
+  } = useQueriedData<Batch[]>("/GetBatches", {
+    recipientPartnerId: userId,
+    sortKey: batchesSortKey,
+  });
 
   const sortedCollections = sortCollectionsByStatus(plasticCollections || []);
   const sortedBatches = sortBatchByStatus(batches || []);
@@ -61,6 +90,13 @@ const RecipientScreen: FC<Props> = ({ route }) => {
             {plasticCollectionsIsLoading && <LoadingIndicator />}
             <PlasticCollectionsDetails
               plasticCollections={sortedCollections.delivered}
+              sorting={{
+                displayName: "modtaget dato",
+                sortState: [
+                  plasticCollectionsSortKey === "deliveryDate",
+                  togglePlasticCollectionsSorting("deliveryDate"),
+                ],
+              }}
               hideWeight
             >
               {(collection) => (
@@ -77,6 +113,13 @@ const RecipientScreen: FC<Props> = ({ route }) => {
             {plasticCollectionsIsLoading && <LoadingIndicator />}
             <PlasticCollectionsDetails
               plasticCollections={sortedCollections.received}
+              sorting={{
+                displayName: "bekræftet dato",
+                sortState: [
+                  plasticCollectionsSortKey === "receivedDate",
+                  togglePlasticCollectionsSorting("receivedDate"),
+                ],
+              }}
             />
           </View>
         )}
@@ -90,6 +133,13 @@ const RecipientScreen: FC<Props> = ({ route }) => {
             <BatchDetails
               batches={sortedBatches.created}
               style={styles.createdBatchesDetailsContainer}
+              sorting={{
+                displayName: "oprettet dato",
+                sortState: [
+                  batchesSortKey === "createdAt",
+                  toggleBatchSorting("createdAt"),
+                ],
+              }}
             >
               {(batch) => (
                 <RegisterBatchSent
@@ -103,13 +153,31 @@ const RecipientScreen: FC<Props> = ({ route }) => {
         {selectedContext === "Afsendte batches" && (
           <View>
             {batchesIsLoading && <LoadingIndicator />}
-            <BatchDetails batches={sortedBatches.sent} />
+            <BatchDetails
+              batches={sortedBatches.sent}
+              sorting={{
+                displayName: "afsendt dato",
+                sortState: [
+                  batchesSortKey === "sentDate",
+                  toggleBatchSorting("sentDate"),
+                ],
+              }}
+            />
           </View>
         )}
         {selectedContext === "Bekræftede batches" && (
           <View>
             {batchesIsLoading && <LoadingIndicator />}
-            <BatchDetails batches={sortedBatches.received} />
+            <BatchDetails
+              batches={sortedBatches.received}
+              sorting={{
+                displayName: "modtaget dato",
+                sortState: [
+                  batchesSortKey === "receivedDate",
+                  toggleBatchSorting("receivedDate"),
+                ],
+              }}
+            />
           </View>
         )}
       </ContextSelector>
