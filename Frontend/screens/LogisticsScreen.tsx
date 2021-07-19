@@ -13,7 +13,6 @@ import DeliverPlasticCollection from "../components/collection/DeliverPlasticCol
 import Container from "../components/shared/Container";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 import ContextSelector from "../components/styled/ContextSelector";
-import WebButton from "../components/styled/WebButton";
 import InformationField from "../components/styled/InformationField";
 
 type Props = StackScreenProps<TabsParamList, "Logistik">;
@@ -54,15 +53,6 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
         options={["Afventer", "Planlagt", "Afhentet", "Bekræftet"]}
         selectionState={contextSelectionState}
       >
-        <WebButton
-          text="Booking dato"
-          icon={{
-            src: require("../assets/icons/calendar_grey.png"),
-            width: 25,
-            height: 25,
-          }}
-          style={styles.filterButton}
-        />
         <View style={{ flex: 1 }}>
           {selectedContext === "Afventer" && (
             <PlasticCollectionsDetails
@@ -119,10 +109,6 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
-  filterButton: {
-    width: 512,
-    marginBottom: 23,
-  },
   informationTextField: {
     marginBottom: 23,
   },

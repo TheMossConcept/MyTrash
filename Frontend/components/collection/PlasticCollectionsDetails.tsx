@@ -117,6 +117,15 @@ const PlasticCollectionsDetails: FC<Props> = ({
     </View>
   ) : (
     <View>
+      <WebButton
+        text="Booking dato"
+        icon={{
+          src: require("../../assets/icons/calendar_grey.png"),
+          width: 25,
+          height: 25,
+        }}
+        style={styles.filterButton}
+      />
       {plasticCollections.map((collection, index) => {
         const isLastCollection = index === plasticCollections.length - 1;
 
@@ -150,6 +159,10 @@ const styles = {
     marginLeft: 14,
     width: 512,
   },
+  filterButton: {
+    width: 512,
+    marginBottom: 23,
+  },
   commentField: {
     height: 68,
     textAlignVertical: "center" as "center",
@@ -158,6 +171,7 @@ const styles = {
     fontSize: 34,
     color: "#9b9c9e",
     fontFamily: "HelveticaNeueLTPro-Hv",
+    textAlign: "center",
   },
 };
 

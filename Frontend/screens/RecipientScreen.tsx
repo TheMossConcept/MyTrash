@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
-import React, { FC, useState, useEffect, useCallback, useContext } from "react";
-import { ActivityIndicator, Button, View } from "react-native";
+import React, { FC, useState, useContext } from "react";
+import { StyleSheet, View } from "react-native";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import PlasticCollectionsDetails, {
   PlasticCollection,
@@ -18,31 +18,19 @@ import GlobalSnackbarContext from "../utils/globalContext";
 import ContextSelector from "../components/styled/ContextSelector";
 import WebButton from "../components/styled/WebButton";
 import useQueriedData from "../hooks/useQueriedData";
+import LoadingIndicator from "../components/styled/LoadingIndicator";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
 const RecipientScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
-  const [plasticCollections, setPlasticCollections] = useState<
-    PlasticCollection[]
-  >([]);
-  const sharedAxiosConfig = useAxiosConfig();
-
-  const fetchPlasticCollections = useCallback(() => {
-    axios
-      .get("/GetPlasticCollections", {
-        params: { recipientPartnerId: userId },
-        ...sharedAxiosConfig,
-      })
-      .then((axiosResult) => {
-        const { data } = axiosResult;
-        setPlasticCollections(data);
-      });
-  }, [sharedAxiosConfig, userId]);
-
-  useEffect(() => {
-    fetchPlasticCollections();
-  }, [fetchPlasticCollections]);
+  const {
+    data: plasticCollections,
+    refetch: refetchPlasticCollections,
+    isLoading: plasticCollectionsIsLoading,
+  } = useQueriedData<PlasticCollection[]>("/GetPlasticCollections", {
+    recipientPartnerId: userId,
+  });
 
   const {
     data: batches,
@@ -50,14 +38,14 @@ const RecipientScreen: FC<Props> = ({ route }) => {
     isLoading: batchesIsLoading,
   } = useQueriedData<Batch[]>("/GetBatches", { recipientPartnerId: userId });
 
-  const sortedCollections = sortCollectionsByStatus(plasticCollections);
+  const sortedCollections = sortCollectionsByStatus(plasticCollections || []);
   const sortedBatches = sortBatchByStatus(batches || []);
 
   const contextSelectionState = useState("Modtaget");
   const [selectedContext] = contextSelectionState;
 
   return (
-    <Container style={{ paddingBottom: 20 }}>
+    <Container style={styles.container}>
       <ContextSelector
         options={[
           "Modtaget",
@@ -69,22 +57,28 @@ const RecipientScreen: FC<Props> = ({ route }) => {
         selectionState={contextSelectionState}
       >
         {selectedContext === "Modtaget" && (
-          <PlasticCollectionsDetails
-            plasticCollections={sortedCollections.delivered}
-            hideWeight
-          >
-            {(collection) => (
-              <RegisterPlasticCollectionReciept
-                plasticCollection={collection}
-                successCallback={fetchPlasticCollections}
-              />
-            )}
-          </PlasticCollectionsDetails>
+          <View>
+            {plasticCollectionsIsLoading && <LoadingIndicator />}
+            <PlasticCollectionsDetails
+              plasticCollections={sortedCollections.delivered}
+              hideWeight
+            >
+              {(collection) => (
+                <RegisterPlasticCollectionReciept
+                  plasticCollection={collection}
+                  successCallback={refetchPlasticCollections}
+                />
+              )}
+            </PlasticCollectionsDetails>
+          </View>
         )}
         {selectedContext === "Bekræftet" && (
-          <PlasticCollectionsDetails
-            plasticCollections={sortedCollections.received}
-          />
+          <View>
+            {plasticCollectionsIsLoading && <LoadingIndicator />}
+            <PlasticCollectionsDetails
+              plasticCollections={sortedCollections.received}
+            />
+          </View>
         )}
         {selectedContext === "Oprettede batches" && (
           <View>
@@ -92,23 +86,10 @@ const RecipientScreen: FC<Props> = ({ route }) => {
               batchCreatorId={userId}
               creationCallback={refetchBatches}
             />
-            {batchesIsLoading && (
-              <View
-                style={{
-                  width: "100%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <ActivityIndicator />
-              </View>
-            )}
+            {batchesIsLoading && <LoadingIndicator />}
             <BatchDetails
               batches={sortedBatches.created}
-              // TODO: At some point, the Autocomplete Input should handle automatically
-              // floating above other elements itself instead of the surroundings having to
-              // fit into the AutocompleteInput. This is a temporary workaround for now!
-              style={{ marginTop: 23, zIndex: -1 }}
+              style={styles.createdBatchesDetailsContainer}
             >
               {(batch) => (
                 <RegisterBatchSent
@@ -120,10 +101,16 @@ const RecipientScreen: FC<Props> = ({ route }) => {
           </View>
         )}
         {selectedContext === "Afsendte batches" && (
-          <BatchDetails batches={sortedBatches.sent} />
+          <View>
+            {batchesIsLoading && <LoadingIndicator />}
+            <BatchDetails batches={sortedBatches.sent} />
+          </View>
         )}
         {selectedContext === "Bekræftede batches" && (
-          <BatchDetails batches={sortedBatches.received} />
+          <View>
+            {batchesIsLoading && <LoadingIndicator />}
+            <BatchDetails batches={sortedBatches.received} />
+          </View>
         )}
       </ContextSelector>
     </Container>
@@ -160,9 +147,25 @@ const RegisterBatchSent: FC<RegisterBatchSentProps> = ({
       text="Marker som afsendt"
       disabled={false}
       onPress={markBatchAsSent}
-      style={{ height: 25 }}
+      style={styles.markAsSentButton}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingBottom: 20,
+  },
+  markAsSentButton: {
+    height: 25,
+  },
+  createdBatchesDetailsContainer: {
+    marginTop: 23,
+    // TODO: At some point, the Autocomplete Input should handle automatically
+    // floating above other elements itself instead of the surroundings having to
+    // fit into the AutocompleteInput. This is a temporary workaround for now!
+    zIndex: -1,
+  },
+});
 
 export default RecipientScreen;
