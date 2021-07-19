@@ -42,13 +42,15 @@ const Menu: FC<Props> = () => {
         isVisible={popoverIsShown}
         onRequestClose={dismissPopover}
       >
-        <View style={styles.popoverContainer}>
-          <TouchableOpacity onPress={onEditProfilePress}>
-            <Text style={styles.popoverText}>Rediger profil.</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={logout}>
-            <Text style={styles.popoverText}>Log ud.</Text>
-          </TouchableOpacity>
+        <View style={{ alignItems: "flex-end" }}>
+          <View style={styles.popoverContainer}>
+            <TouchableOpacity onPress={onEditProfilePress}>
+              <Text style={styles.popoverText}>Rediger profil.</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={logout}>
+              <Text style={styles.popoverText}>Log ud.</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Popover>
     </View>
