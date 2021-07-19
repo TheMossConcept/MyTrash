@@ -13,7 +13,6 @@ import BatchDetails, { Batch } from "../components/batch/BatchDetails";
 import sortBatchByStatus from "../utils/batch";
 import RegisterPlasticCollectionReciept from "../components/collection/RegisterPlasticCollectionReciept";
 import Container from "../components/shared/Container";
-import CategoryHeadline from "../components/styled/CategoryHeadline";
 import useAxiosConfig from "../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../utils/globalContext";
 import ContextSelector from "../components/styled/ContextSelector";
