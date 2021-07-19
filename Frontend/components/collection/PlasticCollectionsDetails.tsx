@@ -1,7 +1,8 @@
 import React, { FC, useState } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import WebButton from "../styled/WebButton";
 import InformationField from "../styled/InformationField";
+import EmptyView from "../styled/EmptyView";
 
 type PlasticCollectionDetailProps = {
   plasticCollection: PlasticCollection;
@@ -113,16 +114,7 @@ const PlasticCollectionsDetails: FC<Props> = ({
   const toggleSort = setSort ? () => setSort(!sort) : undefined;
 
   return plasticCollections.length === 0 ? (
-    <View
-      style={{
-        justifyContent: "center",
-        alignItems: "center",
-        width: "100%",
-        height: "100%",
-      }}
-    >
-      <Text style={styles.emptyText}>Listen er tom</Text>
-    </View>
+    <EmptyView />
   ) : (
     <View>
       {sorting && (
@@ -178,12 +170,6 @@ const styles = {
   commentField: {
     height: 68,
     textAlignVertical: "center" as "center",
-  },
-  emptyText: {
-    fontSize: 34,
-    color: "#9b9c9e",
-    fontFamily: "HelveticaNeueLTPro-Hv",
-    textAlign: "center",
   },
 };
 

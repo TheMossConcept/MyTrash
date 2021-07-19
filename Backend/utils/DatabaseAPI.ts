@@ -179,6 +179,9 @@ export type BatchEntity = {
   addtionFactor: number;
   recipientPartnerId: string;
   productionPartnerId: string;
+  createdAt: Date;
+  sentDate?: Date;
+  receivedDate?: Date;
   batchStatus: "created" | "sent" | "received";
 };
 

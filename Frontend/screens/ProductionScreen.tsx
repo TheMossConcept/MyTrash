@@ -1,7 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useContext, useState } from "react";
-import { Button, StyleSheet } from "react-native";
 import { TabsParamList } from "../typings/types";
 import sortBatchByStatus from "../utils/batch";
 import BatchDetails from "../components/batch/BatchDetails";
@@ -11,6 +10,7 @@ import useBatches from "../hooks/useBatches";
 import ProductsForBatch from "../components/product/ProductsForBatch";
 import GlobalSnackbarContext from "../utils/globalContext";
 import ContextSelector from "../components/styled/ContextSelector";
+import WebButton from "../components/styled/WebButton";
 
 type Props = StackScreenProps<TabsParamList, "Produktion">;
 
@@ -86,11 +86,12 @@ const ConfirmBatchReception: FC<ConfirmBatchReceptionProps> = ({
       });
   };
 
-  return <Button title="Bekræft modtagelse" onPress={confirmReception} />;
+  return (
+    <WebButton
+      text="Bekræft modtagelse"
+      style={{ height: 25 }}
+      disabled={false}
+      onPress={confirmReception}
+    />
+  );
 };
-
-const styles = StyleSheet.create({
-  createProductView: {
-    marginBottom: 15,
-  },
-});
