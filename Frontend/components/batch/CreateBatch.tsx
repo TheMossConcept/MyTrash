@@ -55,9 +55,10 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
   return (
     <FormContainer
       initialValues={initialValues}
-      onSubmit={(values, formikHelpers) =>
-        createBatch(values, formikHelpers.resetForm)
-      }
+      onSubmit={(values, formikHelpers) => {
+        const resetFormAndRevalidate = () => formikHelpers.resetForm({});
+        createBatch(values, resetFormAndRevalidate);
+      }}
       validationSchema={validationSchema}
       validateOnMount
     >

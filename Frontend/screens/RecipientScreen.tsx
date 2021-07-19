@@ -69,7 +69,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   const [selectedContext] = contextSelectionState;
 
   return (
-    <Container>
+    <Container style={{ paddingBottom: 20 }}>
       <ContextSelector
         options={[
           "Modtaget",
@@ -106,7 +106,10 @@ const RecipientScreen: FC<Props> = ({ route }) => {
             />
             <BatchDetails
               batches={sortedBatches.created}
-              style={{ marginTop: 23 }}
+              // TODO: At some point, the Autocomplete Input should handle automatically
+              // floating above other elements itself instead of the surroundings having to
+              // fit into the AutocompleteInput. This is a temporary workaround for now!
+              style={{ marginTop: 23, zIndex: -1 }}
             >
               {(batch) => (
                 <RegisterBatchSent
