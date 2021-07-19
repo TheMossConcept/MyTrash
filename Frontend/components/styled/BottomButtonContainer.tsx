@@ -10,7 +10,6 @@ const BottomButtonContainer: FC<Props> = ({ children, style }) => {
 const styles = StyleSheet.create({
   bottomButtonContainer: {
     backgroundColor: "#e7e7e8",
-    height: "20%",
     width: "100%",
     flexDirection: "row",
     paddingVertical: 39,

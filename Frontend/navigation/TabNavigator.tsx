@@ -128,7 +128,7 @@ const TabNavigator: FC<Props> = () => {
     <SafeAreaProvider>
       <GlobalSnackbarContext.Provider value={showSnackbar}>
         {platformName === "web" ? (
-          <MainContentArea>
+          <MainContentArea isWeb>
             <View style={styles.menuSection}>
               <HeadlineText />
               <Menu />

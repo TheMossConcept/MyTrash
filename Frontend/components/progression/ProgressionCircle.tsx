@@ -38,7 +38,7 @@ const UserProgressionCircle: FC<Props> = ({
               collectedPercentageRectified === 100 && { left: 2.5 },
             ]}
           >
-            {collectedPercentage <= 9
+            {collectedPercentage < 10
               ? `0${collectedPercentageRectified}`
               : collectedPercentageRectified}
           </Text>

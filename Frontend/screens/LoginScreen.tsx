@@ -57,7 +57,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <MainContentArea>
+      <MainContentArea containerStyle={{ height: "80%" }}>
         <Menu />
         <HeadlineText style={{ marginTop: 54 }} />
         <View style={styles.textContainer}>
@@ -76,7 +76,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
           />
         </View>
       </MainContentArea>
-      <BottomButtonContainer>
+      <BottomButtonContainer style={{ height: "20%" }}>
         <AuthorizationButton
           style={styles.bottomButton}
           handleAuthorization={handleAuthorizationSuccess}

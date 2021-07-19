@@ -50,7 +50,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     </Container>
   ) : activeCluster ? (
     <Container>
-      <MainContentArea>
+      <MainContentArea containerStyle={{ height: "80%" }}>
         <Menu />
         <HeadlineText style={{ marginTop: 54 }} />
         {statusSelected ? (
@@ -67,7 +67,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
           />
         )}
       </MainContentArea>
-      <BottomButtonContainer style={{ paddingVertical: 20 }}>
+      <BottomButtonContainer style={{ paddingVertical: 20, height: "20%" }}>
         <View style={{ flex: 1, paddingHorizontal: 7 }}>
           <MobileButton
             text={`Status \n indsamling.`}
