@@ -20,9 +20,19 @@ type Props = StackScreenProps<TabsParamList, "Logistik">;
 const LogisticsScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
 
+  // TODO: Consider making this its own hook at some point!
+  const [sortKey, setSortKey] = useState<string | undefined>();
+  const toggleSorting = (localSortKey: string) => (shouldSort: boolean) => {
+    if (shouldSort) {
+      setSortKey(localSortKey);
+    } else {
+      setSortKey(undefined);
+    }
+  };
+
   const { data, refetch, isLoading } = useQueriedData<PlasticCollection[]>(
     "/GetPlasticCollections",
-    { logisticsPartnerId: userId }
+    { logisticsPartnerId: userId, sortBy: sortKey }
   );
   const sortedCollections = sortCollectionsByStatus(data || []);
 
@@ -40,6 +50,13 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
           {isLoading && <LoadingIndicator />}
           {selectedContext === "Afventer" && (
             <PlasticCollectionsDetails
+              sorting={{
+                displayName: "oprettelsesdato",
+                sortState: [
+                  sortKey === "createdAt",
+                  toggleSorting("createdAt"),
+                ],
+              }}
               plasticCollections={sortedCollections.pending}
             >
               {(collection) => (
@@ -68,6 +85,13 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
         {selectedContext === "Planlagt" && (
           <PlasticCollectionsDetails
             plasticCollections={sortedCollections.scheduled}
+            sorting={{
+              displayName: "planlagt dato",
+              sortState: [
+                sortKey === "scheduledPickupDate",
+                toggleSorting("scheduledPickupDate"),
+              ],
+            }}
           >
             {(collection) => (
               <DeliverPlasticCollection
@@ -80,11 +104,25 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
         {selectedContext === "Afhentet" && (
           <PlasticCollectionsDetails
             plasticCollections={sortedCollections.delivered}
+            sorting={{
+              displayName: "afhentet dato",
+              sortState: [
+                sortKey === "deliveryDate",
+                toggleSorting("deliveryDate"),
+              ],
+            }}
           />
         )}
         {selectedContext === "Bekræftet" && (
           <PlasticCollectionsDetails
             plasticCollections={sortedCollections.received}
+            sorting={{
+              displayName: "modtaget dato",
+              sortState: [
+                sortKey === "receivedDate",
+                toggleSorting("receivedDate"),
+              ],
+            }}
           />
         )}
       </ContextSelector>

@@ -15,7 +15,11 @@ const httpTrigger: AzureFunction = async function (
   });
 
   // TODO: Change clusterId to recipientPartnerId as we want all batches for a given recipient
-  const { recipientPartnerId, productionPartnerId } = req.query as Payload;
+  const {
+    recipientPartnerId,
+    productionPartnerId,
+    sortBy,
+  } = req.query as Payload;
 
   const queryIsLimitedToUser = recipientPartnerId || productionPartnerId;
   // TODO: This type should automatically be inferred!
@@ -30,7 +34,8 @@ const httpTrigger: AzureFunction = async function (
             },
           ],
         }
-      : {}
+      : undefined,
+    sortBy ? { [sortBy]: -1 } : undefined
   );
 
   const returnValuePromises = batchesForRecipient.map(async (batch) => {
@@ -74,6 +79,7 @@ const httpTrigger: AzureFunction = async function (
 type Payload = {
   recipientPartnerId: string;
   productionPartnerId: string;
+  sortBy: string;
 };
 
 export default httpTrigger;

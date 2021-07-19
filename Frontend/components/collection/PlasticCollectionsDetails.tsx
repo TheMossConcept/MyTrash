@@ -95,15 +95,23 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
 
 type Props = {
   plasticCollections: PlasticCollection[];
+  sorting?: {
+    displayName: string;
+    sortState: [boolean, (newValue: boolean) => void];
+  };
   hideWeight?: boolean;
   children?: (plasticCollection: PlasticCollection) => React.ReactNode;
 };
 
 const PlasticCollectionsDetails: FC<Props> = ({
   plasticCollections,
+  sorting,
   hideWeight = false,
   children,
 }) => {
+  const [sort, setSort] = sorting ? sorting.sortState : [false, undefined];
+  const toggleSort = setSort ? () => setSort(!sort) : undefined;
+
   return plasticCollections.length === 0 ? (
     <View
       style={{
@@ -117,15 +125,19 @@ const PlasticCollectionsDetails: FC<Props> = ({
     </View>
   ) : (
     <View>
-      <WebButton
-        text="Booking dato"
-        icon={{
-          src: require("../../assets/icons/calendar_grey.png"),
-          width: 25,
-          height: 25,
-        }}
-        style={styles.filterButton}
-      />
+      {sorting && (
+        <WebButton
+          text={`Sorter efter ${sorting.displayName}`}
+          icon={{
+            src: require("../../assets/icons/calendar_grey.png"),
+            width: 25,
+            height: 25,
+          }}
+          onPress={toggleSort}
+          isSelected={sort}
+          style={styles.filterButton}
+        />
+      )}
       {plasticCollections.map((collection, index) => {
         const isLastCollection = index === plasticCollections.length - 1;
 
