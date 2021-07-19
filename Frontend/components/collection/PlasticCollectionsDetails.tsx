@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import WebButton from "../styled/WebButton";
 import InformationField from "../styled/InformationField";
 
@@ -104,7 +104,18 @@ const PlasticCollectionsDetails: FC<Props> = ({
   hideWeight = false,
   children,
 }) => {
-  return (
+  return plasticCollections.length === 0 ? (
+    <View
+      style={{
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100%",
+      }}
+    >
+      <Text style={styles.emptyText}>Listen er tom</Text>
+    </View>
+  ) : (
     <View>
       {plasticCollections.map((collection, index) => {
         const isLastCollection = index === plasticCollections.length - 1;
@@ -142,6 +153,11 @@ const styles = {
   commentField: {
     height: 68,
     textAlignVertical: "center" as "center",
+  },
+  emptyText: {
+    fontSize: 34,
+    color: "#9b9c9e",
+    fontFamily: "HelveticaNeueLTPro-Hv",
   },
 };
 

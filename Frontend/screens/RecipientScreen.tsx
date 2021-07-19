@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useState, useEffect, useCallback, useContext } from "react";
-import { Button, View } from "react-native";
+import { ActivityIndicator, Button, View } from "react-native";
 import sortCollectionsByStatus from "../utils/plasticCollections";
 import PlasticCollectionsDetails, {
   PlasticCollection,
@@ -17,6 +17,7 @@ import useAxiosConfig from "../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../utils/globalContext";
 import ContextSelector from "../components/styled/ContextSelector";
 import WebButton from "../components/styled/WebButton";
+import useQueriedData from "../hooks/useQueriedData";
 
 type Props = StackScreenProps<TabsParamList, "Modtagelse">;
 
@@ -25,8 +26,6 @@ const RecipientScreen: FC<Props> = ({ route }) => {
   const [plasticCollections, setPlasticCollections] = useState<
     PlasticCollection[]
   >([]);
-  const [batches, setBatches] = useState<Batch[]>([]);
-
   const sharedAxiosConfig = useAxiosConfig();
 
   const fetchPlasticCollections = useCallback(() => {
@@ -45,25 +44,14 @@ const RecipientScreen: FC<Props> = ({ route }) => {
     fetchPlasticCollections();
   }, [fetchPlasticCollections]);
 
-  const fetchBatches = useCallback(() => {
-    axios
-      .get("/GetBatches", {
-        params: { recipientPartnerId: userId },
-        ...sharedAxiosConfig,
-      })
-      .then((axiosResult) => {
-        const { data } = axiosResult;
-        setBatches(data);
-      });
-  }, [sharedAxiosConfig, userId]);
-
-  // Initial fetch
-  useEffect(() => {
-    fetchBatches();
-  }, [fetchBatches]);
+  const {
+    data: batches,
+    refetch: refetchBatches,
+    isLoading: batchesIsLoading,
+  } = useQueriedData<Batch[]>("/GetBatches", { recipientPartnerId: userId });
 
   const sortedCollections = sortCollectionsByStatus(plasticCollections);
-  const sortedBatches = sortBatchByStatus(batches);
+  const sortedBatches = sortBatchByStatus(batches || []);
 
   const contextSelectionState = useState("Modtaget");
   const [selectedContext] = contextSelectionState;
@@ -102,8 +90,19 @@ const RecipientScreen: FC<Props> = ({ route }) => {
           <View>
             <CreateBatch
               batchCreatorId={userId}
-              creationCallback={fetchBatches}
+              creationCallback={refetchBatches}
             />
+            {batchesIsLoading && (
+              <View
+                style={{
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <ActivityIndicator />
+              </View>
+            )}
             <BatchDetails
               batches={sortedBatches.created}
               // TODO: At some point, the Autocomplete Input should handle automatically
@@ -114,7 +113,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
               {(batch) => (
                 <RegisterBatchSent
                   batchId={batch.id}
-                  successCallback={fetchBatches}
+                  successCallback={refetchBatches}
                 />
               )}
             </BatchDetails>
