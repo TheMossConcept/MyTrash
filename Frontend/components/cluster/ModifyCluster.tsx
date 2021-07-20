@@ -53,7 +53,7 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
       cluster={initialValues}
       clusterId={clusterId}
       submit={updateCluster}
-      submitTitle="Opdater cluster"
+      title="Opdater cluster"
     />
   ) : (
     <ActivityIndicator />
@@ -93,7 +93,7 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
     <ClusterForm
       cluster={initialValues}
       submit={createCluster}
-      submitTitle="Opret cluster"
+      title="Opret cluster"
     />
   );
 };

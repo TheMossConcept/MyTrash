@@ -5,7 +5,6 @@ import * as yup from "yup";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
-import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
 import RoleSelector from "./RoleSelector";
 import useAppRoles from "../../hooks/useAppRoles";
@@ -29,7 +28,7 @@ export type UserFormData = {
 };
 
 type Props = {
-  submitTitle: string;
+  title: string;
   successCallback?: () => void;
 };
 
@@ -57,7 +56,7 @@ const validationSchema = yup.object().shape({
 });
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
-const CollaboratorForm: FC<Props> = ({ submitTitle, successCallback }) => {
+const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
   // const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
 
   const initialValues: UserFormData = {
@@ -105,10 +104,7 @@ const CollaboratorForm: FC<Props> = ({ submitTitle, successCallback }) => {
       }
       validateOnMount
     >
-      <HeadlineText
-        text="Inviter partner."
-        style={{ alignItems: "flex-start" }}
-      />
+      <HeadlineText text={`${title}.`} style={{ alignItems: "flex-start" }} />
       <StringField
         label="Virksomhedsnavn"
         formKey="companyName"
@@ -139,7 +135,7 @@ const CollaboratorForm: FC<Props> = ({ submitTitle, successCallback }) => {
       <StringField label="By" formKey="city" style={styles.field} />
       <NumberField label="Postnummer" formKey="zipCode" style={styles.field} />
       <RoleSelector formKey="role" appRoles={appRolesForSelection} />
-      <SubmitButton title={submitTitle} style={styles.submitButton} isWeb />
+      <SubmitButton title={title} style={styles.submitButton} isWeb />
     </FormContainer>
   );
 };

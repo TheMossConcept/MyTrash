@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { View } from "react-native";
+import { View, ViewProps } from "react-native";
 import AutocompleteInput from "../inputs/AutocompleteInput";
 import useAppRoles from "../../hooks/useAppRoles";
 
@@ -13,9 +13,9 @@ type UserInputProps = {
     | "recipientPartnerId";
 };
 
-type Props = {};
+type Props = {} & ViewProps;
 
-const SelectPartnersForm: FC<Props> = () => {
+const SelectPartnersForm: FC<Props> = ({ ...viewProps }) => {
   const { appRoles } = useAppRoles();
   const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
     []
@@ -76,7 +76,7 @@ const SelectPartnersForm: FC<Props> = () => {
   }, [appRoles]);
 
   return (
-    <View>
+    <View {...viewProps}>
       {userSelectionData.map((selectionData, index) => {
         const userSelections = userSelectionData.length;
         const zIndex = userSelections - index;
@@ -86,7 +86,11 @@ const SelectPartnersForm: FC<Props> = () => {
         return (
           <View
             key={selectionData.title}
-            style={{ width: "100%", zIndex, marginBottom: isLastInput ? 5 : 0 }}
+            style={{
+              width: "100%",
+              zIndex,
+              marginBottom: isLastInput ? 0 : 23,
+            }}
           >
             <AutocompleteInput
               containerStyle={{ zIndex }}

@@ -35,9 +35,9 @@ const AdministrationScreen: FC<Props> = () => {
   return (
     <Container>
       <View style={{ flexDirection: "row" }}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, marginRight: 50 }}>
           <CollaboratorForm
-            submitTitle="Inviter partner"
+            title="Inviter partner"
             successCallback={handlePartnerInvited}
           />
         </View>
