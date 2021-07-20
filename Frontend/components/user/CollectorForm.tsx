@@ -1,6 +1,6 @@
 import axios from "axios";
-import React, { FC } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { FC, useContext } from "react";
+import { StyleSheet, Text, View, ViewProps } from "react-native";
 import * as yup from "yup";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
@@ -9,6 +9,7 @@ import SubmitButton from "../inputs/SubmitButton";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import HeadlineText from "../styled/HeadlineText";
 import globalStyles from "../../utils/globalStyles";
+import GlobalSnackbarContext from "../../utils/globalContext";
 
 export type CollectorFormData = {
   clusterId?: string;
@@ -29,7 +30,7 @@ type Props = {
   clusterId?: string;
   title: string;
   successCallback?: () => void;
-};
+} & Pick<ViewProps, "style">;
 
 const danishPhoneNumberRegExp = new RegExp(
   // eslint-disable-next-line no-control-regex
@@ -59,9 +60,9 @@ const CollectorForm: FC<Props> = ({
   title,
   successCallback,
   children,
+  style,
 }) => {
-  // const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
-
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
   const initialValues: CollectorFormData = {
     email: "",
     firstName: "",
@@ -80,7 +81,7 @@ const CollectorForm: FC<Props> = ({
         ...sharedAxiosConfig,
       })
       .then(() => {
-        // setShowSnackbar(true);
+        showGlobalSnackbar("Indsamler tilføjet til clusteret");
         resetForm();
 
         if (successCallback) {
@@ -96,6 +97,7 @@ const CollectorForm: FC<Props> = ({
       onSubmit={(values, formikHelpers) =>
         createUser(values, formikHelpers.resetForm)
       }
+      style={style}
       validateOnMount
     >
       <HeadlineText text={`${title}.`} style={styles.headline} />

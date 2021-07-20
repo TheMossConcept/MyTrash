@@ -1,7 +1,9 @@
 import React, { FC, ReactElement, useState } from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
+import { isEmpty } from "lodash";
 import HeadlineText from "../styled/HeadlineText";
 import WebButton from "../styled/WebButton";
+import EmptyView from "../styled/EmptyView";
 
 export type Cluster = {
   displayName: string;
@@ -26,11 +28,19 @@ const ClusterList: FC<Props> = ({ clusters, children }) => {
 
   return (
     <View>
-      {clusters.map((cluster) => (
-        <ListItem key={cluster.id} cluster={cluster} style={styles.clusterItem}>
-          {children}
-        </ListItem>
-      ))}
+      {isEmpty(clusters) ? (
+        <EmptyView />
+      ) : (
+        clusters.map((cluster) => (
+          <ListItem
+            key={cluster.id}
+            cluster={cluster}
+            style={styles.clusterItem}
+          >
+            {children}
+          </ListItem>
+        ))
+      )}
     </View>
   );
 };
@@ -70,20 +80,7 @@ const ListItem: FC<ListItemProps> = ({
         <View style={styles.detailsContainer}>{children({ cluster })}</View>
       )}
     </View>
-  ); /* (
-    <View style={styles.itemContainer}>
-      <View style={styles.itemSelector}>
-        <TouchableWithoutFeedback onPress={toggleClusterDetailsAreShown}>
-          <Text style={styles.itemText}>{cluster.displayName}</Text>
-        </TouchableWithoutFeedback>
-      </View>
-      <View style={styles.itemDetails}>
-        {clusterDetailsAreShown && (
-          <View style={styles.border}>{children({ cluster })}</View>
-        )}
-      </View>
-    </View>
-  ) */
+  );
 };
 
 const styles = StyleSheet.create({

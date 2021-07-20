@@ -1,11 +1,12 @@
 import axios from "axios";
 import React, { FC } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Divider } from "react-native-paper";
-import Subheader from "../styled/Subheader";
-import InformationText from "../styled/InformationText";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import { Product } from "../../hooks/useProducts";
+import HeadlineText from "../styled/HeadlineText";
+import globalStyles from "../../utils/globalStyles";
+import WebButton from "../styled/WebButton";
 
 type Props = {
   products: Product[];
@@ -15,20 +16,25 @@ type Props = {
 const ProductsDetails: FC<Props> = ({ products, refetchProducts }) => {
   return (
     <View style={styles.container}>
-      <Subheader>Produkter lavet ud af batch</Subheader>
+      <HeadlineText
+        text="Oprettede produkter."
+        style={{ alignItems: "flex-start" }}
+      />
       {products.map((product, index) => {
         const isLastProduct = index === products.length - 1;
 
         return (
           <View key={product.id} style={styles.productContainer}>
-            <View style={styles.productNumber}>
-              <InformationText>
+            <View style={styles.productNumberContainer}>
+              <Text
+                style={[globalStyles.subheaderText, styles.productNumberText]}
+              >
                 Varenummer {product.productNumber}
-              </InformationText>
+              </Text>
             </View>
             <View style={styles.productStatus}>
               {product.hasBeenSent ? (
-                <Text>Produktet er afsendt</Text>
+                <Text style={globalStyles.subheaderText}>Afsendt</Text>
               ) : (
                 <MarkProductAsSentButton
                   productId={product.id}
@@ -69,12 +75,17 @@ const MarkProductAsSentButton: FC<MarkProductAsSentButtonProps> = ({
       });
   };
 
-  return <Button title="Marker som afsendt" onPress={markProductAsSent} />;
+  return (
+    <WebButton
+      text="Marker som afsendt"
+      onPress={markProductAsSent}
+      disabled={false}
+    />
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
-    textAlign: "center",
     padding: 15,
     borderColor: "rgb(211, 211, 211)",
     borderStyle: "solid",
@@ -84,9 +95,12 @@ const styles = StyleSheet.create({
     marginTop: 15,
     flexDirection: "row",
   },
-  productNumber: {
+  productNumberContainer: {
     flex: 2,
     alignSelf: "center",
+  },
+  productNumberText: {
+    textAlign: "left",
   },
   productStatus: {
     flex: 1,

@@ -1,7 +1,7 @@
 import React, { FC, useContext, useState } from "react";
 import * as yup from "yup";
 import { isEmpty, isArray } from "lodash";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import axios from "axios";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import ConfirmationDialog from "../shared/ConfirmationDialog";
@@ -34,6 +34,7 @@ const CollectorList: FC<Props> = ({ clusterId }) => {
 
   return (
     <View>
+      <HeadlineText style={{ alignItems: "flex-start" }} text="Indsamlere." />
       {/* eslint-disable no-nested-ternary */}
       {isLoading ? (
         <LoadingIndicator />
@@ -127,7 +128,7 @@ const CollectorView: FC<CollectorViewProps> = ({
           updateCollectionGoal(collector.id, values.collectionGoal)
         }
         validationSchema={collectionGoalSchema}
-        style={{ flex: 2, flexDirection: "row" }}
+        style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
         validateOnMount
       >
         <View

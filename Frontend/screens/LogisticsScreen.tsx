@@ -47,39 +47,44 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
         selectionState={contextSelectionState}
       >
         <View>
-          {isLoading && <LoadingIndicator />}
-          {selectedContext === "Afventer" && (
-            <PlasticCollectionsDetails
-              sorting={{
-                displayName: "oprettelsesdato",
-                sortState: [
-                  sortKey === "createdAt",
-                  toggleSorting("createdAt"),
-                ],
-              }}
-              plasticCollections={sortedCollections.pending}
-            >
-              {(collection) => (
-                <View>
-                  {collection.isFirstCollection && (
-                    <InformationField
-                      value="NB! Dette er første opsamling"
-                      style={styles.informationTextField}
-                    />
+          {isLoading ? (
+            <LoadingIndicator />
+          ) : (
+            <View>
+              {selectedContext === "Afventer" && (
+                <PlasticCollectionsDetails
+                  sorting={{
+                    displayName: "oprettelsesdato",
+                    sortState: [
+                      sortKey === "createdAt",
+                      toggleSorting("createdAt"),
+                    ],
+                  }}
+                  plasticCollections={sortedCollections.pending}
+                >
+                  {(collection) => (
+                    <View>
+                      {collection.isFirstCollection && (
+                        <InformationField
+                          value="NB! Dette er første opsamling"
+                          style={styles.informationTextField}
+                        />
+                      )}
+                      {collection.isLastCollection && (
+                        <InformationField
+                          value="NB! Dette er sidste opsamling"
+                          style={styles.informationTextField}
+                        />
+                      )}
+                      <SchedulePlasticCollection
+                        plasticCollectionId={collection.id}
+                        plasticCollectionScheduledCallback={refetch}
+                      />
+                    </View>
                   )}
-                  {collection.isLastCollection && (
-                    <InformationField
-                      value="NB! Dette er sidste opsamling"
-                      style={styles.informationTextField}
-                    />
-                  )}
-                  <SchedulePlasticCollection
-                    plasticCollectionId={collection.id}
-                    plasticCollectionScheduledCallback={refetch}
-                  />
-                </View>
+                </PlasticCollectionsDetails>
               )}
-            </PlasticCollectionsDetails>
+            </View>
           )}
         </View>
         {selectedContext === "Planlagt" && (

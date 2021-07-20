@@ -1,26 +1,32 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useContext, useState } from "react";
+import { View } from "react-native";
 import { TabsParamList } from "../typings/types";
 import sortBatchByStatus from "../utils/batch";
-import BatchDetails from "../components/batch/BatchDetails";
+import BatchDetails, { Batch } from "../components/batch/BatchDetails";
 import Container from "../components/shared/Container";
 import useAxiosConfig from "../hooks/useAxiosConfig";
-import useBatches from "../hooks/useBatches";
 import ProductsForBatch from "../components/product/ProductsForBatch";
 import GlobalSnackbarContext from "../utils/globalContext";
 import ContextSelector from "../components/styled/ContextSelector";
 import WebButton from "../components/styled/WebButton";
+import useQueriedData from "../hooks/useQueriedData";
+import LoadingIndicator from "../components/styled/LoadingIndicator";
 
 type Props = StackScreenProps<TabsParamList, "Produktion">;
 
 const ProductionScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
 
-  const { batches, refetchBatches } = useBatches({
+  const {
+    data: batches,
+    refetch: refetchBatches,
+    isLoading,
+  } = useQueriedData<Batch[]>("/GetBatches", {
     recipientPartnerId: userId,
   });
-  const sortedBatches = sortBatchByStatus(batches);
+  const sortedBatches = sortBatchByStatus(batches || []);
 
   const contextSelectionState = useState("Modtagne");
   const [selectedContext] = contextSelectionState;
@@ -31,26 +37,32 @@ const ProductionScreen: FC<Props> = ({ route }) => {
         options={["Modtagne", "Bekræftede"]}
         selectionState={contextSelectionState}
       >
-        {selectedContext === "Modtagne" && (
-          <BatchDetails batches={sortedBatches.sent}>
-            {(batch) => (
-              <ConfirmBatchReception
-                batchId={batch.id}
-                successCallback={refetchBatches}
-              />
+        {isLoading ? (
+          <LoadingIndicator />
+        ) : (
+          <View>
+            {selectedContext === "Modtagne" && (
+              <BatchDetails batches={sortedBatches.sent}>
+                {(batch) => (
+                  <ConfirmBatchReception
+                    batchId={batch.id}
+                    successCallback={refetchBatches}
+                  />
+                )}
+              </BatchDetails>
             )}
-          </BatchDetails>
-        )}
-        {selectedContext === "Bekræftede" && (
-          <BatchDetails batches={sortedBatches.received}>
-            {(batch) => (
-              <ProductsForBatch
-                batchId={batch.id}
-                clusterId={batch.clusterId}
-                productionPartnerId={userId}
-              />
+            {selectedContext === "Bekræftede" && (
+              <BatchDetails batches={sortedBatches.received}>
+                {(batch) => (
+                  <ProductsForBatch
+                    batchId={batch.id}
+                    clusterId={batch.clusterId}
+                    productionPartnerId={userId}
+                  />
+                )}
+              </BatchDetails>
             )}
-          </BatchDetails>
+          </View>
         )}
       </ContextSelector>
     </Container>
