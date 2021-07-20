@@ -27,7 +27,7 @@ export type CollectorFormData = {
 
 type Props = {
   clusterId?: string;
-  submitTitle: string;
+  title: string;
   successCallback?: () => void;
 };
 
@@ -56,7 +56,7 @@ const validationSchema = yup.object().shape({
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
 const CollectorForm: FC<Props> = ({
   clusterId,
-  submitTitle,
+  title,
   successCallback,
   children,
 }) => {
@@ -98,6 +98,7 @@ const CollectorForm: FC<Props> = ({
       }
       validateOnMount
     >
+      <HeadlineText text={`${title}.`} style={styles.headline} />
       <Text style={globalStyles.subheaderText}>Kontakt.</Text>
       <StringField
         label="Fornavn"
@@ -132,7 +133,7 @@ const CollectorForm: FC<Props> = ({
       />
       {children}
       <SubmitButton
-        title={submitTitle}
+        title={title}
         icon={{ src: require("../../assets/icons/notepad_grey.png") }}
         isWeb
       />
@@ -141,6 +142,9 @@ const CollectorForm: FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
+  headline: {
+    alignItems: "flex-start",
+  },
   inputField: {
     marginBottom: 23,
   },

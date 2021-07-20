@@ -66,13 +66,9 @@ const AdministrationScreen: FC<Props> = () => {
                   text="Indsamlere."
                 />
                 <CollectorList clusterId={cluster.id} />
-                <HeadlineText
-                  style={{ alignItems: "flex-start" }}
-                  text="Tilføj indsamler."
-                />
                 <CollectorForm
                   clusterId={cluster.id}
-                  submitTitle="Tilføj indsamler"
+                  title="Tilføj indsamler"
                 />
               </View>
             </View>
