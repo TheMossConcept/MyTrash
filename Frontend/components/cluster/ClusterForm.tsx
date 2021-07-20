@@ -2,6 +2,7 @@ import * as yup from "yup";
 import React, { FC } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Formik } from "formik";
+import Constants from "expo-constants";
 import SelectPartnersForm from "../user/SelectPartnersForm";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";

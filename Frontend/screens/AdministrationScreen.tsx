@@ -17,6 +17,7 @@ import CategoryHeadline from "../components/styled/CategoryHeadline";
 import CollectorForm from "../components/user/CollectorForm";
 import ClusterForm from "../components/cluster/ClusterForm";
 import CollectorList from "../components/user/CollectorList";
+import HeadlineText from "../components/styled/HeadlineText";
 
 type Props = StackScreenProps<TabsParamList, "Administration">;
 
@@ -34,7 +35,7 @@ const AdministrationScreen: FC<Props> = () => {
 
   return (
     <Container>
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", marginBottom: 50 }}>
         <View style={{ flex: 1, marginRight: 50 }}>
           <CollaboratorForm
             title="Inviter partner"
@@ -45,34 +46,49 @@ const AdministrationScreen: FC<Props> = () => {
           <CreateCluster successCallback={refetchClusters} />
         </View>
       </View>
-      <CategoryHeadline>AKTIVE CLUSTERE</CategoryHeadline>
+      <HeadlineText
+        text="Aktive clustre."
+        style={{ alignItems: "flex-start" }}
+      />
       <ClusterList clusters={activeClusters}>
         {({ cluster }) => (
-          <Container>
-            <CategoryHeadline>REDIGER CLUSTER</CategoryHeadline>
-            <UpdateCluster
-              clusterId={cluster.id}
-              successCallback={refetchClusters}
-            />
+          <View>
+            <View style={{ flexDirection: "row" }}>
+              <View style={{ flex: 1, marginRight: 23 }}>
+                <UpdateCluster
+                  clusterId={cluster.id}
+                  successCallback={refetchClusters}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <HeadlineText
+                  style={{ alignItems: "flex-start" }}
+                  text="Indsamlere."
+                />
+                <CollectorList clusterId={cluster.id} />
+                <HeadlineText
+                  style={{ alignItems: "flex-start" }}
+                  text="Tilføj indsamler."
+                />
+                <CollectorForm
+                  clusterId={cluster.id}
+                  submitTitle="Tilføj indsamler"
+                />
+              </View>
+            </View>
             <CloseClusterBtn
               clusterId={cluster.id}
               successCallback={refetchClusters}
+              style={{ marginTop: 23 }}
             />
-            <CategoryHeadline>INDSAMLERE</CategoryHeadline>
-            <CollectorList clusterId={cluster.id} />
-            <CategoryHeadline>TILFØJ INDSAMLER</CategoryHeadline>
-            <CollectorForm
-              clusterId={cluster.id}
-              submitTitle="Tilføj indsamler"
-            />
-          </Container>
+          </View>
         )}
       </ClusterList>
-      <CategoryHeadline>LUKKEDE CLUSTRE</CategoryHeadline>
-      <ClusterList
-        clusters={inactiveClusters}
-        showSingleClusterExpanded={false}
-      >
+      <HeadlineText
+        text="Lukkede clustre."
+        style={{ alignItems: "flex-start" }}
+      />
+      <ClusterList clusters={inactiveClusters}>
         {({ cluster }) => <ClusterForm cluster={cluster} />}
       </ClusterList>
     </Container>

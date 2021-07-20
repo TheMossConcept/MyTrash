@@ -60,11 +60,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             style={{ marginTop: 62.5 }}
           />
         ) : (
-          <CollectionForm
-            userId={userId}
-            clusterId={activeCluster.id}
-            successCallback={() => console.log("Not implemented yet!")}
-          />
+          <CollectionForm userId={userId} clusterId={activeCluster.id} />
         )}
       </MainContentArea>
       <BottomButtonContainer style={{ paddingVertical: 20, height: "20%" }}>

@@ -1,15 +1,14 @@
 import axios from "axios";
 import React, { FC } from "react";
-import { ImageBackground, StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import * as yup from "yup";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
-import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import HeadlineText from "../styled/HeadlineText";
-import MainContentArea from "../styled/MainContentArea";
+import globalStyles from "../../utils/globalStyles";
 
 export type CollectorFormData = {
   clusterId?: string;
@@ -99,7 +98,7 @@ const CollectorForm: FC<Props> = ({
       }
       validateOnMount
     >
-      <HeadlineText text="Kontakt" />
+      <Text style={globalStyles.subheaderText}>Kontakt.</Text>
       <StringField
         label="Fornavn"
         formKey="firstName"
@@ -116,7 +115,7 @@ const CollectorForm: FC<Props> = ({
         formKey="phoneNumber"
         style={styles.inputField}
       />
-      <HeadlineText text="Addresse" style={styles.inputField} />
+      <Text style={globalStyles.subheaderText}>Adresse.</Text>
       <View style={[styles.inputField, { flexDirection: "row" }]}>
         <View style={{ flex: 2, marginRight: 10 }}>
           <StringField label="Gadenavn" formKey="street" />
@@ -135,6 +134,7 @@ const CollectorForm: FC<Props> = ({
       <SubmitButton
         title={submitTitle}
         icon={{ src: require("../../assets/icons/notepad_grey.png") }}
+        isWeb
       />
     </FormContainer>
   );
@@ -142,7 +142,7 @@ const CollectorForm: FC<Props> = ({
 
 const styles = StyleSheet.create({
   inputField: {
-    marginBottom: 10,
+    marginBottom: 23,
   },
   submitButton: {
     marginTop: 10,

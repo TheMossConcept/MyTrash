@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
-import { Button } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import ClusterForm, { ClusterFormData } from "./ClusterForm";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
+import WebButton, { WebButtonProps } from "../styled/WebButton";
 
 type UpdateFormProps = {
   successCallback: () => void;
@@ -102,12 +102,13 @@ type CloseClusterBtnProps = {
   clusterId: string;
   title?: string;
   successCallback?: () => void;
-};
+} & Omit<WebButtonProps, "onPress" | "text" | "disabled" | "isSelected">;
 
 export const CloseClusterBtn: FC<CloseClusterBtnProps> = ({
   clusterId,
   successCallback,
   title,
+  ...webButtonProps
 }) => {
   const sharedAxiosConfig = useAxiosConfig();
 
@@ -125,5 +126,12 @@ export const CloseClusterBtn: FC<CloseClusterBtnProps> = ({
       });
   };
 
-  return <Button onPress={closeCluster} title={title || "Luk cluster"} />;
+  return (
+    <WebButton
+      onPress={closeCluster}
+      text={title || "Luk cluster"}
+      disabled={false}
+      {...webButtonProps}
+    />
+  );
 };

@@ -10,6 +10,7 @@ import RoleSelector from "./RoleSelector";
 import useAppRoles from "../../hooks/useAppRoles";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import HeadlineText from "../styled/HeadlineText";
+import globalStyles from "../../utils/globalStyles";
 
 export type UserFormData = {
   email: string;
@@ -110,7 +111,7 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
         formKey="companyName"
         style={styles.field}
       />
-      <Text style={styles.subheaderText}>Kontaktperson. </Text>
+      <Text style={globalStyles.subheaderText}>Kontaktperson. </Text>
       <StringField label="Fornavn" formKey="firstName" style={styles.field} />
       <StringField label="Efternavn" formKey="lastName" style={styles.field} />
       <StringField label="Email" formKey="email" style={styles.field} />
@@ -119,7 +120,9 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
         formKey="phoneNumber"
         style={styles.field}
       />
-      <Text style={styles.subheaderText}>Addresseoplysninger.</Text>
+      <Text style={[globalStyles.subheaderText, { wordBreak: "break-word" }]}>
+        Addresseoplysninger.
+      </Text>
       <View style={styles.streetAddressField}>
         <View style={{ flex: 2 }}>
           <StringField
@@ -154,13 +157,7 @@ const styles = StyleSheet.create({
   streetNameField: {
     marginRight: 12,
   },
-  subheaderText: {
-    fontSize: 20,
-    color: "#898c8e",
-    marginLeft: 11,
-    fontFamily: "HelveticaNeueLTPro-Bd",
-    wordBreak: "break-word",
-  },
+  subheaderText: {},
 });
 
 export default CollaboratorForm;

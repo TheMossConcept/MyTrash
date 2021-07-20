@@ -25,7 +25,7 @@ export type CollectionFormData = {
 type Props = {
   userId: string;
   clusterId: string;
-  successCallback: () => void;
+  successCallback?: () => void;
 };
 
 const validationSchema = yup.object().shape({
@@ -69,7 +69,9 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         showGlobalSnackbar("Afhentning bestilt");
         reset();
 
-        successCallback();
+        if (successCallback) {
+          successCallback();
+        }
       });
   };
 

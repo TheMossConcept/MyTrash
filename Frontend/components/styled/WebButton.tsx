@@ -12,7 +12,8 @@ type Props = {
   icon?: { src: any; width?: number; height?: number };
   isSelected?: boolean;
 } & TouchableOpacityProps;
-export type MobileButtonProps = Props;
+
+export type WebButtonProps = Props;
 
 // TODO: Consider making a WebButton and a MobileButton
 /* eslint-disable react/display-name */
