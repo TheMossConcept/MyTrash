@@ -40,6 +40,11 @@ jobs:
         api_location: "" # Api source code path - optional. 
         output_location: "web-build" # Built app content directory - optional
         ###### End of Repository/Build Configurations ######
+    - name: Deploy to Expon
+      env:
+        EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
+        PRE_BUILD_COMMAND: "npm install --global --silent expo-cli"
+      run: npm install && npm run publish
   backend-build-and-deploy:
     runs-on: windows-latest
     steps:
