@@ -1,8 +1,10 @@
 import React, { FC } from "react";
 import {
   Image,
+  StyleProp,
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
   TouchableOpacityProps,
 } from "react-native";
@@ -11,6 +13,7 @@ type Props = {
   text: string;
   icon?: { src: any; width?: number; height?: number };
   isSelected?: boolean;
+  textStyle?: StyleProp<TextStyle>;
 } & TouchableOpacityProps;
 
 export type WebButtonProps = Props;
@@ -21,6 +24,7 @@ const WebButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
   (
     {
       style,
+      textStyle,
       text,
       icon,
       disabled,
@@ -66,13 +70,17 @@ const WebButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
           />
         )}
         <Text
-          style={{
-            fontSize: 15,
-            color: textColor,
-            marginLeft: 11,
-            fontFamily: "HelveticaNeueLTPro-Bd",
-            wordBreak: "break-word",
-          }}
+          style={[
+            {
+              fontSize: 15,
+              color: textColor,
+              marginLeft: 11,
+              fontFamily: "HelveticaNeueLTPro-Bd",
+              wordBreak: "break-word",
+              textAlign: "center",
+            },
+            textStyle,
+          ]}
         >
           {text}
         </Text>
