@@ -13,7 +13,8 @@ export default function useAzureAdFlows(
   scopes: string[],
   redirectUri?: string
 ) {
-  const { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID } = Constants.manifest.extra;
+  const { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID } =
+    Constants.manifest.extra || {};
   const [discoveryDocument, setDiscoveryDocument] = useState<
     DiscoveryDocument | undefined
   >(undefined);

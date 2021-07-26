@@ -46,7 +46,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   };
 
   const [popoverIsShown, setPopoverIsShown] = useState(false);
-  const popoverRef = useRef<TouchableOpacity>();
+  const popoverRef = useRef<TouchableOpacity>(null);
 
   const { update, formValues, statusValues, refresh, collectionIsOver } =
     useLatestPlasticCollection(userId);

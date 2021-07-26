@@ -120,7 +120,7 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
         formKey="phoneNumber"
         style={styles.field}
       />
-      <Text style={[globalStyles.subheaderText, { wordBreak: "break-word" }]}>
+      <Text style={globalStyles.subheaderText} textBreakStrategy="highQuality">
         Addresseoplysninger.
       </Text>
       <View style={styles.streetAddressField}>

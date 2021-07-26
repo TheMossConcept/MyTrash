@@ -1,9 +1,7 @@
 import { useFormikContext } from "formik";
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { useTheme } from "react-native-paper";
+import { View } from "react-native";
 import { AppRole } from "../../hooks/useAppRoles";
-import Container from "../shared/Container";
 import WebButton from "../styled/WebButton";
 
 type Props = {
@@ -13,7 +11,6 @@ type Props = {
 
 export default function RoleSelector({ formKey: key, appRoles }: Props) {
   const formikProps = useFormikContext<any>();
-  const { colors } = useTheme();
 
   if (!formikProps) {
     throw Error(

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Constants from "expo-constants";
 
 export default function useAxiosConfig(): AxiosRequestConfig {
-  const { BACKEND_URL } = Constants.manifest.extra;
+  const { BACKEND_URL } = Constants.manifest.extra || {};
   const [accessToken, setAccessToken] = useState<string | undefined>();
 
   useEffect(() => {

@@ -46,7 +46,7 @@ const validationSchema = yup.object().shape({
 const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
   let deepLinkUrl = "";
   if (clusterId) {
-    const { MOBILE_REDIRECT_URL } = Constants.manifest.extra;
+    const { MOBILE_REDIRECT_URL } = Constants.manifest.extra || {};
     // TODO: See if we can do something about the schema hardcoding!
     // TODO: This should probably be in the environment files!
     deepLinkUrl = `${MOBILE_REDIRECT_URL}/tilmeld?clusterId=${clusterId}`;

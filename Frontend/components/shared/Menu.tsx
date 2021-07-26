@@ -10,10 +10,10 @@ import useAzureAdFlows from "../../hooks/useAzureAdFlows";
 type Props = {};
 
 const Menu: FC<Props> = () => {
-  const { AZURE_AD_CLIENT_ID } = Constants.manifest.extra;
+  const { AZURE_AD_CLIENT_ID } = Constants.manifest.extra || {};
   const [popoverIsShown, setPopoverIsShown] = useState(false);
   const dismissPopover = () => setPopoverIsShown(false);
-  const popoverRef = useRef<Image>();
+  const popoverRef = useRef<Image>(null);
 
   const scopes = [AZURE_AD_CLIENT_ID];
 

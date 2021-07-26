@@ -12,7 +12,9 @@ type Props = {
   icon?: { src: any; width?: number; height?: number };
   isSelected?: boolean;
   isVerticalButton?: boolean;
+  ref?: any;
 } & TouchableOpacityProps;
+
 export type MobileButtonProps = Props;
 
 // TODO: Consider making a WebButton and a MobileButton

@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import { View, StyleSheet } from "react-native";
 import { StackScreenProps } from "@react-navigation/stack";
 import AutocompleteInput from "../components/inputs/AutocompleteInput";
 import { RootStackParamList } from "../typings/types";
@@ -15,7 +14,7 @@ const JoinClusterForm: FC<Props> = ({ route }) => {
 
   return (
     <MainContentArea>
-      <CollectorForm submitTitle="Tilmeld" clusterId={clusterId}>
+      <CollectorForm title="Tilmeld" clusterId={clusterId}>
         {clusterId === undefined && (
           <AutocompleteInput formKey="clusterId" endpoint="/GetOpenClusters" />
         )}
@@ -23,11 +22,5 @@ const JoinClusterForm: FC<Props> = ({ route }) => {
     </MainContentArea>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 20,
-  },
-});
 
 export default JoinClusterForm;

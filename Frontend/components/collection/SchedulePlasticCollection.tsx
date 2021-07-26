@@ -3,6 +3,10 @@ import { DateTime } from "luxon";
 import React, { FC, useContext, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
+import {
+  CalendarDate,
+  SingleChange,
+} from "react-native-paper-dates/lib/typescript/src/Date/Calendar";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
 import InformationField from "../styled/InformationField";
@@ -30,12 +34,11 @@ const SchedulePlasticCollection: FC<Props> = ({
   const onDismissDate = () => setDatePickerOpen(false);
   const onDismissTime = () => setTimePickerOpen(false);
 
-  // TODO: Fix these typings so they come from the library itself!
-  const onConfirmDate = (params: { date: Date }) => {
+  const onConfirmDate: SingleChange = (params: { date: CalendarDate }) => {
     const { date: selectedDate } = params;
-    const selectedDateTime = DateTime.fromJSDate(selectedDate);
 
     if (selectedDate) {
+      const selectedDateTime = DateTime.fromJSDate(selectedDate);
       setDate(selectedDateTime);
     }
 
@@ -44,8 +47,7 @@ const SchedulePlasticCollection: FC<Props> = ({
   const onConfirmTime = ({
     hours,
     minutes,
-  }: // TODO: Fix these typings so they come from the library itself!
-  {
+  }: {
     hours: number;
     minutes: number;
   }) => {
@@ -137,8 +139,8 @@ const SchedulePlasticCollection: FC<Props> = ({
             startDate: new Date(),
           }}
           label="Vælg afhentningsdato" // optional, default 'Select time'
-          cancelLabel="Annuller" // optional, default: 'Cancel'
-          confirmLabel="Vælg" // optional, default: 'Ok'
+          // cancelLabel="Annuller" // optional, default: 'Cancel'
+          // confirmLabel="Vælg" // optional, default: 'Ok'
           animationType="fade" // optional, default is 'none'
         />
         <TimePickerModal
