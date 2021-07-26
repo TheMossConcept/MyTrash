@@ -1,7 +1,7 @@
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackScreenProps } from "@react-navigation/stack";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { TokenResponse } from "expo-auth-session";
 import React, { FC, useEffect, useState } from "react";
 import AuthorizationButton from "../components/AuthorizationButton";
@@ -16,7 +16,7 @@ import AppText from "../components/styled/AppText";
 type Props = StackScreenProps<RootStackParamList, "Login">;
 
 const LoginScreen: FC<Props> = ({ navigation }) => {
-  const { ENVIRONMENT_NAME } = Constants.manifest.extra;
+  const { ENVIRONMENT_NAME } = Constants.manifest.extra || {};
 
   const loginWithTokenResponse = (tokenResponse: TokenResponse) => {
     const { idToken, accessToken } = tokenResponse;
@@ -62,17 +62,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         <HeadlineText style={{ marginTop: 54 }} />
         <View style={styles.textContainer}>
           <AppText
-            text={`${ENVIRONMENT_NAME} Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
-          />
-        </View>
-        <View style={styles.iconContainer}>
-          <Image
-            source={{
-              src: require("../assets/icons/arrow.png"),
-              width: 31,
-              height: 31,
-            }}
-            style={styles.icon}
+            text={`${ENVIRONMENT_NAME}. This is deployed by the pipeline! Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
           />
         </View>
       </MainContentArea>
