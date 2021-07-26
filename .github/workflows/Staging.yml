@@ -45,7 +45,9 @@ jobs:
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         PRE_BUILD_COMMAND: "cd Frontend && npm install && npm install --global --silent expo-cli"
-        run: cd Frontend && npm run publish
+      run: |
+        cd Frontend
+        npm run publish
   backend-build-and-deploy:
     runs-on: windows-latest
     steps:
