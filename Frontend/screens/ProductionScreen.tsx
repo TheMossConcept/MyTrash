@@ -1,45 +1,70 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
-import React, { FC, useContext } from "react";
-import { Button, StyleSheet } from "react-native";
+import React, { FC, useContext, useState } from "react";
+import { View } from "react-native";
 import { TabsParamList } from "../typings/types";
 import sortBatchByStatus from "../utils/batch";
-import BatchDetails from "../components/batch/BatchDetails";
+import BatchDetails, { Batch } from "../components/batch/BatchDetails";
 import Container from "../components/shared/Container";
-import { GlobalSnackbarContext } from "../navigation/TabNavigator";
 import useAxiosConfig from "../hooks/useAxiosConfig";
-import useBatches from "../hooks/useBatches";
 import ProductsForBatch from "../components/product/ProductsForBatch";
+import GlobalSnackbarContext from "../utils/globalContext";
+import ContextSelector from "../components/styled/ContextSelector";
+import WebButton from "../components/styled/WebButton";
+import useQueriedData from "../hooks/useQueriedData";
+import LoadingIndicator from "../components/styled/LoadingIndicator";
 
 type Props = StackScreenProps<TabsParamList, "Produktion">;
 
 const ProductionScreen: FC<Props> = ({ route }) => {
   const { userId } = route.params;
 
-  const { batches, refetchBatches } = useBatches({
+  const {
+    data: batches,
+    refetch: refetchBatches,
+    isLoading,
+  } = useQueriedData<Batch[]>("/GetBatches", {
     recipientPartnerId: userId,
   });
-  const sortedBatches = sortBatchByStatus(batches);
+  const sortedBatches = sortBatchByStatus(batches || []);
+
+  const contextSelectionState = useState("Modtagne");
+  const [selectedContext] = contextSelectionState;
 
   return (
     <Container>
-      <BatchDetails batches={sortedBatches.sent} title="Modtagne batches">
-        {(batch) => (
-          <ConfirmBatchReception
-            batchId={batch.id}
-            successCallback={refetchBatches}
-          />
+      <ContextSelector
+        options={["Modtagne", "Bekræftede"]}
+        selectionState={contextSelectionState}
+      >
+        {isLoading ? (
+          <LoadingIndicator />
+        ) : (
+          <View>
+            {selectedContext === "Modtagne" && (
+              <BatchDetails batches={sortedBatches.sent}>
+                {(batch) => (
+                  <ConfirmBatchReception
+                    batchId={batch.id}
+                    successCallback={refetchBatches}
+                  />
+                )}
+              </BatchDetails>
+            )}
+            {selectedContext === "Bekræftede" && (
+              <BatchDetails batches={sortedBatches.received}>
+                {(batch) => (
+                  <ProductsForBatch
+                    batchId={batch.id}
+                    clusterId={batch.clusterId}
+                    productionPartnerId={userId}
+                  />
+                )}
+              </BatchDetails>
+            )}
+          </View>
         )}
-      </BatchDetails>
-      <BatchDetails batches={sortedBatches.received} title="Bekræftede batches">
-        {(batch) => (
-          <ProductsForBatch
-            batchId={batch.id}
-            clusterId={batch.clusterId}
-            productionPartnerId={userId}
-          />
-        )}
-      </BatchDetails>
+      </ContextSelector>
     </Container>
   );
 };
@@ -73,11 +98,12 @@ const ConfirmBatchReception: FC<ConfirmBatchReceptionProps> = ({
       });
   };
 
-  return <Button title="Bekræft modtagelse" onPress={confirmReception} />;
+  return (
+    <WebButton
+      text="Bekræft modtagelse"
+      style={{ height: 25 }}
+      disabled={false}
+      onPress={confirmReception}
+    />
+  );
 };
-
-const styles = StyleSheet.create({
-  createProductView: {
-    marginBottom: 15,
-  },
-});

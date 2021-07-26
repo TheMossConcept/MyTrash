@@ -3,13 +3,19 @@ import { ErrorMessage, useFormikContext } from "formik";
 import React, { FC, useEffect, useMemo, useState, useCallback } from "react";
 import * as lodash from "lodash";
 import { EventRegister } from "react-native-event-listeners";
-import { ActivityIndicator, Text, View, ViewStyle } from "react-native";
+import {
+  ActivityIndicator,
+  Text,
+  View,
+  ViewStyle,
+  TextInput,
+} from "react-native";
 import Autocomplete, {
   AutocompleteProps,
 } from "react-native-autocomplete-input";
-import { TextInput } from "react-native-paper";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import useQueryState from "../../hooks/useQueryState";
+import globalStyles from "../../utils/globalStyles";
 
 export type SelectableEntity = {
   id: string;
@@ -157,7 +163,8 @@ const AutocompleteInput: FC<Props> = ({
               onChangeText={onChangeText}
               onFocus={onFocus}
               onBlur={onBlur}
-              label={title}
+              placeholder={title}
+              style={globalStyles.textField}
             />
           )}
           listStyle={{ position: "absolute" }}

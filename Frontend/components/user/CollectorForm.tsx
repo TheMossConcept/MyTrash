@@ -1,13 +1,15 @@
 import axios from "axios";
-import React, { FC } from "react";
-import { View } from "react-native";
+import React, { FC, useContext } from "react";
+import { StyleSheet, Text, View, ViewProps } from "react-native";
 import * as yup from "yup";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
-import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import HeadlineText from "../styled/HeadlineText";
+import globalStyles from "../../utils/globalStyles";
+import GlobalSnackbarContext from "../../utils/globalContext";
 
 export type CollectorFormData = {
   clusterId?: string;
@@ -26,9 +28,9 @@ export type CollectorFormData = {
 
 type Props = {
   clusterId?: string;
-  submitTitle: string;
+  title: string;
   successCallback?: () => void;
-};
+} & Pick<ViewProps, "style">;
 
 const danishPhoneNumberRegExp = new RegExp(
   // eslint-disable-next-line no-control-regex
@@ -55,12 +57,12 @@ const validationSchema = yup.object().shape({
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
 const CollectorForm: FC<Props> = ({
   clusterId,
-  submitTitle,
+  title,
   successCallback,
   children,
+  style,
 }) => {
-  // const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
-
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
   const initialValues: CollectorFormData = {
     email: "",
     firstName: "",
@@ -79,7 +81,7 @@ const CollectorForm: FC<Props> = ({
         ...sharedAxiosConfig,
       })
       .then(() => {
-        // setShowSnackbar(true);
+        showGlobalSnackbar("Indsamler tilføjet til clusteret");
         resetForm();
 
         if (successCallback) {
@@ -95,28 +97,62 @@ const CollectorForm: FC<Props> = ({
       onSubmit={(values, formikHelpers) =>
         createUser(values, formikHelpers.resetForm)
       }
+      style={style}
       validateOnMount
     >
-      <View style={{ width: "95%", margin: "auto" }}>
-        <Subheader>Kontaktoplysninger</Subheader>
-        <StringField label="Fornavn" formKey="firstName" />
-        <StringField label="Efternavn" formKey="lastName" />
-        <StringField label="Email" formKey="email" />
-        <StringField label="Telefonnummer" formKey="phoneNumber" />
-        <Subheader>Addresseoplysninger</Subheader>
-        <View style={{ flex: 2 }}>
+      <HeadlineText text={`${title}.`} style={styles.headline} />
+      <Text style={globalStyles.subheaderText}>Kontakt.</Text>
+      <StringField
+        label="Fornavn"
+        formKey="firstName"
+        style={styles.inputField}
+      />
+      <StringField
+        label="Efternavn"
+        formKey="lastName"
+        style={styles.inputField}
+      />
+      <StringField label="Email" formKey="email" style={styles.inputField} />
+      <StringField
+        label="Telefonnummer"
+        formKey="phoneNumber"
+        style={styles.inputField}
+      />
+      <Text style={globalStyles.subheaderText}>Adresse.</Text>
+      <View style={[styles.inputField, { flexDirection: "row" }]}>
+        <View style={{ flex: 2, marginRight: 10 }}>
           <StringField label="Gadenavn" formKey="street" />
         </View>
         <View style={{ flex: 1 }}>
           <StringField label="Husnummer" formKey="streetNumber" />
         </View>
-        <StringField label="By" formKey="city" />
-        <NumberField label="Postnummer" formKey="zipCode" />
-        {children}
-        <SubmitButton title={submitTitle} />
       </View>
+      <StringField label="By" formKey="city" style={styles.inputField} />
+      <NumberField
+        label="Postnummer"
+        formKey="zipCode"
+        style={styles.inputField}
+      />
+      {children}
+      <SubmitButton
+        title={title}
+        icon={{ src: require("../../assets/icons/notepad_grey.png") }}
+        isWeb
+      />
     </FormContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  headline: {
+    alignItems: "flex-start",
+  },
+  inputField: {
+    marginBottom: 23,
+  },
+  submitButton: {
+    marginTop: 10,
+  },
+});
 
 export default CollectorForm;

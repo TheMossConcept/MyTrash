@@ -1,9 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AxiosRequestConfig } from "axios";
 import { useEffect, useMemo, useState } from "react";
-import { BACKEND_URL } from "react-native-dotenv";
+import Constants from "expo-constants";
 
 export default function useAxiosConfig(): AxiosRequestConfig {
+  const { BACKEND_URL } = Constants.manifest.extra;
   const [accessToken, setAccessToken] = useState<string | undefined>();
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export default function useAxiosConfig(): AxiosRequestConfig {
         "access-token": accessToken,
       },
     }),
-    [accessToken]
+    [accessToken, BACKEND_URL]
   );
 
   return sharedAxiosConfig;

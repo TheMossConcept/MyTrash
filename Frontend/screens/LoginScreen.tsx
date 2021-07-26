@@ -1,16 +1,23 @@
+import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StackScreenProps } from "@react-navigation/stack";
-import { Button, StyleSheet, View } from "react-native";
-import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
+import { Image, StyleSheet, View } from "react-native";
 import { TokenResponse } from "expo-auth-session";
 import React, { FC, useEffect, useState } from "react";
 import AuthorizationButton from "../components/AuthorizationButton";
-import useAzureAdFlows from "../hooks/useAzureAdFlows";
 import { RootStackParamList } from "../typings/types";
+import MobileButton from "../components/styled/MobileButton";
+import BottomButtonContainer from "../components/styled/BottomButtonContainer";
+import MainContentArea from "../components/styled/MainContentArea";
+import Menu from "../components/shared/Menu";
+import HeadlineText from "../components/styled/HeadlineText";
+import AppText from "../components/styled/AppText";
 
 type Props = StackScreenProps<RootStackParamList, "Login">;
 
 const LoginScreen: FC<Props> = ({ navigation }) => {
+  const { ENVIRONMENT_NAME } = Constants.manifest.extra;
+
   const loginWithTokenResponse = (tokenResponse: TokenResponse) => {
     const { idToken, accessToken } = tokenResponse;
 
@@ -48,22 +55,74 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
     loginWithTokenResponse(tokenResponse);
   };
 
-  const scopes = [AZURE_AD_CLIENT_ID];
-  const resetPassword = useAzureAdFlows("B2C_1_PasswordReset", scopes);
-  const onResetPasswordPress = () => resetPassword();
   return (
     <View style={styles.container}>
-      <AuthorizationButton handleAuthorization={handleAuthorizationSuccess} />
-      <Button title="NULSTIL KODEORD" onPress={onResetPasswordPress} />
+      <MainContentArea containerStyle={{ height: "80%" }}>
+        <Menu />
+        <HeadlineText style={{ marginTop: 54 }} />
+        <View style={styles.textContainer}>
+          <AppText
+            text={`${ENVIRONMENT_NAME} Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
+          />
+        </View>
+        <View style={styles.iconContainer}>
+          <Image
+            source={{
+              src: require("../assets/icons/arrow.png"),
+              width: 31,
+              height: 31,
+            }}
+            style={styles.icon}
+          />
+        </View>
+      </MainContentArea>
+      <BottomButtonContainer style={{ height: "20%" }}>
+        <AuthorizationButton
+          style={styles.bottomButton}
+          handleAuthorization={handleAuthorizationSuccess}
+        />
+        <MobileButton
+          text="Opret bruger."
+          onPress={() => navigation.push("Join", { clusterId: undefined })}
+          icon={{
+            src: require("../assets/icons/checkmark_grey.png"),
+            width: 31,
+            height: 31,
+          }}
+          style={styles.bottomButton}
+        />
+        <MobileButton
+          text="Projekt."
+          icon={{
+            src: require("../assets/icons/leaf_grey.png"),
+            width: 20.5,
+            height: 32.5,
+          }}
+        />
+      </BottomButtonContainer>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height: "100%",
+    width: "100%",
+  },
+  textContainer: {
+    marginTop: 60,
+  },
+  iconContainer: {
+    // The image itself constitutes 4 % of the space
+    marginTop: 100,
     alignItems: "center",
-    justifyContent: "center",
+  },
+  icon: {
+    width: 49.5,
+    height: 41.5,
+  },
+  bottomButton: {
+    marginRight: 10,
   },
 });
 

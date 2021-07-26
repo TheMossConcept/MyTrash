@@ -1,15 +1,16 @@
 import axios from "axios";
 import React, { FC } from "react";
-import { View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import * as yup from "yup";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
-import Subheader from "../styled/Subheader";
 import SubmitButton from "../inputs/SubmitButton";
 import RoleSelector from "./RoleSelector";
 import useAppRoles from "../../hooks/useAppRoles";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import HeadlineText from "../styled/HeadlineText";
+import globalStyles from "../../utils/globalStyles";
 
 export type UserFormData = {
   email: string;
@@ -28,7 +29,7 @@ export type UserFormData = {
 };
 
 type Props = {
-  submitTitle: string;
+  title: string;
   successCallback?: () => void;
 };
 
@@ -56,7 +57,7 @@ const validationSchema = yup.object().shape({
 });
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
-const CollaboratorForm: FC<Props> = ({ submitTitle, successCallback }) => {
+const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
   // const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
 
   const initialValues: UserFormData = {
@@ -104,27 +105,59 @@ const CollaboratorForm: FC<Props> = ({ submitTitle, successCallback }) => {
       }
       validateOnMount
     >
-      <View style={{ width: "95%", margin: "auto" }}>
-        <StringField label="Virksomhedsnavn" formKey="companyName" />
-        <Subheader>Kontaktperson </Subheader>
-        <StringField label="Fornavn" formKey="firstName" />
-        <StringField label="Efternavn" formKey="lastName" />
-        <StringField label="Email" formKey="email" />
-        <StringField label="Telefonnummer" formKey="phoneNumber" />
-        <Subheader>Addresseoplysninger</Subheader>
+      <HeadlineText text={`${title}.`} style={{ alignItems: "flex-start" }} />
+      <StringField
+        label="Virksomhedsnavn"
+        formKey="companyName"
+        style={styles.field}
+      />
+      <Text style={globalStyles.subheaderText}>Kontaktperson. </Text>
+      <StringField label="Fornavn" formKey="firstName" style={styles.field} />
+      <StringField label="Efternavn" formKey="lastName" style={styles.field} />
+      <StringField label="Email" formKey="email" style={styles.field} />
+      <StringField
+        label="Telefonnummer"
+        formKey="phoneNumber"
+        style={styles.field}
+      />
+      <Text style={[globalStyles.subheaderText, { wordBreak: "break-word" }]}>
+        Addresseoplysninger.
+      </Text>
+      <View style={styles.streetAddressField}>
         <View style={{ flex: 2 }}>
-          <StringField label="Gadenavn" formKey="street" />
+          <StringField
+            label="Gadenavn"
+            formKey="street"
+            style={styles.streetNameField}
+          />
         </View>
         <View style={{ flex: 1 }}>
           <StringField label="Husnummer" formKey="streetNumber" />
         </View>
-        <StringField label="By" formKey="city" />
-        <NumberField label="Postnummer" formKey="zipCode" />
-        <RoleSelector formKey="role" appRoles={appRolesForSelection} />
-        <SubmitButton title={submitTitle} />
       </View>
+      <StringField label="By" formKey="city" style={styles.field} />
+      <NumberField label="Postnummer" formKey="zipCode" style={styles.field} />
+      <RoleSelector formKey="role" appRoles={appRolesForSelection} />
+      <SubmitButton title={title} style={styles.submitButton} isWeb />
     </FormContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  field: {
+    marginBottom: 23,
+  },
+  submitButton: {
+    marginTop: 23,
+  },
+  streetAddressField: {
+    flexDirection: "row",
+    marginBottom: 23,
+  },
+  streetNameField: {
+    marginRight: 12,
+  },
+  subheaderText: {},
+});
 
 export default CollaboratorForm;

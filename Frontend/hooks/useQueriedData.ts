@@ -4,8 +4,14 @@ import { isEqual } from "lodash";
 import useAxiosConfig from "./useAxiosConfig";
 
 function useQueriedData<T>(endpoint: string, queryParams?: Object) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [queryParamsUsed, setQueryParamsUsed] = useState<Object | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [queryParamsUsed, setQueryParamsUsed] = useState<Object | undefined>(
+    // If we let this be undefined, we will never call fetchData in the case where we omit
+    // queryParams. Please note that this will still cause the issue (not calling fetchData)
+    // if, for some reason, an empty object is passed as queryParams, as queryParamsUsed and
+    // queryParams will then be equal initially.
+    {}
+  );
   const [queriedData, setQueriedData] = useState<T>();
 
   const sharedAxiosConfig = useAxiosConfig();

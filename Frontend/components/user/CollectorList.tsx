@@ -1,25 +1,45 @@
 import React, { FC, useContext, useState } from "react";
 import * as yup from "yup";
-import { isEmpty } from "lodash";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { isEmpty, isArray } from "lodash";
+import { StyleSheet, Text, View } from "react-native";
 import axios from "axios";
-import useCollectors, { Collector } from "../../hooks/useCollectors";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
-import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import ConfirmationDialog from "../shared/ConfirmationDialog";
 import FormContainer from "../shared/FormContainer";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
+import GlobalSnackbarContext from "../../utils/globalContext";
+import HeadlineText from "../styled/HeadlineText";
+import useQueriedData from "../../hooks/useQueriedData";
+import LoadingIndicator from "../styled/LoadingIndicator";
+import globalStyles from "../../utils/globalStyles";
+import WebButton from "../styled/WebButton";
 
 type Props = { clusterId: string };
 
+type Collector = {
+  displayName: string;
+  id: string;
+  collectionGoal: number;
+};
+
 const CollectorList: FC<Props> = ({ clusterId }) => {
-  const { collectors, refetchCollectors } = useCollectors({ clusterId });
+  const {
+    data: collectors,
+    refetch: refetchCollectors,
+    isLoading,
+  } = useQueriedData("/GetCollectors", {
+    clusterId,
+  });
 
   return (
     <View>
-      {isEmpty(collectors) ? (
-        <Text>Ingen indsamlere tilføjet</Text>
+      <HeadlineText style={{ alignItems: "flex-start" }} text="Indsamlere." />
+      {/* eslint-disable no-nested-ternary */}
+      {isLoading ? (
+        <LoadingIndicator />
+      ) : isEmpty(collectors) || !isArray(collectors) ? (
+        <HeadlineText text="Ingen indsamlere tilføjet" />
       ) : (
         collectors.map((collector) => (
           <CollectorView
@@ -30,6 +50,7 @@ const CollectorList: FC<Props> = ({ clusterId }) => {
           />
         ))
       )}
+      {/* eslint-enable no-nested-ternary */}
     </View>
   );
 };
@@ -98,26 +119,42 @@ const CollectorView: FC<CollectorViewProps> = ({
 
   return (
     <View style={styles.collectorContainer}>
-      <Text>{collector.displayName}</Text>
-      <View style={styles.actionContainer}>
-        <FormContainer
-          initialValues={{ collectionGoal: collector.collectionGoal }}
-          onSubmit={async (values) =>
-            updateCollectionGoal(collector.id, values.collectionGoal)
-          }
-          validationSchema={collectionGoalSchema}
-          validateOnMount
-          style={styles.updateGoalContainer}
+      <View style={{ flex: 1, marginRight: 10, alignItems: "center" }}>
+        <Text style={globalStyles.subheaderText}>{collector.displayName}</Text>
+      </View>
+      <FormContainer
+        initialValues={{ collectionGoal: collector.collectionGoal }}
+        onSubmit={async (values) =>
+          updateCollectionGoal(collector.id, values.collectionGoal)
+        }
+        validationSchema={collectionGoalSchema}
+        style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
+        validateOnMount
+      >
+        <View
+          style={{
+            flex: 1,
+            marginRight: 10,
+            alignItems: "center",
+            height: "100%",
+            justifyContent: "center",
+          }}
         >
           <NumberField
             formKey="collectionGoal"
             key={collector.id}
-            label="Indsamlingsmål"
+            label="Mål"
           />
-          <SubmitButton title="Opdater" />
-        </FormContainer>
-        <Button title="Slet bruger" onPress={showConfirmationDialog} />
-      </View>
+        </View>
+        <View style={styles.actionButtonsContainer}>
+          <SubmitButton title="Opdater" style={{ marginBottom: 10 }} isWeb />
+          <WebButton
+            text="Slet bruger"
+            onPress={showConfirmationDialog}
+            disabled={false}
+          />
+        </View>
+      </FormContainer>
       <ConfirmationDialog
         description="Indsamleren fjernes fra clusteret og slettes fra MyTrash"
         showState={showConfirmationDialogState}
@@ -140,9 +177,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 5,
   },
-  updateGoalContainer: {
+  actionButtonsContainer: {
     // NB! Be explicit to indicate that it differs from the other containers
     flexDirection: "column",
+    flex: 1,
     margin: 5,
   },
 });

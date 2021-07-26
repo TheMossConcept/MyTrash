@@ -1,8 +1,8 @@
 import React, { FC, useState } from "react";
-import { Text, TouchableOpacity } from "react-native";
-import { Badge, Card, List, useTheme } from "react-native-paper";
-import InformationText from "../styled/InformationText";
-import Subheader from "../styled/Subheader";
+import { View } from "react-native";
+import WebButton from "../styled/WebButton";
+import InformationField from "../styled/InformationField";
+import EmptyView from "../styled/EmptyView";
 
 type PlasticCollectionDetailProps = {
   plasticCollection: PlasticCollection;
@@ -16,8 +16,7 @@ export type PlasticCollection = {
   requesterId: string;
   recipientPartnerId: string;
   numberOfUnits: number;
-  streetName: string;
-  streetNumber: string;
+  streetAddress: string;
   city: string;
   zipCode: string;
   isFirstCollection: boolean;
@@ -37,8 +36,7 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
 }) => {
   const {
     companyName,
-    streetName,
-    streetNumber,
+    streetAddress,
     zipCode,
     city,
     numberOfUnits,
@@ -48,85 +46,130 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
   const [showDetails, setShowDetails] = useState(false);
   const toggleDetails = () => setShowDetails(!showDetails);
 
-  const { colors } = useTheme();
-
-  const title = companyName || `${streetName} ${streetNumber}`;
+  const title = companyName || streetAddress;
+  const addressString =
+    streetAddress && (zipCode || city)
+      ? `${streetAddress || ""}, ${zipCode || ""} ${city || ""}`
+      : `${streetAddress || ""} ${zipCode || ""} ${city || ""}`;
 
   return (
-    <Card style={styles.card}>
-      <TouchableOpacity onPress={toggleDetails}>
-        <Card.Title title={title} />
-      </TouchableOpacity>
+    <View style={styles.container}>
+      <View style={{ flex: 1 }}>
+        <WebButton
+          icon={{
+            src: require("../../assets/icons/dropdown_grey.png"),
+            width: 29,
+            height: 29,
+          }}
+          onPress={toggleDetails}
+          isSelected={showDetails}
+          style={{ width: 512 }}
+          text={title}
+        />
+      </View>
       {showDetails && (
-        <Card.Content style={styles.cardContent}>
-          {companyName && <InformationText>{companyName}</InformationText>}
-          <InformationText>
-            {streetName} {streetNumber}
-          </InformationText>
-          <InformationText>
-            {city} {zipCode}
-          </InformationText>
-          {comment && <InformationText>{comment}</InformationText>}
-          {weight && !hideWeight && (
-            <InformationText>Vægt: {weight}kg</InformationText>
+        <View style={styles.detailsContainer}>
+          {addressString && (
+            <InformationField value={addressString} style={[styles.line]} />
           )}
-          <Text>
-            Antal enheder{" "}
-            <Badge
-              visible
-              style={{ backgroundColor: colors.primary }}
-              size={30}
-            >
-              {numberOfUnits}
-            </Badge>
-          </Text>
+          {numberOfUnits !== undefined && numberOfUnits !== null && (
+            <InformationField
+              value={`${numberOfUnits} enheder`}
+              style={[styles.line]}
+            />
+          )}
+          {comment && (
+            <InformationField
+              value={comment}
+              style={[styles.line, styles.commentField]}
+            />
+          )}
+          {weight && !hideWeight && (
+            <InformationField value={`${weight} kg`} style={styles.line} />
+          )}
           {children}
-        </Card.Content>
+        </View>
       )}
-      {/* TODO: Make a button to register schedule pick-up and another to register delivery */}
-    </Card>
+    </View>
   );
 };
 
 type Props = {
   plasticCollections: PlasticCollection[];
-  title: string;
+  sorting?: {
+    displayName: string;
+    sortState: [boolean, (newValue: boolean) => void];
+  };
   hideWeight?: boolean;
   children?: (plasticCollection: PlasticCollection) => React.ReactNode;
 };
 
 const PlasticCollectionsDetails: FC<Props> = ({
   plasticCollections,
-  title,
+  sorting,
   hideWeight = false,
   children,
 }) => {
-  return (
-    <List.Section>
-      <Subheader>{title}</Subheader>
-      {plasticCollections.map((collection) => (
-        <PlasticCollectionDetail
-          key={collection.id}
-          plasticCollection={collection}
-          hideWeight={hideWeight}
-        >
-          {children && children(collection)}
-        </PlasticCollectionDetail>
-      ))}
-    </List.Section>
+  const [sort, setSort] = sorting ? sorting.sortState : [false, undefined];
+  const toggleSort = setSort ? () => setSort(!sort) : undefined;
+
+  return plasticCollections.length === 0 ? (
+    <EmptyView />
+  ) : (
+    <View>
+      {sorting && (
+        <WebButton
+          text={`Sorter efter ${sorting.displayName}`}
+          icon={{
+            src: require("../../assets/icons/calendar_grey.png"),
+            width: 25,
+            height: 25,
+          }}
+          onPress={toggleSort}
+          isSelected={sort}
+          style={styles.filterButton}
+        />
+      )}
+      {plasticCollections.map((collection, index) => {
+        const isLastCollection = index === plasticCollections.length - 1;
+
+        return (
+          <View
+            style={!isLastCollection ? styles.line : undefined}
+            key={collection.id}
+          >
+            <PlasticCollectionDetail
+              plasticCollection={collection}
+              hideWeight={hideWeight}
+            >
+              {children && children(collection)}
+            </PlasticCollectionDetail>
+          </View>
+        );
+      })}
+    </View>
   );
 };
 
 const styles = {
-  card: {
-    marginBottom: 15,
+  container: {
+    flexDirection: "row" as "row",
+    alignItems: "flex-start" as "flex-start",
   },
-  cardContent: {
-    borderWidth: 0.3,
-    padding: 15,
-    margin: 15,
-    borderColor: "lightgrey",
-    borderStyle: "solid" as "solid",
+  line: {
+    marginBottom: 23,
+  },
+  detailsContainer: {
+    marginLeft: 14,
+    width: 512,
+  },
+  filterButton: {
+    width: 512,
+    marginBottom: 23,
+  },
+  commentField: {
+    height: 68,
+    textAlignVertical: "center" as "center",
   },
 };
 

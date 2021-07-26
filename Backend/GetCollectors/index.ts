@@ -65,6 +65,7 @@ const httpTrigger: AzureFunction = async function (
   } catch (e) {
     context.res = {
       body: JSON.stringify(e),
+      statusCode: 500,
     };
   }
 };

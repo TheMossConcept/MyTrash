@@ -4,9 +4,9 @@ import React, { FC, useContext } from "react";
 import { StyleSheet, View } from "react-native";
 import FormContainer from "../shared/FormContainer";
 import SubmitButton from "../inputs/SubmitButton";
-import { GlobalSnackbarContext } from "../../navigation/TabNavigator";
 import StringField from "../inputs/StringField";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import GlobalSnackbarContext from "../../utils/globalContext";
 
 type Props = {
   clusterId: string;
@@ -59,27 +59,27 @@ const CreateProduct: FC<Props> = ({
   };
 
   return (
-    <View style={styles.container}>
-      <FormContainer
-        initialValues={initialFormValues}
-        onSubmit={(values, formikHelpers) =>
-          createProduct(values, formikHelpers.resetForm)
-        }
-        validationSchema={validationSchema}
-      >
-        <StringField formKey="productNumber" label="Varenummer" />
-        <SubmitButton title="Opret produkt" />
-      </FormContainer>
-    </View>
+    <FormContainer
+      initialValues={initialFormValues}
+      onSubmit={(values, formikHelpers) =>
+        createProduct(values, formikHelpers.resetForm)
+      }
+      validationSchema={validationSchema}
+      validateOnMount
+    >
+      <StringField
+        formKey="productNumber"
+        label="Varenummer"
+        style={styles.productNumberField}
+      />
+      <SubmitButton title="Opret produkt" isWeb />
+    </FormContainer>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "rgb(211, 211, 211)",
-    padding: 15,
+  productNumberField: {
+    marginBottom: 23,
   },
 });
 

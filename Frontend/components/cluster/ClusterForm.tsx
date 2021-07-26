@@ -1,14 +1,14 @@
 import * as yup from "yup";
 import React, { FC } from "react";
 import { StyleSheet, View, Text } from "react-native";
-import { ENV } from "react-native-dotenv";
 import { Formik } from "formik";
+import Constants from "expo-constants";
 import SelectPartnersForm from "../user/SelectPartnersForm";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import BooleanField from "../inputs/BooleanField";
-import Container from "../shared/Container";
+import HeadlineText from "../styled/HeadlineText";
 
 export type ClusterFormData = {
   isOpen: boolean;
@@ -27,7 +27,7 @@ export type Props = {
   cluster: ClusterFormData;
   clusterId?: string;
   submit?: (Cluster: ClusterFormData, reset: () => void) => void;
-  submitTitle?: string;
+  title?: string;
 };
 
 const validationSchema = yup.object().shape({
@@ -43,19 +43,13 @@ const validationSchema = yup.object().shape({
   productionPartnerId: yup.string().required("Produktionspartner skal vælges"),
 });
 
-const ClusterForm: FC<Props> = ({
-  cluster,
-  clusterId,
-  submit,
-  submitTitle,
-}) => {
+const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
   let deepLinkUrl = "";
   if (clusterId) {
+    const { MOBILE_REDIRECT_URL } = Constants.manifest.extra;
     // TODO: See if we can do something about the schema hardcoding!
-    deepLinkUrl =
-      ENV === "production"
-        ? `houe-plastic-recycling://tilmeld?clusterId=${clusterId}`
-        : `exp://127.0.0.1:19000/--/tilmeld?clusterId=${clusterId}`;
+    // TODO: This should probably be in the environment files!
+    deepLinkUrl = `${MOBILE_REDIRECT_URL}/tilmeld?clusterId=${clusterId}`;
   }
   return (
     <Formik
@@ -69,44 +63,36 @@ const ClusterForm: FC<Props> = ({
       validateOnMount
     >
       {({ values }) => (
-        <Container>
-          <View style={styles.container}>
-            <View style={styles.isOpenCheckboxContainer}>
-              <BooleanField formKey="isOpen" label="Åbent cluster" />
-              {!values.isOpen && deepLinkUrl !== "" && (
-                <Text>Invitationslink: {deepLinkUrl}</Text>
-              )}
-            </View>
-            <View style={styles.inputContainer}>
-              <View style={styles.inputColumn}>
-                <StringField
-                  formKey="name"
-                  label="Navn"
-                  style={styles.inputField}
-                />
-                <StringField
-                  formKey="c5Reference"
-                  label="C5 Reference"
-                  style={styles.inputField}
-                />
-                <NumberField
-                  formKey="necessaryPlastic"
-                  label="Målsætning"
-                  style={styles.inputField}
-                />
-                <NumberField
-                  formKey="usefulPlasticFactor"
-                  label="Beregningsfaktor"
-                />
-              </View>
-              {/* TODO_SESSION: If the cluser is closed, we need the system to generate a link to invite collectors */}
-              <View style={styles.inputColumn}>
-                <SelectPartnersForm />
-              </View>
-            </View>
-            {submit && <SubmitButton title={submitTitle || "Indsend"} />}
+        <View style={styles.container}>
+          <HeadlineText
+            text={`${title}.`}
+            style={{ alignItems: "flex-start" }}
+          />
+          <StringField formKey="name" label="Navn" style={styles.inputField} />
+          <StringField
+            formKey="c5Reference"
+            label="C5 Reference"
+            style={styles.inputField}
+          />
+          <NumberField
+            formKey="necessaryPlastic"
+            label="Målsætning"
+            style={styles.inputField}
+          />
+          <NumberField
+            formKey="usefulPlasticFactor"
+            label="Beregningsfaktor"
+            style={styles.inputField}
+          />
+          <SelectPartnersForm style={styles.selectPartnersForm} />
+          <View style={styles.isOpenCheckboxContainer}>
+            <BooleanField formKey="isOpen" label="Åbent cluster" />
+            {!values.isOpen && deepLinkUrl !== "" && (
+              <Text>Invitationslink: {deepLinkUrl}</Text>
+            )}
           </View>
-        </Container>
+          {submit && <SubmitButton title={title || "Indsend"} isWeb />}
+        </View>
       )}
     </Formik>
   );
@@ -114,28 +100,19 @@ const ClusterForm: FC<Props> = ({
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "column",
-    marginTop: 20,
-    marginBottom: 20,
-    width: "95%",
-  },
-  inputContainer: {
-    flexDirection: "row",
-    zIndex: 1,
-    width: "95%",
-  },
-  inputColumn: {
-    flex: 1,
-    padding: 10,
+    width: "100%",
   },
   isOpenCheckboxContainer: {
     alignItems: "flex-start",
-    width: "95%",
+    marginBottom: 23,
+    // TODO: This should automatically be handled by the AutocompleteInput instead!
+    zIndex: -1,
   },
   inputField: {
-    marginBottom: 5,
+    marginBottom: 23,
+  },
+  selectPartnersForm: {
+    marginBottom: 23,
   },
 });
 

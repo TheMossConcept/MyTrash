@@ -61,7 +61,8 @@ const mongoAPI = {
   // value)
   async find<T extends Entities>(
     entityName: T["entityName"],
-    query?: mongodb.FilterQuery<T>
+    query?: mongodb.FilterQuery<T>,
+    sort?: { [key: string]: 1 | -1 }
   ): Promise<(T & DatabaseEntity)[]> {
     const client = await getMongoClient();
     const result = await client
@@ -69,6 +70,7 @@ const mongoAPI = {
       .collection(entityName)
       // TODO: Add the type here!
       .find(query)
+      .sort(sort || {})
       .toArray();
 
     return result;
@@ -162,7 +164,10 @@ export type CollectionEntity = {
   numberOfUnits: number;
   weight?: number;
   comment?: string;
+  createdAt: Date;
   scheduledPickupDate?: Date;
+  deliveryDate?: Date;
+  receivedDate?: Date;
   collectionStatus: "pending" | "scheduled" | "delivered" | "received";
 };
 
@@ -174,6 +179,9 @@ export type BatchEntity = {
   addtionFactor: number;
   recipientPartnerId: string;
   productionPartnerId: string;
+  createdAt: Date;
+  sentDate?: Date;
+  receivedDate?: Date;
   batchStatus: "created" | "sent" | "received";
 };
 

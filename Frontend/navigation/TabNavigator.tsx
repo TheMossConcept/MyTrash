@@ -4,11 +4,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useCallback, useEffect, useState } from "react";
+import Constants from "expo-constants";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { Appbar } from "react-native-paper";
-
-import { AZURE_AD_CLIENT_ID } from "react-native-dotenv";
-import { View, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import AdministrationScreen from "../screens/AdministrationScreen";
 import CollectionAdministrationScreen from "../screens/CollectionAdministrationScreen";
 import CollectionScreen from "../screens/CollectionScreen";
@@ -19,8 +18,12 @@ import { TabsParamList, RootStackParamList } from "../typings/types";
 import DismissableSnackbar, {
   useSnackbarState,
 } from "../components/shared/DismissableSnackbar";
-import useAzureAdFlows from "../hooks/useAzureAdFlows";
 import NoAccess from "../screens/NoAccess";
+import GlobalSnackbarContext from "../utils/globalContext";
+import MainContentArea from "../components/styled/MainContentArea";
+import HeadlineText from "../components/styled/HeadlineText";
+import Menu from "../components/shared/Menu";
+import TabBar from "../components/styled/TabBar";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
@@ -35,11 +38,6 @@ type UserInfo = {
   isProductionPartner: boolean;
   userHasNoAccess: boolean;
 };
-
-export const GlobalSnackbarContext = React.createContext<
-  (title: string) => void
->(() => console.log("No show snackbar function passed along"));
-
 type TabBarIconProps = {
   focused: boolean;
   color: string;
@@ -60,8 +58,13 @@ const TabBarIcon: FC<TabBarIconProps> = ({ color }) => {
 type Props = StackScreenProps<RootStackParamList, "Root">;
 
 // TODO: Too much is going on in here! Split it out at some point
-const TabNavigator: FC<Props> = ({ navigation }) => {
+const TabNavigator: FC<Props> = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | undefined>();
+
+  // This is not the nicest way of doing it, but it gets the job done reliably (and also using
+  // a mechanism actually meant to provide information about the relevant platform. We cannot use
+  // isDevice, as we want the simulator to behave like the device in this case
+  const platformName = Object.keys(Constants.platform || {})[0];
 
   useEffect(() => {
     const updateUserInfo = async () => {
@@ -106,17 +109,6 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
     updateUserInfo();
   }, []);
 
-  const logout = () => {
-    AsyncStorage.removeItem("accessToken");
-    AsyncStorage.removeItem("idToken");
-    navigation.navigate("Login");
-  };
-
-  const scopes = [AZURE_AD_CLIENT_ID];
-
-  const editProfile = useAzureAdFlows("B2C_1_ProfileEdit", scopes);
-  const onEditProfilePress = () => editProfile();
-
   const globalSnackbarState = useSnackbarState();
   const [, dispatch] = globalSnackbarState;
 
@@ -128,90 +120,128 @@ const TabNavigator: FC<Props> = ({ navigation }) => {
     [dispatch]
   );
 
+  const welcomeText = userInfo?.name
+    ? `Velkommen ${userInfo.name}.`
+    : "Velkommen.";
+
   return userInfo ? (
-    <View>
-      <Appbar.Header>
-        <Appbar.Content
-          title={
-            userInfo.name
-              ? `Velkommen ${userInfo.name}`
-              : "Velkommen til MyTrash"
-          }
-        />
-        <Appbar.Action icon="account-edit" onPress={onEditProfilePress} />
-        <Appbar.Action icon="logout" onPress={logout} />
-      </Appbar.Header>
+    <SafeAreaProvider>
       <GlobalSnackbarContext.Provider value={showSnackbar}>
-        <Tab.Navigator initialRouteName="Administration">
-          {userInfo.isAdministrator && (
-            <Tab.Screen
-              name="Administration"
-              component={AdministrationScreen}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.isCollectionAdministrator && (
-            <Tab.Screen
-              name="Indsamlingsadministration"
-              component={CollectionAdministrationScreen}
-              initialParams={{ userId: userInfo.userId }}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.isCollector && (
-            <Tab.Screen
-              name="Indsamling"
-              component={CollectionScreen}
-              initialParams={{ userId: userInfo.userId }}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.isLogisticsPartner && (
-            <Tab.Screen
-              name="Logistik"
-              component={LogisticsScreen}
-              initialParams={{ userId: userInfo.userId }}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.isRecipientPartner && (
-            <Tab.Screen
-              name="Modtagelse"
-              component={RecipientScreen}
-              initialParams={{ userId: userInfo.userId }}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.isProductionPartner && (
-            <Tab.Screen
-              name="Produktion"
-              component={ProductionScreen}
-              initialParams={{ userId: userInfo.userId }}
-              options={{
-                tabBarIcon: TabBarIcon,
-              }}
-            />
-          )}
-          {userInfo.userHasNoAccess && (
-            <Tab.Screen name="NoAccess" component={NoAccess} />
-          )}
-        </Tab.Navigator>
+        {platformName === "web" ? (
+          <View style={{ height: "100vh" }}>
+            <MainContentArea isWeb>
+              <View style={styles.menuSection}>
+                <HeadlineText />
+                <Menu />
+              </View>
+              <HeadlineText text={welcomeText} style={styles.nameText} />
+              <Navigator userInfo={userInfo} isWeb />
+            </MainContentArea>
+          </View>
+        ) : (
+          <Navigator userInfo={userInfo} />
+        )}
       </GlobalSnackbarContext.Provider>
-      <DismissableSnackbar globalSnackbarState={globalSnackbarState} />
-    </View>
+      <DismissableSnackbar
+        globalSnackbarState={globalSnackbarState}
+        isWeb={platformName === "web"}
+      />
+    </SafeAreaProvider>
   ) : (
     <Text>No user info</Text>
   );
 };
+
+type NavigatorProps = {
+  userInfo: UserInfo;
+  isWeb?: boolean;
+};
+
+const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
+  return (
+    <Tab.Navigator
+      initialRouteName="Administration"
+      tabBar={(props) =>
+        props.state.routes.length > 1 ? <TabBar {...props} /> : null
+      }
+    >
+      {userInfo.isAdministrator && isWeb && (
+        <Tab.Screen
+          name="Administration"
+          component={AdministrationScreen}
+          options={{
+            tabBarIcon: TabBarIcon,
+          }}
+        />
+      )}
+      {userInfo.isCollectionAdministrator && isWeb && (
+        <Tab.Screen
+          name="Indsamlingsadministration"
+          component={CollectionAdministrationScreen}
+          initialParams={{ userId: userInfo.userId }}
+          options={{
+            tabBarIcon: TabBarIcon,
+          }}
+        />
+      )}
+      {userInfo.isCollector && !isWeb && (
+        <Tab.Screen
+          name="Indsamling"
+          component={CollectionScreen}
+          initialParams={{ userId: userInfo.userId }}
+          options={{
+            tabBarIcon: TabBarIcon,
+          }}
+        />
+      )}
+      {userInfo.isLogisticsPartner && isWeb && (
+        <Tab.Screen
+          name="Logistik"
+          component={LogisticsScreen}
+          initialParams={{ userId: userInfo.userId }}
+          options={{
+            tabBarIcon: TabBarIcon,
+          }}
+        />
+      )}
+      {userInfo.isRecipientPartner && isWeb && (
+        <Tab.Screen
+          name="Modtagelse"
+          component={RecipientScreen}
+          initialParams={{ userId: userInfo.userId }}
+          options={{
+            tabBarIcon: TabBarIcon,
+          }}
+        />
+      )}
+      {userInfo.isProductionPartner && isWeb && (
+        <Tab.Screen
+          name="Produktion"
+          component={ProductionScreen}
+          initialParams={{ userId: userInfo.userId }}
+          options={{
+            tabBarIcon: TabBarIcon,
+          }}
+        />
+      )}
+      {userInfo.userHasNoAccess && (
+        <Tab.Screen name="NoAccess" component={NoAccess} />
+      )}
+    </Tab.Navigator>
+  );
+};
+
+const styles = StyleSheet.create({
+  menuSection: {
+    marginTop: 86,
+    marginBottom: 38,
+    paddingHorizontal: 107,
+    flexDirection: "row",
+  },
+  nameText: {
+    alignItems: "flex-start",
+    marginBottom: 24,
+  },
+});
 
 export default TabNavigator;

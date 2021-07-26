@@ -5,18 +5,14 @@ import {
   AuthSessionResult,
   DiscoveryDocument,
   exchangeCodeAsync,
-  makeRedirectUri,
   refreshAsync,
   TokenResponse,
 } from "expo-auth-session";
 
-import { Button, Text, View } from "react-native";
-import {
-  AZURE_AD_CLIENT_ID,
-  MOBILE_REDIRECT_URL,
-  ENV,
-} from "react-native-dotenv";
+import Constants from "expo-constants";
 import useAzureAdFlows from "../hooks/useAzureAdFlows";
+import MobileButton, { MobileButtonProps } from "./styled/MobileButton";
+import getDefaultRedirectUri from "../utils/authorization";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -25,16 +21,18 @@ type Props = {
     tokenResponse: TokenResponse,
     refreshTokenIfNecessary: () => Promise<TokenResponse> | undefined
   ) => void;
-};
+} & Omit<MobileButtonProps, "text" | "icon">;
 
-export default function AuthorizationButton({ handleAuthorization }: Props) {
+export default function AuthorizationButton({
+  handleAuthorization,
+  ...MobileButtonProps
+}: Props) {
+  const { AZURE_AD_CLIENT_ID } = Constants.manifest.extra;
   const scopes = [AZURE_AD_CLIENT_ID, "profile", "email", "offline_access"];
-  const redirectUri = makeRedirectUri({
-    // For usage in bare and standalone
-    native: MOBILE_REDIRECT_URL,
-  });
 
-  const signIn = useAzureAdFlows("B2C_1_SignIn", scopes, redirectUri);
+  const defaultRedirectUrl = getDefaultRedirectUri();
+
+  const signIn = useAzureAdFlows("B2C_1_SignIn", scopes, defaultRedirectUrl);
 
   // Request
   const onPress = async () => {
@@ -54,7 +52,7 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
             code: authSessionResult.params.code,
             scopes,
             clientId: AZURE_AD_CLIENT_ID,
-            redirectUri,
+            redirectUri: defaultRedirectUrl,
             extraParams: {
               code_verifier: authRequest.codeVerifier,
               p: "B2C_1_SignIn",
@@ -91,9 +89,15 @@ export default function AuthorizationButton({ handleAuthorization }: Props) {
   };
 
   return (
-    <View>
-      <Text>{ENV}</Text>
-      <Button title="LOGIN" onPress={onPress} />
-    </View>
+    <MobileButton
+      text="Login"
+      icon={{
+        src: require("../assets/icons/circle_grey.png"),
+        width: 31,
+        height: 31,
+      }}
+      onPress={onPress}
+      {...MobileButtonProps}
+    />
   );
 }

@@ -19,6 +19,7 @@ const httpTrigger: AzureFunction = async function (
     recipientPartnerId,
     collectorId,
     clusterId,
+    sortBy,
   } = req.query as Payload;
 
   // TODO: This type should automatically be inferred!
@@ -35,7 +36,12 @@ const httpTrigger: AzureFunction = async function (
           ],
         },
       ],
-    }
+    },
+    sortBy
+      ? {
+          [sortBy]: -1,
+        }
+      : undefined
   );
 
   const returnValuePromises = collectionsForPartner.map(async (collection) => {
@@ -55,7 +61,7 @@ const httpTrigger: AzureFunction = async function (
         id: _id,
         streetAddress: requester.streetAddress,
         city: requester.city,
-        zipCode: requester.zipCode,
+        zipCode: requester.postalCode,
         companyName: requester.companyName,
       };
     }
@@ -74,6 +80,7 @@ type Payload = {
   recipientPartnerId: string;
   collectorId: string;
   clusterId: string;
+  sortBy: string;
 };
 
 export default httpTrigger;
