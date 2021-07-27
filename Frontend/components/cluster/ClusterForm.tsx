@@ -2,7 +2,7 @@ import * as yup from "yup";
 import React, { FC } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Formik } from "formik";
-import Constants from "expo-constants";
+import * as Linking from "expo-linking";
 import SelectPartnersForm from "../user/SelectPartnersForm";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
@@ -46,10 +46,9 @@ const validationSchema = yup.object().shape({
 const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
   let deepLinkUrl = "";
   if (clusterId) {
-    const { MOBILE_REDIRECT_URL } = Constants.manifest.extra || {};
     // TODO: See if we can do something about the schema hardcoding!
     // TODO: This should probably be in the environment files!
-    deepLinkUrl = `${MOBILE_REDIRECT_URL}/tilmeld?clusterId=${clusterId}`;
+    deepLinkUrl = `${Linking.createURL("/")}/tilmeld?clusterId=${clusterId}`;
   }
   return (
     <Formik

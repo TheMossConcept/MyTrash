@@ -4,6 +4,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { StyleSheet, View } from "react-native";
 import { TokenResponse } from "expo-auth-session";
 import React, { FC, useEffect, useState } from "react";
+import * as Linking from "expo-linking";
 import AuthorizationButton from "../components/AuthorizationButton";
 import { RootStackParamList } from "../typings/types";
 import MobileButton from "../components/styled/MobileButton";
@@ -62,7 +63,9 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         <HeadlineText style={{ marginTop: 54 }} />
         <View style={styles.textContainer}>
           <AppText
-            text={`${ENVIRONMENT_NAME}. This is deployed by the pipeline! Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
+            text={`${ENVIRONMENT_NAME}. ${Linking.createURL(
+              "/"
+            )} This is deployed by the pipeline! Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
           />
         </View>
       </MainContentArea>

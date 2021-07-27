@@ -14,7 +14,7 @@ type Props = {
 };
 
 const ProductsDetails: FC<Props> = ({ products, refetchProducts }) => {
-  return (
+  return products.length !== 0 ? (
     <View style={styles.container}>
       <HeadlineText
         text="Oprettede produkter."
@@ -47,7 +47,7 @@ const ProductsDetails: FC<Props> = ({ products, refetchProducts }) => {
         );
       })}
     </View>
-  );
+  ) : null;
 };
 
 type MarkProductAsSentButtonProps = {
