@@ -63,7 +63,9 @@ const CollectionScreen: FC<Props> = ({ route }) => {
           <CollectionForm userId={userId} clusterId={activeCluster.id} />
         )}
       </MainContentArea>
-      <BottomButtonContainer style={{ paddingVertical: 20, height: "20%" }}>
+      <BottomButtonContainer
+        style={{ paddingVertical: 20, height: "20%", minHeight: 165 }}
+      >
         <View style={{ flex: 1, paddingHorizontal: 7 }}>
           <MobileButton
             text={`Status \n indsamling.`}
