@@ -1,5 +1,6 @@
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Linking from "expo-linking";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StyleSheet, View } from "react-native";
 import { TokenResponse } from "expo-auth-session";
@@ -62,7 +63,9 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         <HeadlineText style={{ marginTop: 54 }} />
         <View style={styles.textContainer}>
           <AppText
-            text={`${ENVIRONMENT_NAME}. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
+            text={`${ENVIRONMENT_NAME}. ${Linking.createURL(
+              "/"
+            )} Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
           />
         </View>
       </MainContentArea>
