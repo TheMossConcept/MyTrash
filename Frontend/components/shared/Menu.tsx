@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { Image, StyleSheet, View, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Popover from "react-native-popover-view";
@@ -6,12 +6,14 @@ import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import useAzureAdFlows from "../../hooks/useAzureAdFlows";
+import platformUtils from "../../utils/platform";
 
-type Props = {};
+type Props = { hideMenuItems?: boolean };
 
-const Menu: FC<Props> = () => {
+const Menu: FC<Props> = ({ hideMenuItems = false }) => {
   const { AZURE_AD_CLIENT_ID } = Constants.manifest.extra || {};
   const [popoverIsShown, setPopoverIsShown] = useState(false);
+
   const dismissPopover = () => setPopoverIsShown(false);
   const popoverRef = useRef<Image>(null);
 
@@ -28,9 +30,37 @@ const Menu: FC<Props> = () => {
     navigation.navigate("Login");
   };
 
+  useEffect(() => {
+    if (platformUtils.platformName === "web") {
+      const globalClickEventListener = function (event) {
+        // TODO: This (relying on the string value of the src of the srcElement
+        // and relying on a global event handler) is insanely brittle and this
+        // entire global event listener is ONLY meant as a temporary workaround
+        // until react-native-popover-view gets proper web support !!
+        if (
+          event.srcElement.src !==
+          `${window.location.origin}/static/media/menu.c165fe87.png`
+        ) {
+          setPopoverIsShown(false);
+        }
+      };
+
+      document.addEventListener("click", globalClickEventListener);
+
+      return () => {
+        document.removeEventListener("click", globalClickEventListener);
+      };
+    }
+
+    return () => {};
+  }, []);
+
   return (
     <View style={styles.menuArea}>
-      <TouchableOpacity onPress={() => setPopoverIsShown(true)}>
+      <TouchableOpacity
+        onPress={() => setPopoverIsShown(!popoverIsShown)}
+        disabled={hideMenuItems}
+      >
         <Image
           source={require("../../assets/icons/menu.png")}
           ref={popoverRef}
@@ -42,8 +72,8 @@ const Menu: FC<Props> = () => {
         isVisible={popoverIsShown}
         onRequestClose={dismissPopover}
       >
-        <View style={{ alignItems: "flex-end" }}>
-          <View style={styles.popoverContainer}>
+        <View style={styles.popoverContainer}>
+          <View style={styles.menuItemsContainer}>
             <TouchableOpacity onPress={onEditProfilePress}>
               <Text style={styles.popoverText}>Rediger profil.</Text>
             </TouchableOpacity>
@@ -66,6 +96,9 @@ const styles = StyleSheet.create({
     height: 25,
   },
   popoverContainer: {
+    alignItems: "flex-end",
+  },
+  menuItemsContainer: {
     width: 200,
     height: 90,
     padding: 20,

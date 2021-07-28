@@ -59,7 +59,9 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <MainContentArea containerStyle={{ height: "80%" }}>
-        <Menu />
+        {/* It does not make sense to show the menu items on the login screen
+            as all of them requires you to be logged in */}
+        <Menu hideMenuItems />
         <HeadlineText style={{ marginTop: 54 }} />
         <View style={styles.textContainer}>
           <AppText
