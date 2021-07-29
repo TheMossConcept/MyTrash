@@ -42,7 +42,7 @@ const httpTrigger: AzureFunction = async function (
     ) {
       context.res = {
         body:
-          "Bad request. Required property is missing of the role used is incorrect",
+          "Bad request. Required property is missing or the role used is incorrect",
       };
     }
 
