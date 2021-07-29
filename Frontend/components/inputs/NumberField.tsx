@@ -52,6 +52,7 @@ export default function NumberField<T>({
       <View style={style}>
         <TextInput
           placeholder={label}
+          placeholderTextColor="#a3a5a8"
           style={globalStyles.textField}
           /* NB! This is unsafe but I don't know how to statically tell the compiler
           that T should only contain strings */

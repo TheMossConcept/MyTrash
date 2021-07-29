@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ErrorMessage, useFormikContext } from "formik";
 import React, { FC, useEffect, useMemo, useState, useCallback } from "react";
-import * as lodash from "lodash";
+import { take } from "lodash";
 import { EventRegister } from "react-native-event-listeners";
 import {
   ActivityIndicator,
@@ -76,7 +76,7 @@ const AutocompleteInput: FC<Props> = ({
       });
 
       // Make sure the list never contains more than five entries
-      return lodash.take(entitiesMatchingQuery, 5);
+      return take(entitiesMatchingQuery, 5);
     }, [entities, query]);
 
     // ======================= Update of entries ==================================
@@ -164,6 +164,7 @@ const AutocompleteInput: FC<Props> = ({
               onFocus={onFocus}
               onBlur={onBlur}
               placeholder={title}
+              placeholderTextColor="#a3a5a8"
               style={globalStyles.textField}
             />
           )}
@@ -185,7 +186,10 @@ const AutocompleteInput: FC<Props> = ({
             ),
           }}
         />
-        <ErrorMessage name={key} />
+        <ErrorMessage
+          name={key}
+          render={(errorMessage) => <Text>{errorMessage}</Text>}
+        />
       </View>
     );
   }

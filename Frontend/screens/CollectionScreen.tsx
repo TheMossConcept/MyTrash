@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useState } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
 import { TabsParamList } from "../typings/types";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import MobileButton from "../components/styled/MobileButton";
@@ -51,17 +51,19 @@ const CollectionScreen: FC<Props> = ({ route }) => {
   ) : activeCluster ? (
     <Container>
       <MainContentArea containerStyle={{ height: "80%" }}>
-        <Menu />
-        <HeadlineText style={{ marginTop: 54 }} />
-        {statusSelected ? (
-          <CollectorProgression
-            userId={userId}
-            clusterId={activeCluster.id}
-            style={{ marginTop: 62.5 }}
-          />
-        ) : (
-          <CollectionForm userId={userId} clusterId={activeCluster.id} />
-        )}
+        <ScrollView>
+          <Menu />
+          <HeadlineText style={{ marginTop: 54 }} />
+          {statusSelected ? (
+            <CollectorProgression
+              userId={userId}
+              clusterId={activeCluster.id}
+              style={{ marginTop: 62.5 }}
+            />
+          ) : (
+            <CollectionForm userId={userId} clusterId={activeCluster.id} />
+          )}
+        </ScrollView>
       </MainContentArea>
       <BottomButtonContainer
         style={{ paddingVertical: 20, height: "20%", minHeight: 165 }}

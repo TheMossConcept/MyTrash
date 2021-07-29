@@ -32,7 +32,7 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
 
   useEffect(() => {
     if (platformUtils.platformName === "web") {
-      const globalClickEventListener = function (event) {
+      const globalClickEventListener = function (event: any) {
         // TODO: This (relying on the string value of the src of the srcElement
         // and relying on a global event handler) is insanely brittle and this
         // entire global event listener is ONLY meant as a temporary workaround
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   menuItemsContainer: {
     width: 200,
-    height: 90,
+    height: 110,
     padding: 20,
     backgroundColor: "#d2d3c8",
   },

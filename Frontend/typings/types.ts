@@ -2,6 +2,7 @@
 export type RootStackParamList = {
   Root: undefined;
   Join: { clusterId?: string };
+  Invitation: { clusterId: string };
   Login: undefined;
   NotFound: undefined;
 };

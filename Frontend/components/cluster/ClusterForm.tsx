@@ -1,14 +1,17 @@
 import * as yup from "yup";
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Formik } from "formik";
 import * as Linking from "expo-linking";
+import Clipboard from "@react-native-clipboard/clipboard";
 import SelectPartnersForm from "../user/SelectPartnersForm";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import BooleanField from "../inputs/BooleanField";
 import HeadlineText from "../styled/HeadlineText";
+import MobileButton from "../styled/MobileButton";
+import GlobalSnackbarContext from "../../utils/globalContext";
 
 export type ClusterFormData = {
   isOpen: boolean;
@@ -44,12 +47,22 @@ const validationSchema = yup.object().shape({
 });
 
 const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
-  let deepLinkUrl = "";
+  const showSnackbar = useContext(GlobalSnackbarContext);
+
+  let invitationLinkUrl = "";
   if (clusterId) {
     // TODO: See if we can do something about the schema hardcoding!
     // TODO: This should probably be in the environment files!
-    deepLinkUrl = `${Linking.createURL("/")}/tilmeld?clusterId=${clusterId}`;
+    invitationLinkUrl = Linking.createURL("/invitation", {
+      queryParams: { clusterId },
+    });
   }
+
+  const copyInvitationLinkToClipboard = () => {
+    Clipboard.setString(invitationLinkUrl);
+    showSnackbar("Invitationslinket er kopireret");
+  };
+
   return (
     <Formik
       initialValues={cluster}
@@ -86,8 +99,21 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
           <SelectPartnersForm style={styles.selectPartnersForm} />
           <View style={styles.isOpenCheckboxContainer}>
             <BooleanField formKey="isOpen" label="Åbent cluster" />
-            {!values.isOpen && deepLinkUrl !== "" && (
-              <Text>Invitationslink: {deepLinkUrl}</Text>
+            {!values.isOpen && invitationLinkUrl !== "" && (
+              <View style={styles.invitationLinkContainer}>
+                <MobileButton
+                  icon={{
+                    src: require("../../assets/icons/copy.png"),
+                    width: 34,
+                    height: 34,
+                  }}
+                  style={{ marginRight: 23 }}
+                  onPress={copyInvitationLinkToClipboard}
+                />
+                <Text style={styles.invitationLinkText}>
+                  Invitationslink: {invitationLinkUrl}
+                </Text>
+              </View>
             )}
           </View>
           {submit && <SubmitButton title={title || "Indsend"} isWeb />}
@@ -112,6 +138,16 @@ const styles = StyleSheet.create({
   },
   selectPartnersForm: {
     marginBottom: 23,
+  },
+  invitationLinkContainer: {
+    flexDirection: "row",
+    marginTop: 23,
+    alignItems: "center",
+  },
+  invitationLinkText: {
+    color: "#a3a5a8",
+    fontFamily: "HelveticaNeueLTPro-Bd",
+    fontSize: 16,
   },
 });
 

@@ -93,6 +93,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
             width: 20.5,
             height: 32.5,
           }}
+          style={[styles.bottomButton, { marginRight: 0 }]}
         />
       </BottomButtonContainer>
     </View>
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
   },
   bottomButton: {
     marginRight: 10,
+    flex: 1,
   },
 });
 

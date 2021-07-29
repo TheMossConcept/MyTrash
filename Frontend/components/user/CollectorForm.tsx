@@ -7,7 +7,6 @@ import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
-import HeadlineText from "../styled/HeadlineText";
 import globalStyles from "../../utils/globalStyles";
 import GlobalSnackbarContext from "../../utils/globalContext";
 
@@ -51,7 +50,7 @@ const validationSchema = yup.object().shape({
   streetNumber: yup.string().required("Gadenummer er påkrævet"),
   city: yup.string().required("By er påkrævet"),
   zipCode: yup.string().required("Postnummer er påkrævet"),
-  clusterId: yup.string().required(),
+  clusterId: yup.string().required("Det er påkrævet at vælge et cluster"),
 });
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
@@ -100,8 +99,9 @@ const CollectorForm: FC<Props> = ({
       style={style}
       validateOnMount
     >
-      <HeadlineText text={`${title}.`} style={styles.headline} />
-      <Text style={globalStyles.subheaderText}>Kontakt.</Text>
+      <Text style={[globalStyles.subheaderText, styles.subheader]}>
+        Kontakt.
+      </Text>
       <StringField
         label="Fornavn"
         formKey="firstName"
@@ -118,7 +118,9 @@ const CollectorForm: FC<Props> = ({
         formKey="phoneNumber"
         style={styles.inputField}
       />
-      <Text style={globalStyles.subheaderText}>Adresse.</Text>
+      <Text style={[globalStyles.subheaderText, styles.subheader]}>
+        Adresse.
+      </Text>
       <View style={[styles.inputField, { flexDirection: "row" }]}>
         <View style={{ flex: 2, marginRight: 10 }}>
           <StringField label="Gadenavn" formKey="street" />
@@ -136,6 +138,7 @@ const CollectorForm: FC<Props> = ({
       {children}
       <SubmitButton
         title={title}
+        style={styles.submitButton}
         icon={{ src: require("../../assets/icons/notepad_grey.png") }}
         isWeb
       />
@@ -147,11 +150,15 @@ const styles = StyleSheet.create({
   headline: {
     alignItems: "flex-start",
   },
+  subheader: {
+    marginBottom: 5,
+  },
   inputField: {
     marginBottom: 23,
   },
   submitButton: {
     marginTop: 10,
+    marginBottom: 10,
   },
 });
 

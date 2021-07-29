@@ -118,8 +118,8 @@ const CollectorView: FC<CollectorViewProps> = ({
   };
 
   return (
-    <View style={styles.collectorContainer}>
-      <View style={{ flex: 1, marginRight: 10, alignItems: "center" }}>
+    <View style={styles.container}>
+      <View style={styles.collectorContainer}>
         <Text style={globalStyles.subheaderText}>{collector.displayName}</Text>
       </View>
       <FormContainer
@@ -128,26 +128,18 @@ const CollectorView: FC<CollectorViewProps> = ({
           updateCollectionGoal(collector.id, values.collectionGoal)
         }
         validationSchema={collectionGoalSchema}
-        style={{ flex: 2, flexDirection: "row", alignItems: "center" }}
+        style={styles.actionsContainer}
         validateOnMount
       >
-        <View
-          style={{
-            flex: 1,
-            marginRight: 10,
-            alignItems: "center",
-            height: "100%",
-            justifyContent: "center",
-          }}
-        >
+        <View style={styles.goalButtonContainer}>
           <NumberField
             formKey="collectionGoal"
             key={collector.id}
             label="Mål"
           />
         </View>
-        <View style={styles.actionButtonsContainer}>
-          <SubmitButton title="Opdater" style={{ marginBottom: 10 }} isWeb />
+        <View style={styles.buttonsContainer}>
+          <SubmitButton title="Opdater" style={styles.updateButton} isWeb />
           <WebButton
             text="Slet bruger"
             onPress={showConfirmationDialog}
@@ -165,24 +157,28 @@ const CollectorView: FC<CollectorViewProps> = ({
 };
 
 const styles = StyleSheet.create({
-  collectorContainer: {
+  container: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     padding: 10,
   },
-  actionContainer: {
-    flexDirection: "row",
+  collectorContainer: { flex: 1, marginRight: 10, alignItems: "center" },
+  actionsContainer: { flex: 2, flexDirection: "row", alignItems: "center" },
+  goalButtonContainer: {
+    flex: 1,
+    marginRight: 10,
     alignItems: "center",
+    height: "100%",
     justifyContent: "center",
-    margin: 5,
   },
-  actionButtonsContainer: {
+  buttonsContainer: {
     // NB! Be explicit to indicate that it differs from the other containers
     flexDirection: "column",
     flex: 1,
     margin: 5,
   },
+  updateButton: { marginBottom: 10 },
 });
 
 export default CollectorList;

@@ -32,6 +32,7 @@ export default function StringField<T>({
           onChangeText={handleChange(key)}
           onBlur={handleBlur(key)}
           placeholder={label}
+          placeholderTextColor="#a3a5a8"
           style={globalStyles.textField}
           {...textInputProps}
         />

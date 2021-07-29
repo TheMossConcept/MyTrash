@@ -1,10 +1,12 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native-paper";
+import { View } from "react-native";
 import ClusterForm, { ClusterFormData } from "./ClusterForm";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
 import WebButton, { WebButtonProps } from "../styled/WebButton";
+import ConfirmationDialog from "../shared/ConfirmationDialog";
 
 type UpdateFormProps = {
   successCallback: () => void;
@@ -110,6 +112,7 @@ export const CloseClusterBtn: FC<CloseClusterBtnProps> = ({
   title,
   ...webButtonProps
 }) => {
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const sharedAxiosConfig = useAxiosConfig();
 
   const closeCluster = () => {
@@ -127,11 +130,18 @@ export const CloseClusterBtn: FC<CloseClusterBtnProps> = ({
   };
 
   return (
-    <WebButton
-      onPress={closeCluster}
-      text={title || "Luk cluster"}
-      disabled={false}
-      {...webButtonProps}
-    />
+    <View>
+      <WebButton
+        onPress={() => setShowConfirmationDialog(true)}
+        text={title || "Luk cluster"}
+        disabled={false}
+        {...webButtonProps}
+      />
+      <ConfirmationDialog
+        description="Clusteret lukkes og alt data relateret til det slettes"
+        showState={[showConfirmationDialog, setShowConfirmationDialog]}
+        actionToConfirm={closeCluster}
+      />
+    </View>
   );
 };

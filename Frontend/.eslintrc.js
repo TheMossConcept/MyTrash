@@ -41,6 +41,7 @@ module.exports = {
     ],
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "error",
+    "global-require": "off",
     "react/jsx-props-no-spread": "off",
   },
 };
