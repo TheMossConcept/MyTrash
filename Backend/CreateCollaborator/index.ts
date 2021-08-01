@@ -41,9 +41,12 @@ const httpTrigger: AzureFunction = async function (
       !allUserRoles.includes(role)
     ) {
       context.res = {
+        statusCode: 400,
         body:
           "Bad request. Required property is missing or the role used is incorrect",
       };
+
+      return;
     }
 
     const customAuthProvider = new CustomAuthenticationProvider();
