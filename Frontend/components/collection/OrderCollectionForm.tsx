@@ -53,10 +53,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
 
   const sharedAxiosConfig = useAxiosConfig();
 
-  const createCollectionRequest = (
-    values: CollectionFormData,
-    reset: () => void
-  ) => {
+  const createCollectionRequest = (values: CollectionFormData) => {
     axios
       .post(
         "/CreatePlasticCollection",
@@ -67,7 +64,6 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         refresh();
 
         showGlobalSnackbar("Afhentning bestilt");
-        reset();
 
         if (successCallback) {
           successCallback();
@@ -98,7 +94,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           if (update) {
             update(values);
           } else {
-            createCollectionRequest(values, formikHelpers.resetForm);
+            createCollectionRequest(values);
           }
         }}
         validateOnMount
