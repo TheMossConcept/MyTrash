@@ -3,7 +3,7 @@ import React, { FC, useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Formik } from "formik";
 import * as Linking from "expo-linking";
-import Clipboard from "@react-native-clipboard/clipboard";
+import * as Clipboard from "expo-clipboard";
 import SelectPartnersForm from "../user/SelectPartnersForm";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
