@@ -23,7 +23,7 @@ prod_function_app_name=$(az deployment group create --resource-group $rg_name --
 az functionapp config appsettings set --name $prod_function_app_name -g $rg_name --slot-settings "EnvironmentName=Production"
 az functionapp config appsettings set --name $prod_function_app_name -g $rg_name --settings "ADIssuer=${ADIssuer}"
 az functionapp config appsettings set --name $prod_function_app_name -g $rg_name --settings "ClientId=${ClientId}"
-az webapp config connection-string set --name $prod_function_app_name -g $rg_name -t Custom --slot-settings $cosmos_production_connection_string
+az webapp config connection-string set --name $prod_function_app_name -g $rg_name -t Custom --slot-settings "DBConnectionString=${$cosmos_production_connection_string}"
 
 # Give the managed identity of the production environment access to Microsoft Graph so that it can read and write user data. See https://docs.microsoft.com/en-us/azure/app-service/scenario-secure-app-access-microsoft-graph-as-app?tabs=azure-cli%2Ccommand-line
 spId=$(az resource list -n $prod_function_app_name --query "[*].identity.principalId" --out tsv)
@@ -38,7 +38,7 @@ az deployment group create --resource-group $rg_name --template-file Function\ A
 az functionapp config appsettings set --name $prod_function_app_name -g $rg_name --slot staging --slot-settings "EnvironmentName=Staging"
 az functionapp config appsettings set --name $prod_function_app_name -g $rg_name --slot staging --settings "ADIssuer=${ADIssuer}"
 az functionapp config appsettings set --name $prod_function_app_name -g $rg_name --slot staging --settings "ClientId=${ClientId}"
-az webapp config connection-string set --name $prod_function_app_name -g $rg_name --slot staging -t Custom --slot-settings $cosmos_staging_connection_string
+az webapp config connection-string set --name $prod_function_app_name -g $rg_name --slot staging -t Custom --slot-settings "DBConnectionString=${cosmos_staging_connection_string}"
 
 # Give the managed identity of the production environment access to Microsoft Graph so that it can read and write user data. See https://docs.microsoft.com/en-us/azure/app-service/scenario-secure-app-access-microsoft-graph-as-app?tabs=azure-cli%2Ccommand-line
 # TODO: I'm not sure the argument passed to -n is valid! Look into this!
