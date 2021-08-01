@@ -28,7 +28,7 @@ jobs:
         EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
         NODE_VERSION: ${{ env.NODE_VERSION }}
         PRE_BUILD_COMMAND: "npm install --global --silent expo-cli"
-        APP_ENV: staging
+        APPLICATION_ENVIRONMENT: staging
         # POST_BUILD_COMMAND: "rm -rf .oryx_all_node_modules/ && expo publish"
       with:
         azure_static_web_apps_api_token: ${{ secrets.HOUE_STAGING_FRONTEND_PUBLISH_TOKEN }}
