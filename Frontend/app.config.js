@@ -11,7 +11,8 @@ const stagingConfig = {
   AUTHORIZATION_URL:
     "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration",
   AZURE_AD_CLIENT_ID: "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412",
-  BACKEND_URL: "https://houe-plastic-recycling-windows.azurewebsites.net/api",
+  BACKEND_URL:
+    "https://houe-plastic-recycling-windows-staging.azurewebsites.net",
   ENVIRONMENT_NAME: "staging",
 };
 const productionConfig = {
