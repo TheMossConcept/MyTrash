@@ -159,6 +159,9 @@ const styles = StyleSheet.create({
   submitButton: {
     marginTop: 10,
     marginBottom: 10,
+    // To accomodate when there is an AutocompleteInput above it.
+    // TODO: The AutocompleteInput should be able to handle this itself!
+    zIndex: 0,
   },
 });
 
