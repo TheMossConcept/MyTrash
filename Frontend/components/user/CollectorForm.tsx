@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     // To accomodate when there is an AutocompleteInput above it.
     // TODO: The AutocompleteInput should be able to handle this itself!
-    zIndex: 0,
+    zIndex: -1,
   },
 });
 
