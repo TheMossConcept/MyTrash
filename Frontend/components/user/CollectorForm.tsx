@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { FC, useContext } from "react";
+import React, { FC, useContext, useState } from "react";
 import { StyleSheet, Text, View, ViewProps } from "react-native";
 import * as yup from "yup";
 import FormContainer from "../shared/FormContainer";
@@ -8,6 +8,7 @@ import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import globalStyles from "../../utils/globalStyles";
+import LoadingIndicator from "../styled/LoadingIndicator";
 import GlobalSnackbarContext from "../../utils/globalContext";
 
 export type CollectorFormData = {
@@ -73,8 +74,12 @@ const CollectorForm: FC<Props> = ({
     clusterId,
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const sharedAxiosConfig = useAxiosConfig();
   const createUser = (values: CollectorFormData, resetForm: () => void) => {
+    setIsSubmitting(true);
+
     axios
       .post("/orchestrators/CreateCollectorAndAddToCluster", values, {
         ...sharedAxiosConfig,
@@ -86,6 +91,9 @@ const CollectorForm: FC<Props> = ({
         if (successCallback) {
           successCallback();
         }
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
   };
   // TODO: Disable the spreading is forbidden style and spread the view props here!
@@ -136,9 +144,11 @@ const CollectorForm: FC<Props> = ({
         style={styles.inputField}
       />
       {children}
+      {isSubmitting && <LoadingIndicator />}
       <SubmitButton
         title={title}
         style={styles.submitButton}
+        disabled={isSubmitting}
         icon={{ src: require("../../assets/icons/notepad_grey.png") }}
         isWeb
       />
