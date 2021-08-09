@@ -153,7 +153,7 @@ const AutocompleteInput: FC<Props> = ({
               // hiding the suggestion list.
               // TODO: Do something less brittle that is not
               // reliant on timing! Then we can also pass handleBlur(key) directly as a callback!
-              setTimeout(() => setHideSuggestionList(true), 250);
+              // setTimeout(() => setHideSuggestionList(true), 250);
               handleBlur(key)(event);
             }
           }}
