@@ -114,15 +114,6 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
         formKey="companyName"
         style={styles.field}
       />
-      <Text style={globalStyles.subheaderText}>Kontaktperson. </Text>
-      <StringField label="Fornavn" formKey="firstName" style={styles.field} />
-      <StringField label="Efternavn" formKey="lastName" style={styles.field} />
-      <StringField label="Email" formKey="email" style={styles.field} />
-      <StringField
-        label="Telefonnummer"
-        formKey="phoneNumber"
-        style={styles.field}
-      />
       <Text style={globalStyles.subheaderText} textBreakStrategy="highQuality">
         Addresseoplysninger.
       </Text>
@@ -140,6 +131,15 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
       </View>
       <StringField label="By" formKey="city" style={styles.field} />
       <NumberField label="Postnummer" formKey="zipCode" style={styles.field} />
+      <Text style={globalStyles.subheaderText}>Kontaktperson. </Text>
+      <StringField label="Fornavn" formKey="firstName" style={styles.field} />
+      <StringField label="Efternavn" formKey="lastName" style={styles.field} />
+      <StringField label="Email" formKey="email" style={styles.field} />
+      <StringField
+        label="Telefonnummer"
+        formKey="phoneNumber"
+        style={styles.field}
+      />
       <RoleSelector formKey="role" appRoles={appRolesForSelection} />
       <SubmitButton title={title} style={styles.submitButton} isWeb />
     </FormContainer>
