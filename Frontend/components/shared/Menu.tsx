@@ -100,8 +100,8 @@ const styles = StyleSheet.create({
   },
   menuItemsContainer: {
     width: 200,
-    height: 110,
     padding: 20,
+    paddingBottom: 5,
     backgroundColor: "#d2d3c8",
   },
   popoverText: {

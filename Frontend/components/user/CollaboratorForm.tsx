@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import * as yup from "yup";
 import FormContainer from "../shared/FormContainer";
@@ -11,6 +11,7 @@ import useAppRoles from "../../hooks/useAppRoles";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import HeadlineText from "../styled/HeadlineText";
 import globalStyles from "../../utils/globalStyles";
+import GlobalSnackbarContext from "../../utils/globalContext";
 
 export type UserFormData = {
   email: string;
@@ -72,6 +73,8 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
     role: "",
   };
 
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
+
   const sharedAxiosConfig = useAxiosConfig();
   const createUser = (values: UserFormData, resetForm: () => void) => {
     axios
@@ -79,7 +82,7 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
         ...sharedAxiosConfig,
       })
       .then(() => {
-        // setShowSnackbar(true);
+        showGlobalSnackbar("Partner inviteret");
         resetForm();
 
         if (successCallback) {

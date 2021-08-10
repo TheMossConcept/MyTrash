@@ -5,7 +5,12 @@ import {
 } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
-import { ColorSchemeName } from "react-native";
+import {
+  ColorSchemeName,
+  GestureResponderEvent,
+  TouchableOpacity,
+} from "react-native";
+import { EventRegister } from "react-native-event-listeners";
 import LoginScreen from "../screens/LoginScreen";
 
 import NotFoundScreen from "../screens/NotFoundScreen";
@@ -42,6 +47,12 @@ export default function Navigation({
             background: "rgba(255, 255, 255, 0.0)",
           },
         };
+
+  const handleGlobalPress = (event: GestureResponderEvent) => {
+    console.log(event.bubbles);
+    EventRegister.emit("globalPress");
+  };
+
   return (
     <NavigationContainer linking={LinkingConfiguration} theme={theme}>
       <RootNavigator />

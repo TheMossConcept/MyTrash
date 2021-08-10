@@ -1,6 +1,13 @@
 import axios from "axios";
 import { ErrorMessage, useFormikContext } from "formik";
-import React, { FC, useEffect, useMemo, useState, useCallback } from "react";
+import React, {
+  FC,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import { take } from "lodash";
 import { EventRegister } from "react-native-event-listeners";
 import {
@@ -16,6 +23,7 @@ import Autocomplete, {
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import useQueryState from "../../hooks/useQueryState";
 import globalStyles from "../../utils/globalStyles";
+import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 
 export type SelectableEntity = {
   id: string;
@@ -45,8 +53,15 @@ const AutocompleteInput: FC<Props> = ({
   style,
 }) => {
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [hideSuggestionList, setHideSuggestionList] = useState(true);
+
+  const autocompleteRef = useRef(null);
+  const clickOutsideHandler = () => {
+    console.log("OUTSIDE CLICK!!");
+    setHideSuggestionList(true);
+  };
+  useOutsideClickDetector(autocompleteRef, clickOutsideHandler);
 
   const formikProps = useFormikContext<any>();
 
@@ -119,10 +134,7 @@ const AutocompleteInput: FC<Props> = ({
 
         // Remember to cleanup or you will live in a dirty codebase full of memory leaks!
         return () => {
-          if (
-            updateEntitiesEventListener !== false &&
-            updateEntitiesEventListener !== true
-          ) {
+          if (typeof updateEntitiesEventListener !== "boolean") {
             EventRegister.removeEventListener(updateEntitiesEventListener);
           }
         };
@@ -140,7 +152,7 @@ const AutocompleteInput: FC<Props> = ({
     // The types for react-native-autocomplete-input are faulty. It is flatListProps { renderItem } that is
     // required not renderItem on its own
     return (
-      <View style={style}>
+      <View style={style} ref={autocompleteRef}>
         <Autocomplete
           containerStyle={containerStyle}
           data={filteredEntities}
@@ -179,11 +191,7 @@ const AutocompleteInput: FC<Props> = ({
                 </Text>
               );
             },
-            ListEmptyComponent: loading ? (
-              <ActivityIndicator />
-            ) : (
-              <Text>Der er ingen brugere tilgængelige</Text>
-            ),
+            ListEmptyComponent: EmptyComponent,
           }}
         />
         <ErrorMessage
@@ -193,6 +201,14 @@ const AutocompleteInput: FC<Props> = ({
       </View>
     );
   }
+};
+
+const EmptyComponent: FC<{}> = () => {
+  return (
+    <Text style={{ height: 100, width: "100%" }}>
+      Der er ingen brugere tilgængelige
+    </Text>
+  );
 };
 
 export default AutocompleteInput;

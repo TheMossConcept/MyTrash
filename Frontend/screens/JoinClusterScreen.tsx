@@ -51,6 +51,7 @@ const JoinClusterForm: FC<Props> = ({ route, navigation }) => {
         ) : (
           <CollectorForm
             title="Tilmeld"
+            style={styles.collectorForm}
             clusterId={clusterId}
             successCallback={collectorSuccessCallback}
           >
@@ -73,6 +74,9 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "flex-start",
     marginBottom: 23,
+  },
+  collectorForm: {
+    paddingBottom: 40,
   },
 });
 

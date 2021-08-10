@@ -148,7 +148,6 @@ const CollectorForm: FC<Props> = ({
       <SubmitButton
         title={title}
         style={styles.submitButton}
-        disabled={isSubmitting}
         icon={{ src: require("../../assets/icons/notepad_grey.png") }}
         isWeb
       />

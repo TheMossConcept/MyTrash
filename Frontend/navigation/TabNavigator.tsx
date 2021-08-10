@@ -24,6 +24,7 @@ import MainContentArea from "../components/styled/MainContentArea";
 import HeadlineText from "../components/styled/HeadlineText";
 import Menu from "../components/shared/Menu";
 import TabBar from "../components/styled/TabBar";
+import platform from "../utils/platform";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
@@ -60,11 +61,6 @@ type Props = StackScreenProps<RootStackParamList, "Root">;
 // TODO: Too much is going on in here! Split it out at some point
 const TabNavigator: FC<Props> = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | undefined>();
-
-  // This is not the nicest way of doing it, but it gets the job done reliably (and also using
-  // a mechanism actually meant to provide information about the relevant platform. We cannot use
-  // isDevice, as we want the simulator to behave like the device in this case
-  const platformName = Object.keys(Constants.platform || {})[0];
 
   useEffect(() => {
     const updateUserInfo = async () => {
@@ -127,7 +123,7 @@ const TabNavigator: FC<Props> = () => {
   return userInfo ? (
     <SafeAreaProvider>
       <GlobalSnackbarContext.Provider value={showSnackbar}>
-        {platformName === "web" ? (
+        {platform.platformName === "web" ? (
           <View style={{ height: "100vh" }}>
             <MainContentArea isWeb>
               <View style={styles.menuSection}>
@@ -144,7 +140,7 @@ const TabNavigator: FC<Props> = () => {
       </GlobalSnackbarContext.Provider>
       <DismissableSnackbar
         globalSnackbarState={globalSnackbarState}
-        isWeb={platformName === "web"}
+        isWeb={platform.platformName === "web"}
       />
     </SafeAreaProvider>
   ) : (
