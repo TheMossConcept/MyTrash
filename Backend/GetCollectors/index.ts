@@ -23,17 +23,18 @@ const httpTrigger: AzureFunction = async function (
       collectors: idsOfCollectors,
     } = await databaseAPI.findById<ClusterEntity>("cluster", clusterId);
 
+    const rectifiedIdOfCollectors = idsOfCollectors.filter(
+      (idOfCollector) => idOfCollector !== null && idOfCollector !== undefined
+    );
+
     // We get an UnsupportedQuery from the Microsoft Graph API if we
     // try to filter with an empty array
-    if (isEmpty(idsOfCollectors)) {
+    if (isEmpty(rectifiedIdOfCollectors)) {
       context.res = {
-        body: JSON.stringify(idsOfCollectors),
+        body: JSON.stringify(rectifiedIdOfCollectors),
       };
     } else {
       // Make sure the array is valid for use in the graph filtering query!
-      const rectifiedIdOfCollectors = idsOfCollectors.filter(
-        (idOfCollector) => idOfCollector !== null && idOfCollector !== undefined
-      );
       const rectifiedFilteringArray = JSON.stringify(
         rectifiedIdOfCollectors
       ).replace('/"/g', "'");
