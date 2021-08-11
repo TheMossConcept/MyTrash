@@ -31,10 +31,12 @@ const httpTrigger: AzureFunction = async function (
       };
     } else {
       // Make sure the array is valid for use in the graph filtering query!
-      const rectifiedFilteringArray = JSON.stringify(idsOfCollectors).replace(
-        '/"/g',
-        "'"
+      const rectifiedIdOfCollectors = idsOfCollectors.filter(
+        (idOfCollector) => idOfCollector !== null && idOfCollector !== undefined
       );
+      const rectifiedFilteringArray = JSON.stringify(
+        rectifiedIdOfCollectors
+      ).replace('/"/g', "'");
 
       // Please note that this is the client id of the b2c-extensions-app and NOT of the actual app registration itself!
       // Also note that the -'s have been removed

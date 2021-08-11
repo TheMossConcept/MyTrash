@@ -23,7 +23,7 @@ const JoinClusterForm: FC<Props> = ({ route, navigation }) => {
     if (platform.platformName === "web") {
       setShowSignUpConfirmation(true);
     } else {
-      navigation.navigate("Root");
+      navigation.navigate("Login");
     }
   };
 

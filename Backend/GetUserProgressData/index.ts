@@ -58,7 +58,7 @@ const httpTrigger: AzureFunction = async function (
       necessaryAmountOfPlastic / collectors.length;
 
     const rectifiedCollectionAmount =
-      collectedPlasticAmount * usefulPlasticFactor;
+      collectedPlasticAmount * (usefulPlasticFactor / 100);
 
     context.res = {
       // status: 200, /* Defaults to 200 */
