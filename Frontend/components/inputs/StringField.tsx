@@ -1,6 +1,13 @@
 import { ErrorMessage, useFormikContext } from "formik";
 import React, { PropsWithChildren } from "react";
-import { View, ViewStyle, TextInput, Text, TextInputProps } from "react-native";
+import {
+  View,
+  ViewStyle,
+  TextInput,
+  Text,
+  TextInputProps,
+  StyleSheet,
+} from "react-native";
 import globalStyles from "../../utils/globalStyles";
 
 type Props<T> = {
@@ -23,12 +30,18 @@ export default function StringField<T>({
     );
   } else {
     const { values, handleChange, handleBlur } = formikProps;
+    const value = values[key] as unknown as string;
     return (
       <View style={style}>
+        {value ? (
+          <Text style={[globalStyles.subheaderText, styles.labelText]}>
+            {label}
+          </Text>
+        ) : null}
         <TextInput
           /* NB! This is unsafe but I don't know how to statically tell the compiler
           that T should only contain strings */
-          value={values[key] as unknown as string}
+          value={value}
           onChangeText={handleChange(key)}
           onBlur={handleBlur(key)}
           placeholder={label}
@@ -44,3 +57,7 @@ export default function StringField<T>({
     );
   }
 }
+
+const styles = StyleSheet.create({
+  labelText: { fontSize: 12 },
+});

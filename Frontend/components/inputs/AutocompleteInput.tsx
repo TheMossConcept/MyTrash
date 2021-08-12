@@ -10,13 +10,7 @@ import React, {
 } from "react";
 import { take } from "lodash";
 import { EventRegister } from "react-native-event-listeners";
-import {
-  ActivityIndicator,
-  Text,
-  View,
-  ViewStyle,
-  TextInput,
-} from "react-native";
+import { Text, View, ViewStyle, TextInput, StyleSheet } from "react-native";
 import Autocomplete, {
   AutocompleteProps,
 } from "react-native-autocomplete-input";
@@ -153,6 +147,11 @@ const AutocompleteInput: FC<Props> = ({
     // required not renderItem on its own
     return (
       <View style={style} ref={autocompleteRef}>
+        {selectedId ? (
+          <Text style={[globalStyles.subheaderText, styles.labelText]}>
+            {title}
+          </Text>
+        ) : null}
         <Autocomplete
           containerStyle={containerStyle}
           data={filteredEntities}
@@ -210,5 +209,9 @@ const EmptyComponent: FC<{}> = () => {
     </Text>
   );
 };
+
+const styles = StyleSheet.create({
+  labelText: { fontSize: 12 },
+});
 
 export default AutocompleteInput;

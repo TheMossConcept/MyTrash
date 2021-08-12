@@ -1,6 +1,6 @@
 import { ErrorMessage, useFormikContext } from "formik";
 import React, { PropsWithChildren, useState } from "react";
-import { View, ViewStyle, TextInput, Text } from "react-native";
+import { View, ViewStyle, TextInput, Text, StyleSheet } from "react-native";
 import globalStyles from "../../utils/globalStyles";
 
 type Props<T> = { formKey: keyof T & string; label: string; style?: ViewStyle };
@@ -48,19 +48,24 @@ export default function NumberField<T>({
       }
     };
 
+    // TODO: Do NOT try to handle floating point numbers here!
+    const value =
+      firstPartOfFloat || (values[key] as unknown as number)?.toString() || "";
+
     return (
       <View style={style}>
+        {value ? (
+          <Text style={[globalStyles.subheaderText, styles.labelText]}>
+            {label}
+          </Text>
+        ) : null}
         <TextInput
           placeholder={label}
           placeholderTextColor="#a3a5a8"
           style={globalStyles.textField}
           /* NB! This is unsafe but I don't know how to statically tell the compiler
           that T should only contain strings */
-          value={
-            firstPartOfFloat ||
-            (values[key] as unknown as number)?.toString() ||
-            ""
-          }
+          value={value}
           onChangeText={handleNumberChange(key)}
           onBlur={handleBlur(key)}
         />
@@ -72,3 +77,7 @@ export default function NumberField<T>({
     );
   }
 }
+
+const styles = StyleSheet.create({
+  labelText: { fontSize: 12 },
+});
