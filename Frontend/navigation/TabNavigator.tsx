@@ -24,7 +24,7 @@ import HeadlineText from "../components/styled/HeadlineText";
 import Menu from "../components/shared/Menu";
 import TabBar from "../components/styled/TabBar";
 import platform from "../utils/platform";
-import useAppRoles, { AppRole } from "../hooks/useAppRoles";
+import { AppRole } from "../hooks/useAppRoles";
 import useQueriedData from "../hooks/useQueriedData";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
@@ -139,8 +139,7 @@ type NavigatorProps = {
 };
 
 const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
-  const { data: appRoles, refetch: fetchAppRoles } =
-    useQueriedData<AppRole[]>("GetAppRoles/");
+  const { data: appRoles } = useQueriedData<AppRole[]>("GetAppRoles/");
   const administratorDisplayName = appRoles?.find(
     (appRole) => appRole.id === "Administrator"
   )?.displayName;

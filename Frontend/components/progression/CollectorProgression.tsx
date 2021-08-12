@@ -44,7 +44,7 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
         ) : userProgressData ? (
           <ProgressionCircle
             progressData={userProgressData}
-            explanationText="YOUR SHARE"
+            explanationText="Individuel."
           />
         ) : null}
         {clusterProgressDataIsLoading ? (
@@ -52,16 +52,13 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
         ) : clusterProgressData ? (
           <ProgressionCircle
             progressData={clusterProgressData}
-            explanationText="TOTAL SHARE"
+            explanationText="Cluster."
           />
         ) : null}
         {/* eslint-enable no-nested-ternary */}
       </View>
       <View style={styles.textContainer}>
-        <AppText
-          text="You have already collected dia volut et
-          vel is sandanimus coreptur."
-        />
+        <AppText text="Status på din personlige indsamling samt dit clusters totale status." />
       </View>
     </View>
   );
