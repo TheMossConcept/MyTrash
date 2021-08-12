@@ -25,7 +25,12 @@ export default function RoleSelector({ formKey: key, appRoles }: Props) {
     };
 
     return (
-      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
         {appRoles.map((availableAppRole: AppRole) => {
           const roleIsSelected = selectedRole === availableAppRole.id;
           const selectRole = () => {
@@ -38,7 +43,7 @@ export default function RoleSelector({ formKey: key, appRoles }: Props) {
               onPress={selectRole}
               key={availableAppRole.id}
               isSelected={roleIsSelected}
-              style={{ marginRight: 10 }}
+              style={{ marginRight: 10, wordWrap: "word-break" }}
             />
           );
         })}

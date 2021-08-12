@@ -125,7 +125,7 @@ const TabNavigator: FC<Props> = () => {
       <GlobalSnackbarContext.Provider value={showSnackbar}>
         {platform.platformName === "web" ? (
           <View style={{ height: "100vh" }}>
-            <MainContentArea isWeb>
+            <MainContentArea>
               <View style={styles.menuSection}>
                 <HeadlineText />
                 <Menu />

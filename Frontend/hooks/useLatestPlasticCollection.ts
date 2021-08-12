@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { CollectionStatusData } from "../components/collection/CollectionStatusPopover";
 import { CollectionFormData } from "../components/collection/OrderCollectionForm";
 import GlobalSnackbarContext from "../utils/globalContext";
@@ -23,7 +23,7 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
     useState<CollectionData>();
   const sharedAxiosConfig = useAxiosConfig();
 
-  const getLatestCollection = () => {
+  const getLatestCollection = useCallback(() => {
     axios
       .get("/GetLatestCollection", {
         ...sharedAxiosConfig,
@@ -34,12 +34,12 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
           setExistingCollection(response.data);
         }
       });
-  };
+  }, []);
 
   // Try getting the latest collection initially
   useEffect(() => {
     getLatestCollection();
-  }, []);
+  }, [getLatestCollection]);
 
   const collectionHasYetToBeHandled =
     existingCollection?.collectionStatus === "pending" ||

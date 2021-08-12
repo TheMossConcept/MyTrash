@@ -108,11 +108,6 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           maxLength={140}
           style={styles.inputField}
         />
-        <BooleanField
-          label="Sidste opsamling"
-          formKey="isLastCollection"
-          style={styles.inputField}
-        />
         <View style={styles.buttonsContainer}>
           <SubmitButton
             title={update ? `Ret \n afhentning` : `Book \n afhentning.`}
@@ -137,6 +132,11 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
             }}
           />
         </View>
+        <BooleanField
+          label="Sidste opsamling"
+          formKey="isLastCollection"
+          style={styles.inputField}
+        />
       </FormContainer>
       {statusValues && (
         <Popover
@@ -156,16 +156,16 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
 
 const styles = StyleSheet.create({
   headlineText: {
-    marginTop: 70,
+    marginTop: 50,
     fontFamily: "HelveticaNeueLTPro-Hv",
     color: "#898c8e",
     fontSize: 32.5,
   },
   contentContainer: {
-    marginTop: 40.5,
+    marginTop: 20.5,
   },
   buttonsContainer: {
-    marginTop: 58.5,
+    marginTop: 24.25,
     height: 68,
     flexDirection: "row",
   },

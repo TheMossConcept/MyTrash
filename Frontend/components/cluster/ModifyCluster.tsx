@@ -44,7 +44,7 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
         ...sharedAxiosConfig,
       })
       .then(() => {
-        showGlobalSnackbar("Clusteret blev opdateret");
+        showGlobalSnackbar("Clusteret blev redigeret");
 
         successCallback();
       });
@@ -55,7 +55,7 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
       cluster={initialValues}
       clusterId={clusterId}
       submit={updateCluster}
-      title="Opdater cluster"
+      title="Rediger cluster"
     />
   ) : (
     <ActivityIndicator />

@@ -33,10 +33,7 @@ export default function App() {
     "AvantGarde-Medium": require("./assets/fonts/AvantGarde-Medium.ttf"),
   });
 
-  const [assets] = useAssets([
-    require("./assets/images/background.png"),
-    require("./assets/images/background_web.png"),
-  ]);
+  const [assets] = useAssets([require("./assets/images/background.png")]);
 
   const loaded = fontsLoaded && assets !== undefined;
 

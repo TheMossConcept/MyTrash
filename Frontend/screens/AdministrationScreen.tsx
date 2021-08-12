@@ -39,6 +39,8 @@ const AdministrationScreen: FC<Props> = () => {
     ? clusters.filter((cluster) => cluster.closedForCollection)
     : [];
 
+  const addCollectorTitle = "Tilføj indsamler.";
+
   return (
     <Container>
       <View style={{ flexDirection: "row", marginBottom: 50 }}>
@@ -71,12 +73,12 @@ const AdministrationScreen: FC<Props> = () => {
                 </View>
                 <View style={{ flex: 1 }}>
                   <HeadlineText
-                    text="Inviter indsamler."
+                    text={addCollectorTitle}
                     style={{ alignItems: "flex-start" }}
                   />
                   <CollectorForm
                     clusterId={cluster.id}
-                    title="Tilføj indsamler"
+                    title={addCollectorTitle}
                     style={{ marginBottom: 23 }}
                   />
                   <CollectorList clusterId={cluster.id} />

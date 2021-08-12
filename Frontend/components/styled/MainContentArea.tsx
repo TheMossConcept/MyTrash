@@ -17,18 +17,13 @@ type Props = { containerStyle?: StyleProp<ViewStyle>; isWeb?: boolean } & Omit<
 const MainContentArea: FC<Props> = ({
   children,
   containerStyle,
-  isWeb = false,
   ...imageBackgroundProps
 }) => {
   return (
     <View style={containerStyle}>
       <ImageBackground
         // TODO: Do something less brittle here than relying on the naming convention!
-        source={
-          isWeb
-            ? require("../../assets/images/background_web.png")
-            : require("../../assets/images/background.png")
-        }
+        source={require("../../assets/images/background.png")}
         // If this is not an array, the width does not go all the way out for whatever reason
         style={[styles.imageBackground]}
         {...imageBackgroundProps}

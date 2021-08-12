@@ -1,9 +1,9 @@
 import React, { FC, ReactElement, useState } from "react";
-import { StyleSheet, View, ViewProps } from "react-native";
+import { StyleSheet, View, ViewProps, Text } from "react-native";
 import { isEmpty } from "lodash";
-import HeadlineText from "../styled/HeadlineText";
 import WebButton from "../styled/WebButton";
 import EmptyView from "../styled/EmptyView";
+import globalStyles from "../../utils/globalStyles";
 
 export type Cluster = {
   displayName: string;
@@ -23,7 +23,11 @@ type Props = {
 const ClusterList: FC<Props> = ({ clusters, children }) => {
   const numberOfClusters = clusters.length;
   if (numberOfClusters === 0) {
-    return <HeadlineText text="Ingen clustre tilgængelige" />;
+    return (
+      <Text style={[globalStyles.subheaderText, styles.leftText]}>
+        Ingen clustre tilgængelige
+      </Text>
+    );
   }
 
   return (
@@ -94,6 +98,10 @@ const styles = StyleSheet.create({
   },
   clusterItem: {
     marginBottom: 23,
+  },
+  leftText: {
+    alignItems: "flex-start",
+    marginLeft: 0,
   },
 });
 

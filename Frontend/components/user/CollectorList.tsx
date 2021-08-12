@@ -34,12 +34,14 @@ const CollectorList: FC<Props> = ({ clusterId }) => {
 
   return (
     <View>
-      <HeadlineText style={{ alignItems: "flex-start" }} text="Indsamlere." />
+      <HeadlineText style={styles.leftText} text="Indsamlere." />
       {/* eslint-disable no-nested-ternary */}
       {isLoading ? (
         <LoadingIndicator />
       ) : isEmpty(collectors) || !isArray(collectors) ? (
-        <HeadlineText text="Ingen indsamlere tilføjet" />
+        <Text style={[globalStyles.subheaderText, styles.leftText]}>
+          Ingen indsamlere tilføjede.
+        </Text>
       ) : (
         collectors.map((collector) => (
           <CollectorView
@@ -177,6 +179,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     flex: 1,
     margin: 5,
+  },
+  leftText: {
+    alignItems: "flex-start",
+    marginLeft: 0,
   },
   updateButton: { marginBottom: 10 },
 });
