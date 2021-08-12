@@ -3,6 +3,7 @@ import {
   AuthRequest,
   AuthSessionResult,
   DiscoveryDocument,
+  Prompt,
 } from "expo-auth-session";
 import { useEffect, useState } from "react";
 import Constants from "expo-constants";
@@ -11,7 +12,8 @@ import getDefaultRedirectUri from "../utils/authorization";
 export default function useAzureAdFlows(
   flowName: string,
   scopes: string[],
-  redirectUri?: string
+  redirectUri?: string,
+  prompt?: Prompt
 ) {
   const { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID } =
     Constants.manifest.extra || {};
@@ -63,6 +65,7 @@ export default function useAzureAdFlows(
     scopes,
     extraParams: { p: flowName },
     redirectUri: redirectUriForRequest,
+    prompt,
   });
 
   const triggerFlow = async (
