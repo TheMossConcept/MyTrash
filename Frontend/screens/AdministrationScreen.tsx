@@ -70,6 +70,10 @@ const AdministrationScreen: FC<Props> = () => {
                   />
                 </View>
                 <View style={{ flex: 1 }}>
+                  <HeadlineText
+                    text="Inviter indsamler."
+                    style={{ alignItems: "flex-start" }}
+                  />
                   <CollectorForm
                     clusterId={cluster.id}
                     title="Tilføj indsamler"

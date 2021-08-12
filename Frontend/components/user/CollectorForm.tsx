@@ -107,9 +107,6 @@ const CollectorForm: FC<Props> = ({
       style={style}
       validateOnMount
     >
-      <Text style={[globalStyles.subheaderText, styles.subheader]}>
-        Kontakt.
-      </Text>
       <StringField
         label="Fornavn"
         formKey="firstName"
