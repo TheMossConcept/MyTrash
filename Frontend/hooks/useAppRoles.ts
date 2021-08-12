@@ -4,6 +4,7 @@ import useAxiosConfig from "./useAxiosConfig";
 
 export type AppRole = {
   displayName: string;
+  multilineDisplayName: string;
   id: string;
 };
 

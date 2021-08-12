@@ -39,11 +39,12 @@ export default function RoleSelector({ formKey: key, appRoles }: Props) {
 
           return (
             <WebButton
-              text={availableAppRole.displayName}
+              text={availableAppRole.multilineDisplayName}
               onPress={selectRole}
               key={availableAppRole.id}
               isSelected={roleIsSelected}
-              style={{ marginRight: 10, wordWrap: "word-break" }}
+              style={{ marginRight: 10 }}
+              textStyle={{ textAlign: "left" }}
             />
           );
         })}

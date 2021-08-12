@@ -53,7 +53,7 @@ const TabBarItem: FC<TabBarItemProps> = ({
       onPress={onPress}
       style={{ flexGrow: 0, flexShrink: 1, flexBasis: "auto" }}
     >
-      <Text style={styles.tabText}>{route.name}</Text>
+      <Text style={styles.tabText}>{label}</Text>
       {isFocused && <View style={styles.selectedLine} />}
     </TouchableOpacity>
   );

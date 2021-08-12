@@ -86,7 +86,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     </View>
   ) : (
     <View>
-      <Text style={styles.headlineText}>Book afhentninger.</Text>
+      <Text style={styles.headlineText}>Book afhentning.</Text>
       <FormContainer
         initialValues={formValues || initialValues}
         validationSchema={validationSchema}
@@ -110,7 +110,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         />
         <View style={styles.buttonsContainer}>
           <SubmitButton
-            title={update ? `Ret \n afhentning` : `Book \n afhentning.`}
+            title={update ? `Rediger \n afhentning.` : `Book \n afhentning.`}
             style={[styles.button, { marginRight: 7.5 }]}
             icon={{
               src: require("../../assets/icons/calendar_grey.png"),

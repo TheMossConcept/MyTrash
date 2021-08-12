@@ -86,7 +86,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             }}
           />
           <MobileButton
-            text="Projekt."
+            text="MyTrash info."
             icon={{
               src: require("../assets/icons/leaf_grey.png"),
               width: 20.5,

@@ -4,7 +4,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useCallback, useEffect, useState } from "react";
-import Constants from "expo-constants";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { StyleSheet, Text, View } from "react-native";
@@ -25,6 +24,8 @@ import HeadlineText from "../components/styled/HeadlineText";
 import Menu from "../components/shared/Menu";
 import TabBar from "../components/styled/TabBar";
 import platform from "../utils/platform";
+import useAppRoles, { AppRole } from "../hooks/useAppRoles";
+import useQueriedData from "../hooks/useQueriedData";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
@@ -38,22 +39,6 @@ type UserInfo = {
   isRecipientPartner: boolean;
   isProductionPartner: boolean;
   userHasNoAccess: boolean;
-};
-type TabBarIconProps = {
-  focused: boolean;
-  color: string;
-};
-
-// TODO: Make into a higher order component and parametrize if necessary
-const TabBarIcon: FC<TabBarIconProps> = ({ color }) => {
-  return (
-    <Ionicons
-      size={30}
-      style={{ marginBottom: -3 }}
-      name="ios-code"
-      color={color}
-    />
-  );
 };
 
 type Props = StackScreenProps<RootStackParamList, "Root">;
@@ -154,6 +139,27 @@ type NavigatorProps = {
 };
 
 const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
+  const { data: appRoles, refetch: fetchAppRoles } =
+    useQueriedData<AppRole[]>("GetAppRoles/");
+  const administratorDisplayName = appRoles?.find(
+    (appRole) => appRole.id === "Administrator"
+  )?.displayName;
+  const collectionAdministratorDisplayName = appRoles?.find(
+    (appRole) => appRole.id === "CollectionAdministrator"
+  )?.displayName;
+  const collectorDisplayName = appRoles?.find(
+    (appRole) => appRole.id === "Collector"
+  )?.displayName;
+  const logisticsPartnerDisplayName = appRoles?.find(
+    (appRole) => appRole.id === "LogisticsPartner"
+  )?.displayName;
+  const recipientPartnerDisplayName = appRoles?.find(
+    (appRole) => appRole.id === "RecipientPartner"
+  )?.displayName;
+  const productionPartnerDisplayName = appRoles?.find(
+    (appRole) => appRole.id === "ProductionPartner"
+  )?.displayName;
+
   return (
     <Tab.Navigator
       initialRouteName="Administration"
@@ -166,7 +172,7 @@ const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
           name="Administration"
           component={AdministrationScreen}
           options={{
-            tabBarIcon: TabBarIcon,
+            tabBarLabel: administratorDisplayName,
           }}
         />
       )}
@@ -176,7 +182,7 @@ const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
           component={CollectionAdministrationScreen}
           initialParams={{ userId: userInfo.userId }}
           options={{
-            tabBarIcon: TabBarIcon,
+            tabBarLabel: collectionAdministratorDisplayName,
           }}
         />
       )}
@@ -186,7 +192,7 @@ const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
           component={CollectionScreen}
           initialParams={{ userId: userInfo.userId }}
           options={{
-            tabBarIcon: TabBarIcon,
+            tabBarLabel: collectorDisplayName,
           }}
         />
       )}
@@ -196,7 +202,7 @@ const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
           component={LogisticsScreen}
           initialParams={{ userId: userInfo.userId }}
           options={{
-            tabBarIcon: TabBarIcon,
+            tabBarLabel: logisticsPartnerDisplayName,
           }}
         />
       )}
@@ -206,7 +212,7 @@ const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
           component={RecipientScreen}
           initialParams={{ userId: userInfo.userId }}
           options={{
-            tabBarIcon: TabBarIcon,
+            tabBarLabel: recipientPartnerDisplayName,
           }}
         />
       )}
@@ -216,7 +222,7 @@ const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
           component={ProductionScreen}
           initialParams={{ userId: userInfo.userId }}
           options={{
-            tabBarIcon: TabBarIcon,
+            tabBarLabel: productionPartnerDisplayName,
           }}
         />
       )}
