@@ -19,6 +19,7 @@ import { Cluster } from "../components/cluster/ClusterList";
 import { ClusterFormData } from "../components/cluster/ClusterForm";
 import CollectionForm from "../components/collection/OrderCollectionForm";
 import Container from "../components/shared/Container";
+import HoueLogo from "../components/styled/HoueLogo";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
@@ -59,12 +60,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       <MainContentArea containerStyle={{ height: "80%" }}>
         <ScrollView>
           <Menu />
-          <View style={{ marginTop: 40, alignItems: "center" }}>
-            <Image
-              style={{ height: 61.5, width: 148 }}
-              source={require("../assets/images/logo.png")}
-            />
-          </View>
+          <HoueLogo />
           {statusSelected ? (
             <CollectorProgression
               userId={userId}

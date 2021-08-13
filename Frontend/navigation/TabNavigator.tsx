@@ -26,6 +26,7 @@ import TabBar from "../components/styled/TabBar";
 import platform from "../utils/platform";
 import { AppRole } from "../hooks/useAppRoles";
 import useQueriedData from "../hooks/useQueriedData";
+import HoueLogo from "../components/styled/HoueLogo";
 
 const Tab = createMaterialTopTabNavigator<TabsParamList>();
 
@@ -112,8 +113,8 @@ const TabNavigator: FC<Props> = () => {
           <View style={{ height: "100vh" }}>
             <MainContentArea>
               <View style={styles.menuSection}>
-                <HeadlineText />
                 <Menu />
+                <HoueLogo />
               </View>
               <HeadlineText text={welcomeText} style={styles.nameText} />
               <Navigator userInfo={userInfo} isWeb />
