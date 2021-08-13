@@ -110,7 +110,7 @@ const CollectorForm: FC<Props> = ({
                   }
                 }
               );
-          }, 350);
+          }, 1000);
         } else {
           finishUserCreation();
         }
