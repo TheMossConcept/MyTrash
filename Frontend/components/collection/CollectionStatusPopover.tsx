@@ -43,7 +43,7 @@ const CollectionStatusPopover: FC<Props> = ({
         </TouchableOpacity>
       </View>
       <View style={styles.headlineContainer}>
-        <Text style={styles.headline}>Status på afhentninger.</Text>
+        <Text style={styles.headline}>Status på afhentning.</Text>
       </View>
       <StatusLine collectionStatus="pending" data={data} />
       <StatusLine collectionStatus="scheduled" data={data} />
@@ -127,8 +127,8 @@ const StatusLine: FC<StatusLineProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: 458,
-    width: 400,
+    height: 430,
+    width: 380,
     backgroundColor: "#d2d3c8",
   },
   crossContainer: {
@@ -137,11 +137,11 @@ const styles = StyleSheet.create({
   },
   headlineContainer: {
     marginLeft: 20,
-    marginBottom: 40.5,
+    marginBottom: 20.25,
   },
   statusLineContainer: {
     marginHorizontal: 38.5,
-    marginBottom: 20,
+    marginBottom: 10,
     flexDirection: "row",
   },
   statusInformationContainer: {

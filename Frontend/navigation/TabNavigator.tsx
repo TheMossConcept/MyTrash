@@ -5,7 +5,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import AdministrationScreen from "../screens/AdministrationScreen";
 import CollectionAdministrationScreen from "../screens/CollectionAdministrationScreen";
 import CollectionScreen from "../screens/CollectionScreen";
@@ -112,19 +112,17 @@ const TabNavigator: FC<Props> = () => {
           <View style={{ height: "100vh" }}>
             <MainContentArea>
               <View style={styles.menuSection}>
-                <View>
-                  <Menu />
-                </View>
-                <View>
-                  <HoueLogo />
-                </View>
+                <Menu />
+                <HoueLogo />
               </View>
               <HeadlineText text={welcomeText} style={styles.nameText} />
               <Navigator userInfo={userInfo} isWeb />
             </MainContentArea>
           </View>
         ) : (
-          <Navigator userInfo={userInfo} />
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <Navigator userInfo={userInfo} />
+          </ScrollView>
         )}
       </GlobalSnackbarContext.Provider>
       <DismissableSnackbar

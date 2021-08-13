@@ -5,11 +5,7 @@ import {
 } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
-import {
-  ColorSchemeName,
-  GestureResponderEvent,
-  TouchableOpacity,
-} from "react-native";
+import { ColorSchemeName, GestureResponderEvent } from "react-native";
 import { EventRegister } from "react-native-event-listeners";
 import LoginScreen from "../screens/LoginScreen";
 

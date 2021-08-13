@@ -58,19 +58,17 @@ const CollectionScreen: FC<Props> = ({ route }) => {
   ) : activeCluster ? (
     <Container>
       <MainContentArea containerStyle={{ height: "80%" }}>
-        <ScrollView>
-          <Menu />
-          <HoueLogo />
-          {statusSelected ? (
-            <CollectorProgression
-              userId={userId}
-              clusterId={activeCluster.id}
-              style={{ marginTop: 72.5 }}
-            />
-          ) : (
-            <CollectionForm userId={userId} clusterId={activeCluster.id} />
-          )}
-        </ScrollView>
+        <Menu />
+        <HoueLogo />
+        {statusSelected ? (
+          <CollectorProgression
+            userId={userId}
+            clusterId={activeCluster.id}
+            style={{ marginTop: 72.5 }}
+          />
+        ) : (
+          <CollectionForm userId={userId} clusterId={activeCluster.id} />
+        )}
       </MainContentArea>
       <BottomButtonContainer
         style={{ paddingVertical: 20, height: "20%", minHeight: 165 }}

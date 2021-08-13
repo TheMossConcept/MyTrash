@@ -38,6 +38,9 @@ const styles = StyleSheet.create({
   imageBackground: {
     width: "100%",
     height: "100%",
+    flexGrow: 1,
+    flexShrink: 0,
+    flex: 1,
     paddingTop: 64,
     paddingHorizontal: 49,
   },
