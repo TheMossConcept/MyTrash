@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import React, { FC, useContext, useState } from "react";
 import { StyleSheet, Text, View, ViewProps } from "react-native";
 import * as yup from "yup";
@@ -80,19 +80,42 @@ const CollectorForm: FC<Props> = ({
   const createUser = (values: CollectorFormData, resetForm: () => void) => {
     setIsSubmitting(true);
 
+    const finishUserCreation = () => {
+      setIsSubmitting(false);
+
+      showGlobalSnackbar("Indsamler tilføjet til clusteret");
+      resetForm();
+    };
+
     axios
       .post("/orchestrators/CreateCollectorAndAddToCluster", values, {
         ...sharedAxiosConfig,
       })
-      .then(() => {
-        showGlobalSnackbar("Indsamler tilføjet til clusteret");
-        resetForm();
-
+      .then((response: AxiosResponse<{ statusQueryGetUri: string }>) => {
         if (successCallback) {
-          successCallback();
+          const runtime = 0;
+          const statusPoll = setInterval(() => {
+            axios
+              .get(response.data.statusQueryGetUri)
+              .then(
+                (statusResponse: AxiosResponse<{ runtimeStatus: string }>) => {
+                  if (
+                    statusResponse.data.runtimeStatus === "Completed" ||
+                    runtime >= 10000
+                  ) {
+                    successCallback();
+                    finishUserCreation();
+
+                    clearInterval(statusPoll);
+                  }
+                }
+              );
+          }, 350);
+        } else {
+          finishUserCreation();
         }
       })
-      .finally(() => {
+      .catch(() => {
         setIsSubmitting(false);
       });
   };

@@ -20,6 +20,7 @@ import CollectorList from "../components/user/CollectorList";
 import HeadlineText from "../components/styled/HeadlineText";
 import useQueriedData from "../hooks/useQueriedData";
 import LoadingIndicator from "../components/styled/LoadingIndicator";
+import CollectorFormWithList from "../components/user/CollectorFormWithList";
 
 type Props = StackScreenProps<TabsParamList, "Administration">;
 
@@ -38,8 +39,6 @@ const AdministrationScreen: FC<Props> = () => {
   const inactiveClusters = clusters
     ? clusters.filter((cluster) => cluster.closedForCollection)
     : [];
-
-  const addCollectorTitle = "Tilføj indsamler.";
 
   return (
     <Container>
@@ -71,18 +70,10 @@ const AdministrationScreen: FC<Props> = () => {
                     successCallback={refetchClusters}
                   />
                 </View>
-                <View style={{ flex: 1 }}>
-                  <HeadlineText
-                    text={addCollectorTitle}
-                    style={{ alignItems: "flex-start" }}
-                  />
-                  <CollectorForm
-                    clusterId={cluster.id}
-                    title={addCollectorTitle}
-                    style={{ marginBottom: 23 }}
-                  />
-                  <CollectorList clusterId={cluster.id} />
-                </View>
+                <CollectorFormWithList
+                  clusterId={cluster.id}
+                  title="Tilføj indsamler."
+                />
               </View>
               <CloseClusterBtn
                 clusterId={cluster.id}

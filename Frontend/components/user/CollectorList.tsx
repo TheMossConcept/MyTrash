@@ -10,28 +10,32 @@ import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import GlobalSnackbarContext from "../../utils/globalContext";
 import HeadlineText from "../styled/HeadlineText";
-import useQueriedData from "../../hooks/useQueriedData";
 import LoadingIndicator from "../styled/LoadingIndicator";
 import globalStyles from "../../utils/globalStyles";
 import WebButton from "../styled/WebButton";
 
-type Props = { clusterId: string };
+type Props = {
+  collectors: Collector[];
+  isLoading: boolean;
+  refetch: () => void;
+  // Ideally, this should NOT appear in the collector list props,
+  // however, it makes it much easier for the backend on collector
+  // deletion
+  clusterId: string;
+};
 
-type Collector = {
+export type Collector = {
   displayName: string;
   id: string;
   collectionGoal: number;
 };
 
-const CollectorList: FC<Props> = ({ clusterId }) => {
-  const {
-    data: collectors,
-    refetch: refetchCollectors,
-    isLoading,
-  } = useQueriedData("/GetCollectors", {
-    clusterId,
-  });
-
+const CollectorList: FC<Props> = ({
+  collectors,
+  isLoading,
+  refetch,
+  clusterId,
+}) => {
   return (
     <View>
       <HeadlineText style={styles.leftText} text="Indsamlere." />
@@ -48,7 +52,7 @@ const CollectorList: FC<Props> = ({ clusterId }) => {
             collector={collector}
             clusterId={clusterId}
             key={collector.id}
-            deletionCallback={refetchCollectors}
+            deletionCallback={refetch}
           />
         ))
       )}
