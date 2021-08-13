@@ -156,7 +156,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
 
 const styles = StyleSheet.create({
   headlineText: {
-    marginTop: 50,
+    marginTop: 60,
     fontFamily: "HelveticaNeueLTPro-Hv",
     color: "#898c8e",
     fontSize: 32.5,

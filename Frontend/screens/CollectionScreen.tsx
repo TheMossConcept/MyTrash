@@ -1,6 +1,12 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useState } from "react";
-import { View, StyleSheet, ActivityIndicator, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+  Image,
+} from "react-native";
 import { TabsParamList } from "../typings/types";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import MobileButton from "../components/styled/MobileButton";
@@ -53,12 +59,17 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       <MainContentArea containerStyle={{ height: "80%" }}>
         <ScrollView>
           <Menu />
-          <HeadlineText style={{ marginTop: 54 }} />
+          <View style={{ marginTop: 40, alignItems: "center" }}>
+            <Image
+              style={{ height: 61.5, width: 148 }}
+              source={require("../assets/images/logo.png")}
+            />
+          </View>
           {statusSelected ? (
             <CollectorProgression
               userId={userId}
               clusterId={activeCluster.id}
-              style={{ marginTop: 62.5 }}
+              style={{ marginTop: 72.5 }}
             />
           ) : (
             <CollectionForm userId={userId} clusterId={activeCluster.id} />

@@ -36,4 +36,3 @@ type Payload = {
 };
 
 export default httpTrigger;
-

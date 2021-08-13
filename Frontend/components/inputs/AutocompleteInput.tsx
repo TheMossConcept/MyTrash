@@ -147,11 +147,9 @@ const AutocompleteInput: FC<Props> = ({
     // required not renderItem on its own
     return (
       <View style={style} ref={autocompleteRef}>
-        {selectedId ? (
-          <Text style={[globalStyles.subheaderText, styles.labelText]}>
-            {title}
-          </Text>
-        ) : null}
+        <Text style={[globalStyles.subheaderText, styles.labelText]}>
+          {title}
+        </Text>
         <Autocomplete
           containerStyle={containerStyle}
           data={filteredEntities}

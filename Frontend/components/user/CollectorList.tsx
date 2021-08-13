@@ -134,21 +134,21 @@ const CollectorView: FC<CollectorViewProps> = ({
           updateCollectionGoal(collector.id, values.collectionGoal)
         }
         validationSchema={collectionGoalSchema}
-        style={styles.actionsContainer}
+        style={styles.formContainer}
         validateOnMount
       >
-        <View style={styles.goalButtonContainer}>
-          <NumberField
-            formKey="collectionGoal"
-            key={collector.id}
-            label="Mål"
-          />
-        </View>
-        <View style={styles.buttonsContainer}>
-          <SubmitButton title="Opdater" style={styles.updateButton} isWeb />
+        <NumberField
+          formKey="collectionGoal"
+          key={collector.id}
+          label="Mål"
+          style={styles.formItem}
+        />
+        <View style={styles.actionsContainer}>
+          <SubmitButton title="Opdater" style={styles.formItem} isWeb />
           <WebButton
             text="Slet bruger"
             onPress={showConfirmationDialog}
+            style={styles.lastFormItem}
             disabled={false}
           />
         </View>
@@ -164,26 +164,15 @@ const CollectorView: FC<CollectorViewProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     padding: 10,
   },
-  collectorContainer: { flex: 1, marginRight: 10, alignItems: "center" },
-  actionsContainer: { flex: 2, flexDirection: "row", alignItems: "center" },
-  goalButtonContainer: {
-    flex: 1,
-    marginRight: 10,
-    alignItems: "center",
-    height: "100%",
-    justifyContent: "center",
-  },
-  buttonsContainer: {
-    // NB! Be explicit to indicate that it differs from the other containers
-    flexDirection: "column",
-    flex: 1,
-    margin: 5,
-  },
+  collectorContainer: { alignItems: "center" },
+  formContainer: { flexDirection: "row", alignItems: "center" },
+  actionsContainer: { flex: 1, flexDirection: "row" },
+  formItem: { flex: 1, marginRight: 10 },
+  lastFormItem: { flex: 1 },
   leftText: {
     alignItems: "flex-start",
     marginLeft: 0,

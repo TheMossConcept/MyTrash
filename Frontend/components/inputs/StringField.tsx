@@ -33,11 +33,9 @@ export default function StringField<T>({
     const value = values[key] as unknown as string;
     return (
       <View style={style}>
-        {value ? (
-          <Text style={[globalStyles.subheaderText, styles.labelText]}>
-            {label}
-          </Text>
-        ) : null}
+        <Text style={[globalStyles.subheaderText, styles.labelText]}>
+          {label}
+        </Text>
         <TextInput
           /* NB! This is unsafe but I don't know how to statically tell the compiler
           that T should only contain strings */

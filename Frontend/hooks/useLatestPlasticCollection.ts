@@ -55,7 +55,7 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
         })
         .then((response) => {
           setExistingCollection(response.data);
-          showGlobalSnackbar("Afhentning opdateret");
+          showGlobalSnackbar("Afhentning redigeret");
         });
     };
 

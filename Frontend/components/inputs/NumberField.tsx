@@ -54,11 +54,9 @@ export default function NumberField<T>({
 
     return (
       <View style={style}>
-        {value ? (
-          <Text style={[globalStyles.subheaderText, styles.labelText]}>
-            {label}
-          </Text>
-        ) : null}
+        <Text style={[globalStyles.subheaderText, styles.labelText]}>
+          {label}
+        </Text>
         <TextInput
           placeholder={label}
           placeholderTextColor="#a3a5a8"
