@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
-import { Ionicons } from "@expo/vector-icons";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useCallback, useEffect, useState } from "react";
@@ -113,8 +112,12 @@ const TabNavigator: FC<Props> = () => {
           <View style={{ height: "100vh" }}>
             <MainContentArea>
               <View style={styles.menuSection}>
-                <Menu />
-                <HoueLogo />
+                <View>
+                  <Menu />
+                </View>
+                <View>
+                  <HoueLogo />
+                </View>
               </View>
               <HeadlineText text={welcomeText} style={styles.nameText} />
               <Navigator userInfo={userInfo} isWeb />
@@ -235,10 +238,10 @@ const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
 
 const styles = StyleSheet.create({
   menuSection: {
-    marginTop: 86,
-    marginBottom: 38,
+    marginBottom: 55,
     paddingHorizontal: 107,
-    flexDirection: "row",
+    flexDirection: "column",
+    width: "100%",
   },
   nameText: {
     alignItems: "flex-start",

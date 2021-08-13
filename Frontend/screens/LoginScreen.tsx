@@ -13,6 +13,7 @@ import MainContentArea from "../components/styled/MainContentArea";
 import Menu from "../components/shared/Menu";
 import HeadlineText from "../components/styled/HeadlineText";
 import AppText from "../components/styled/AppText";
+import HoueLogo from "../components/styled/HoueLogo";
 
 type Props = StackScreenProps<RootStackParamList, "Login">;
 
@@ -62,7 +63,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         {/* It does not make sense to show the menu items on the login screen
             as all of them requires you to be logged in */}
         <Menu hideMenuItems />
-        <HeadlineText style={{ marginTop: 54 }} />
+        <HoueLogo />
         <View style={styles.textContainer}>
           <AppText
             text={`${ENVIRONMENT_NAME}. ${Linking.createURL(
