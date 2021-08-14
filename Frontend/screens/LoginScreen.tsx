@@ -11,7 +11,6 @@ import MobileButton from "../components/styled/MobileButton";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import MainContentArea from "../components/styled/MainContentArea";
 import Menu from "../components/shared/Menu";
-import HeadlineText from "../components/styled/HeadlineText";
 import AppText from "../components/styled/AppText";
 import HoueLogo from "../components/styled/HoueLogo";
 
@@ -69,7 +68,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
             text={`${ENVIRONMENT_NAME}. ${Linking.createURL(
               "/"
               // TODO: Better versioning
-            )}. Version 0.4.1. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
+            )}. Version 0.5.0. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
           />
         </View>
       </MainContentArea>
