@@ -10,10 +10,18 @@ import React, {
 } from "react";
 import { take } from "lodash";
 import { EventRegister } from "react-native-event-listeners";
-import { Text, View, ViewStyle, TextInput, StyleSheet } from "react-native";
+import {
+  Text,
+  View,
+  ViewStyle,
+  TextInput,
+  StyleSheet,
+  FlatList,
+} from "react-native";
 import Autocomplete, {
   AutocompleteProps,
 } from "react-native-autocomplete-input";
+import { Divider } from "react-native-paper";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import useQueryState from "../../hooks/useQueryState";
 import globalStyles from "../../utils/globalStyles";
@@ -156,16 +164,6 @@ const AutocompleteInput: FC<Props> = ({
           value={query}
           onChangeText={setQuery}
           onFocus={() => setHideSuggestionList(false)}
-          onBlur={(event) => {
-            if (handleBlur) {
-              // We need to give the other event handler time to do its job before
-              // hiding the suggestion list.
-              // TODO: Do something less brittle that is not
-              // reliant on timing! Then we can also pass handleBlur(key) directly as a callback!
-              // setTimeout(() => setHideSuggestionList(true), 250);
-              handleBlur(key)(event);
-            }
-          }}
           renderTextInput={({ value, onChangeText, onFocus, onBlur }: any) => (
             <TextInput
               value={value}
@@ -180,15 +178,26 @@ const AutocompleteInput: FC<Props> = ({
           listStyle={{ position: "absolute" }}
           hideResults={hideSuggestionList}
           flatListProps={{
+            ListEmptyComponent: (
+              <View style={containerStyle}>
+                <EmptyComponent />
+              </View>
+            ),
+            ItemSeparatorComponent: Divider,
             // eslint-disable-next-line react/display-name
             renderItem: ({ item }: { item: SelectableEntity }) => {
               return (
-                <Text onPress={handleItemSelection(item)}>
+                <Text
+                  onPress={handleItemSelection(item)}
+                  style={[
+                    globalStyles.subheaderText,
+                    { fontSize: 12, marginVertical: 15 },
+                  ]}
+                >
                   {item.displayName}
                 </Text>
               );
             },
-            ListEmptyComponent: EmptyComponent,
           }}
         />
         <ErrorMessage
@@ -201,11 +210,7 @@ const AutocompleteInput: FC<Props> = ({
 };
 
 const EmptyComponent: FC<{}> = () => {
-  return (
-    <Text style={{ height: 100, width: "100%" }}>
-      Der er ingen brugere tilgængelige
-    </Text>
-  );
+  return <Text>Der er ingen brugere tilgængelige</Text>;
 };
 
 const styles = StyleSheet.create({
