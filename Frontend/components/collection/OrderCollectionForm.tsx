@@ -68,6 +68,9 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         if (successCallback) {
           successCallback();
         }
+      })
+      .catch((error) => {
+        console.log(error);
       });
   };
 

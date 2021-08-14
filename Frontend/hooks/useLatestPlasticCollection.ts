@@ -33,6 +33,9 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
         if (response.data) {
           setExistingCollection(response.data);
         }
+      })
+      .catch((error) => {
+        console.log(error);
       });
   }, []);
 
@@ -56,6 +59,9 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
         .then((response) => {
           setExistingCollection(response.data);
           showGlobalSnackbar("Afhentning redigeret");
+        })
+        .catch((error) => {
+          console.log(error);
         });
     };
 
