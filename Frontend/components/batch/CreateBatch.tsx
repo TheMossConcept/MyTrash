@@ -8,6 +8,7 @@ import SubmitButton from "../inputs/SubmitButton";
 import AutocompleteInput from "../inputs/AutocompleteInput";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
+import StringField from "../inputs/StringField";
 
 type Props = { batchCreatorId: string; creationCallback: () => void };
 
@@ -15,6 +16,7 @@ type CreateBatchFormData = {
   inputWeight?: number;
   outputWeight?: number;
   additionFactor?: number;
+  batchNumber?: string;
   clusterId?: string;
 };
 
@@ -22,6 +24,7 @@ const validationSchema = yup.object().shape({
   inputWeight: yup.number().required("Forbrugt plast er påkrævet"),
   outputWeight: yup.number().required("Batch vægt er påkrævet"),
   additionFactor: yup.number().required("Tilsætningsfaktor er påkrævet"),
+  batchNumber: yup.string().required("Batch nummer er påkrævet"),
   clusterId: yup.string().required("Et batch skal tilknyttes et cluster"),
 });
 
@@ -75,6 +78,11 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
             containerStyle={{ zIndex: 1 }}
           />
         </View>
+        <StringField
+          formKey="batchNumber"
+          label="Batchnummer"
+          style={styles.inputField}
+        />
         <NumberField
           formKey="inputWeight"
           label="Forbrugt plast"
@@ -99,7 +107,7 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     width: 1024,
   },
   inputField: {

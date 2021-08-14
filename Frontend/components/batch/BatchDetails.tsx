@@ -10,6 +10,7 @@ import WebButton from "../styled/WebButton";
 export type Batch = {
   id: string;
   clusterId: string;
+  batchNumber: string;
   inputWeight: number;
   outputWeight: number;
   additionFactor: number;
@@ -27,7 +28,9 @@ const BatchDetail: FC<BatchDetailProps> = ({ batch, children }) => {
   const toggleDetails = () => setShowDetails(!showDetails);
 
   const creationDateTime = DateTime.fromISO(batch.creationDate);
-  const title = `Batch oprettet d ${creationDateTime.toLocaleString({
+  const title = `Batch nummer ${
+    batch.batchNumber
+  } oprettet d ${creationDateTime.toLocaleString({
     month: "long",
     day: "2-digit",
   })}`;

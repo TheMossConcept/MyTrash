@@ -46,6 +46,7 @@ const httpTrigger: AzureFunction = async function (
 
 type BatchCreationDTO = {
   clusterId: string;
+  batchNumber: string;
   inputWeight: number;
   outputWeight: number;
   addtionFactor: number;

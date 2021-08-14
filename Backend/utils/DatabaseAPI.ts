@@ -173,6 +173,7 @@ export type CollectionEntity = {
 
 export type BatchEntity = {
   entityName: "batch";
+  batchNumber: string;
   clusterId: string;
   inputWeight: number;
   outputWeight: number;
