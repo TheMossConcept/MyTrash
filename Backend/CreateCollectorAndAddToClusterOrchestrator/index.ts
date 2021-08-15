@@ -17,15 +17,29 @@ const orchestrator = df.orchestrator(function* (context) {
   const { clusterId, ...user } = context.bindingData.input as RequestBody;
 
   const userId = yield context.df.callActivity("CreateCollectorActivity", user);
-  const updatedEntity = yield context.df.callActivity(
-    "AddCollectorToClusterActivity",
-    {
-      userId,
-      clusterId,
-    }
-  );
 
-  return JSON.stringify(updatedEntity);
+  if (userId && clusterId) {
+    const updatedEntity = yield context.df.callActivity(
+      "AddCollectorToClusterActivity",
+      {
+        userId,
+        clusterId,
+      }
+    );
+
+    return JSON.stringify(updatedEntity);
+  }
+  if (!clusterId) {
+    return {
+      statusCode: 400,
+      body: "Cluster id missing in request",
+    };
+  }
+  return {
+    statusCode: 500,
+    body:
+      "User not created correctly. This might be due to the fact that the email used already exists in the AD",
+  };
 });
 
 type RequestBody = Omit<AddCollectorToClusterPayload, "userId"> & CollectorDTO;

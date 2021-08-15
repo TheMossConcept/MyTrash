@@ -115,7 +115,8 @@ const CollectorForm: FC<Props> = ({
           finishUserCreation();
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
         setIsSubmitting(false);
       });
   };

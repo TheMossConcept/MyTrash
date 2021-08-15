@@ -1,12 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 import { TabsParamList } from "../typings/types";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import MobileButton from "../components/styled/MobileButton";

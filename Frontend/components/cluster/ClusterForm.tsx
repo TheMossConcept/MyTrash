@@ -38,9 +38,6 @@ const validationSchema = yup.object().shape({
   c5Reference: yup.string(),
   necessaryPlastic: yup.number(),
   usefulPlasticFactor: yup.number().required("Beregningsfaktor skal angives"),
-  collectionAdministratorId: yup
-    .string()
-    .required("Indsamlingsadministrator skal vælges"),
   logisticsPartnerId: yup.string().required("Logistikpartner skal vælges"),
   recipientPartnerId: yup.string().required("Modtagerpartner skal vælges"),
   productionPartnerId: yup.string().required("Produktionspartner skal vælges"),
