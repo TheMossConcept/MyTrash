@@ -10,6 +10,7 @@ type ReturnValue = {
   formValues?: CollectionFormData;
   statusValues?: CollectionStatusData;
   collectionIsOver?: boolean;
+  loading: boolean;
   refresh: () => void;
 };
 
@@ -17,6 +18,8 @@ type CollectionData = CollectionFormData &
   CollectionStatusData & { _id: string };
 
 const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
+  const [loading, setLoading] = useState(false);
+
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
   const [existingCollection, setExistingCollection] =
@@ -24,6 +27,8 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
   const sharedAxiosConfig = useAxiosConfig();
 
   const getLatestCollection = useCallback(() => {
+    setLoading(true);
+
     axios
       .get("/GetLatestCollection", {
         ...sharedAxiosConfig,
@@ -33,9 +38,13 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
         if (response.data) {
           setExistingCollection(response.data);
         }
+
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+
+        setLoading(false);
       });
   }, []);
 
@@ -69,6 +78,7 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
       update: updateCollectionRequest,
       statusValues: existingCollection,
       formValues: existingCollection,
+      loading,
       // If the last collection has been handled, the collection is over
       collectionIsOver:
         !collectionHasYetToBeHandled && existingCollection.isLastCollection,
@@ -76,7 +86,11 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
     };
   }
 
-  return { refresh: getLatestCollection, statusValues: existingCollection };
+  return {
+    refresh: getLatestCollection,
+    loading,
+    statusValues: existingCollection,
+  };
 };
 
 export default useLatestPlasticCollection;
