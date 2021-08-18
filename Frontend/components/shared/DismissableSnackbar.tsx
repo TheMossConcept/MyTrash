@@ -72,7 +72,7 @@ const DismissableSnackbar: FC<Props> = ({
           visible={state.shown}
           onDismiss={dismiss}
           action={{
-            label: "OK",
+            label: "LUK",
             onPress: dismiss,
           }}
         >

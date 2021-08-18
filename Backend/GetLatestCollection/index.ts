@@ -1,6 +1,7 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import databaseAPI, { CollectionEntity } from "../utils/DatabaseAPI";
 
+// NB! This requires a database index for createdAt on the "collection" collection in order to work!!
 const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest

@@ -99,10 +99,16 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
             }}
           >
             {(collection) => (
-              <DeliverPlasticCollection
-                plasticCollectionId={collection.id}
-                successCallback={refetch}
-              />
+              <View>
+                <SchedulePlasticCollection
+                  plasticCollectionId={collection.id}
+                  plasticCollectionScheduledCallback={refetch}
+                />
+                <DeliverPlasticCollection
+                  plasticCollectionId={collection.id}
+                  successCallback={refetch}
+                />
+              </View>
             )}
           </PlasticCollectionsDetails>
         )}
