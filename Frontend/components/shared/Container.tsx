@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { View, StyleSheet, ViewStyle } from "react-native";
+import platform from "../../utils/platform";
 
 type Props = { style?: ViewStyle };
 export type ContainerProps = Props;
@@ -12,8 +13,7 @@ const Container: FC<Props> = ({ children, style }) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: "100%",
-    // overflow: "scroll",
+    minHeight: platform.platformName === "web" ? "100vh" : "100%",
   },
 });
 
