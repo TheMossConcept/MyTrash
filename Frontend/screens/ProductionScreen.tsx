@@ -24,7 +24,7 @@ const ProductionScreen: FC<Props> = ({ route }) => {
     refetch: refetchBatches,
     isLoading,
   } = useQueriedData<Batch[]>("/GetBatches", {
-    recipientPartnerId: userId,
+    productionPartnerId: userId,
   });
   const sortedBatches = sortBatchByStatus(batches || []);
 
