@@ -15,6 +15,7 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
   style,
   ...viewProps
 }) => {
+  console.log("Rendering CollectorProgression");
   const { data: userProgressData, isLoading: userProgressDataIsLoading } =
     useQueriedData<ProgressionData>("/GetUserProgressData", {
       userId,

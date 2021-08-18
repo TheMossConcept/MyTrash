@@ -20,6 +20,7 @@ type Props = StackScreenProps<TabsParamList, "Indsamling">;
 type FullCluster = Cluster & ClusterFormData;
 
 const CollectionScreen: FC<Props> = ({ route }) => {
+  console.log("Rendering CollectionScreen");
   const [selectedScreen, setSelectedScreen] = useState<"status" | "collection">(
     "status"
   );
@@ -34,7 +35,6 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       collectorId: userId,
     }
   );
-
   const activeClusters = clusters
     ? clusters.filter((cluster) => !cluster.closedForCollection)
     : [];

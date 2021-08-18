@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { CollectionStatusData } from "../components/collection/CollectionStatusPopover";
 import { CollectionFormData } from "../components/collection/OrderCollectionForm";
 import GlobalSnackbarContext from "../utils/globalContext";
 import useAxiosConfig from "./useAxiosConfig";
+import useQueriedData from "./useQueriedData";
 
 type ReturnValue = {
   update?: (newValues: CollectionFormData) => void;
@@ -18,40 +19,14 @@ type CollectionData = CollectionFormData &
   CollectionStatusData & { _id: string };
 
 const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
-  const [loading, setLoading] = useState(false);
+  const { refetch: getLatestCollection, isLoading: loading } =
+    useQueriedData<CollectionData>("/GetLatestCollection", { collectorId });
 
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
   const [existingCollection, setExistingCollection] =
     useState<CollectionData>();
   const sharedAxiosConfig = useAxiosConfig();
-
-  const getLatestCollection = useCallback(() => {
-    setLoading(true);
-
-    axios
-      .get("/GetLatestCollection", {
-        ...sharedAxiosConfig,
-        params: { collectorId },
-      })
-      .then((response) => {
-        if (response.data) {
-          setExistingCollection(response.data);
-        }
-
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-
-        setLoading(false);
-      });
-  }, []);
-
-  // Try getting the latest collection initially
-  useEffect(() => {
-    getLatestCollection();
-  }, [getLatestCollection]);
 
   const collectionHasYetToBeHandled =
     existingCollection?.collectionStatus === "pending" ||

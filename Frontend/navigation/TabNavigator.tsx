@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ScrollView, StyleSheet, Text, View } from "react-native";
@@ -161,6 +161,11 @@ const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
     (appRole) => appRole.id === "ProductionPartner"
   )?.displayName;
 
+  console.log("Rendering TabNavigator");
+  const initialParams = useMemo(() => {
+    return { userId: userInfo.userId };
+  }, [userInfo.userId]);
+
   return (
     <Tab.Navigator
       initialRouteName="Administration"
@@ -191,7 +196,7 @@ const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
         <Tab.Screen
           name="Indsamling"
           component={CollectionScreen}
-          initialParams={{ userId: userInfo.userId }}
+          initialParams={initialParams}
           options={{
             tabBarLabel: collectorDisplayName,
           }}
