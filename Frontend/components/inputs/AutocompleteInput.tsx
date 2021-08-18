@@ -63,7 +63,7 @@ const AutocompleteInput: FC<Props> = ({
     console.log("OUTSIDE CLICK!!");
     setHideSuggestionList(true);
   };
-  useOutsideClickDetector(autocompleteRef, clickOutsideHandler);
+  // useOutsideClickDetector(autocompleteRef, clickOutsideHandler);
 
   const formikProps = useFormikContext<any>();
 
