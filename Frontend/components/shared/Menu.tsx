@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 import { Image, StyleSheet, View, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Popover from "react-native-popover-view";
@@ -6,7 +6,7 @@ import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import useAzureAdFlows from "../../hooks/useAzureAdFlows";
-import platformUtils from "../../utils/platform";
+import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 
 type Props = { hideMenuItems?: boolean };
 
@@ -32,33 +32,14 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
     navigation.navigate("Login");
   };
 
-  useEffect(() => {
-    if (platformUtils.platformName === "web") {
-      const globalClickEventListener = function (event: any) {
-        // TODO: This (relying on the string value of the src of the srcElement
-        // and relying on a global event handler) is insanely brittle and this
-        // entire global event listener is ONLY meant as a temporary workaround
-        // until react-native-popover-view gets proper web support !!
-        if (
-          event.srcElement.src !==
-          `${window.location.origin}/static/media/menu.c165fe87.png`
-        ) {
-          setPopoverIsShown(false);
-        }
-      };
-
-      document.addEventListener("click", globalClickEventListener);
-
-      return () => {
-        document.removeEventListener("click", globalClickEventListener);
-      };
-    }
-
-    return () => {};
-  }, []);
+  const menuRef = useRef(null);
+  const outsideClickHandler = () => {
+    setPopoverIsShown(false);
+  };
+  useOutsideClickDetector(menuRef, outsideClickHandler);
 
   return (
-    <View style={styles.menuArea}>
+    <View style={styles.menuArea} ref={menuRef}>
       <TouchableOpacity
         onPress={() => setPopoverIsShown(!popoverIsShown)}
         disabled={hideMenuItems}

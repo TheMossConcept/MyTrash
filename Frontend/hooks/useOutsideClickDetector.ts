@@ -11,10 +11,21 @@ function useOutsideClickDetector(
   useEffect(() => {
     function handleClickOutside(event: GestureResponderEvent) {
       if (
+        platform.platformName === "web" &&
         ref.current &&
         // NB! This ONLY works on web!!
-        platform.platformName === "web" &&
         !ref.current.contains(event.target)
+      ) {
+        handler();
+      }
+
+      const children: any[] = ref?.current?._children;
+
+      if (
+        platform.platformName === "ios" &&
+        children &&
+        ref.current &&
+        !children.includes(event.target)
       ) {
         handler();
       }

@@ -73,7 +73,7 @@ const AutocompleteInput: FC<Props> = ({
       "Incorrect use of select partners form. It's used outside a FormContainer which is not allowed as it needs the context crated by Formik!"
     );
   } else {
-    const { values, setFieldValue, handleBlur } = formikProps;
+    const { values, setFieldValue } = formikProps;
 
     const selectedId = values[key];
     const setSelectedId = (newValue: any) => {
@@ -190,10 +190,7 @@ const AutocompleteInput: FC<Props> = ({
               return (
                 <Text
                   onPress={handleItemSelection(item)}
-                  style={[
-                    globalStyles.subheaderText,
-                    { fontSize: 12, marginVertical: 15 },
-                  ]}
+                  style={[globalStyles.subheaderText, styles.itemText]}
                 >
                   {item.displayName}
                 </Text>
@@ -216,6 +213,7 @@ const EmptyComponent: FC<{}> = () => {
 
 const styles = StyleSheet.create({
   labelText: { fontSize: 12 },
+  itemText: { fontSize: 12, marginVertical: 15 },
 });
 
 export default AutocompleteInput;
