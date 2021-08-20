@@ -7,21 +7,19 @@ import ProgressionCircle, { ProgressionData } from "./ProgressionCircle";
 type ClusterViewForCollectorProps = {
   userId: string;
   clusterId: string;
+  clusterIsOpen: boolean;
 } & ViewProps;
 
 const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
   userId,
   clusterId,
   style,
+  clusterIsOpen,
   ...viewProps
 }) => {
   const { data: userProgressData, isLoading: userProgressDataIsLoading } =
     useQueriedData<ProgressionData>("/GetUserProgressData", {
       userId,
-      clusterId,
-    });
-  const { data: clusterProgressData, isLoading: clusterProgressDataIsLoading } =
-    useQueriedData<ProgressionData>("/GetClusterProgressData", {
       clusterId,
     });
 
@@ -36,6 +34,7 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
           },
         ]}
       >
+        {!clusterIsOpen && <ClusterProgression clusterId={clusterId} />}
         {/* eslint-disable no-nested-ternary */}
         {userProgressDataIsLoading ? (
           <View style={{ flex: 1 }}>
@@ -47,14 +46,6 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
             explanationText="Individuel."
           />
         ) : null}
-        {clusterProgressDataIsLoading ? (
-          <ActivityIndicator />
-        ) : clusterProgressData ? (
-          <ProgressionCircle
-            progressData={clusterProgressData}
-            explanationText="Cluster."
-          />
-        ) : null}
         {/* eslint-enable no-nested-ternary */}
       </View>
       <View style={styles.textContainer}>
@@ -62,6 +53,28 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
       </View>
     </View>
   );
+};
+
+type ClusterProgressionProps = Pick<ClusterViewForCollectorProps, "clusterId">;
+
+const ClusterProgression: FC<ClusterProgressionProps> = ({ clusterId }) => {
+  const { data: clusterProgressData, isLoading: clusterProgressDataIsLoading } =
+    useQueriedData<ProgressionData>("/GetClusterProgressData", {
+      clusterId,
+    });
+
+  /* eslint-disable no-nested-ternary */
+  return clusterProgressDataIsLoading ? (
+    <View style={{ flex: 1 }}>
+      <ActivityIndicator />
+    </View>
+  ) : clusterProgressData ? (
+    <ProgressionCircle
+      progressData={clusterProgressData}
+      explanationText="Cluster."
+    />
+  ) : null;
+  /* eslint-enable no-nested-ternary */
 };
 
 const styles = StyleSheet.create({

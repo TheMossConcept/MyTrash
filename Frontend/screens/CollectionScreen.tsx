@@ -61,6 +61,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
           <CollectorProgression
             userId={userId}
             clusterId={activeCluster.id}
+            clusterIsOpen={activeCluster.isOpen}
             style={styles.collectorProgression}
           />
         ) : (
