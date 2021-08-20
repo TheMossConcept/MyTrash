@@ -58,7 +58,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <MainContentArea containerStyle={{ height: "80%" }}>
+      <MainContentArea containerStyle={styles.mainContentAreaContainer}>
         {/* It does not make sense to show the menu items on the login screen
             as all of them requires you to be logged in */}
         <Menu hideMenuItems />
@@ -72,7 +72,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
           />
         </View>
       </MainContentArea>
-      <BottomButtonContainer style={{ height: "20%", minHeight: 165 }}>
+      <BottomButtonContainer style={styles.bottomButtonContainer}>
         <AuthorizationButton
           style={styles.bottomButton}
           handleAuthorization={handleAuthorizationSuccess}
@@ -94,7 +94,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
             width: 20.5,
             height: 32.5,
           }}
-          style={[styles.bottomButton, { marginRight: 0 }]}
+          style={[styles.bottomButton, styles.lastBottomButton]}
         />
       </BottomButtonContainer>
     </View>
@@ -109,6 +109,10 @@ const styles = StyleSheet.create({
   textContainer: {
     marginTop: 60,
   },
+  mainContentAreaContainer: {
+    height: "80%",
+  },
+  bottomButtonContainer: { height: "20%", minHeight: 165 },
   iconContainer: {
     // The image itself constitutes 4 % of the space
     marginTop: 100,
@@ -122,6 +126,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     flex: 1,
   },
+  lastBottomButton: { marginRight: 0 },
 });
 
 export default LoginScreen;

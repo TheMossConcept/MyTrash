@@ -1,5 +1,6 @@
 import React, { FC } from "react";
-import { KeyboardAvoidingScrollView } from "react-native-keyboard-avoiding-scroll-view";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+// import { KeyboardAvoidingScrollView } from "react-native-keyboard-avoiding-scroll-view";
 import {
   View,
   ImageBackground,
@@ -9,6 +10,7 @@ import {
   StyleProp,
   ViewStyle,
 } from "react-native";
+import Platform from "../../utils/platform";
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
@@ -21,6 +23,8 @@ const MainContentArea: FC<Props> = ({
   disableScroll = false,
   ...imageBackgroundProps
 }) => {
+  const isWeb = Platform.platformName === "web";
+
   return (
     <View style={containerStyle}>
       <ImageBackground
@@ -30,16 +34,16 @@ const MainContentArea: FC<Props> = ({
         style={[styles.imageBackground]}
         {...imageBackgroundProps}
       >
-        {disableScroll ? (
+        {disableScroll || isWeb ? (
           <View style={styles.childContainer}>
             <SafeAreaView>{children}</SafeAreaView>
           </View>
         ) : (
-          <KeyboardAvoidingScrollView>
+          <KeyboardAwareScrollView>
             <View style={styles.childContainer}>
               <SafeAreaView>{children}</SafeAreaView>
             </View>
-          </KeyboardAvoidingScrollView>
+          </KeyboardAwareScrollView>
         )}
       </ImageBackground>
     </View>

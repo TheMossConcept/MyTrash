@@ -53,7 +53,7 @@
     "react-native-autocomplete-input": "^5.0.0",
     "react-native-event-listeners": "^1.0.7",
     "react-native-gesture-handler": "~1.10.2",
-    "react-native-keyboard-avoiding-scroll-view": "^1.0.1",
+    "react-native-keyboard-aware-scroll-view": "^0.9.4",
     "react-native-paper": "^4.7.2",
     "react-native-paper-dates": "^0.4.5",
     "react-native-popover-view": "^4.0.1",
