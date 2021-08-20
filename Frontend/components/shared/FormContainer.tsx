@@ -12,9 +12,7 @@ export default function FormContainer<T>({
   // TODO: Add global view context here!
   return (
     <Formik {...formikConfig}>
-      {() => {
-        return <View style={style}>{children}</View>;
-      }}
+      {() => <View style={style}>{children}</View>}
     </Formik>
   );
 }

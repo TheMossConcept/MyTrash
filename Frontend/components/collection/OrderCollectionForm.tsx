@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { FC, useContext, useRef, useState } from "react";
 import Popover from "react-native-popover-view";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-// TODO: Fix it so that we use buttons from react-native-paper instead
 import * as yup from "yup";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import FormContainer from "../shared/FormContainer";
@@ -92,74 +91,68 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   ) : (
     <View>
       <Text style={styles.headlineText}>Book afhentning.</Text>
-      {formValues ? (
-        <FormContainer
-          initialValues={formValues}
-          validationSchema={validationSchema}
-          onSubmit={(values) => {
-            if (update) {
-              update(values);
-            } else {
-              createCollectionRequest(values);
-            }
-          }}
-          validateOnMount
-          style={styles.contentContainer}
-        >
-          <NumberField
-            label="Antal enheder"
-            formKey="numberOfUnits"
-            editable={!loading}
-          />
-          <StringField
-            label="Kommentar"
-            formKey="comment"
-            maxLength={140}
-            editable={!loading}
-            style={styles.inputField}
-          />
-          {loading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator />
-            </View>
-          ) : (
-            <View style={styles.buttonsContainer}>
-              <SubmitButton
-                title={
-                  update ? `Rediger \n afhentning.` : `Book \n afhentning.`
-                }
-                style={[styles.button, { marginRight: 7.5 }]}
-                icon={{
-                  src: require("../../assets/icons/calendar_grey.png"),
-                  width: 28,
-                  height: 27.5,
-                }}
-              />
-              <MobileButton
-                text={`Status på \n afhentning.`}
-                ref={popoverRef}
-                onPress={() => setPopoverIsShown(true)}
-                disabled={!statusValues}
-                isVerticalButton
-                style={styles.button}
-                icon={{
-                  src: require("../../assets/icons/notepad_grey.png"),
-                  height: 30,
-                  width: 33,
-                }}
-              />
-            </View>
-          )}
-          <BooleanField
-            label="Sidste opsamling"
-            formKey="isLastCollection"
-            style={[styles.inputField, styles.lastField]}
-            enabled={!loading}
-          />
-        </FormContainer>
-      ) : (
-        <ActivityIndicator />
-      )}
+      <FormContainer
+        initialValues={formValues}
+        validationSchema={validationSchema}
+        onSubmit={(values) => {
+          if (update && values) {
+            update(values);
+          } else if (values) {
+            createCollectionRequest(values);
+          }
+        }}
+        validateOnMount
+        style={styles.contentContainer}
+      >
+        <NumberField
+          label="Antal enheder"
+          formKey="numberOfUnits"
+          editable={!loading}
+        />
+        <StringField
+          label="Kommentar"
+          formKey="comment"
+          maxLength={140}
+          editable={!loading}
+          style={styles.inputField}
+        />
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator />
+          </View>
+        ) : (
+          <View style={styles.buttonsContainer}>
+            <SubmitButton
+              title={update ? `Rediger \n afhentning.` : `Book \n afhentning.`}
+              style={[styles.button, { marginRight: 7.5 }]}
+              icon={{
+                src: require("../../assets/icons/calendar_grey.png"),
+                width: 28,
+                height: 27.5,
+              }}
+            />
+            <MobileButton
+              text={`Status på \n afhentning.`}
+              ref={popoverRef}
+              onPress={() => setPopoverIsShown(true)}
+              disabled={!statusValues}
+              isVerticalButton
+              style={styles.button}
+              icon={{
+                src: require("../../assets/icons/notepad_grey.png"),
+                height: 30,
+                width: 33,
+              }}
+            />
+          </View>
+        )}
+        <BooleanField
+          label="Sidste opsamling"
+          formKey="isLastCollection"
+          style={[styles.inputField, styles.lastField]}
+          enabled={!loading}
+        />
+      </FormContainer>
       {statusValues && (
         <Popover
           from={popoverRef}

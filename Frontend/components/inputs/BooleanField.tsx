@@ -31,7 +31,7 @@ export default function BooleanField<T>({
   } else {
     const { values, setFieldValue } = formikProps;
 
-    const checked = values[key];
+    const checked = values ? values[key] : false;
     return (
       <View style={[styles.container, style]} {...viewProps}>
         <View style={styles.checkboxContainer}>
