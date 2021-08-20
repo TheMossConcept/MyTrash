@@ -96,6 +96,11 @@ const StatusLine: FC<StatusLineProps> = ({
       statusText = "";
   }
 
+  const timeString =
+    dateToDisplay && (dateToDisplay?.minute !== 0 || dateToDisplay?.hour !== 0)
+      ? ` ${dateToDisplay.toFormat("HH:mm")}`
+      : "";
+
   return (
     <View style={[styles.statusLineContainer, style]} {...viewProps}>
       <View style={styles.statusIndicatorContainer}>
@@ -115,7 +120,8 @@ const StatusLine: FC<StatusLineProps> = ({
             </Text>
             {dateToDisplay && (
               <Text style={styles.informationText}>
-                {`${dateToDisplay.toFormat("dd LLLL yyyy")}.`}
+                {`${dateToDisplay.toFormat("dd LLLL")}`}
+                {timeString}
               </Text>
             )}
           </View>

@@ -85,17 +85,17 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
         />
         <NumberField
           formKey="inputWeight"
-          label="Forbrugt plast"
+          label="Forbrugt plast i kg"
           style={styles.inputField}
         />
         <NumberField
           formKey="outputWeight"
-          label="Batch vægt"
+          label="Batch vægt i kg"
           style={styles.inputField}
         />
         <NumberField
           formKey="additionFactor"
-          label="Tilsætningsfaktor"
+          label="Tilsætningsfaktor i procent"
           style={styles.inputField}
         />
         <SubmitButton title="Opret batch" style={styles.submitButton} isWeb />

@@ -63,7 +63,11 @@ const RegisterPlasticCollectionReciept: FC<Props> = ({
       validationSchema={validationSchema}
       validateOnMount
     >
-      <NumberField formKey="weight" label="Vægt" style={styles.weightField} />
+      <NumberField
+        formKey="weight"
+        label="Vægt i kg"
+        style={styles.weightField}
+      />
       <SubmitButton title="Register modtagelse" isWeb />
     </FormContainer>
   );

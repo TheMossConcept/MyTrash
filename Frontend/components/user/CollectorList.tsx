@@ -140,7 +140,7 @@ const CollectorView: FC<CollectorViewProps> = ({
         <NumberField
           formKey="collectionGoal"
           key={collector.id}
-          label="Mål"
+          label="Mål i kg"
           style={styles.formItem}
         />
         <View style={styles.actionsContainer}>

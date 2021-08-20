@@ -85,12 +85,12 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
           />
           <NumberField
             formKey="necessaryPlastic"
-            label="Målsætning"
+            label="Målsætning i kg"
             style={styles.inputField}
           />
           <NumberField
             formKey="usefulPlasticFactor"
-            label="Beregningsfaktor"
+            label="Beregningsfaktor i procent"
             style={styles.inputField}
           />
           <SelectPartnersForm style={styles.selectPartnersForm} />
