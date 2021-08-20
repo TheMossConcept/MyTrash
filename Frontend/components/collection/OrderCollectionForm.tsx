@@ -1,7 +1,8 @@
 import axios from "axios";
 import React, { FC, useContext, useRef, useState } from "react";
 import Popover from "react-native-popover-view";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+// TODO: Fix it so that we use buttons from react-native-paper instead
 import * as yup from "yup";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import FormContainer from "../shared/FormContainer";
@@ -39,18 +40,16 @@ const validationSchema = yup.object().shape({
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
 const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
+  const initialValues = {
+    isLastCollection: false,
+    comment: "",
+  };
 
   const [popoverIsShown, setPopoverIsShown] = useState(false);
   const popoverRef = useRef<TouchableOpacity>(null);
 
-  const {
-    update,
-    loading,
-    formValues,
-    statusValues,
-    refresh,
-    collectionIsOver,
-  } = useLatestPlasticCollection(userId);
+  const { update, formValues, statusValues, refresh, collectionIsOver } =
+    useLatestPlasticCollection(userId);
 
   const sharedAxiosConfig = useAxiosConfig();
 
@@ -69,9 +68,6 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         if (successCallback) {
           successCallback();
         }
-      })
-      .catch((error) => {
-        console.log(error);
       });
   };
 
@@ -90,68 +86,57 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     </View>
   ) : (
     <View>
-      <Text style={styles.headlineText}>Book afhentning.</Text>
+      <Text style={styles.headlineText}>Book afhentninger.</Text>
       <FormContainer
         initialValues={formValues}
         validationSchema={validationSchema}
         onSubmit={(values) => {
-          if (update && values) {
+          if (update) {
             update(values);
-          } else if (values) {
+          } else {
             createCollectionRequest(values);
           }
         }}
         validateOnMount
+        enableReinitialize
         style={styles.contentContainer}
       >
-        <NumberField
-          label="Antal enheder"
-          formKey="numberOfUnits"
-          editable={!loading}
-        />
+        <NumberField label="Antal enheder" formKey="numberOfUnits" />
         <StringField
           label="Kommentar"
           formKey="comment"
           maxLength={140}
-          editable={!loading}
           style={styles.inputField}
         />
-        {loading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator />
-          </View>
-        ) : (
-          <View style={styles.buttonsContainer}>
-            <SubmitButton
-              title={update ? `Rediger \n afhentning.` : `Book \n afhentning.`}
-              style={[styles.button, { marginRight: 7.5 }]}
-              icon={{
-                src: require("../../assets/icons/calendar_grey.png"),
-                width: 28,
-                height: 27.5,
-              }}
-            />
-            <MobileButton
-              text={`Status på \n afhentning.`}
-              ref={popoverRef}
-              onPress={() => setPopoverIsShown(true)}
-              disabled={!statusValues}
-              isVerticalButton
-              style={styles.button}
-              icon={{
-                src: require("../../assets/icons/notepad_grey.png"),
-                height: 30,
-                width: 33,
-              }}
-            />
-          </View>
-        )}
         <BooleanField
           label="Sidste opsamling"
           formKey="isLastCollection"
-          style={[styles.inputField, styles.lastField]}
-          enabled={!loading}
+          style={styles.inputField}
         />
+        <View style={styles.buttonsContainer}>
+          <SubmitButton
+            title={update ? `Ret \n afhentning` : `Book \n afhentning.`}
+            style={[styles.button, { marginRight: 7.5 }]}
+            icon={{
+              src: require("../../assets/icons/calendar_grey.png"),
+              width: 28,
+              height: 27.5,
+            }}
+          />
+          <MobileButton
+            text={`Status på \n afhentning.`}
+            ref={popoverRef}
+            onPress={() => setPopoverIsShown(true)}
+            disabled={!statusValues}
+            isVerticalButton
+            style={styles.button}
+            icon={{
+              src: require("../../assets/icons/notepad_grey.png"),
+              height: 30,
+              width: 33,
+            }}
+          />
+        </View>
       </FormContainer>
       {statusValues && (
         <Popover
@@ -171,32 +156,24 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
 
 const styles = StyleSheet.create({
   headlineText: {
-    marginTop: 60,
+    marginTop: 70,
     fontFamily: "HelveticaNeueLTPro-Hv",
     color: "#898c8e",
     fontSize: 32.5,
   },
   contentContainer: {
-    marginTop: 20.5,
+    marginTop: 40.5,
   },
   buttonsContainer: {
-    marginTop: 24.25,
+    marginTop: 58.5,
     height: 68,
     flexDirection: "row",
-  },
-  loadingContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 25,
   },
   button: {
     flex: 1,
   },
   inputField: {
     marginTop: 26.5,
-  },
-  lastField: {
-    marginBottom: 15,
   },
 });
 

@@ -7,23 +7,29 @@ import useAxiosConfig from "./useAxiosConfig";
 
 type ReturnValue = {
   update?: (newValues: CollectionFormData) => void;
-  formValues?: CollectionFormData;
+  formValues: CollectionFormData;
   statusValues?: CollectionStatusData;
   collectionIsOver?: boolean;
   loading: boolean;
   refresh: () => void;
 };
 
-type CollectionData = CollectionFormData &
-  CollectionStatusData & { _id: string };
+type CollectionFormDataWithId = CollectionFormData & { _id: string };
 
 const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
   const [loading, setLoading] = useState(false);
 
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
-  const [existingCollection, setExistingCollection] =
-    useState<CollectionData>();
+  const [existingFormData, setExistingFormData] =
+    useState<CollectionFormDataWithId>({
+      _id: "",
+      comment: "",
+      isLastCollection: false,
+    });
+  const [existingStatusData, setExistingStatusData] =
+    useState<CollectionStatusData>();
+
   const sharedAxiosConfig = useAxiosConfig();
 
   const getLatestCollection = useCallback(() => {
@@ -36,7 +42,8 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
       })
       .then((response) => {
         if (response.data) {
-          setExistingCollection(response.data);
+          setExistingFormData(response.data);
+          setExistingStatusData(response.data);
         }
 
         setLoading(false);
@@ -54,19 +61,22 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
   }, [getLatestCollection]);
 
   const collectionHasYetToBeHandled =
-    existingCollection?.collectionStatus === "pending" ||
-    existingCollection?.collectionStatus === "scheduled";
+    existingStatusData?.collectionStatus === "pending" ||
+    existingStatusData?.collectionStatus === "scheduled";
 
-  if (existingCollection && collectionHasYetToBeHandled) {
+  /* eslint-disable-next-line no-underscore-dangle */
+  if (existingFormData._id && collectionHasYetToBeHandled) {
     const updateCollectionRequest = (values: CollectionFormData) => {
       axios
         .put("/UpdatePlasticCollection", values, {
           ...sharedAxiosConfig,
           /* eslint-disable-next-line no-underscore-dangle */
-          params: { collectionId: existingCollection._id },
+          params: { collectionId: existingFormData._id },
         })
         .then((response) => {
-          setExistingCollection(response.data);
+          setExistingFormData(response.data);
+          setExistingStatusData(response.data);
+
           showGlobalSnackbar("Afhentning redigeret");
         })
         .catch((error) => {
@@ -76,12 +86,12 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
 
     return {
       update: updateCollectionRequest,
-      statusValues: existingCollection,
-      formValues: existingCollection,
+      statusValues: existingStatusData,
+      formValues: existingFormData,
       loading,
       // If the last collection has been handled, the collection is over
       collectionIsOver:
-        !collectionHasYetToBeHandled && existingCollection.isLastCollection,
+        !collectionHasYetToBeHandled && existingFormData.isLastCollection,
       refresh: getLatestCollection,
     };
   }
@@ -89,7 +99,8 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
   return {
     refresh: getLatestCollection,
     loading,
-    statusValues: existingCollection,
+    statusValues: existingStatusData,
+    formValues: existingFormData,
   };
 };
 
