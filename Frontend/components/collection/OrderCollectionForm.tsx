@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { FC, useContext, useRef, useState } from "react";
 import Popover from "react-native-popover-view";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 // TODO: Fix it so that we use buttons from react-native-paper instead
 import * as yup from "yup";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -40,16 +40,18 @@ const validationSchema = yup.object().shape({
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
 const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
-  const initialValues = {
-    isLastCollection: false,
-    comment: "",
-  };
 
   const [popoverIsShown, setPopoverIsShown] = useState(false);
   const popoverRef = useRef<TouchableOpacity>(null);
 
-  const { update, formValues, statusValues, refresh, collectionIsOver } =
-    useLatestPlasticCollection(userId);
+  const {
+    update,
+    formValues,
+    loading,
+    statusValues,
+    refresh,
+    collectionIsOver,
+  } = useLatestPlasticCollection(userId);
 
   const sharedAxiosConfig = useAxiosConfig();
 
@@ -113,30 +115,36 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           formKey="isLastCollection"
           style={styles.inputField}
         />
-        <View style={styles.buttonsContainer}>
-          <SubmitButton
-            title={update ? `Ret \n afhentning` : `Book \n afhentning.`}
-            style={[styles.button, { marginRight: 7.5 }]}
-            icon={{
-              src: require("../../assets/icons/calendar_grey.png"),
-              width: 28,
-              height: 27.5,
-            }}
-          />
-          <MobileButton
-            text={`Status på \n afhentning.`}
-            ref={popoverRef}
-            onPress={() => setPopoverIsShown(true)}
-            disabled={!statusValues}
-            isVerticalButton
-            style={styles.button}
-            icon={{
-              src: require("../../assets/icons/notepad_grey.png"),
-              height: 30,
-              width: 33,
-            }}
-          />
-        </View>
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator />
+          </View>
+        ) : (
+          <View style={styles.buttonsContainer}>
+            <SubmitButton
+              title={update ? `Ret \n afhentning` : `Book \n afhentning.`}
+              style={[styles.button, { marginRight: 7.5 }]}
+              icon={{
+                src: require("../../assets/icons/calendar_grey.png"),
+                width: 28,
+                height: 27.5,
+              }}
+            />
+            <MobileButton
+              text={`Status på \n afhentning.`}
+              ref={popoverRef}
+              onPress={() => setPopoverIsShown(true)}
+              disabled={!statusValues}
+              isVerticalButton
+              style={styles.button}
+              icon={{
+                src: require("../../assets/icons/notepad_grey.png"),
+                height: 30,
+                width: 33,
+              }}
+            />
+          </View>
+        )}
       </FormContainer>
       {statusValues && (
         <Popover
@@ -165,9 +173,13 @@ const styles = StyleSheet.create({
     marginTop: 40.5,
   },
   buttonsContainer: {
-    marginTop: 58.5,
+    marginTop: 30.5,
     height: 68,
     flexDirection: "row",
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   button: {
     flex: 1,
