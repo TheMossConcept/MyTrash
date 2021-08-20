@@ -9,70 +9,83 @@ const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
-  const customAuthProvider = new CustomAuthenticationProvider();
-  const client = Client.initWithMiddleware({
-    authProvider: customAuthProvider,
-  });
+  try {
+    const customAuthProvider = new CustomAuthenticationProvider();
+    const client = Client.initWithMiddleware({
+      authProvider: customAuthProvider,
+    });
 
-  const {
-    logisticsPartnerId,
-    recipientPartnerId,
-    collectorId,
-    clusterId,
-    sortBy,
-  } = req.query as Payload;
+    const {
+      logisticsPartnerId,
+      recipientPartnerId,
+      collectorId,
+      clusterId,
+      sortBy,
+    } = req.query as Payload;
 
-  // TODO: This type should automatically be inferred!
-  const collectionsForPartner: CollectionFromDb[] = await databaseAPI.find<CollectionFromDb>(
-    "collection",
-    {
-      $and: [
-        clusterId ? { clusterId: { $exists: true, $eq: clusterId } } : {},
-        {
-          $or: [
-            { logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId } },
-            { recipientPartnerId: { $exists: true, $eq: recipientPartnerId } },
-            { requesterId: { $exists: true, $eq: collectorId } },
-          ],
-        },
-      ],
-    },
-    sortBy
-      ? {
-          [sortBy]: -1,
+    // TODO: This type should automatically be inferred!
+    const collectionsForPartner: CollectionFromDb[] = await databaseAPI.find<CollectionFromDb>(
+      "collection",
+      {
+        $and: [
+          clusterId ? { clusterId: { $exists: true, $eq: clusterId } } : {},
+          {
+            $or: [
+              {
+                logisticsPartnerId: { $exists: true, $eq: logisticsPartnerId },
+              },
+              {
+                recipientPartnerId: { $exists: true, $eq: recipientPartnerId },
+              },
+              { requesterId: { $exists: true, $eq: collectorId } },
+            ],
+          },
+        ],
+      },
+      sortBy
+        ? {
+            [sortBy]: -1,
+          }
+        : undefined
+    );
+
+    const returnValuePromises = collectionsForPartner.map(
+      async (collection) => {
+        // TODO: Consider how we can do this without querying the database so much
+        const requester = await client
+          .api(
+            `users/${collection.requesterId}?$select=streetAddress,city,postalCode,companyName`
+          )
+          .get();
+
+        const { _id, ...collectionToReturn } = collection;
+
+        // TODO: Consider whether we should throw an exception here or just return collection
+        if (requester) {
+          return {
+            ...collectionToReturn,
+            id: _id,
+            streetAddress: requester.streetAddress,
+            city: requester.city,
+            zipCode: requester.postalCode,
+            companyName: requester.companyName,
+          };
         }
-      : undefined
-  );
+        return { id: _id, ...collectionToReturn };
+      }
+    );
 
-  const returnValuePromises = collectionsForPartner.map(async (collection) => {
-    // TODO: Consider how we can do this without querying the database so much
-    const requester = await client
-      .api(
-        `users/${collection.requesterId}?$select=streetAddress,city,postalCode,companyName`
-      )
-      .get();
+    const returnValue = await Promise.all(returnValuePromises);
 
-    const { _id, ...collectionToReturn } = collection;
-
-    // TODO: Consider whether we should throw an exception here or just return collection
-    if (requester) {
-      return {
-        ...collectionToReturn,
-        id: _id,
-        streetAddress: requester.streetAddress,
-        city: requester.city,
-        zipCode: requester.postalCode,
-        companyName: requester.companyName,
-      };
-    }
-    return { id: _id, ...collectionToReturn };
-  });
-
-  const returnValue = await Promise.all(returnValuePromises);
-
-  context.res = {
-    body: JSON.stringify(returnValue),
-  };
+    context.res = {
+      body: JSON.stringify(returnValue),
+    };
+  } catch (error) {
+    context.res = {
+      statusCode: 500,
+      body: JSON.stringify(error),
+    };
+  }
 };
 
 type Payload = {
