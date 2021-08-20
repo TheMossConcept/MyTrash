@@ -27,6 +27,8 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
   const logout = () => {
     AsyncStorage.removeItem("accessToken");
     AsyncStorage.removeItem("idToken");
+    AsyncStorage.setItem("shouldPrompt", "true");
+
     navigation.navigate("Login");
   };
 

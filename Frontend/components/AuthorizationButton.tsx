@@ -5,7 +5,6 @@ import {
   AuthSessionResult,
   DiscoveryDocument,
   exchangeCodeAsync,
-  Prompt,
   refreshAsync,
   TokenResponse,
 } from "expo-auth-session";
@@ -33,12 +32,7 @@ export default function AuthorizationButton({
 
   const defaultRedirectUrl = getDefaultRedirectUri();
 
-  const signIn = useAzureAdFlows(
-    "B2C_1_SignIn",
-    scopes,
-    defaultRedirectUrl,
-    Prompt.SelectAccount
-  );
+  const signIn = useAzureAdFlows("B2C_1_SignIn", scopes, defaultRedirectUrl);
 
   // Request
   const onPress = async () => {
