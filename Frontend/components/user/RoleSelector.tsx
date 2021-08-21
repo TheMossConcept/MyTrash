@@ -1,7 +1,7 @@
 import { useFormikContext } from "formik";
 import React from "react";
 import { View } from "react-native";
-import { AppRole } from "../../hooks/useAppRoles";
+import { AppRole } from "../../typings/types";
 import WebButton from "../styled/WebButton";
 
 type Props = {

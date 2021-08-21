@@ -16,3 +16,9 @@ export type TabsParamList = {
   Produktion: { userId: string };
   NoAccess: undefined;
 };
+
+export type AppRole = {
+  displayName: string;
+  multilineDisplayName: string;
+  id: string;
+};

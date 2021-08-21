@@ -1,7 +1,8 @@
 import React, { FC, useEffect, useState } from "react";
-import { View, ViewProps } from "react-native";
+import { ActivityIndicator, View, ViewProps } from "react-native";
 import AutocompleteInput from "../inputs/AutocompleteInput";
-import useAppRoles from "../../hooks/useAppRoles";
+import useQueriedData from "../../hooks/useQueriedData";
+import { AppRole } from "../../typings/types";
 
 type UserInputProps = {
   title?: string;
@@ -16,66 +17,71 @@ type UserInputProps = {
 type Props = {} & ViewProps;
 
 const SelectPartnersForm: FC<Props> = ({ ...viewProps }) => {
-  const { appRoles } = useAppRoles();
+  const { data: appRoles, isLoading } =
+    useQueriedData<AppRole[]>("GetAppRoles/");
   const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
     []
   );
 
   useEffect(() => {
-    const localUserSelectionData = appRoles.reduce<UserInputProps[]>(
-      (accumulator, appRole) => {
-        const appRoleValue = appRole.id;
-        const title: string | undefined = appRole.displayName;
+    if (appRoles) {
+      const localUserSelectionData = appRoles.reduce<UserInputProps[]>(
+        (accumulator, appRole) => {
+          const appRoleValue = appRole.id;
+          const title: string | undefined = appRole.displayName;
 
-        // TODO: It would be very nice if we did NOT have to call this endpoint once for each app role!
-        const usersEndpoint = `/GetUsersByAppRole?appRole=${appRoleValue}`;
+          // TODO: It would be very nice if we did NOT have to call this endpoint once for each app role!
+          const usersEndpoint = `/GetUsersByAppRole?appRole=${appRoleValue}`;
 
-        let formKey:
-          | "productionPartnerId"
-          | "collectionAdministratorId"
-          | "logisticsPartnerId"
-          | "recipientPartnerId"
-          | undefined;
+          let formKey:
+            | "productionPartnerId"
+            | "collectionAdministratorId"
+            | "logisticsPartnerId"
+            | "recipientPartnerId"
+            | undefined;
 
-        switch (appRoleValue) {
-          case "ProductionPartner":
-            formKey = "productionPartnerId";
-            break;
-          case "CollectionAdministrator":
-            formKey = "collectionAdministratorId";
-            break;
-          case "LogisticsPartner":
-            formKey = "logisticsPartnerId";
-            break;
-          case "RecipientPartner":
-            formKey = "recipientPartnerId";
-            break;
-          default:
-            formKey = undefined;
-            break;
-        }
+          switch (appRoleValue) {
+            case "ProductionPartner":
+              formKey = "productionPartnerId";
+              break;
+            case "CollectionAdministrator":
+              formKey = "collectionAdministratorId";
+              break;
+            case "LogisticsPartner":
+              formKey = "logisticsPartnerId";
+              break;
+            case "RecipientPartner":
+              formKey = "recipientPartnerId";
+              break;
+            default:
+              formKey = undefined;
+              break;
+          }
 
-        return formKey
-          ? [
-              ...accumulator,
-              {
-                title,
-                usersEndpoint,
-                formKey,
-              },
-            ]
-          : accumulator;
-      },
-      []
-    );
+          return formKey
+            ? [
+                ...accumulator,
+                {
+                  title,
+                  usersEndpoint,
+                  formKey,
+                },
+              ]
+            : accumulator;
+        },
+        []
+      );
 
-    const appRolesToUse = localUserSelectionData.filter(
-      (item) => item !== undefined
-    );
-    setUserSelectionData(appRolesToUse);
+      const appRolesToUse = localUserSelectionData.filter(
+        (item) => item !== undefined
+      );
+      setUserSelectionData(appRolesToUse);
+    }
   }, [appRoles]);
 
-  return (
+  return isLoading ? (
+    <ActivityIndicator />
+  ) : (
     <View {...viewProps}>
       {userSelectionData.map((selectionData, index) => {
         const userSelections = userSelectionData.length;

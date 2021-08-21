@@ -7,11 +7,12 @@ import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import RoleSelector from "./RoleSelector";
-import useAppRoles from "../../hooks/useAppRoles";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import HeadlineText from "../styled/HeadlineText";
 import globalStyles from "../../utils/globalStyles";
 import GlobalSnackbarContext from "../../utils/globalContext";
+import useQueriedData from "../../hooks/useQueriedData";
+import { AppRole } from "../../typings/types";
 
 export type UserFormData = {
   email: string;
@@ -91,10 +92,10 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
       });
   };
 
-  const { appRoles } = useAppRoles();
+  const { data: appRoles } = useQueriedData<AppRole[]>("GetAppRoles/");
 
   // Empty array as we do not select app roles for non-partner users
-  const appRolesForSelection = appRoles.filter(
+  const appRolesForSelection = (appRoles || []).filter(
     (appRole) => appRole.id !== "Collector"
   );
 
@@ -108,7 +109,7 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
       }
       validateOnMount
     >
-      <HeadlineText text={`${title}.`} style={{ alignItems: "flex-start" }} />
+      <HeadlineText text={`${title}.`} style={styles.headline} />
       <StringField
         label="Virksomhedsnavn"
         formKey="companyName"
@@ -118,14 +119,14 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
         Addresseoplysninger.
       </Text>
       <View style={styles.streetAddressField}>
-        <View style={{ flex: 2 }}>
+        <View style={styles.streetNameContainer}>
           <StringField
             label="Gadenavn"
             formKey="street"
             style={styles.streetNameField}
           />
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={styles.streetNumberContainer}>
           <StringField label="Husnummer" formKey="streetNumber" />
         </View>
       </View>
@@ -160,7 +161,9 @@ const styles = StyleSheet.create({
   streetNameField: {
     marginRight: 12,
   },
-  subheaderText: {},
+  headline: { alignItems: "flex-start" },
+  streetNameContainer: { flex: 2 },
+  streetNumberContainer: { flex: 1 },
 });
 
 export default CollaboratorForm;
