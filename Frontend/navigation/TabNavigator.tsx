@@ -87,6 +87,10 @@ const TabNavigator: FC<Props> = () => {
     };
 
     updateUserInfo();
+
+    return () => {
+      setUserInfo(undefined);
+    };
   }, []);
 
   const globalSnackbarState = useSnackbarState();
