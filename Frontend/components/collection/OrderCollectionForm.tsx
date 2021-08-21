@@ -99,7 +99,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     </View>
   ) : (
     <View>
-      <Text style={styles.headlineText}>Book afhentninger.</Text>
+      <Text style={styles.headlineText}>Book afhentning.</Text>
       <FormContainer
         initialValues={formValues}
         validationSchema={validationSchema}
@@ -118,16 +118,22 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         enableReinitialize
         style={styles.contentContainer}
       >
-        <NumberField label="Antal enheder" formKey="numberOfUnits" />
+        <NumberField
+          label="Antal enheder"
+          formKey="numberOfUnits"
+          editable={!loading}
+        />
         <StringField
           label="Kommentar"
           formKey="comment"
           maxLength={140}
+          editable={!loading}
           style={styles.inputField}
         />
         <BooleanField
           label="Sidste opsamling"
           formKey="isLastCollection"
+          enabled={!loading}
           style={styles.inputField}
         />
         {loading ? (
@@ -188,13 +194,15 @@ const styles = StyleSheet.create({
     marginTop: 40.5,
   },
   buttonsContainer: {
-    marginTop: 30.5,
+    marginTop: 20,
+    marginBottom: 20,
     height: 68,
     flexDirection: "row",
   },
   loadingContainer: {
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 20,
   },
   button: {
     flex: 1,
