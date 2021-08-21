@@ -57,6 +57,11 @@ function useQueriedData<T>(endpoint: string, queryParams?: Object) {
     // because it is always a new object instance that is passed along (at least for each render
   }, [endpoint, queryParams, sharedAxiosConfig, updateCache]);
 
+  // Reset error occurred state every time we make a new request
+  useEffect(() => {
+    setErrorOccurred(false);
+  }, [cacheKey]);
+
   useEffect(() => {
     const fetchDataIfNecessary = async () => {
       const rawCacheResult = await AsyncStorage.getItem(cacheKey);
@@ -72,13 +77,11 @@ function useQueriedData<T>(endpoint: string, queryParams?: Object) {
       } else if (cacheObject?.data && !isEqual(queriedData, cacheObject.data)) {
         setQueriedData(cacheObject.data);
       }
-
-      setErrorOccurred(false);
     };
 
     fetchDataIfNecessary();
     // The cache key changes when the query params change, and therefore it causes a re-render
-  }, [fetchData, cacheKey, isLoading, errorOccurred, queriedData]);
+  }, [fetchData, cacheKey, isLoading, queriedData, errorOccurred]);
 
   return { data: queriedData, refetch: fetchData, updateCache, isLoading };
 }

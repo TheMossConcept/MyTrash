@@ -26,10 +26,13 @@ const SchedulePlasticCollection: FC<Props> = ({
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
   const [loading, setLoading] = useState(false);
 
-  const { loading: existingCollectionLoading, data: plasticCollection } =
-    useQueriedData<PlasticCollection>("/GetPlasticCollection", {
-      id: plasticCollectionId,
-    });
+  const {
+    isLoading: existingCollectionLoading,
+    refetch,
+    data: plasticCollection,
+  } = useQueriedData<PlasticCollection>("/GetPlasticCollection", {
+    id: plasticCollectionId,
+  });
 
   useEffect(() => {
     if (plasticCollection && plasticCollection.scheduledPickupDate) {
@@ -96,6 +99,8 @@ const SchedulePlasticCollection: FC<Props> = ({
         )
         .then(() => {
           showGlobalSnackbar("Afhentning planlagt");
+
+          refetch();
           plasticCollectionScheduledCallback();
         })
         .finally(() => {
@@ -114,9 +119,13 @@ const SchedulePlasticCollection: FC<Props> = ({
       } ${timeSelectionString}`
     : "";
 
+  const isLoadingExistingCollection =
+    plasticCollectionId !== undefined && existingCollectionLoading;
+
   return (
     <View>
       <View style={styles.selectPickupDateTimeContainer}>
+        {isLoadingExistingCollection && <ActivityIndicator />}
         {date !== undefined && (
           <View style={styles.dateStringInformationFieldContainer}>
             <InformationField value={selectedDateTimeString} />
@@ -131,7 +140,7 @@ const SchedulePlasticCollection: FC<Props> = ({
           <WebButton
             text="Vælg dato"
             onPress={selectPickupDate}
-            disabled={false}
+            disabled={isLoadingExistingCollection}
             icon={{
               src: require("../../assets/icons/calendar_grey.png"),
               width: 25,
@@ -143,7 +152,7 @@ const SchedulePlasticCollection: FC<Props> = ({
           <WebButton
             text="Vælg tid"
             onPress={selectPickupTime}
-            disabled={date === undefined}
+            disabled={date === undefined || isLoadingExistingCollection}
             icon={{
               src: require("../../assets/icons/calendar_grey.png"),
               width: 25,
