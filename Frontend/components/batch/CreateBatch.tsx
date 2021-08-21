@@ -70,14 +70,11 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
       validateOnMount
     >
       <View style={styles.container}>
-        <View style={[{ zIndex: 1 }, styles.inputField]}>
-          <AutocompleteInput
-            formKey="clusterId"
-            endpoint="/GetClusters"
-            title="Cluster"
-            containerStyle={{ zIndex: 1 }}
-          />
-        </View>
+        <AutocompleteInput
+          formKey="clusterId"
+          endpoint="/GetClusters"
+          title="Cluster"
+        />
         <StringField
           formKey="batchNumber"
           label="Batchnummer"
@@ -85,17 +82,17 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
         />
         <NumberField
           formKey="inputWeight"
-          label="Forbrugt plast"
+          label="Forbrugt plast i kg"
           style={styles.inputField}
         />
         <NumberField
           formKey="outputWeight"
-          label="Batch vægt"
+          label="Batch vægt i kg"
           style={styles.inputField}
         />
         <NumberField
           formKey="additionFactor"
-          label="Tilsætningsfaktor"
+          label="Tilsætningsfaktor i procent"
           style={styles.inputField}
         />
         <SubmitButton title="Opret batch" style={styles.submitButton} isWeb />

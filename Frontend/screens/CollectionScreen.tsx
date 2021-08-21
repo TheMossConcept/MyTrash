@@ -51,23 +51,25 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     </Container>
   ) : activeCluster ? (
     <Container>
-      <MainContentArea containerStyle={{ height: "80%" }}>
+      <MainContentArea
+        containerStyle={styles.mainContentAreaContainer}
+        disableScroll={statusSelected}
+      >
         <Menu />
         <HoueLogo />
         {statusSelected ? (
           <CollectorProgression
             userId={userId}
             clusterId={activeCluster.id}
-            style={{ marginTop: 72.5 }}
+            clusterIsOpen={activeCluster.isOpen}
+            style={styles.collectorProgression}
           />
         ) : (
           <CollectionForm userId={userId} clusterId={activeCluster.id} />
         )}
       </MainContentArea>
-      <BottomButtonContainer
-        style={{ paddingVertical: 20, height: "20%", minHeight: 165 }}
-      >
-        <View style={{ flex: 1, paddingHorizontal: 7 }}>
+      <BottomButtonContainer style={styles.bottomButtonContainer}>
+        <View style={styles.firstButtonContainer}>
           <MobileButton
             text={`Status \n indsamling.`}
             icon={{
@@ -80,9 +82,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             isVerticalButton
             isSelected={statusSelected}
             onPress={() => setSelectedScreen("status")}
-            style={{
-              marginBottom: 9,
-            }}
+            style={styles.topButton}
           />
           <MobileButton
             text="MyTrash info."
@@ -94,7 +94,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             isVerticalButton
           />
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={styles.secondButtonContainer}>
           <MobileButton
             text={`Afhentning \n plastik.`}
             icon={{
@@ -107,9 +107,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             isVerticalButton
             isSelected={collectionSelected}
             onPress={() => setSelectedScreen("collection")}
-            style={{
-              marginBottom: 9,
-            }}
+            style={styles.topButton}
           />
           <MobileButton
             text="Produkter."
@@ -136,6 +134,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  mainContentAreaContainer: {
+    height: "80%",
+  },
+  collectorProgression: { marginTop: 72.5 },
+  bottomButtonContainer: {
+    paddingVertical: 10,
+    height: "20%",
+  },
+  firstButtonContainer: { flex: 1, paddingHorizontal: 7 },
+  secondButtonContainer: { flex: 1 },
+  topButton: { marginBottom: 9 },
 });
 
 export default CollectionScreen;

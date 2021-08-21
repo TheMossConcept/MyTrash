@@ -40,18 +40,14 @@ const validationSchema = yup.object().shape({
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
 const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
-  const initialValues = {
-    isLastCollection: false,
-    comment: "",
-  };
 
   const [popoverIsShown, setPopoverIsShown] = useState(false);
   const popoverRef = useRef<TouchableOpacity>(null);
 
   const {
     update,
-    loading,
     formValues,
+    loading,
     statusValues,
     refresh,
     collectionIsOver,
@@ -74,9 +70,6 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         if (successCallback) {
           successCallback();
         }
-      })
-      .catch((error) => {
-        console.log(error);
       });
   };
 
@@ -95,9 +88,9 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     </View>
   ) : (
     <View>
-      <Text style={styles.headlineText}>Book afhentning.</Text>
+      <Text style={styles.headlineText}>Book afhentninger.</Text>
       <FormContainer
-        initialValues={formValues || initialValues}
+        initialValues={formValues}
         validationSchema={validationSchema}
         onSubmit={(values) => {
           if (update) {
@@ -110,16 +103,16 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         enableReinitialize
         style={styles.contentContainer}
       >
-        <NumberField
-          label="Antal enheder"
-          formKey="numberOfUnits"
-          editable={!loading}
-        />
+        <NumberField label="Antal enheder" formKey="numberOfUnits" />
         <StringField
           label="Kommentar"
           formKey="comment"
           maxLength={140}
-          editable={!loading}
+          style={styles.inputField}
+        />
+        <BooleanField
+          label="Sidste opsamling"
+          formKey="isLastCollection"
           style={styles.inputField}
         />
         {loading ? (
@@ -129,7 +122,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         ) : (
           <View style={styles.buttonsContainer}>
             <SubmitButton
-              title={update ? `Rediger \n afhentning.` : `Book \n afhentning.`}
+              title={update ? `Ret \n afhentning` : `Book \n afhentning.`}
               style={[styles.button, { marginRight: 7.5 }]}
               icon={{
                 src: require("../../assets/icons/calendar_grey.png"),
@@ -152,12 +145,6 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
             />
           </View>
         )}
-        <BooleanField
-          label="Sidste opsamling"
-          formKey="isLastCollection"
-          style={styles.inputField}
-          enabled={!loading}
-        />
       </FormContainer>
       {statusValues && (
         <Popover
@@ -177,23 +164,22 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
 
 const styles = StyleSheet.create({
   headlineText: {
-    marginTop: 60,
+    marginTop: 70,
     fontFamily: "HelveticaNeueLTPro-Hv",
     color: "#898c8e",
     fontSize: 32.5,
   },
   contentContainer: {
-    marginTop: 20.5,
+    marginTop: 40.5,
   },
   buttonsContainer: {
-    marginTop: 24.25,
+    marginTop: 30.5,
     height: 68,
     flexDirection: "row",
   },
   loadingContainer: {
-    alignItems: "center",
     justifyContent: "center",
-    marginTop: 25,
+    alignItems: "center",
   },
   button: {
     flex: 1,

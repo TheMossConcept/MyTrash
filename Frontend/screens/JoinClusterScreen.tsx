@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
-import { ScrollView, StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import AutocompleteInput from "../components/inputs/AutocompleteInput";
 import { RootStackParamList } from "../typings/types";
 import CollectorForm from "../components/user/CollectorForm";
@@ -28,44 +28,42 @@ const JoinClusterForm: FC<Props> = ({ route, navigation }) => {
   };
 
   return (
-    <ScrollView>
-      <MainContentArea>
-        {canGoBack && (
-          <View style={styles.backButtonContainer}>
-            <MobileButton
-              icon={{
-                src: require("../assets/icons/back.png"),
-                width: 25,
-                height: 25,
-              }}
-              isVerticalButton
-              onPress={goBack}
+    <MainContentArea>
+      {canGoBack && (
+        <View style={styles.backButtonContainer}>
+          <MobileButton
+            icon={{
+              src: require("../assets/icons/back.png"),
+              width: 25,
+              height: 25,
+            }}
+            isVerticalButton
+            onPress={goBack}
+          />
+        </View>
+      )}
+      {showSignUpConfirmation ? (
+        <Text style={globalStyles.subheaderText}>
+          Du er nu tilmeldt clusteret. Log ind på MyTrash app&apos;en for at
+          begynde at samle skrald
+        </Text>
+      ) : (
+        <CollectorForm
+          title="Tilmeld"
+          style={styles.collectorForm}
+          clusterId={clusterId}
+          successCallback={collectorSuccessCallback}
+        >
+          {clusterId === undefined && (
+            <AutocompleteInput
+              formKey="clusterId"
+              endpoint="/GetOpenClusters"
+              title="Cluster"
             />
-          </View>
-        )}
-        {showSignUpConfirmation ? (
-          <Text style={globalStyles.subheaderText}>
-            Du er nu tilmeldt clusteret. Log ind på MyTrash app&apos;en for at
-            begynde at samle skrald
-          </Text>
-        ) : (
-          <CollectorForm
-            title="Tilmeld"
-            style={styles.collectorForm}
-            clusterId={clusterId}
-            successCallback={collectorSuccessCallback}
-          >
-            {clusterId === undefined && (
-              <AutocompleteInput
-                formKey="clusterId"
-                endpoint="/GetOpenClusters"
-                title="Cluster"
-              />
-            )}
-          </CollectorForm>
-        )}
-      </MainContentArea>
-    </ScrollView>
+          )}
+        </CollectorForm>
+      )}
+    </MainContentArea>
   );
 };
 

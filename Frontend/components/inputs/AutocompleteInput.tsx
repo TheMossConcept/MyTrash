@@ -16,7 +16,8 @@ import {
   ViewStyle,
   TextInput,
   StyleSheet,
-  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import Autocomplete, {
   AutocompleteProps,
@@ -55,7 +56,7 @@ const AutocompleteInput: FC<Props> = ({
   style,
 }) => {
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [hideSuggestionList, setHideSuggestionList] = useState(true);
 
   const autocompleteRef = useRef(null);
@@ -72,7 +73,7 @@ const AutocompleteInput: FC<Props> = ({
       "Incorrect use of select partners form. It's used outside a FormContainer which is not allowed as it needs the context crated by Formik!"
     );
   } else {
-    const { values, setFieldValue, handleBlur } = formikProps;
+    const { values, setFieldValue } = formikProps;
 
     const selectedId = values[key];
     const setSelectedId = (newValue: any) => {
@@ -158,48 +159,58 @@ const AutocompleteInput: FC<Props> = ({
         <Text style={[globalStyles.subheaderText, styles.labelText]}>
           {title}
         </Text>
-        <Autocomplete
-          containerStyle={containerStyle}
-          data={filteredEntities}
-          value={query}
-          onChangeText={setQuery}
-          onFocus={() => setHideSuggestionList(false)}
-          renderTextInput={({ value, onChangeText, onFocus, onBlur }: any) => (
-            <TextInput
-              value={value}
-              onChangeText={onChangeText}
-              onFocus={onFocus}
-              onBlur={onBlur}
-              placeholder={title}
-              placeholderTextColor="#a3a5a8"
-              style={globalStyles.textField}
-            />
-          )}
-          listStyle={{ position: "absolute" }}
-          hideResults={hideSuggestionList}
-          flatListProps={{
-            ListEmptyComponent: (
-              <View style={containerStyle}>
-                <EmptyComponent />
-              </View>
-            ),
-            ItemSeparatorComponent: Divider,
-            // eslint-disable-next-line react/display-name
-            renderItem: ({ item }: { item: SelectableEntity }) => {
-              return (
-                <Text
-                  onPress={handleItemSelection(item)}
-                  style={[
-                    globalStyles.subheaderText,
-                    { fontSize: 12, marginVertical: 15 },
-                  ]}
-                >
-                  {item.displayName}
+        <View>
+          <Autocomplete
+            containerStyle={containerStyle}
+            data={filteredEntities}
+            value={query}
+            onChangeText={setQuery}
+            onFocus={() => setHideSuggestionList(false)}
+            renderTextInput={({
+              value,
+              onChangeText,
+              onFocus,
+              onBlur,
+            }: any) => (
+              <TextInput
+                value={value}
+                onChangeText={onChangeText}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                placeholder={title}
+                placeholderTextColor="#a3a5a8"
+                style={globalStyles.textField}
+              />
+            )}
+            hideResults={hideSuggestionList}
+            flatListProps={{
+              keyExtractor: (item: SelectableEntity) => item.id,
+              ItemSeparatorComponent: Divider,
+              // eslint-disable-next-line react/display-name
+              renderItem: ({ item }: { item: SelectableEntity }) => {
+                return (
+                  <TouchableOpacity onPress={handleItemSelection(item)}>
+                    <Text style={[globalStyles.subheaderText, styles.itemText]}>
+                      {item.displayName}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              },
+            }}
+          />
+          {/* For some reason, the ListEmptyComponent is never rendered when passed in FlatlistProps so this is my workaround */}
+          {!hideSuggestionList && filteredEntities.length === 0 && (
+            <View style={styles.emptyViewContainer}>
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={[globalStyles.subheaderText, styles.itemText]}>
+                  Listen er tom
                 </Text>
-              );
-            },
-          }}
-        />
+              )}
+            </View>
+          )}
+        </View>
         <ErrorMessage
           name={key}
           render={(errorMessage) => <Text>{errorMessage}</Text>}
@@ -208,13 +219,25 @@ const AutocompleteInput: FC<Props> = ({
     );
   }
 };
-
-const EmptyComponent: FC<{}> = () => {
-  return <Text>Der er ingen brugere tilgængelige</Text>;
-};
-
 const styles = StyleSheet.create({
   labelText: { fontSize: 12 },
+  itemText: { fontSize: 12, marginVertical: 15 },
+  emptyViewContainer: {
+    height: 45,
+    width: "100%",
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  autocompleteContainer: {
+    flex: 1,
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+  },
 });
 
 export default AutocompleteInput;

@@ -142,7 +142,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
             {batchesIsLoading ? (
               <LoadingIndicator />
             ) : (
-              <View>
+              <View style={styles.batchDetailsContainer}>
                 <BatchDetails
                   batches={sortedBatches.created}
                   style={styles.createdBatchesDetailsContainer}
@@ -248,6 +248,10 @@ const RegisterBatchSent: FC<RegisterBatchSentProps> = ({
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 20,
+  },
+  batchDetailsContainer: {
+    // TODO: The AutocompleteInput should handle this itself!
+    zIndex: -1,
   },
   markAsSentButton: {
     height: 25,

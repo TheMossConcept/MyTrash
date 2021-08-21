@@ -99,10 +99,18 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
             }}
           >
             {(collection) => (
-              <DeliverPlasticCollection
-                plasticCollectionId={collection.id}
-                successCallback={refetch}
-              />
+              <View>
+                <SchedulePlasticCollection
+                  plasticCollectionId={collection.id}
+                  plasticCollectionScheduledCallback={refetch}
+                />
+                <View style={styles.deliverPlasticContainer}>
+                  <DeliverPlasticCollection
+                    plasticCollectionId={collection.id}
+                    successCallback={refetch}
+                  />
+                </View>
+              </View>
             )}
           </PlasticCollectionsDetails>
         )}
@@ -138,6 +146,9 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
 const styles = StyleSheet.create({
   informationTextField: {
     marginBottom: 23,
+  },
+  deliverPlasticContainer: {
+    marginTop: 23,
   },
 });
 

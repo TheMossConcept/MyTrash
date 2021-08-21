@@ -2,7 +2,6 @@ import { ErrorMessage, useFormikContext } from "formik";
 import React, { PropsWithChildren, useState } from "react";
 import {
   View,
-  ViewStyle,
   TextInput,
   Text,
   StyleSheet,
@@ -57,8 +56,9 @@ export default function NumberField<T>({
     };
 
     // TODO: Do NOT try to handle floating point numbers here!
-    const value =
-      firstPartOfFloat || (values[key] as unknown as number)?.toString() || "";
+    const value = values
+      ? firstPartOfFloat || (values[key] as unknown as number)?.toString() || ""
+      : "";
 
     return (
       <View style={style}>

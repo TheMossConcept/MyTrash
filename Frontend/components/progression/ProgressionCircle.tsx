@@ -28,7 +28,7 @@ const UserProgressionCircle: FC<Props> = ({
   );
 
   return (
-    <View style={[styles.container, style]} {...viewProps}>
+    <View style={[style]} {...viewProps}>
       {collectedPercentage !== undefined ? (
         <View>
           <Text

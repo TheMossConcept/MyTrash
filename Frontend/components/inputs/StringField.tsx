@@ -30,7 +30,7 @@ export default function StringField<T>({
     );
   } else {
     const { values, handleChange, handleBlur } = formikProps;
-    const value = values[key] as unknown as string;
+    const value = values ? (values[key] as unknown as string) : "";
     return (
       <View style={style}>
         <Text style={[globalStyles.subheaderText, styles.labelText]}>

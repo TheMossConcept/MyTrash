@@ -12,11 +12,9 @@ import {
   UpdateCluster,
 } from "../components/cluster/ModifyCluster";
 import CollaboratorForm from "../components/user/CollaboratorForm";
-import CollectorForm from "../components/user/CollectorForm";
 import ClusterForm, {
   ClusterFormData,
 } from "../components/cluster/ClusterForm";
-import CollectorList from "../components/user/CollectorList";
 import HeadlineText from "../components/styled/HeadlineText";
 import useQueriedData from "../hooks/useQueriedData";
 import LoadingIndicator from "../components/styled/LoadingIndicator";
