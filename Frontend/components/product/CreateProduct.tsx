@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as yup from "yup";
-import React, { FC, useContext } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { FC, useContext, useState } from "react";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import FormContainer from "../shared/FormContainer";
 import SubmitButton from "../inputs/SubmitButton";
 import StringField from "../inputs/StringField";
@@ -29,6 +29,8 @@ const CreateProduct: FC<Props> = ({
   batchId,
   successCallback,
 }) => {
+  const [loading, setLoading] = useState(false);
+
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
   const initialFormValues: CreateProductFormData = {};
   const sharedAxiosConfig = useAxiosConfig();
@@ -37,6 +39,8 @@ const CreateProduct: FC<Props> = ({
     values: CreateProductFormData,
     resetForm: () => void
   ) => {
+    setLoading(true);
+
     axios
       .post(
         "/CreateProduct",
@@ -55,6 +59,9 @@ const CreateProduct: FC<Props> = ({
         if (successCallback) {
           successCallback();
         }
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -72,6 +79,7 @@ const CreateProduct: FC<Props> = ({
         label="Varenummer"
         style={styles.productNumberField}
       />
+      {loading && <ActivityIndicator />}
       <SubmitButton title="Opret produkt" isWeb />
     </FormContainer>
   );

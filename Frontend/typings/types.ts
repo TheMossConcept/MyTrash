@@ -22,3 +22,9 @@ export type AppRole = {
   multilineDisplayName: string;
   id: string;
 };
+
+export type Product = {
+  id: string;
+  productNumber: number;
+  hasBeenSent: boolean;
+};
