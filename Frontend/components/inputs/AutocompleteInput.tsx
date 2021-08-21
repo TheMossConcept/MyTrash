@@ -16,7 +16,6 @@ import {
   ViewStyle,
   TextInput,
   StyleSheet,
-  FlatList,
   TouchableOpacity,
 } from "react-native";
 import Autocomplete, {
@@ -159,45 +158,51 @@ const AutocompleteInput: FC<Props> = ({
         <Text style={[globalStyles.subheaderText, styles.labelText]}>
           {title}
         </Text>
-        <Autocomplete
-          containerStyle={containerStyle}
-          data={filteredEntities}
-          value={query}
-          onChangeText={setQuery}
-          onFocus={() => setHideSuggestionList(false)}
-          renderTextInput={({ value, onChangeText, onFocus, onBlur }: any) => (
-            <TextInput
-              value={value}
-              onChangeText={onChangeText}
-              onFocus={onFocus}
-              onBlur={onBlur}
-              placeholder={title}
-              placeholderTextColor="#a3a5a8"
-              style={globalStyles.textField}
-            />
-          )}
-          listStyle={{ position: "absolute" }}
-          hideResults={hideSuggestionList}
-          flatListProps={{
-            ListEmptyComponent: (
-              <View style={containerStyle}>
-                <EmptyComponent />
-              </View>
-            ),
-            ItemSeparatorComponent: Divider,
-            // eslint-disable-next-line react/display-name
-            renderItem: ({ item }: { item: SelectableEntity }) => {
-              return (
-                <Text
-                  onPress={handleItemSelection(item)}
-                  style={[globalStyles.subheaderText, styles.itemText]}
-                >
-                  {item.displayName}
-                </Text>
-              );
-            },
-          }}
-        />
+        <View>
+          <Autocomplete
+            containerStyle={containerStyle}
+            data={filteredEntities}
+            value={query}
+            onChangeText={setQuery}
+            onFocus={() => setHideSuggestionList(false)}
+            renderTextInput={({
+              value,
+              onChangeText,
+              onFocus,
+              onBlur,
+            }: any) => (
+              <TextInput
+                value={value}
+                onChangeText={onChangeText}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                placeholder={title}
+                placeholderTextColor="#a3a5a8"
+                style={globalStyles.textField}
+              />
+            )}
+            hideResults={hideSuggestionList}
+            flatListProps={{
+              ListEmptyComponent: (
+                <View style={containerStyle}>
+                  <EmptyComponent />
+                </View>
+              ),
+              keyExtractor: (item: SelectableEntity) => item.id,
+              ItemSeparatorComponent: Divider,
+              // eslint-disable-next-line react/display-name
+              renderItem: ({ item }: { item: SelectableEntity }) => {
+                return (
+                  <TouchableOpacity onPress={handleItemSelection(item)}>
+                    <Text style={[globalStyles.subheaderText, styles.itemText]}>
+                      {item.displayName}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              },
+            }}
+          />
+        </View>
         <ErrorMessage
           name={key}
           render={(errorMessage) => <Text>{errorMessage}</Text>}
@@ -214,6 +219,15 @@ const EmptyComponent: FC<{}> = () => {
 const styles = StyleSheet.create({
   labelText: { fontSize: 12 },
   itemText: { fontSize: 12, marginVertical: 15 },
+  autocompleteContainer: {
+    flex: 1,
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+  },
 });
 
 export default AutocompleteInput;

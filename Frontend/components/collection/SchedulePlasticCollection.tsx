@@ -180,16 +180,12 @@ const SchedulePlasticCollection: FC<Props> = ({
         text="Planlæg."
         disabled={date === undefined || loading}
         onPress={schedule}
-        style={styles.submitButton}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  submitButton: {
-    width: 256,
-  },
   selectPickupDateTimeContainer: {
     flexDirection: "row",
     marginBottom: 23,

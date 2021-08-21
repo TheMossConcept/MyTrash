@@ -113,7 +113,13 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
               </View>
             )}
           </View>
-          {submit && <SubmitButton title={title || "Indsend"} isWeb />}
+          {submit && (
+            <SubmitButton
+              title={title || "Indsend"}
+              style={styles.submitButton}
+              isWeb
+            />
+          )}
         </View>
       )}
     </Formik>
@@ -127,6 +133,10 @@ const styles = StyleSheet.create({
   isOpenCheckboxContainer: {
     alignItems: "flex-start",
     marginBottom: 23,
+    // TODO: This should automatically be handled by the AutocompleteInput instead!
+    zIndex: -1,
+  },
+  submitButton: {
     // TODO: This should automatically be handled by the AutocompleteInput instead!
     zIndex: -1,
   },
