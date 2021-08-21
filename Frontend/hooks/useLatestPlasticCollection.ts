@@ -22,6 +22,7 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
   const {
     data: existingCollection,
     refetch: getLatestCollection,
+    updateCache,
     isLoading: loading,
   } = useQueriedData<CollectionData>("/GetLatestCollection", { collectorId });
 
@@ -66,6 +67,7 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
 
             showGlobalSnackbar("Afhentning redigeret");
 
+            updateCache(response.data);
             resolve(response.data);
           })
           .catch((error) => {

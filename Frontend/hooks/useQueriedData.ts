@@ -18,6 +18,18 @@ function useQueriedData<T>(endpoint: string, queryParams?: Object) {
 
   const cacheKey = `${endpoint}${JSON.stringify(queryParams)}`;
 
+  const updateCache = useCallback(
+    (data: T) => {
+      const cacheExpiration = DateTime.now().plus({ minutes: 10 });
+      const cacheObject: CacheObject<T> = {
+        expiration: cacheExpiration,
+        data,
+      };
+      AsyncStorage.setItem(cacheKey, JSON.stringify(cacheObject));
+    },
+    [cacheKey]
+  );
+
   const sharedAxiosConfig = useAxiosConfig();
 
   const fetchData = useCallback(() => {
@@ -30,14 +42,9 @@ function useQueriedData<T>(endpoint: string, queryParams?: Object) {
       })
       .then((axiosResult) => {
         const { data } = axiosResult;
-        setQueriedData(data);
 
-        const cacheExpiration = DateTime.now().plus({ minutes: 10 });
-        const cacheObject: CacheObject<T> = {
-          expiration: cacheExpiration,
-          data,
-        };
-        AsyncStorage.setItem(cacheKey, JSON.stringify(cacheObject));
+        updateCache(data);
+        setQueriedData(data);
       })
       .catch((error) => {
         console.log(error);
@@ -48,7 +55,7 @@ function useQueriedData<T>(endpoint: string, queryParams?: Object) {
       });
     // TODO: Figure out a way to include queryParams without having it requery all the time
     // because it is always a new object instance that is passed along (at least for each render
-  }, [endpoint, queryParams, sharedAxiosConfig, cacheKey]);
+  }, [endpoint, queryParams, sharedAxiosConfig, updateCache]);
 
   useEffect(() => {
     const fetchDataIfNecessary = async () => {
@@ -73,7 +80,7 @@ function useQueriedData<T>(endpoint: string, queryParams?: Object) {
     // The cache key changes when the query params change, and therefore it causes a re-render
   }, [fetchData, cacheKey, isLoading, errorOccurred, queriedData]);
 
-  return { data: queriedData, refetch: fetchData, isLoading };
+  return { data: queriedData, refetch: fetchData, updateCache, isLoading };
 }
 
 export default useQueriedData;
