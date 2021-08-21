@@ -17,6 +17,7 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import Autocomplete, {
   AutocompleteProps,
@@ -55,7 +56,7 @@ const AutocompleteInput: FC<Props> = ({
   style,
 }) => {
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
-  const [, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [hideSuggestionList, setHideSuggestionList] = useState(true);
 
   const autocompleteRef = useRef(null);
@@ -183,11 +184,6 @@ const AutocompleteInput: FC<Props> = ({
             )}
             hideResults={hideSuggestionList}
             flatListProps={{
-              ListEmptyComponent: (
-                <View style={containerStyle}>
-                  <EmptyComponent />
-                </View>
-              ),
               keyExtractor: (item: SelectableEntity) => item.id,
               ItemSeparatorComponent: Divider,
               // eslint-disable-next-line react/display-name
@@ -202,6 +198,18 @@ const AutocompleteInput: FC<Props> = ({
               },
             }}
           />
+          {/* For some reason, the ListEmptyComponent is never rendered when passed in FlatlistProps so this is my workaround */}
+          {!hideSuggestionList && filteredEntities.length === 0 && (
+            <View style={styles.emptyViewContainer}>
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={[globalStyles.subheaderText, styles.itemText]}>
+                  Listen er tom
+                </Text>
+              )}
+            </View>
+          )}
         </View>
         <ErrorMessage
           name={key}
@@ -211,14 +219,16 @@ const AutocompleteInput: FC<Props> = ({
     );
   }
 };
-
-const EmptyComponent: FC<{}> = () => {
-  return <Text>Der er ingen brugere tilgængelige</Text>;
-};
-
 const styles = StyleSheet.create({
   labelText: { fontSize: 12 },
   itemText: { fontSize: 12, marginVertical: 15 },
+  emptyViewContainer: {
+    height: 45,
+    width: "100%",
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   autocompleteContainer: {
     flex: 1,
     position: "absolute",
