@@ -41,21 +41,29 @@ const validationSchema = yup.object().shape({
 const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
+  const [isCreatingCollection, setIsCreatingCollection] = useState(false);
+  const [isUpdatingCollection, setIsUpdatingCollection] = useState(false);
+
   const [popoverIsShown, setPopoverIsShown] = useState(false);
   const popoverRef = useRef<TouchableOpacity>(null);
 
   const {
     update,
     formValues,
-    loading,
+    loading: isFetchingData,
     statusValues,
     refresh,
     collectionIsOver,
   } = useLatestPlasticCollection(userId);
 
+  const loading =
+    isCreatingCollection || isUpdatingCollection || isFetchingData;
+
   const sharedAxiosConfig = useAxiosConfig();
 
   const createCollectionRequest = (values: CollectionFormData) => {
+    setIsCreatingCollection(true);
+
     axios
       .post(
         "/CreatePlasticCollection",
@@ -70,6 +78,9 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         if (successCallback) {
           successCallback();
         }
+      })
+      .finally(() => {
+        setIsCreatingCollection(false);
       });
   };
 
@@ -92,9 +103,13 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
       <FormContainer
         initialValues={formValues}
         validationSchema={validationSchema}
-        onSubmit={(values) => {
+        onSubmit={async (values) => {
           if (update) {
-            update(values);
+            setIsUpdatingCollection(true);
+
+            await update(values);
+
+            setIsUpdatingCollection(false);
           } else {
             createCollectionRequest(values);
           }

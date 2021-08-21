@@ -7,7 +7,7 @@ import useAxiosConfig from "./useAxiosConfig";
 import useQueriedData from "./useQueriedData";
 
 type ReturnValue = {
-  update?: (newValues: CollectionFormData) => void;
+  update?: (newValues: CollectionFormData) => Promise<CollectionData>;
   formValues: CollectionFormData;
   statusValues?: CollectionStatusData;
   collectionIsOver?: boolean;
@@ -53,21 +53,26 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
   /* eslint-disable-next-line no-underscore-dangle */
   if (existingFormData._id && collectionHasYetToBeHandled) {
     const updateCollectionRequest = (values: CollectionFormData) => {
-      axios
-        .put("/UpdatePlasticCollection", values, {
-          ...sharedAxiosConfig,
-          /* eslint-disable-next-line no-underscore-dangle */
-          params: { collectionId: existingFormData._id },
-        })
-        .then((response) => {
-          setExistingFormData(response.data);
-          setExistingStatusData(response.data);
+      return new Promise<CollectionData>((resolve, reject) => {
+        axios
+          .put("/UpdatePlasticCollection", values, {
+            ...sharedAxiosConfig,
+            /* eslint-disable-next-line no-underscore-dangle */
+            params: { collectionId: existingFormData._id },
+          })
+          .then((response) => {
+            setExistingFormData(response.data);
+            setExistingStatusData(response.data);
 
-          showGlobalSnackbar("Afhentning redigeret");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+            showGlobalSnackbar("Afhentning redigeret");
+
+            resolve(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+            reject(error);
+          });
+      });
     };
 
     return {
