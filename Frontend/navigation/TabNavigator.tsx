@@ -12,7 +12,7 @@ import CollectionScreen from "../screens/CollectionScreen";
 import LogisticsScreen from "../screens/LogisticsScreen";
 import ProductionScreen from "../screens/ProductionScreen";
 import RecipientScreen from "../screens/RecipientScreen";
-import { TabsParamList, RootStackParamList } from "../typings/types";
+import { TabsParamList, RootStackParamList, AppRole } from "../typings/types";
 import DismissableSnackbar, {
   useSnackbarState,
 } from "../components/shared/DismissableSnackbar";
@@ -23,7 +23,6 @@ import HeadlineText from "../components/styled/HeadlineText";
 import Menu from "../components/shared/Menu";
 import TabBar from "../components/styled/TabBar";
 import platform from "../utils/platform";
-import { AppRole } from "../hooks/useAppRoles";
 import useQueriedData from "../hooks/useQueriedData";
 import HoueLogo from "../components/styled/HoueLogo";
 
