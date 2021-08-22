@@ -76,11 +76,23 @@ const CreateCollector: AzureFunction = async function (
     });
 
     return createdUser.id;
-  } catch (e) {
-    context.res = {
-      body: JSON.stringify(e),
-      statusCode: 500,
-    };
+  } catch (error) {
+    let errorMessage = "Der skete en fejl under oprettelsen af brugeren";
+    // TODO: Find a less brittle way to do this than to rely on a human readable error message!
+    if (
+      error.message ===
+      "Another object with the same value for property userPrincipalName already exists."
+    ) {
+      errorMessage =
+        "Der findes allerede en bruger med denne email. Prøv med en anden email eller slet den eksisterende bruger";
+    }
+
+    const body = JSON.stringify({
+      errorMessage,
+      rawError: error,
+    });
+
+    throw new Error(body);
   }
 };
 

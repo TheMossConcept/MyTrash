@@ -15,18 +15,28 @@ import databaseAPI, { ClusterEntity } from "../utils/DatabaseAPI";
 const activityFunction: AzureFunction = async function (
   context: Context
 ): Promise<string> {
-  const { clusterId, userId } = context.bindings
-    .payload as AddCollectorToClusterPayload;
+  try {
+    const { clusterId, userId } = context.bindings
+      .payload as AddCollectorToClusterPayload;
 
-  const updatedEntity = await databaseAPI.updateOne<ClusterEntity>(
-    "cluster",
-    clusterId,
-    {
-      $addToSet: { collectors: userId },
-    }
-  );
+    const updatedEntity = await databaseAPI.updateOne<ClusterEntity>(
+      "cluster",
+      clusterId,
+      {
+        $addToSet: { collectors: userId },
+      }
+    );
 
-  return JSON.stringify(updatedEntity);
+    return JSON.stringify(updatedEntity);
+  } catch (error) {
+    const body = JSON.stringify({
+      errorMessage:
+        "Der skete en fejl i sammenkædningen mellem brugeren og clusteret",
+      rawError: error,
+    });
+
+    throw new Error(body);
+  }
 };
 
 export type AddCollectorToClusterPayload = {

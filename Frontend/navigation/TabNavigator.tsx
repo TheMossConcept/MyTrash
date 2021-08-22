@@ -93,46 +93,26 @@ const TabNavigator: FC<Props> = () => {
     };
   }, []);
 
-  const globalSnackbarState = useSnackbarState();
-  const [, dispatch] = globalSnackbarState;
-
-  const showSnackbar = useCallback(
-    (title: string, isError?: boolean) => {
-      // This is not exactly the nicest way of handling this, but it should
-      // work if nobody bypases the showSnackbar function!
-      if (isError) {
-        dispatch({ type: "updateStyle", payload: "error" });
-      } else {
-        dispatch({ type: "updateStyle", payload: "default" });
-      }
-      dispatch({ type: "updateTitle", payload: title });
-      dispatch({ type: "show" });
-    },
-    [dispatch]
-  );
-
   const welcomeText = userInfo?.name
     ? `Velkommen ${userInfo.name}.`
     : "Velkommen.";
 
   return userInfo ? (
     <SafeAreaProvider>
-      <GlobalSnackbarContext.Provider value={showSnackbar}>
-        {platform.platformName === "web" ? (
-          <View style={{ height: "100vh" }}>
-            <MainContentArea>
-              <View style={styles.menuSection}>
-                <Menu />
-                <HoueLogo />
-              </View>
-              <HeadlineText text={welcomeText} style={styles.nameText} />
-              <Navigator userInfo={userInfo} isWeb />
-            </MainContentArea>
-          </View>
-        ) : (
-          <Navigator userInfo={userInfo} />
-        )}
-      </GlobalSnackbarContext.Provider>
+      {platform.platformName === "web" ? (
+        <View style={{ height: "100vh" }}>
+          <MainContentArea>
+            <View style={styles.menuSection}>
+              <Menu />
+              <HoueLogo />
+            </View>
+            <HeadlineText text={welcomeText} style={styles.nameText} />
+            <Navigator userInfo={userInfo} isWeb />
+          </MainContentArea>
+        </View>
+      ) : (
+        <Navigator userInfo={userInfo} />
+      )}
       <DismissableSnackbar
         globalSnackbarState={globalSnackbarState}
         isWeb={platform.platformName === "web"}

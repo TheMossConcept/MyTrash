@@ -16,6 +16,19 @@ import { CollectorDTO } from "../CreateCollectorActivity";
 const orchestrator = df.orchestrator(function* (context) {
   const { clusterId, ...user } = context.bindingData.input as RequestBody;
 
+  if (!clusterId) {
+    const body = JSON.stringify({
+      errorMessage:
+        "Du forsøger at oprette en bruger uden tilknytning til et cluster",
+      rawError: "Cluster id missing in request",
+    });
+
+    return {
+      statusCode: 400,
+      body,
+    };
+  }
+
   const userId = yield context.df.callActivity("CreateCollectorActivity", user);
 
   if (userId && clusterId) {
@@ -29,17 +42,6 @@ const orchestrator = df.orchestrator(function* (context) {
 
     return JSON.stringify(updatedEntity);
   }
-  if (!clusterId) {
-    return {
-      statusCode: 400,
-      body: "Cluster id missing in request",
-    };
-  }
-  return {
-    statusCode: 500,
-    body:
-      "User not created correctly. This might be due to the fact that the email used already exists in the AD",
-  };
 });
 
 type RequestBody = Omit<AddCollectorToClusterPayload, "userId"> & CollectorDTO;

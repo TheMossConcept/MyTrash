@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import React, { FC, useContext, useState } from "react";
 import { StyleSheet, Text, View, ViewProps } from "react-native";
 import * as yup from "yup";
+import { FormikHelpers } from "formik";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
@@ -54,6 +55,11 @@ const validationSchema = yup.object().shape({
   clusterId: yup.string().required("Det er påkrævet at vælge et cluster"),
 });
 
+type DurableFunctionResponse = {
+  runtimeStatus: string;
+  output: string;
+};
+
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
 const CollectorForm: FC<Props> = ({
   clusterId,
@@ -77,43 +83,71 @@ const CollectorForm: FC<Props> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const sharedAxiosConfig = useAxiosConfig();
-  const createUser = (values: CollectorFormData, resetForm: () => void) => {
+  const createUser = (
+    values: CollectorFormData,
+    helpers: FormikHelpers<any>
+  ) => {
     setIsSubmitting(true);
 
     const finishUserCreation = () => {
       setIsSubmitting(false);
 
       showGlobalSnackbar("Indsamler tilføjet til clusteret");
-      resetForm();
+      helpers.resetForm();
     };
 
+    // TODO: At some point, rewrite this into a separate frontend handler for durable functions, when we get more of them!!
     axios
       .post("/orchestrators/CreateCollectorAndAddToCluster", values, {
         ...sharedAxiosConfig,
       })
       .then((response: AxiosResponse<{ statusQueryGetUri: string }>) => {
-        if (successCallback) {
-          const runtime = 0;
-          const statusPoll = setInterval(() => {
-            axios
-              .get(response.data.statusQueryGetUri)
-              .then(
-                (statusResponse: AxiosResponse<{ runtimeStatus: string }>) => {
-                  if (
-                    statusResponse.data.runtimeStatus === "Completed" ||
-                    runtime >= 10000
-                  ) {
-                    successCallback();
-                    finishUserCreation();
+        const runtime = 0;
+        const statusPoll = setInterval(() => {
+          axios
+            .get(response.data.statusQueryGetUri)
+            .then((statusResponse: AxiosResponse<DurableFunctionResponse>) => {
+              // Timeout
+              if (runtime >= 20000) {
+                showGlobalSnackbar(
+                  "Tilføjelse af brugeren tog for lang tid",
+                  true
+                );
 
-                    clearInterval(statusPoll);
-                  }
+                clearInterval(statusPoll);
+              }
+
+              const statusData = statusResponse.data;
+              if (statusData.runtimeStatus === "Completed") {
+                if (successCallback) {
+                  successCallback();
                 }
-              );
-          }, 1000);
-        } else {
-          finishUserCreation();
-        }
+                finishUserCreation();
+
+                clearInterval(statusPoll);
+              }
+
+              if (statusData.runtimeStatus === "Failed") {
+                // TODO: Relying on string split in this way is NOT a very nice way to handle this,
+                // however, the durable function insists on adding its own stuff in front of the stringified
+                // JSON object so this has become the workaround for now. Make this nicer when you have time!
+                const rawErrorObject = statusData.output.split("Error: ")[1];
+                const parsedErrorObject = JSON.parse(rawErrorObject);
+
+                showGlobalSnackbar(
+                  parsedErrorObject.errorMessage ||
+                    "Der skete en fejl under oprettelsen af brugeren",
+                  true
+                );
+
+                clearInterval(statusPoll);
+                setIsSubmitting(false);
+
+                helpers.resetForm();
+                helpers.validateForm();
+              }
+            });
+        }, 1000);
       })
       .catch((error) => {
         console.log(error);
@@ -125,9 +159,7 @@ const CollectorForm: FC<Props> = ({
     <FormContainer
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={(values, formikHelpers) =>
-        createUser(values, formikHelpers.resetForm)
-      }
+      onSubmit={(values, formikHelpers) => createUser(values, formikHelpers)}
       style={style}
       validateOnMount
     >
