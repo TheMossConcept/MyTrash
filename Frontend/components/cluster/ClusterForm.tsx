@@ -37,7 +37,9 @@ const validationSchema = yup.object().shape({
   name: yup.string().required("Navn skal angives"),
   c5Reference: yup.string(),
   necessaryPlastic: yup.number(),
-  usefulPlasticFactor: yup.number().required("Beregningsfaktor skal angives"),
+  usefulPlasticFactor: yup
+    .number()
+    .required("Genanvendelsesprocent skal angives"),
   logisticsPartnerId: yup.string().required("Logistikpartner skal vælges"),
   recipientPartnerId: yup.string().required("Modtagerpartner skal vælges"),
   productionPartnerId: yup.string().required("Produktionspartner skal vælges"),
@@ -90,7 +92,7 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
           />
           <NumberField
             formKey="usefulPlasticFactor"
-            label="Beregningsfaktor i procent"
+            label="Genanvendelsesprocent"
             style={styles.inputField}
           />
           <SelectPartnersForm style={styles.selectPartnersForm} />

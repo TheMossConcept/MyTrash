@@ -60,7 +60,7 @@ const BatchDetail: FC<BatchDetailProps> = ({ batch, children }) => {
             style={styles.informationField}
           />
           <InformationField
-            value={`Tilsætningsfaktor ${batch.additionFactor}%`}
+            value={`Tilsætningsprocent ${batch.additionFactor}%`}
             style={styles.informationField}
           />
           {children}

@@ -53,7 +53,7 @@ const CreateProduct: FC<Props> = ({
         { ...sharedAxiosConfig }
       )
       .then(() => {
-        showGlobalSnackbar("Produkt oprettet");
+        showGlobalSnackbar("Vare oprettet");
         resetForm();
 
         if (successCallback) {
@@ -80,7 +80,7 @@ const CreateProduct: FC<Props> = ({
         style={styles.productNumberField}
       />
       {loading && <ActivityIndicator />}
-      <SubmitButton title="Opret produkt" isWeb />
+      <SubmitButton title="Opret vare" isWeb />
     </FormContainer>
   );
 };
