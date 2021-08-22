@@ -81,9 +81,14 @@ const httpTrigger: AzureFunction = async function (
       body: JSON.stringify(returnValue),
     };
   } catch (error) {
+    const body = JSON.stringify({
+      errorMessage: "Der skete en fejl under hentningen af indsamlingerne",
+      rawError: error,
+    });
+
     context.res = {
       statusCode: 500,
-      body: JSON.stringify(error),
+      body,
     };
   }
 };

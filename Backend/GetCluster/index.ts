@@ -30,9 +30,13 @@ const httpTrigger: AzureFunction = async function (
     context.res = {
       body: JSON.stringify(returnValue),
     };
-  } catch (e) {
+  } catch (error) {
+    const body = JSON.stringify({
+      errorMessage: "Der skete en fejl under hentning af clusteret",
+      rawError: error,
+    });
     context.res = {
-      body: JSON.stringify(e),
+      body,
     };
   }
 };
@@ -44,4 +48,3 @@ type GetClusterDTO = {
 } & Omit<ClusterEntity, "necessaryAmountOfPlastic" | "open">;
 
 export default httpTrigger;
-

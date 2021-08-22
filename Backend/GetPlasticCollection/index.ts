@@ -18,8 +18,13 @@ const httpTrigger: AzureFunction = async function (
       body: JSON.stringify(plasticCollection),
     };
   } catch (error) {
+    const body = JSON.stringify({
+      errorMessage: "Der skete en fejl under hentningen af indsamlingen",
+      rawError: error,
+    });
+
     context.res = {
-      body: JSON.stringify(error),
+      body,
       statusCode: 500,
     };
   }
@@ -30,4 +35,3 @@ type Payload = {
 };
 
 export default httpTrigger;
-

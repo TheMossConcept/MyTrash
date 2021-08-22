@@ -5,6 +5,8 @@ const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
+  const errorMessage = "Der skete en fejl under opdateringen af indsamlingen";
+
   try {
     const requestBody: CollectionRequestUpdateDTO = req.body;
 
@@ -33,15 +35,24 @@ const httpTrigger: AzureFunction = async function (
         body: JSON.stringify(resultingEntity),
       };
     } else {
+      const body = JSON.stringify({
+        errorMessage,
+        rawError: "Bad request: Missing request body",
+      });
       context.res = {
         statusCode: 400,
-        body: "Bad request: Missing request body",
+        body,
       };
     }
   } catch (error) {
+    const body = JSON.stringify({
+      errorMessage,
+      rawError: error,
+    });
+
     context.res = {
       statusCode: 500,
-      body: JSON.stringify(error),
+      body,
     };
   }
 };
@@ -57,4 +68,3 @@ type Payload = {
 };
 
 export default httpTrigger;
-

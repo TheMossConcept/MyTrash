@@ -7,15 +7,28 @@ const httpTrigger: AzureFunction = async function (
   context: Context,
   req: HttpRequest
 ): Promise<void> {
-  const { batchId } = req.query as Payload;
+  try {
+    const { batchId } = req.query as Payload;
 
-  const update = await databaseAPI.updateOne<BatchEntity>("batch", batchId, {
-    $set: { batchStatus: "received", receivedDate: new Date() },
-  });
+    const update = await databaseAPI.updateOne<BatchEntity>("batch", batchId, {
+      $set: { batchStatus: "received", receivedDate: new Date() },
+    });
 
-  context.res = {
-    body: JSON.stringify(update),
-  };
+    context.res = {
+      body: JSON.stringify(update),
+    };
+  } catch (error) {
+    const body = JSON.stringify({
+      errorMessage:
+        "Der skete en fejl under registreringen af batch modtagelse",
+      rawError: error,
+    });
+
+    context.res = {
+      body,
+      statusCode: 500,
+    };
+  }
 };
 
 export default httpTrigger;

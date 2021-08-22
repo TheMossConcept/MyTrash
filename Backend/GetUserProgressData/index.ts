@@ -67,9 +67,15 @@ const httpTrigger: AzureFunction = async function (
         collectionGoal,
       }),
     };
-  } catch (e) {
+  } catch (error) {
+    const body = JSON.stringify({
+      errorMessage:
+        "Der skete en fejl under hentningen af din personlige indsamlingsfremgang",
+      rawError: error,
+    });
+
     context.res = {
-      body: JSON.stringify(e),
+      body,
       statusCode: 500,
     };
   }

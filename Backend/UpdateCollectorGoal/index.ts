@@ -27,9 +27,14 @@ const httpTrigger: AzureFunction = async function (
       statusCode: 200,
     };
   } catch (error) {
+    const body = JSON.stringify({
+      errorMessage: "Der skete en fejl under opdateringen af indsamlerens mål",
+      rawError: error,
+    });
+
     context.res = {
       statusCode: 500,
-      body: JSON.stringify(error),
+      body,
     };
   }
 };

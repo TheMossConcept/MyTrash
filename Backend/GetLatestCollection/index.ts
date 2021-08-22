@@ -25,8 +25,13 @@ const httpTrigger: AzureFunction = async function (
       body: JSON.stringify(latestRequesterCollection),
     };
   } catch (error) {
+    const body = JSON.stringify({
+      errorMessage:
+        "Der skete en fejl under hentningen af din seneste indsamling.",
+      rawError: error,
+    });
     context.res = {
-      body: JSON.stringify(error),
+      body,
       statusCode: 500,
     };
   }

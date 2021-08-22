@@ -39,9 +39,15 @@ const httpTrigger: AzureFunction = async function (
         collectionGoal: necessaryAmountOfPlastic,
       }),
     };
-  } catch (e) {
+  } catch (error) {
+    const body = {
+      errorMessage:
+        "Der skete en fejl under hentningen af dit data for clusteret",
+      rawError: error,
+    };
+
     context.res = {
-      body: JSON.stringify(e),
+      body,
       statusCode: 500,
     };
   }
