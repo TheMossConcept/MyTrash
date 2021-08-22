@@ -2,14 +2,18 @@ import React, { FC, useReducer } from "react";
 import { StyleSheet, View } from "react-native";
 import { Snackbar } from "react-native-paper";
 
+type AvailableStyles = "default" | "error";
+
 type DismissableSnackbarState = {
   shown: boolean;
   title: string;
+  style: AvailableStyles;
 };
 
 type DismissableSnackbarActions =
   | { type: "hide" }
   | { type: "show" }
+  | { type: "updateStyle"; payload: AvailableStyles }
   | {
       type: "updateTitle";
       payload: string;
@@ -24,6 +28,8 @@ function reducer(
       return { ...state, shown: false };
     case "show":
       return { ...state, shown: true };
+    case "updateStyle":
+      return { ...state, style: action.payload };
     case "updateTitle":
       return { ...state, title: action.payload };
     default:
@@ -35,6 +41,7 @@ function reducer(
 const initialState: DismissableSnackbarState = {
   shown: false,
   title: "",
+  style: "default",
 };
 
 export const useSnackbarState = () => {
@@ -64,11 +71,17 @@ const DismissableSnackbar: FC<Props> = ({
       ? { bottom: 20 - global.window.pageYOffset }
       : { bottom: 20 };
 
+    // TODO: We should do this with a theme instead!!
+    const snackbarStyle =
+      state.style === "error"
+        ? [styles.snackbar, bottomPositionStyle, styles.error]
+        : [styles.snackbar, bottomPositionStyle];
+
     return (
       <View style={styles.snackbarContainer}>
         <Snackbar
           // Empirically, it has been determined that 5 works well
-          style={[styles.snackbar, bottomPositionStyle]}
+          style={snackbarStyle}
           visible={state.shown}
           onDismiss={dismiss}
           action={{
@@ -90,6 +103,9 @@ const styles = StyleSheet.create({
     zIndex: 1,
     width: "95%",
     margin: "auto",
+  },
+  error: {
+    backgroundColor: "#fc2803",
   },
   snackbar: {
     bottom: 20,

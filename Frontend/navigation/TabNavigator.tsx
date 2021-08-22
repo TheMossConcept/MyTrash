@@ -97,7 +97,14 @@ const TabNavigator: FC<Props> = () => {
   const [, dispatch] = globalSnackbarState;
 
   const showSnackbar = useCallback(
-    (title: string) => {
+    (title: string, isError?: boolean) => {
+      // This is not exactly the nicest way of handling this, but it should
+      // work if nobody bypases the showSnackbar function!
+      if (isError) {
+        dispatch({ type: "updateStyle", payload: "error" });
+      } else {
+        dispatch({ type: "updateStyle", payload: "default" });
+      }
       dispatch({ type: "updateTitle", payload: title });
       dispatch({ type: "show" });
     },

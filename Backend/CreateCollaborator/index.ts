@@ -40,10 +40,15 @@ const httpTrigger: AzureFunction = async function (
       !role ||
       !allUserRoles.includes(role)
     ) {
+      const body = JSON.stringify({
+        rawError:
+          "Bad request. Required property is missing or the role used is incorrect",
+        errorMessage:
+          "Der skete en fejl, da du forsøgte at oprette partneren. Rollen er ugyldig.",
+      });
       context.res = {
         statusCode: 400,
-        body:
-          "Bad request. Required property is missing or the role used is incorrect",
+        body,
       };
 
       return;
@@ -99,9 +104,24 @@ const httpTrigger: AzureFunction = async function (
     context.res = {
       body: JSON.stringify(createdUser),
     };
-  } catch (e) {
+  } catch (error) {
+    let errorMessage = "Der skete en fejl, da du forsøgte at oprette partneren";
+    // TODO!!! DO SOMETHING FAR LESS BRITTLE THAN RELYING ON THE EXACT WORDING OF A HUMAN READABLE ERROR MESSAGE!!
+    if (
+      error.message ===
+      "Another object with the same value for property userPrincipalName already exists."
+    ) {
+      errorMessage =
+        "Der findes allerede en bruger i systemet med den valgte email adresse. Brug en anden email adresse eller slet den eksisterende bruger";
+    }
+    // TODO: Make this handling more granular, based on what the error is!
+    const body = JSON.stringify({
+      rawError: error,
+      errorMessage,
+    });
+
     context.res = {
-      body: e.message,
+      body,
       statusCode: 500,
     };
   }

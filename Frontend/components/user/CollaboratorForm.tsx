@@ -1,7 +1,8 @@
 import axios from "axios";
-import React, { FC, useContext } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import React, { FC, useContext, useState } from "react";
+import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import * as yup from "yup";
+import { FormikHelpers } from "formik";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
@@ -60,7 +61,7 @@ const validationSchema = yup.object().shape({
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
 const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
-  // const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialValues: UserFormData = {
     email: "",
@@ -77,18 +78,27 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
   const sharedAxiosConfig = useAxiosConfig();
-  const createUser = (values: UserFormData, resetForm: () => void) => {
+  const createUser = (
+    values: UserFormData,
+    helpers: FormikHelpers<UserFormData>
+  ) => {
+    setIsLoading(true);
+
     axios
       .post("/CreateCollaborator", values, {
         ...sharedAxiosConfig,
       })
       .then(() => {
         showGlobalSnackbar("Partner inviteret");
-        resetForm();
 
         if (successCallback) {
           successCallback();
         }
+      })
+      .finally(() => {
+        setIsLoading(false);
+        helpers.resetForm();
+        helpers.validateForm();
       });
   };
 
@@ -104,9 +114,7 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
     <FormContainer
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={(values, formikHelpers) =>
-        createUser(values, formikHelpers.resetForm)
-      }
+      onSubmit={(values, formikHelpers) => createUser(values, formikHelpers)}
       validateOnMount
     >
       <HeadlineText text={`${title}.`} style={styles.headline} />
@@ -142,6 +150,11 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
         style={styles.field}
       />
       <RoleSelector formKey="role" appRoles={appRolesForSelection} />
+      {isLoading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator />
+        </View>
+      )}
       <SubmitButton title={title} style={styles.submitButton} isWeb />
     </FormContainer>
   );
@@ -150,6 +163,11 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
 const styles = StyleSheet.create({
   field: {
     marginBottom: 23,
+  },
+  loadingContainer: {
+    marginTop: 23,
+    alignItems: "center",
+    justifyContent: "center",
   },
   submitButton: {
     marginTop: 23,
