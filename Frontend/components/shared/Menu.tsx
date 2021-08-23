@@ -1,5 +1,5 @@
 import React, { FC, useRef, useState } from "react";
-import { Image, StyleSheet, View, Text } from "react-native";
+import { Image, StyleSheet, View, Text, Linking } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Popover from "react-native-popover-view";
 import Constants from "expo-constants";
@@ -38,6 +38,10 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
   };
   useOutsideClickDetector(menuRef, outsideClickHandler);
 
+  const openPrivacyPolicy = () => {
+    Linking.openURL("https://houe.com/Brug-af-cookies");
+  };
+
   return (
     <View style={styles.menuArea} ref={menuRef}>
       <TouchableOpacity
@@ -59,6 +63,9 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
           <View style={styles.menuItemsContainer}>
             <TouchableOpacity onPress={onEditProfilePress}>
               <Text style={styles.popoverText}>Rediger profil.</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={openPrivacyPolicy}>
+              <Text style={styles.popoverText}>Privatlivspolitik.</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={logout}>
               <Text style={styles.popoverText}>Log ud.</Text>
@@ -82,7 +89,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   menuItemsContainer: {
-    width: 200,
+    width: 210,
     padding: 20,
     paddingBottom: 5,
     backgroundColor: "#d2d3c8",

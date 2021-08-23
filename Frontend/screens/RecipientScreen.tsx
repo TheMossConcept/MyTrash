@@ -79,7 +79,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
         options={[
           "Modtaget",
           "Bekræftet",
-          "Oprettede batches",
+          "Batchstyring",
           "Afsendte batches",
           "Bekræftede batches",
         ]}
@@ -133,7 +133,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
             )}
           </View>
         )}
-        {selectedContext === "Oprettede batches" && (
+        {selectedContext === "Batchstyring" && (
           <View>
             <CreateBatch
               batchCreatorId={userId}

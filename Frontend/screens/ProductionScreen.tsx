@@ -28,20 +28,20 @@ const ProductionScreen: FC<Props> = ({ route }) => {
   });
   const sortedBatches = sortBatchByStatus(batches || []);
 
-  const contextSelectionState = useState("Modtagne");
+  const contextSelectionState = useState("Modtag batches");
   const [selectedContext] = contextSelectionState;
 
   return (
     <Container>
       <ContextSelector
-        options={["Modtagne", "Bekræftede"]}
+        options={["Modtag batches", "Bekræftede batches"]}
         selectionState={contextSelectionState}
       >
         {isLoading ? (
           <LoadingIndicator />
         ) : (
           <View>
-            {selectedContext === "Modtagne" && (
+            {selectedContext === "Modtag batches" && (
               <BatchDetails batches={sortedBatches.sent}>
                 {(batch) => (
                   <ConfirmBatchReception
@@ -51,7 +51,7 @@ const ProductionScreen: FC<Props> = ({ route }) => {
                 )}
               </BatchDetails>
             )}
-            {selectedContext === "Bekræftede" && (
+            {selectedContext === "Bekræftede batches" && (
               <BatchDetails batches={sortedBatches.received}>
                 {(batch) => (
                   <ProductsForBatch
