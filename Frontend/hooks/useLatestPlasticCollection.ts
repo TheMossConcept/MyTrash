@@ -38,8 +38,7 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
     useState<CollectionStatusData>();
 
   const collectionHasYetToBeHandled =
-    existingStatusData?.collectionStatus === "pending" ||
-    existingStatusData?.collectionStatus === "scheduled";
+    existingStatusData?.collectionStatus === "pending";
 
   useEffect(() => {
     if (existingCollection && collectionHasYetToBeHandled) {

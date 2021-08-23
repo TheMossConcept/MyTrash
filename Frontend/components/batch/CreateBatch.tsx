@@ -74,6 +74,7 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
           formKey="clusterId"
           endpoint="/GetClusters"
           title="Cluster"
+          style={styles.inputField}
         />
         <StringField
           formKey="batchNumber"

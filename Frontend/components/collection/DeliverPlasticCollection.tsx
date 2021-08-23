@@ -39,7 +39,7 @@ const DeliverPlasticCollection: FC<Props> = ({
         }
       )
       .then(() => {
-        showGlobalSnackbar("Aflevering registreret");
+        showGlobalSnackbar("Afhentning registreret");
         resetForm();
 
         successCallback();

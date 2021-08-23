@@ -67,9 +67,9 @@ type CollectorViewProps = {
   deletionCallback?: () => void;
 };
 
-const collectionGoalSchema = yup
-  .object()
-  .shape({ collectionGoal: yup.number().required() });
+const collectionGoalSchema = yup.object().shape({
+  collectionGoal: yup.number().required("Et indsamlingsmål er påkrævet"),
+});
 
 const CollectorView: FC<CollectorViewProps> = ({
   collector,
