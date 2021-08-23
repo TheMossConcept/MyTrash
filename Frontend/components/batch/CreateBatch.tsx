@@ -30,7 +30,7 @@ const validationSchema = yup.object().shape({
 
 const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
-  const initialValues: CreateBatchFormData = {};
+  const initialValues: CreateBatchFormData = { batchNumber: "" };
 
   const sharedAxiosConfig = useAxiosConfig();
   const createBatch = (values: CreateBatchFormData, resetForm: () => void) => {
