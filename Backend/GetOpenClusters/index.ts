@@ -7,6 +7,7 @@ const httpTrigger: AzureFunction = async function (
   try {
     const openClusters = await databaseAPI.find<ClusterEntity>("cluster", {
       open: true,
+      closedForCollection: false,
     });
     // TODO: The frontend relies on this particular return value format. Consider
     // whether that is too hard of a coupling and we need a gateway instead, or
