@@ -16,7 +16,9 @@ function useQueriedData<T>(endpoint: string, queryParams?: Object) {
   const [errorOccurred, setErrorOccurred] = useState(false);
   const [queriedData, setQueriedData] = useState<T>();
 
-  const cacheKey = `${endpoint}${JSON.stringify(queryParams)}`;
+  const cacheKey = `${endpoint}${
+    queryParams ? JSON.stringify(queryParams) : ""
+  }`;
 
   const updateCache = useCallback(
     (data: T) => {

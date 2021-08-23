@@ -61,6 +61,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     if (popoverIsShown) {
       refresh();
     }
+    // If refresh is here, this will just refresh indefinitely because it is redefined every time we refresh
   }, [popoverIsShown]);
 
   const loading =
@@ -93,7 +94,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
 
   const dismissPopover = () => setPopoverIsShown(false);
 
-  return collectionIsOver ? (
+  return collectionIsOver === true ? (
     <View>
       <Text style={styles.headlineText}>Indsamlingen er overstået</Text>
       {statusValues && (
@@ -174,7 +175,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           </View>
         )}
       </FormContainer>
-      {statusValues && (
+      {statusValues !== undefined && (
         <Popover
           from={popoverRef}
           isVisible={popoverIsShown}

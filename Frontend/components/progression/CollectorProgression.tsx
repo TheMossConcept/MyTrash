@@ -17,7 +17,6 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
   clusterIsOpen,
   ...viewProps
 }) => {
-  console.log("Rendering CollectorProgression");
   const { data: userProgressData, isLoading: userProgressDataIsLoading } =
     useQueriedData<ProgressionData>("/GetUserProgressData", {
       userId,
@@ -38,7 +37,7 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
         {!clusterIsOpen && <ClusterProgression clusterId={clusterId} />}
         {/* eslint-disable no-nested-ternary */}
         {userProgressDataIsLoading ? (
-          <View style={{ flex: 1 }}>
+          <View style={styles.loadingContainer}>
             <ActivityIndicator />
           </View>
         ) : userProgressData ? (
@@ -66,7 +65,7 @@ const ClusterProgression: FC<ClusterProgressionProps> = ({ clusterId }) => {
 
   /* eslint-disable no-nested-ternary */
   return clusterProgressDataIsLoading ? (
-    <View style={{ flex: 1 }}>
+    <View style={styles.loadingContainer}>
       <ActivityIndicator />
     </View>
   ) : clusterProgressData ? (
@@ -79,6 +78,7 @@ const ClusterProgression: FC<ClusterProgressionProps> = ({ clusterId }) => {
 };
 
 const styles = StyleSheet.create({
+  loadingContainer: { flex: 1 },
   textContainer: {
     marginTop: 70,
   },
