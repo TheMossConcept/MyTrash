@@ -9,6 +9,7 @@ import Container from "../components/shared/Container";
 import {
   CloseClusterBtn,
   CreateCluster,
+  OpenClusterBtn,
   UpdateCluster,
 } from "../components/cluster/ModifyCluster";
 import CollaboratorForm from "../components/user/CollaboratorForm";
@@ -73,7 +74,7 @@ const AdministrationScreen: FC<Props> = () => {
               <CloseClusterBtn
                 clusterId={cluster.id}
                 successCallback={refetchClusters}
-                style={styles.closeClusterButton}
+                style={styles.changeClusterStateButton}
               />
             </View>
           )}
@@ -84,7 +85,16 @@ const AdministrationScreen: FC<Props> = () => {
         <LoadingIndicator />
       ) : (
         <ClusterList clusters={inactiveClusters}>
-          {({ cluster }) => <ClusterForm cluster={cluster} title="Cluster" />}
+          {({ cluster }) => (
+            <View>
+              <ClusterForm cluster={cluster} title="Cluster" />
+              <OpenClusterBtn
+                clusterId={cluster.id}
+                successCallback={refetchClusters}
+                style={styles.changeClusterStateButton}
+              />
+            </View>
+          )}
         </ClusterList>
       )}
     </Container>
@@ -98,7 +108,7 @@ const styles = StyleSheet.create({
   activeClustersContainer: { flexDirection: "row" },
   updateClusterContainer: { flex: 1, marginRight: 23 },
   headlineText: { alignItems: "flex-start" },
-  closeClusterButton: { marginTop: 23 },
+  changeClusterStateButton: { marginTop: 23 },
 });
 
 export default AdministrationScreen;

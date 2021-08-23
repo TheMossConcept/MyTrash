@@ -112,10 +112,13 @@ export const CloseClusterBtn: FC<CloseClusterBtnProps> = ({
   title,
   ...webButtonProps
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const sharedAxiosConfig = useAxiosConfig();
 
   const closeCluster = () => {
+    setIsLoading(true);
+
     axios
       .post(
         "/CloseCluster",
@@ -126,22 +129,79 @@ export const CloseClusterBtn: FC<CloseClusterBtnProps> = ({
         if (successCallback) {
           successCallback();
         }
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   return (
     <View>
-      <WebButton
-        onPress={() => setShowConfirmationDialog(true)}
-        text={title || "Luk cluster"}
-        disabled={false}
-        {...webButtonProps}
-      />
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <WebButton
+          onPress={() => setShowConfirmationDialog(true)}
+          text={title || "Luk cluster"}
+          disabled={false}
+          {...webButtonProps}
+        />
+      )}
       <ConfirmationDialog
-        description="Clusteret lukkes og alt data relateret til det slettes"
+        description="Clusteret lukkes og alt data relateret til det slettes efter 30 dage"
         showState={[showConfirmationDialog, setShowConfirmationDialog]}
         actionToConfirm={closeCluster}
       />
+    </View>
+  );
+};
+
+type OpenClusterBtnProps = {
+  clusterId: string;
+  title?: string;
+  successCallback?: () => void;
+} & Omit<WebButtonProps, "onPress" | "text" | "disabled" | "isSelected">;
+
+export const OpenClusterBtn: FC<OpenClusterBtnProps> = ({
+  clusterId,
+  successCallback,
+  title,
+  ...webButtonProps
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const sharedAxiosConfig = useAxiosConfig();
+
+  const openCluster = () => {
+    setIsLoading(true);
+
+    axios
+      .put(
+        "/ReopenCluster",
+        {},
+        { ...sharedAxiosConfig, params: { clusterId } }
+      )
+      .then(() => {
+        if (successCallback) {
+          successCallback();
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  return (
+    <View>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <WebButton
+          onPress={openCluster}
+          text={title || "Åben cluster"}
+          disabled={false}
+          {...webButtonProps}
+        />
+      )}
     </View>
   );
 };

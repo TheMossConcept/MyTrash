@@ -142,9 +142,6 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
               isWeb
             />
           )}
-          {cluster.closedForCollection && (
-            <WebButton text="Åben cluster" disabled={false} />
-          )}
         </View>
       )}
     </Formik>
