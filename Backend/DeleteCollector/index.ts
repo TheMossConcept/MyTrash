@@ -1,6 +1,9 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
-import databaseAPI, { ClusterEntity } from "../utils/DatabaseAPI";
+import databaseAPI, {
+  ClusterEntity,
+  CollectionEntity,
+} from "../utils/DatabaseAPI";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 
 const httpTrigger: AzureFunction = async function (
@@ -41,6 +44,10 @@ const httpTrigger: AzureFunction = async function (
         $set: {
           collectors: newCollectorsArray,
         },
+      });
+
+      await databaseAPI.remove<CollectionEntity>("collection", {
+        requesterId: collectorId,
       });
 
       const customAuthProvider = new CustomAuthenticationProvider();

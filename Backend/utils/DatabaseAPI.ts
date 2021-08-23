@@ -21,7 +21,7 @@ type PaginationResult<T> = {
 };
 
 const mongoAPI = {
-  insert: async (entity: Entities) => {
+  async insert(entity: Entities) {
     const client = await getMongoClient();
     const insertionResult = await client
       .db(DATABASE_NAME)
@@ -111,6 +111,18 @@ const mongoAPI = {
       .db(DATABASE_NAME)
       .collection(entityName)
       .findOne<T & DatabaseEntity>(query);
+
+    return result;
+  },
+  async remove<T extends Entities>(
+    entityName: T["entityName"],
+    query: mongodb.FilterQuery<T>
+  ) {
+    const client = await getMongoClient();
+    const result = await client
+      .db(DATABASE_NAME)
+      .collection(entityName)
+      .remove(query);
 
     return result;
   },

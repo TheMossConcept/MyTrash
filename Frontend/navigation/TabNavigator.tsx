@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { StyleSheet, Text, View } from "react-native";
@@ -13,11 +13,7 @@ import LogisticsScreen from "../screens/LogisticsScreen";
 import ProductionScreen from "../screens/ProductionScreen";
 import RecipientScreen from "../screens/RecipientScreen";
 import { TabsParamList, RootStackParamList, AppRole } from "../typings/types";
-import DismissableSnackbar, {
-  useSnackbarState,
-} from "../components/shared/DismissableSnackbar";
 import NoAccess from "../screens/NoAccess";
-import GlobalSnackbarContext from "../utils/globalContext";
 import MainContentArea from "../components/styled/MainContentArea";
 import HeadlineText from "../components/styled/HeadlineText";
 import Menu from "../components/shared/Menu";
@@ -113,10 +109,6 @@ const TabNavigator: FC<Props> = () => {
       ) : (
         <Navigator userInfo={userInfo} />
       )}
-      <DismissableSnackbar
-        globalSnackbarState={globalSnackbarState}
-        isWeb={platform.platformName === "web"}
-      />
     </SafeAreaProvider>
   ) : (
     <Text>No user info</Text>

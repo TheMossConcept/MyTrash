@@ -19,9 +19,12 @@ const httpTrigger: AzureFunction = async function (
 
     // TODO: Consider whether it is a good idea to have two different return values
     // depending on the request issued!
-    const {
-      collectors: idsOfCollectors,
-    } = await databaseAPI.findById<ClusterEntity>("cluster", clusterId);
+    const cluster = await databaseAPI.findById<ClusterEntity>(
+      "cluster",
+      clusterId
+    );
+
+    const idsOfCollectors = cluster.collectors || [];
 
     const rectifiedIdOfCollectors = idsOfCollectors.filter(
       (idOfCollector) => idOfCollector !== null && idOfCollector !== undefined
@@ -68,10 +71,11 @@ const httpTrigger: AzureFunction = async function (
   } catch (error) {
     const body = JSON.stringify({
       errorMessage: "Der skete en fejl under hentningen af indsamlerne",
-      rawError: error,
+      rawError: error.toString(),
     });
+
     context.res = {
-      body: JSON.stringify(e),
+      body,
       statusCode: 500,
     };
   }
