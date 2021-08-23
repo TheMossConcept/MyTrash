@@ -2,6 +2,7 @@ import axios from "axios";
 import * as yup from "yup";
 import React, { FC, useContext, useState } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
+import { FormikHelpers } from "formik";
 import FormContainer from "../shared/FormContainer";
 import SubmitButton from "../inputs/SubmitButton";
 import StringField from "../inputs/StringField";
@@ -16,7 +17,7 @@ type Props = {
 };
 
 type CreateProductFormData = {
-  productNumber?: number;
+  productNumber?: string;
 };
 
 const validationSchema = yup.object().shape({
@@ -32,12 +33,12 @@ const CreateProduct: FC<Props> = ({
   const [loading, setLoading] = useState(false);
 
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
-  const initialFormValues: CreateProductFormData = {};
+  const initialFormValues: CreateProductFormData = { productNumber: "" };
   const sharedAxiosConfig = useAxiosConfig();
 
   const createProduct = (
     values: CreateProductFormData,
-    resetForm: () => void
+    helpers: FormikHelpers<CreateProductFormData>
   ) => {
     setLoading(true);
 
@@ -54,13 +55,15 @@ const CreateProduct: FC<Props> = ({
       )
       .then(() => {
         showGlobalSnackbar("Vare oprettet");
-        resetForm();
 
         if (successCallback) {
           successCallback();
         }
       })
       .finally(() => {
+        helpers.resetForm();
+        helpers.validateForm();
+
         setLoading(false);
       });
   };
@@ -68,9 +71,7 @@ const CreateProduct: FC<Props> = ({
   return (
     <FormContainer
       initialValues={initialFormValues}
-      onSubmit={(values, formikHelpers) =>
-        createProduct(values, formikHelpers.resetForm)
-      }
+      onSubmit={(values, formikHelpers) => createProduct(values, formikHelpers)}
       validationSchema={validationSchema}
       validateOnMount
     >

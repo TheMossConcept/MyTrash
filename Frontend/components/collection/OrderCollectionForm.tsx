@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { FC, useContext, useRef, useState } from "react";
+import React, { FC, useContext, useEffect, useRef, useState } from "react";
 import Popover from "react-native-popover-view";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 // TODO: Fix it so that we use buttons from react-native-paper instead
@@ -55,6 +55,13 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     refresh,
     collectionIsOver,
   } = useLatestPlasticCollection(userId);
+
+  // Always refresh when the popover is shown to ensure we show the latest status data!
+  useEffect(() => {
+    if (popoverIsShown) {
+      refresh();
+    }
+  }, [popoverIsShown]);
 
   const loading =
     isCreatingCollection || isUpdatingCollection || isFetchingData;

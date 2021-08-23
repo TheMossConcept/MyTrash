@@ -37,19 +37,25 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
   const [existingStatusData, setExistingStatusData] =
     useState<CollectionStatusData>();
 
-  useEffect(() => {
-    if (existingCollection) {
-      setExistingFormData(existingCollection);
-    }
-
-    setExistingStatusData(existingCollection);
-  }, [existingCollection]);
-
-  const sharedAxiosConfig = useAxiosConfig();
-
   const collectionHasYetToBeHandled =
     existingStatusData?.collectionStatus === "pending" ||
     existingStatusData?.collectionStatus === "scheduled";
+
+  useEffect(() => {
+    if (existingCollection && collectionHasYetToBeHandled) {
+      setExistingFormData(existingCollection);
+    } else {
+      setExistingFormData({
+        _id: "",
+        comment: "",
+        isLastCollection: false,
+      });
+    }
+
+    setExistingStatusData(existingCollection);
+  }, [collectionHasYetToBeHandled, existingCollection]);
+
+  const sharedAxiosConfig = useAxiosConfig();
 
   /* eslint-disable-next-line no-underscore-dangle */
   if (existingFormData._id && collectionHasYetToBeHandled) {
