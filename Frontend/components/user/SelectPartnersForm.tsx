@@ -14,9 +14,9 @@ type UserInputProps = {
     | "recipientPartnerId";
 };
 
-type Props = {} & ViewProps;
+type Props = { editable?: boolean } & ViewProps;
 
-const SelectPartnersForm: FC<Props> = ({ ...viewProps }) => {
+const SelectPartnersForm: FC<Props> = ({ editable = true, ...viewProps }) => {
   const { data: appRoles, isLoading } =
     useQueriedData<AppRole[]>("GetAppRoles/");
   const [userSelectionData, setUserSelectionData] = useState<UserInputProps[]>(
@@ -104,6 +104,7 @@ const SelectPartnersForm: FC<Props> = ({ ...viewProps }) => {
               updateEntitiesEventName="partnerInvited"
               title={selectionData.title}
               formKey={selectionData.formKey}
+              editable={editable}
             />
           </View>
         );

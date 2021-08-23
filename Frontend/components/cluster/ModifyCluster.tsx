@@ -71,7 +71,7 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
 
   const initialValues = {
     name: "",
-    isOpen: false,
+    open: false,
     closedForCollection: false,
     c5Reference: "",
     logisticsPartnerId: "",

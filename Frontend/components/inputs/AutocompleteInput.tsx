@@ -39,6 +39,7 @@ type Props = {
   updateEntitiesEventName?: string;
   title?: string;
   style?: ViewStyle;
+  editable?: boolean;
 } & Pick<AutocompleteProps<any>, "containerStyle">;
 
 // TODO: By simply handing this component an endpoint that it calls itself, we make it
@@ -53,6 +54,7 @@ const AutocompleteInput: FC<Props> = ({
   containerStyle,
   updateEntitiesEventName,
   formKey: key,
+  editable = true,
   style,
 }) => {
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
@@ -61,7 +63,6 @@ const AutocompleteInput: FC<Props> = ({
 
   const autocompleteRef = useRef(null);
   const clickOutsideHandler = () => {
-    console.log("OUTSIDE CLICK!!");
     setHideSuggestionList(true);
   };
   useOutsideClickDetector(autocompleteRef, clickOutsideHandler);
@@ -165,7 +166,11 @@ const AutocompleteInput: FC<Props> = ({
             data={filteredEntities}
             value={query}
             onChangeText={setQuery}
-            onFocus={() => setHideSuggestionList(false)}
+            onFocus={() => {
+              if (editable) {
+                setHideSuggestionList(false);
+              }
+            }}
             renderTextInput={({
               value,
               onChangeText,
@@ -179,6 +184,7 @@ const AutocompleteInput: FC<Props> = ({
                 onBlur={onBlur}
                 placeholder={title}
                 placeholderTextColor="#a3a5a8"
+                editable={editable}
                 style={globalStyles.textField}
               />
             )}

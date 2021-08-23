@@ -12,13 +12,14 @@ import BooleanField from "../inputs/BooleanField";
 import HeadlineText from "../styled/HeadlineText";
 import MobileButton from "../styled/MobileButton";
 import GlobalSnackbarContext from "../../utils/globalContext";
+import WebButton from "../styled/WebButton";
 
 export type ClusterFormData = {
-  isOpen: boolean;
+  open: boolean;
   closedForCollection: boolean;
   name: string;
   c5Reference: string;
-  necessaryPlastic?: number;
+  necessaryAmountOfPlastic?: number;
   usefulPlasticFactor?: number;
   productionPartnerId?: string;
   collectionAdministratorId?: string;
@@ -27,7 +28,7 @@ export type ClusterFormData = {
 };
 
 export type Props = {
-  cluster: ClusterFormData;
+  cluster: ClusterFormData & { closedForCollection: boolean };
   clusterId?: string;
   submit?: (Cluster: ClusterFormData, reset: () => void) => void;
   title?: string;
@@ -62,6 +63,8 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
     showSnackbar("Invitationslinket er kopireret");
   };
 
+  const editable = !cluster.closedForCollection;
+
   return (
     <Formik
       initialValues={cluster}
@@ -75,30 +78,47 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
     >
       {({ values }) => (
         <View style={styles.container}>
-          <HeadlineText
-            text={`${title}.`}
-            style={{ alignItems: "flex-start" }}
+          {title && (
+            <HeadlineText
+              text={`${title}.`}
+              style={{ alignItems: "flex-start" }}
+            />
+          )}
+          <StringField
+            formKey="name"
+            label="Navn"
+            style={styles.inputField}
+            editable={editable}
           />
-          <StringField formKey="name" label="Navn" style={styles.inputField} />
           <StringField
             formKey="c5Reference"
             label="C5 Reference"
             style={styles.inputField}
+            editable={editable}
           />
           <NumberField
-            formKey="necessaryPlastic"
+            formKey="necessaryAmountOfPlastic"
             label="Målsætning i kg"
             style={styles.inputField}
+            editable={editable}
           />
           <NumberField
             formKey="usefulPlasticFactor"
             label="Genanvendelsesprocent"
             style={styles.inputField}
+            editable={editable}
           />
-          <SelectPartnersForm style={styles.selectPartnersForm} />
+          <SelectPartnersForm
+            style={styles.selectPartnersForm}
+            editable={editable}
+          />
           <View style={styles.isOpenCheckboxContainer}>
-            <BooleanField formKey="isOpen" label="Åbent cluster" />
-            {!values.isOpen && invitationLinkUrl !== "" && (
+            <BooleanField
+              formKey="open"
+              label="Åbent cluster"
+              enabled={editable}
+            />
+            {!values.open && invitationLinkUrl !== "" && (
               <View style={styles.invitationLinkContainer}>
                 <MobileButton
                   icon={{
@@ -121,6 +141,9 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
               style={styles.submitButton}
               isWeb
             />
+          )}
+          {cluster.closedForCollection && (
+            <WebButton text="Åben cluster" disabled={false} />
           )}
         </View>
       )}
