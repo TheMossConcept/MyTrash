@@ -10,10 +10,8 @@ import {
   ActivityIndicator,
   GestureResponderEvent,
   StyleSheet,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { EventRegister } from "react-native-event-listeners";
 import { useAssets } from "expo-asset";
 import Navigation from "./navigation";
 
@@ -37,23 +35,14 @@ export default function App() {
 
   const loaded = fontsLoaded && assets !== undefined;
 
-  const handleGlobalPress = (event: GestureResponderEvent) => {
-    EventRegister.emit("globalPress", event);
-  };
-
   return loaded ? (
-    <TouchableWithoutFeedback
-      style={styles.fullScreenContainer}
-      onPress={handleGlobalPress}
-    >
-      <View style={styles.fullScreenContainer}>
-        <SafeAreaProvider>
-          <PaperProvider theme={theme}>
-            <Navigation colorScheme="light" />
-          </PaperProvider>
-        </SafeAreaProvider>
-      </View>
-    </TouchableWithoutFeedback>
+    <View style={styles.fullScreenContainer}>
+      <SafeAreaProvider>
+        <PaperProvider theme={theme}>
+          <Navigation colorScheme="light" />
+        </PaperProvider>
+      </SafeAreaProvider>
+    </View>
   ) : (
     <View style={styles.fullScreenContainer}>
       <ActivityIndicator style={styles.loadingContainer} />

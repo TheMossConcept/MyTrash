@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-// import { KeyboardAvoidingScrollView } from "react-native-keyboard-avoiding-scroll-view";
+import { EventRegister } from "react-native-event-listeners";
 import {
   View,
   ImageBackground,
@@ -9,6 +9,8 @@ import {
   StyleSheet,
   StyleProp,
   ViewStyle,
+  TouchableWithoutFeedback,
+  GestureResponderEvent,
 } from "react-native";
 import Platform from "../../utils/platform";
 
@@ -25,6 +27,10 @@ const MainContentArea: FC<Props> = ({
 }) => {
   const isWeb = Platform.platformName === "web";
 
+  const handleGlobalPress = (event: GestureResponderEvent) => {
+    EventRegister.emit("globalPress", event);
+  };
+
   return (
     <View style={containerStyle}>
       <ImageBackground
@@ -35,14 +41,18 @@ const MainContentArea: FC<Props> = ({
         {...imageBackgroundProps}
       >
         {disableScroll || isWeb ? (
-          <View style={styles.childContainer}>
-            <SafeAreaView>{children}</SafeAreaView>
-          </View>
-        ) : (
-          <KeyboardAwareScrollView style={{ zIndex: 999 }}>
+          <TouchableWithoutFeedback onPress={handleGlobalPress}>
             <View style={styles.childContainer}>
               <SafeAreaView>{children}</SafeAreaView>
             </View>
+          </TouchableWithoutFeedback>
+        ) : (
+          <KeyboardAwareScrollView>
+            <TouchableWithoutFeedback onPress={handleGlobalPress}>
+              <View style={styles.childContainer}>
+                <SafeAreaView>{children}</SafeAreaView>
+              </View>
+            </TouchableWithoutFeedback>
           </KeyboardAwareScrollView>
         )}
       </ImageBackground>
