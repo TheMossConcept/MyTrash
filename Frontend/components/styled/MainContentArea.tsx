@@ -39,7 +39,7 @@ const MainContentArea: FC<Props> = ({
             <SafeAreaView>{children}</SafeAreaView>
           </View>
         ) : (
-          <KeyboardAwareScrollView>
+          <KeyboardAwareScrollView style={{ zIndex: 999 }}>
             <View style={styles.childContainer}>
               <SafeAreaView>{children}</SafeAreaView>
             </View>

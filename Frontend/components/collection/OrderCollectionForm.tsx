@@ -56,13 +56,10 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     collectionIsOver,
   } = useLatestPlasticCollection(userId);
 
-  // Always refresh when the popover is shown to ensure we show the latest status data!
-  useEffect(() => {
-    if (popoverIsShown) {
-      refresh();
-    }
-    // If refresh is here, this will just refresh indefinitely because it is redefined every time we refresh
-  }, [popoverIsShown]);
+  const showCollectionStatusPopover = () => {
+    refresh();
+    setPopoverIsShown(true);
+  };
 
   const loading =
     isCreatingCollection || isUpdatingCollection || isFetchingData;
@@ -166,8 +163,8 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
             <MobileButton
               text={`Status på \n afhentning.`}
               ref={popoverRef}
-              onPress={() => setPopoverIsShown(true)}
-              disabled={!statusValues}
+              onPress={showCollectionStatusPopover}
+              disabled={statusValues === undefined}
               isVerticalButton
               style={styles.button}
               icon={{

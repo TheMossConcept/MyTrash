@@ -195,7 +195,10 @@ const AutocompleteInput: FC<Props> = ({
               // eslint-disable-next-line react/display-name
               renderItem: ({ item }: { item: SelectableEntity }) => {
                 return (
-                  <TouchableOpacity onPress={handleItemSelection(item)}>
+                  <TouchableOpacity
+                    onPress={handleItemSelection(item)}
+                    style={styles.touchableOpacity}
+                  >
                     <Text style={[globalStyles.subheaderText, styles.itemText]}>
                       {item.displayName}
                     </Text>
@@ -235,14 +238,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  autocompleteContainer: {
-    flex: 1,
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
+  touchableOpacity: {
+    width: "100%",
+    height: "100%",
   },
 });
 
