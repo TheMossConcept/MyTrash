@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   crossContainer: {
     alignItems: "flex-end",
-    padding: 24,
+    padding: 32,
   },
   headlineContainer: {
     marginLeft: 20,

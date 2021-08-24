@@ -1,7 +1,8 @@
 import React, { FC } from "react";
-import { ActivityIndicator, StyleSheet, View, ViewProps } from "react-native";
+import { StyleSheet, View, ViewProps } from "react-native";
 import useQueriedData from "../../hooks/useQueriedData";
 import AppText from "../styled/AppText";
+import LoadingIndicator from "../styled/LoadingIndicator";
 import ProgressionCircle, { ProgressionData } from "./ProgressionCircle";
 
 type ClusterViewForCollectorProps = {
@@ -23,6 +24,10 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
       clusterId,
     });
 
+  const descriptionText = clusterIsOpen
+    ? "Status på din personlige indsamling."
+    : "Status på din personlige indsamling samt dit clusters totale status.";
+
   return (
     <View style={style} {...viewProps}>
       <View
@@ -38,7 +43,7 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
         {/* eslint-disable no-nested-ternary */}
         {userProgressDataIsLoading ? (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator />
+            <LoadingIndicator />
           </View>
         ) : userProgressData ? (
           <ProgressionCircle
@@ -49,7 +54,7 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
         {/* eslint-enable no-nested-ternary */}
       </View>
       <View style={styles.textContainer}>
-        <AppText text="Status på din personlige indsamling samt dit clusters totale status." />
+        <AppText text={descriptionText} />
       </View>
     </View>
   );
@@ -66,7 +71,7 @@ const ClusterProgression: FC<ClusterProgressionProps> = ({ clusterId }) => {
   /* eslint-disable no-nested-ternary */
   return clusterProgressDataIsLoading ? (
     <View style={styles.loadingContainer}>
-      <ActivityIndicator />
+      <LoadingIndicator />
     </View>
   ) : clusterProgressData ? (
     <ProgressionCircle

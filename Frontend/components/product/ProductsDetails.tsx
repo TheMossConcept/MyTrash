@@ -7,6 +7,7 @@ import HeadlineText from "../styled/HeadlineText";
 import globalStyles from "../../utils/globalStyles";
 import WebButton from "../styled/WebButton";
 import { Product } from "../../typings/types";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 type Props = {
   products: Product[];
@@ -80,7 +81,7 @@ const MarkProductAsSentButton: FC<MarkProductAsSentButtonProps> = ({
   };
 
   return loading ? (
-    <ActivityIndicator />
+    <LoadingIndicator />
   ) : (
     <WebButton
       text="Marker som afsendt"

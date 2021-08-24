@@ -1,13 +1,14 @@
 import axios from "axios";
 import * as yup from "yup";
 import React, { FC, useContext, useState } from "react";
-import { ActivityIndicator, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { FormikHelpers } from "formik";
 import FormContainer from "../shared/FormContainer";
 import SubmitButton from "../inputs/SubmitButton";
 import StringField from "../inputs/StringField";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 type Props = {
   clusterId: string;
@@ -80,7 +81,7 @@ const CreateProduct: FC<Props> = ({
         label="Varenummer"
         style={styles.productNumberField}
       />
-      {loading && <ActivityIndicator />}
+      {loading && <LoadingIndicator />}
       <SubmitButton title="Opret vare" isWeb />
     </FormContainer>
   );

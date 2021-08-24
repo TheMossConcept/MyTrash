@@ -17,7 +17,6 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
-  ActivityIndicator,
 } from "react-native";
 import Autocomplete, {
   AutocompleteProps,
@@ -27,6 +26,7 @@ import useAxiosConfig from "../../hooks/useAxiosConfig";
 import useQueryState from "../../hooks/useQueryState";
 import globalStyles from "../../utils/globalStyles";
 import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 export type SelectableEntity = {
   id: string;
@@ -211,7 +211,7 @@ const AutocompleteInput: FC<Props> = ({
           {!hideSuggestionList && filteredEntities.length === 0 && (
             <View style={styles.emptyViewContainer}>
               {loading ? (
-                <ActivityIndicator />
+                <LoadingIndicator />
               ) : (
                 <Text style={[globalStyles.subheaderText, styles.itemText]}>
                   Listen er tom

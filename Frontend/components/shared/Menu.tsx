@@ -1,10 +1,18 @@
 import React, { FC, useRef, useState } from "react";
-import { Image, StyleSheet, View, Text, Linking } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  View,
+  Text,
+  Linking,
+  StatusBar,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Popover from "react-native-popover-view";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import Platform from "../../utils/platform";
 import useAzureAdFlows from "../../hooks/useAzureAdFlows";
 import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 
@@ -15,7 +23,7 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
   const [popoverIsShown, setPopoverIsShown] = useState(false);
 
   const dismissPopover = () => setPopoverIsShown(false);
-  const popoverRef = useRef<Image>(null);
+  const popoverRef = useRef<TouchableOpacity>(null);
 
   const scopes = [AZURE_AD_CLIENT_ID];
 
@@ -46,11 +54,11 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
     <View style={styles.menuArea} ref={menuRef}>
       <TouchableOpacity
         onPress={() => setPopoverIsShown(!popoverIsShown)}
+        ref={popoverRef}
         disabled={hideMenuItems}
       >
         <Image
           source={require("../../assets/icons/menu.png")}
-          ref={popoverRef}
           style={styles.menuIcon}
         />
       </TouchableOpacity>
@@ -58,6 +66,11 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
         from={popoverRef}
         isVisible={popoverIsShown}
         onRequestClose={dismissPopover}
+        verticalOffset={
+          StatusBar.currentHeight && Platform.platformName === "android"
+            ? -StatusBar.currentHeight
+            : undefined
+        }
       >
         <View style={styles.popoverContainer}>
           <View style={styles.menuItemsContainer}>
@@ -80,6 +93,7 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
 const styles = StyleSheet.create({
   menuArea: {
     alignItems: "flex-end",
+    zIndex: 99,
   },
   menuIcon: {
     width: 40,
@@ -89,7 +103,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   menuItemsContainer: {
-    width: 210,
+    width: 220,
+    zIndex: 999,
     padding: 20,
     paddingBottom: 5,
     backgroundColor: "#d2d3c8",

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { DateTime } from "luxon";
 import React, { FC, useContext, useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
 import {
   CalendarDate,
@@ -11,6 +11,7 @@ import useAxiosConfig from "../../hooks/useAxiosConfig";
 import useQueriedData from "../../hooks/useQueriedData";
 import GlobalSnackbarContext from "../../utils/globalContext";
 import InformationField from "../styled/InformationField";
+import LoadingIndicator from "../styled/LoadingIndicator";
 import WebButton from "../styled/WebButton";
 import { PlasticCollection } from "./PlasticCollectionsDetails";
 
@@ -125,7 +126,7 @@ const SchedulePlasticCollection: FC<Props> = ({
   return (
     <View>
       <View style={styles.selectPickupDateTimeContainer}>
-        {isLoadingExistingCollection && <ActivityIndicator />}
+        {isLoadingExistingCollection && <LoadingIndicator />}
         {date !== undefined && (
           <View style={styles.dateStringInformationFieldContainer}>
             <InformationField value={selectedDateTimeString} />
@@ -184,7 +185,7 @@ const SchedulePlasticCollection: FC<Props> = ({
           animationType="fade" // optional, default is 'none'
         />
       </View>
-      {loading && <ActivityIndicator />}
+      {loading && <LoadingIndicator />}
       <WebButton
         text="Planlæg."
         disabled={date === undefined || loading}

@@ -1,7 +1,7 @@
 import axios from "axios";
-import React, { FC, useContext, useEffect, useRef, useState } from "react";
+import React, { FC, useContext, useRef, useState } from "react";
 import Popover from "react-native-popover-view";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 // TODO: Fix it so that we use buttons from react-native-paper instead
 import * as yup from "yup";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -15,6 +15,7 @@ import SubmitButton from "../inputs/SubmitButton";
 import MobileButton from "../styled/MobileButton";
 import CollectionStatusPopover from "./CollectionStatusPopover";
 import useLatestPlasticCollection from "../../hooks/useLatestPlasticCollection";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 export type CollectionFormData = {
   numberOfUnits?: number;
@@ -146,9 +147,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           style={styles.inputField}
         />
         {loading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator />
-          </View>
+          <LoadingIndicator />
         ) : (
           <View style={styles.buttonsContainer}>
             <SubmitButton

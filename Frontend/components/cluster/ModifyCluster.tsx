@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native-paper";
 import { View } from "react-native";
 import ClusterForm, { ClusterFormData } from "./ClusterForm";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
 import WebButton, { WebButtonProps } from "../styled/WebButton";
 import ConfirmationDialog from "../shared/ConfirmationDialog";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 type UpdateFormProps = {
   successCallback: () => void;
@@ -58,7 +58,7 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
       title="Rediger cluster"
     />
   ) : (
-    <ActivityIndicator />
+    <LoadingIndicator />
   );
 };
 
@@ -138,7 +138,7 @@ export const CloseClusterBtn: FC<CloseClusterBtnProps> = ({
   return (
     <View>
       {isLoading ? (
-        <ActivityIndicator />
+        <LoadingIndicator />
       ) : (
         <WebButton
           onPress={() => setShowConfirmationDialog(true)}
@@ -193,7 +193,7 @@ export const OpenClusterBtn: FC<OpenClusterBtnProps> = ({
   return (
     <View>
       {isLoading ? (
-        <ActivityIndicator />
+        <LoadingIndicator />
       ) : (
         <WebButton
           onPress={openCluster}

@@ -1,8 +1,9 @@
 import React, { FC, useEffect, useState } from "react";
-import { ActivityIndicator, View, ViewProps } from "react-native";
+import { View, ViewProps } from "react-native";
 import AutocompleteInput from "../inputs/AutocompleteInput";
 import useQueriedData from "../../hooks/useQueriedData";
 import { AppRole } from "../../typings/types";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 type UserInputProps = {
   title?: string;
@@ -80,7 +81,7 @@ const SelectPartnersForm: FC<Props> = ({ editable = true, ...viewProps }) => {
   }, [appRoles]);
 
   return isLoading ? (
-    <ActivityIndicator />
+    <LoadingIndicator />
   ) : (
     <View {...viewProps}>
       {userSelectionData.map((selectionData, index) => {

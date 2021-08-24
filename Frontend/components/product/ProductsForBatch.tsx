@@ -1,7 +1,8 @@
 import React, { FC } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import useQueriedData from "../../hooks/useQueriedData";
 import { Product } from "../../typings/types";
+import LoadingIndicator from "../styled/LoadingIndicator";
 import CreateProduct from "./CreateProduct";
 import ProductsDetails from "./ProductsDetails";
 
@@ -33,7 +34,7 @@ const ProductsForBatch: FC<Props> = ({
           successCallback={refetchProducts}
         />
       </View>
-      {isLoading && <ActivityIndicator />}
+      {isLoading && <LoadingIndicator />}
       <ProductsDetails
         products={products || []}
         refetchProducts={refetchProducts}

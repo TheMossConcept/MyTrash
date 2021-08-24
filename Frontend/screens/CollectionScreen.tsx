@@ -14,6 +14,7 @@ import { ClusterFormData } from "../components/cluster/ClusterForm";
 import CollectionForm from "../components/collection/OrderCollectionForm";
 import Container from "../components/shared/Container";
 import HoueLogo from "../components/styled/HoueLogo";
+import LoadingIndicator from "../components/styled/LoadingIndicator";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
@@ -45,9 +46,9 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     activeClusters.length > 0 ? activeClusters[0] : undefined;
 
   /* eslint-disable no-nested-ternary */
-  return isLoading ? (
+  return !activeCluster && isLoading ? (
     <Container style={styles.centered}>
-      <ActivityIndicator />
+      <LoadingIndicator />
     </Container>
   ) : activeCluster ? (
     <Container>
@@ -57,6 +58,11 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       >
         <Menu />
         <HoueLogo />
+        {isLoading && (
+          <View style={styles.centered}>
+            <LoadingIndicator />
+          </View>
+        )}
         {statusSelected ? (
           <CollectorProgression
             userId={userId}

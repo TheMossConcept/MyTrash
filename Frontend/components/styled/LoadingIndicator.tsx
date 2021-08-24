@@ -6,7 +6,7 @@ type Props = {};
 const LoadingIndicator: FC<Props> = () => {
   return (
     <View style={styles.container}>
-      <ActivityIndicator />
+      <ActivityIndicator color="#748c43" />
     </View>
   );
 };

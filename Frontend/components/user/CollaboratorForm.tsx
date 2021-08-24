@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { FC, useContext, useState } from "react";
-import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import * as yup from "yup";
 import { FormikHelpers } from "formik";
 import FormContainer from "../shared/FormContainer";
@@ -14,6 +14,7 @@ import globalStyles from "../../utils/globalStyles";
 import GlobalSnackbarContext from "../../utils/globalContext";
 import useQueriedData from "../../hooks/useQueriedData";
 import { AppRole } from "../../typings/types";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 export type UserFormData = {
   email: string;
@@ -152,7 +153,7 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
       <RoleSelector formKey="role" appRoles={appRolesForSelection} />
       {isLoading && (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator />
+          <LoadingIndicator />
         </View>
       )}
       <SubmitButton title={title} style={styles.submitButton} isWeb />
