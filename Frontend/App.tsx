@@ -6,12 +6,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Theme } from "react-native-paper/lib/typescript/types";
 import { useFonts } from "expo-font";
-import {
-  ActivityIndicator,
-  GestureResponderEvent,
-  StyleSheet,
-  View,
-} from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useAssets } from "expo-asset";
 import Navigation from "./navigation";
 

@@ -52,10 +52,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     </Container>
   ) : activeCluster ? (
     <Container>
-      <MainContentArea
-        containerStyle={styles.mainContentAreaContainer}
-        disableScroll={statusSelected}
-      >
+      <MainContentArea containerStyle={styles.mainContentAreaContainer}>
         <Menu />
         <HoueLogo />
         {isLoading && (
