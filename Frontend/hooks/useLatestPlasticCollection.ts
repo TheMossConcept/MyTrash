@@ -77,6 +77,8 @@ const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
           })
           .catch((error) => {
             console.log(error);
+            getLatestCollection();
+
             reject(error);
           });
       });

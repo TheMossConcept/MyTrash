@@ -6,9 +6,11 @@ import { isEqual } from "lodash";
 import useAxiosConfig from "./useAxiosConfig";
 
 type CacheObject<T = any> = {
-  expiration: DateTime;
+  creationTime: string;
   data: T;
 };
+
+const CACHE_EXPIRATION_IN_MINUTES = 10;
 
 function useQueriedData<T>(endpoint: string, queryParams?: Object) {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,9 +24,9 @@ function useQueriedData<T>(endpoint: string, queryParams?: Object) {
 
   const updateCache = useCallback(
     (data: T) => {
-      const cacheExpiration = DateTime.now().plus({ minutes: 10 });
+      const creationTime = DateTime.now();
       const cacheObject: CacheObject<T> = {
-        expiration: cacheExpiration,
+        creationTime: creationTime.toString(),
         data,
       };
       AsyncStorage.setItem(cacheKey, JSON.stringify(cacheObject));
@@ -71,8 +73,17 @@ function useQueriedData<T>(endpoint: string, queryParams?: Object) {
         ? JSON.parse(rawCacheResult)
         : undefined;
 
-      const cacheMissingOrInvalid =
-        !cacheObject || cacheObject?.expiration < DateTime.now();
+      const creationTime = cacheObject
+        ? DateTime.fromISO(cacheObject.creationTime)
+        : undefined;
+      const now = DateTime.now();
+
+      const cacheHasExpired = creationTime
+        ? creationTime.until(now).length("minute") >=
+          CACHE_EXPIRATION_IN_MINUTES
+        : false;
+
+      const cacheMissingOrInvalid = !cacheObject || cacheHasExpired;
 
       if (cacheMissingOrInvalid && !isLoading && !errorOccurred) {
         fetchData();

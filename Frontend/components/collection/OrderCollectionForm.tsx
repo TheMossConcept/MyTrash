@@ -87,6 +87,10 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           successCallback();
         }
       })
+      .catch((error) => {
+        console.log(error);
+        refresh();
+      })
       .finally(() => {
         setIsCreatingCollection(false);
       });
@@ -115,9 +119,9 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
           if (update) {
             setIsUpdatingCollection(true);
 
-            await update(values);
-
-            setIsUpdatingCollection(false);
+            update(values).finally(() => {
+              setIsUpdatingCollection(false);
+            });
           } else {
             createCollectionRequest(values);
           }

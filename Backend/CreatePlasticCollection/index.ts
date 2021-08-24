@@ -26,6 +26,17 @@ const httpTrigger: AzureFunction = async function (
       );
 
       if (cluster) {
+        if (cluster.closedForCollection) {
+          const body = JSON.stringify({
+            rawError: `You tried to create a collection for the cluster with id ${cluster._id} which is closed for collection`,
+            errorMessage:
+              "Du kan ikke oprette afhentinger for et lukket cluster",
+          });
+          context.res = {
+            statusCode: 500,
+            body,
+          };
+        }
         const { logisticsPartnerId, recipientPartnerId } = cluster;
 
         const previousCollection = await databaseAPI.findOne<CollectionEntity>(
