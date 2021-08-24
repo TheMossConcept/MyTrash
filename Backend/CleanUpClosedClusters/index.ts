@@ -9,7 +9,7 @@ import databaseAPI, {
 } from "../utils/DatabaseAPI";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 
-const httpTrigger: AzureFunction = async function (
+const timerTrigger: AzureFunction = async function (
   context: Context
 ): Promise<void> {
   try {
@@ -70,4 +70,4 @@ const httpTrigger: AzureFunction = async function (
   }
 };
 
-export default httpTrigger;
+export default timerTrigger;

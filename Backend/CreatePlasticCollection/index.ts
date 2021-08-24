@@ -32,6 +32,7 @@ const httpTrigger: AzureFunction = async function (
             errorMessage:
               "Du kan ikke oprette afhentinger for et lukket cluster",
           });
+
           context.res = {
             statusCode: 500,
             body,

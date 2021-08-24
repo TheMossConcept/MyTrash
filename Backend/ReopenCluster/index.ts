@@ -14,6 +14,7 @@ const httpTrigger: AzureFunction = async function (
         // Just update everything we get. If it hasn't been changed, it'll be the same as before
         $set: {
           closedForCollection: false,
+          dateClosed: undefined,
         },
       }
     );
@@ -37,4 +38,3 @@ const httpTrigger: AzureFunction = async function (
 type Payload = { clusterId: string };
 
 export default httpTrigger;
-

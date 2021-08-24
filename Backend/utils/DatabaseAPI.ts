@@ -160,6 +160,7 @@ export type ClusterEntity = {
   name: string;
   open: boolean;
   closedForCollection: boolean;
+  dateClosed?: Date;
   c5Reference: string;
   usefulPlasticFactor: number;
   necessaryAmountOfPlastic: number;
