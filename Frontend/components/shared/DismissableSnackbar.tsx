@@ -1,5 +1,5 @@
 import React, { FC, useReducer } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { Snackbar } from "react-native-paper";
 
 type AvailableStyles = "default" | "error";
@@ -78,40 +78,33 @@ const DismissableSnackbar: FC<Props> = ({
         : [styles.snackbar, bottomPositionStyle];
 
     return (
-      <View style={styles.snackbarContainer}>
-        <Snackbar
-          // Empirically, it has been determined that 5 works well
-          style={snackbarStyle}
-          visible={state.shown}
-          onDismiss={dismiss}
-          action={{
-            label: "LUK",
-            onPress: dismiss,
-          }}
-        >
-          {state.title}
-        </Snackbar>
-      </View>
+      <Snackbar
+        style={snackbarStyle}
+        visible={state.shown}
+        onDismiss={dismiss}
+        action={{
+          label: "LUK",
+          onPress: dismiss,
+        }}
+      >
+        {state.title}
+      </Snackbar>
     );
   }
   return null;
 };
 
 const styles = StyleSheet.create({
-  snackbarContainer: {
-    position: "relative",
-    zIndex: 1,
-    width: "95%",
-    margin: "auto",
-  },
   error: {
     backgroundColor: "#fc2803",
   },
   snackbar: {
+    alignSelf: "center",
+    width: "95%",
+    margin: "auto",
     bottom: 20,
     position: "absolute",
     zIndex: 1,
-    width: "100%",
   },
 });
 
