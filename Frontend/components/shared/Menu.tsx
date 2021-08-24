@@ -6,8 +6,8 @@ import {
   Text,
   Linking,
   StatusBar,
+  TouchableOpacity,
 } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import Popover from "react-native-popover-view";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
