@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { EventRegister } from "react-native-event-listeners";
 import {
@@ -12,7 +12,9 @@ import {
   TouchableWithoutFeedback,
   GestureResponderEvent,
 } from "react-native";
+import { Asset } from "expo-asset";
 import Platform from "../../utils/platform";
+import LoadingIndicator from "./LoadingIndicator";
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
@@ -25,17 +27,37 @@ const MainContentArea: FC<Props> = ({
   disableScroll = false,
   ...imageBackgroundProps
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [backgroundUri, setBackgroundUri] = useState<string | undefined>();
+
   const isWeb = Platform.platformName === "web";
 
   const handleGlobalPress = (event: GestureResponderEvent) => {
     EventRegister.emit("globalPress", event);
   };
 
-  return (
+  useEffect(() => {
+    setIsLoading(true);
+
+    const downloadBackgroundUriFromCache = async () => {
+      const [{ localUri }] = await Asset.loadAsync(
+        require("../../assets/images/background.png")
+      );
+
+      setBackgroundUri(localUri || undefined);
+      setIsLoading(false);
+    };
+
+    downloadBackgroundUriFromCache();
+  }, []);
+
+  return isLoading ? (
+    <LoadingIndicator />
+  ) : (
     <View style={containerStyle}>
       <ImageBackground
         // TODO: Do something less brittle here than relying on the naming convention!
-        source={require("../../assets/images/background.png")}
+        source={{ uri: backgroundUri }}
         // If this is not an array, the width does not go all the way out for whatever reason
         style={[styles.imageBackground]}
         {...imageBackgroundProps}

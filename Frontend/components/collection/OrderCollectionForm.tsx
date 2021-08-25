@@ -163,7 +163,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
               text={`Status på \n afhentning.`}
               ref={popoverRef}
               onPress={showCollectionStatusPopover}
-              disabled={statusValues === undefined}
+              disabled={!statusValues}
               isVerticalButton
               style={styles.button}
               icon={{

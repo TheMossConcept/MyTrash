@@ -90,7 +90,7 @@ const BatchDetails: FC<Props> = ({
   const toggleSort = setSort ? () => setSort(!sort) : undefined;
 
   return batches.length === 0 ? (
-    <EmptyView />
+    <EmptyView textStyle={{ textAlign: "left" }} />
   ) : (
     <View style={style} {...viewProps}>
       {sorting && (

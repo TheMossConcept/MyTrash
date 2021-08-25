@@ -1,12 +1,12 @@
 import React, { FC } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleProp, StyleSheet, Text, TextStyle, View } from "react-native";
 
-type Props = { text?: string };
+type Props = { text?: string; textStyle?: StyleProp<TextStyle> };
 
-const EmptyView: FC<Props> = ({ text = "Listen er tom" }) => {
+const EmptyView: FC<Props> = ({ text = "Listen er tom", textStyle }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.emptyText}>{text}</Text>
+      <Text style={[styles.emptyText, textStyle]}>{text}</Text>
     </View>
   );
 };

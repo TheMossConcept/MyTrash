@@ -68,15 +68,15 @@ export default function Navigation({
   );
 
   return (
-    <NavigationContainer linking={LinkingConfiguration} theme={theme}>
-      <GlobalSnackbarContext.Provider value={showSnackbar}>
+    <GlobalSnackbarContext.Provider value={showSnackbar}>
+      <NavigationContainer linking={LinkingConfiguration} theme={theme}>
         <RootNavigator />
         <DismissableSnackbar
           globalSnackbarState={globalSnackbarState}
           isWeb={platform.platformName === "web"}
         />
-      </GlobalSnackbarContext.Provider>
-    </NavigationContainer>
+      </NavigationContainer>
+    </GlobalSnackbarContext.Provider>
   );
 }
 

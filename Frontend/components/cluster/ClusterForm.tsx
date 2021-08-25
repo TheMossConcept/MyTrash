@@ -13,6 +13,7 @@ import HeadlineText from "../styled/HeadlineText";
 import MobileButton from "../styled/MobileButton";
 import GlobalSnackbarContext from "../../utils/globalContext";
 import WebButton from "../styled/WebButton";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 export type ClusterFormData = {
   open: boolean;
@@ -76,7 +77,7 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
       validationSchema={validationSchema}
       validateOnMount
     >
-      {({ values }) => (
+      {({ values, isSubmitting }) => (
         <View style={styles.container}>
           {title && (
             <HeadlineText
@@ -135,6 +136,7 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
               </View>
             )}
           </View>
+          {isSubmitting && <LoadingIndicator />}
           {submit && (
             <SubmitButton
               title={title || "Indsend"}
