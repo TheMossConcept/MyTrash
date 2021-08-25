@@ -7,7 +7,6 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Theme } from "react-native-paper/lib/typescript/types";
 import { useFonts } from "expo-font";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-import { useAssets } from "expo-asset";
 import Navigation from "./navigation";
 
 const theme: Theme = {
@@ -26,9 +25,7 @@ export default function App() {
     "AvantGarde-Medium": require("./assets/fonts/AvantGarde-Medium.ttf"),
   });
 
-  const [assets] = useAssets([require("./assets/images/background.png")]);
-
-  const loaded = fontsLoaded && assets !== undefined;
+  const loaded = fontsLoaded;
 
   return loaded ? (
     <View style={styles.fullScreenContainer}>

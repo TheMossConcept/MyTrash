@@ -12,7 +12,6 @@ import BooleanField from "../inputs/BooleanField";
 import HeadlineText from "../styled/HeadlineText";
 import MobileButton from "../styled/MobileButton";
 import GlobalSnackbarContext from "../../utils/globalContext";
-import WebButton from "../styled/WebButton";
 import LoadingIndicator from "../styled/LoadingIndicator";
 
 export type ClusterFormData = {

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { EventRegister } from "react-native-event-listeners";
 import {
@@ -12,7 +12,7 @@ import {
   TouchableWithoutFeedback,
   GestureResponderEvent,
 } from "react-native";
-import { Asset } from "expo-asset";
+import { useAssets } from "expo-asset";
 import Platform from "../../utils/platform";
 import LoadingIndicator from "./LoadingIndicator";
 
@@ -27,39 +27,25 @@ const MainContentArea: FC<Props> = ({
   disableScroll = false,
   ...imageBackgroundProps
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [backgroundUri, setBackgroundUri] = useState<string | undefined>();
-
   const isWeb = Platform.platformName === "web";
 
   const handleGlobalPress = (event: GestureResponderEvent) => {
     EventRegister.emit("globalPress", event);
   };
 
-  useEffect(() => {
-    setIsLoading(true);
+  const [assets] = useAssets([require("../../assets/images/background.png")]);
 
-    const downloadBackgroundUriFromCache = async () => {
-      const [{ localUri }] = await Asset.loadAsync(
-        require("../../assets/images/background.png")
-      );
-
-      setBackgroundUri(localUri || undefined);
-      setIsLoading(false);
-    };
-
-    downloadBackgroundUriFromCache();
-  }, []);
-
-  return isLoading ? (
-    <LoadingIndicator />
+  return !assets ? (
+    <View style={[styles.contentContainer, styles.loadingContainer]}>
+      <LoadingIndicator />
+    </View>
   ) : (
     <View style={containerStyle}>
       <ImageBackground
         // TODO: Do something less brittle here than relying on the naming convention!
-        source={{ uri: backgroundUri }}
+        source={{ uri: assets[0].localUri || assets[0].uri }}
         // If this is not an array, the width does not go all the way out for whatever reason
-        style={[styles.imageBackground]}
+        style={[styles.contentContainer]}
         {...imageBackgroundProps}
       >
         {disableScroll || isWeb ? (
@@ -83,9 +69,13 @@ const MainContentArea: FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
-  imageBackground: {
+  contentContainer: {
     width: "100%",
     height: "100%",
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   childContainer: {
     height: "100%",
