@@ -2,24 +2,23 @@
 // (e.g. for throw-away developments)
 const localConfig = {
   AUTHORIZATION_URL:
-    "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration",
-  AZURE_AD_CLIENT_ID: "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412",
+    "https://houeb2c.b2clogin.com/houeb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration",
+  AZURE_AD_CLIENT_ID: "7f58124c-5398-4ce8-80da-5fba4b593ff6",
   BACKEND_URL: "http://localhost:7071/api",
   ENVIRONMENT_NAME: "local",
 };
 const stagingConfig = {
   AUTHORIZATION_URL:
-    "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration",
-  AZURE_AD_CLIENT_ID: "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412",
-  BACKEND_URL:
-    "https://houe-plastic-recycling-windows-staging.azurewebsites.net/api",
+    "https://houeb2c.b2clogin.com/houeb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration",
+  AZURE_AD_CLIENT_ID: "7f58124c-5398-4ce8-80da-5fba4b593ff6",
+  BACKEND_URL: "https://func-houe-mytrash-staging.azurewebsites.net/api",
   ENVIRONMENT_NAME: "staging",
 };
 const productionConfig = {
   AUTHORIZATION_URL:
-    "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration",
-  AZURE_AD_CLIENT_ID: "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412",
-  BACKEND_URL: "https://houe-plastic-recycling-windows.azurewebsites.net/api",
+    "https://houeb2c.b2clogin.com/houeb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration",
+  AZURE_AD_CLIENT_ID: "7f58124c-5398-4ce8-80da-5fba4b593ff6",
+  BACKEND_URL: "https://func-houe-mytrash-staging.azurewebsites.net/api",
   ENVIRONMENT_NAME: "production",
 };
 

@@ -9,13 +9,10 @@ const httpTrigger: AzureFunction = async function (
   req: HttpRequest
 ): Promise<void> {
   try {
-    context.log("Started function!");
     const customAuthProvider = new CustomAuthenticationProvider();
-    context.log("Created CustomAuthenticationProvider");
     const client = Client.initWithMiddleware({
       authProvider: customAuthProvider,
     });
-    context.log("Initialized middleware with customAuthProvider");
 
     const { appRole } = req.query as QueryParams;
 
@@ -23,13 +20,9 @@ const httpTrigger: AzureFunction = async function (
     // Also note that the -'s have been removed
     const clientId = process.env.ClientId;
 
-    context.log(`Got ClientId ${clientId}`);
-
     const usersResult = await client
       .api(`/users?$filter=extension_${clientId}_${appRole} eq true`)
       .get();
-
-    context.log("Queried client");
 
     context.res = {
       // status: 200, /* Defaults to 200 */

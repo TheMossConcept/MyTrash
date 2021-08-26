@@ -44,7 +44,7 @@ const httpTrigger: AzureFunction = async function (
         rawError:
           "Bad request. Required property is missing or the role used is incorrect",
         errorMessage:
-          "Der skete en fejl, da du forsøgte at oprette partneren. Rollen er ugyldig.",
+          "Der skete en fejl, da du forsøgte at oprette partneren. Du mangler at udfylde et felt eller har valgt en ugyldig rolle.",
       });
       context.res = {
         statusCode: 400,
