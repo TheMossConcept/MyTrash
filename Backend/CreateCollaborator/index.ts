@@ -29,10 +29,7 @@ const httpTrigger: AzureFunction = async function (
     // TODO: Consider adding yup validation instead!!
     if (
       !firstName ||
-      !lastName ||
       !email ||
-      !phoneNumber ||
-      !companyName ||
       !street ||
       !streetNumber ||
       !city ||
