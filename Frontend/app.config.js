@@ -3,21 +3,21 @@
 const localConfig = {
   AUTHORIZATION_URL:
     "https://houeb2c.b2clogin.com/houeb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration",
-  AZURE_AD_CLIENT_ID: "7f58124c-5398-4ce8-80da-5fba4b593ff6",
+  AZURE_AD_CLIENT_ID: "5a5e1ff1-c935-4cc6-b6b6-5ab356682d10",
   BACKEND_URL: "http://localhost:7071/api",
   ENVIRONMENT_NAME: "local",
 };
 const stagingConfig = {
   AUTHORIZATION_URL:
     "https://houeb2c.b2clogin.com/houeb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration",
-  AZURE_AD_CLIENT_ID: "7f58124c-5398-4ce8-80da-5fba4b593ff6",
+  AZURE_AD_CLIENT_ID: "5a5e1ff1-c935-4cc6-b6b6-5ab356682d10",
   BACKEND_URL: "https://func-houe-mytrash-staging.azurewebsites.net/api",
   ENVIRONMENT_NAME: "staging",
 };
 const productionConfig = {
   AUTHORIZATION_URL:
     "https://houeb2c.b2clogin.com/houeb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration",
-  AZURE_AD_CLIENT_ID: "7f58124c-5398-4ce8-80da-5fba4b593ff6",
+  AZURE_AD_CLIENT_ID: "5a5e1ff1-c935-4cc6-b6b6-5ab356682d10",
   BACKEND_URL: "https://func-houe-mytrash-staging.azurewebsites.net/api",
   ENVIRONMENT_NAME: "production",
 };

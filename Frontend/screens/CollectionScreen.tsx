@@ -125,9 +125,13 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       </BottomButtonContainer>
     </Container>
   ) : (
-    <Container style={styles.centered}>
-      <HeadlineText text="Ingen aktive clustere" />
-    </Container>
+    <View>
+      <Menu />
+      <HoueLogo />
+      <Container style={styles.centered}>
+        <HeadlineText text="Ingen aktive clustere" />
+      </Container>
+    </View>
   );
   /* eslint-enable no-nested-ternary */
 };
