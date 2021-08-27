@@ -63,7 +63,6 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
           }}
           onPress={toggleDetails}
           isSelected={showDetails}
-          style={{ width: 512 }}
           text={title}
         />
       </View>
@@ -153,18 +152,19 @@ const PlasticCollectionsDetails: FC<Props> = ({
 
 const styles = {
   container: {
-    flexDirection: "row" as "row",
-    alignItems: "flex-start" as "flex-start",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
   },
   line: {
     marginBottom: 23,
   },
   detailsContainer: {
     marginLeft: 14,
-    width: 512,
+    flex: 1,
   },
   filterButton: {
-    width: 512,
+    flex: 1,
     marginBottom: 23,
   },
   commentField: {
