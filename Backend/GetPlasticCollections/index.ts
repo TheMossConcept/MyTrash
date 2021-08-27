@@ -1,6 +1,9 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
-import databaseAPI, { CollectionEntity } from "../utils/DatabaseAPI";
+import databaseAPI, {
+  CollectionEntity,
+  ClusterEntity,
+} from "../utils/DatabaseAPI";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 
 type CollectionFromDb = CollectionEntity & { _id: string };
@@ -58,6 +61,12 @@ const httpTrigger: AzureFunction = async function (
           )
           .get();
 
+        const cluster = await databaseAPI.findById<ClusterEntity>(
+          "cluster",
+          collection.clusterId
+        );
+        const clusterName = cluster.name;
+
         const { _id, ...collectionToReturn } = collection;
 
         // TODO: Consider whether we should throw an exception here or just return collection
@@ -69,6 +78,7 @@ const httpTrigger: AzureFunction = async function (
             city: requester.city,
             zipCode: requester.postalCode,
             companyName: requester.companyName,
+            clusterName,
           };
         }
         return { id: _id, ...collectionToReturn };

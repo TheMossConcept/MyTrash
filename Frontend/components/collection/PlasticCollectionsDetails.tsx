@@ -14,6 +14,7 @@ export type PlasticCollection = {
   id: string;
   clusterId: string;
   requesterId: string;
+  clusterName: string;
   recipientPartnerId: string;
   numberOfUnits: number;
   streetAddress: string;
@@ -35,18 +36,18 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
   children,
 }) => {
   const {
-    companyName,
     streetAddress,
     zipCode,
     city,
     numberOfUnits,
     comment,
     weight,
+    clusterName,
   } = plasticCollection;
   const [showDetails, setShowDetails] = useState(false);
   const toggleDetails = () => setShowDetails(!showDetails);
 
-  const title = companyName || streetAddress;
+  const title = `${streetAddress} for cluster ${clusterName}`;
   const addressString =
     streetAddress && (zipCode || city)
       ? `${streetAddress || ""}, ${zipCode || ""} ${city || ""}`

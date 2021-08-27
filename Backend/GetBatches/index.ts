@@ -1,6 +1,6 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import { Client } from "@microsoft/microsoft-graph-client";
-import databaseAPI, { BatchEntity } from "../utils/DatabaseAPI";
+import databaseAPI, { BatchEntity, ClusterEntity } from "../utils/DatabaseAPI";
 import CustomAuthenticationProvider from "../utils/CustomAuthenticationProvider";
 
 type BatchFromDb = BatchEntity & { _id: string };
@@ -58,6 +58,13 @@ const httpTrigger: AzureFunction = async function (
         )
         .get();
 
+      const cluster = await databaseAPI.findById<ClusterEntity>(
+        "cluster",
+        batch.clusterId
+      );
+
+      const clusterName = cluster.name;
+
       // The company name should always be there, but fall back to display name just in case
       const creatorName = creator?.companyName || creator?.displayName;
       const recipientName =
@@ -71,6 +78,7 @@ const httpTrigger: AzureFunction = async function (
           id: _id,
           creatorName,
           recipientName,
+          clusterName,
           ...batchToReturn,
         };
       }
