@@ -230,7 +230,7 @@ const AutocompleteInput: FC<Props> = ({
 };
 const styles = StyleSheet.create({
   labelText: { fontSize: 12 },
-  itemText: { fontSize: 12, marginVertical: 15 },
+  itemText: { fontSize: 12, paddingVertical: 15 },
   emptyViewContainer: {
     height: 45,
     width: "100%",
@@ -240,7 +240,6 @@ const styles = StyleSheet.create({
   },
   touchableOpacity: {
     width: "100%",
-    height: "100%",
   },
 });
 

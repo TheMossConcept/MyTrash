@@ -72,7 +72,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
             text={`${ENVIRONMENT_NAME}. ${Linking.createURL(
               "/"
               // TODO: Better versioning
-            )}. Version 1.4.1. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
+            )}. Version 1.4.2. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
           />
         </View>
       </MainContentArea>

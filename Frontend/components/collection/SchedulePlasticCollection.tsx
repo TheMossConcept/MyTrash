@@ -35,12 +35,18 @@ const SchedulePlasticCollection: FC<Props> = ({
     id: plasticCollectionId,
   });
 
+  const [initialDate, setInitialDate] = useState<DateTime | undefined>(
+    undefined
+  );
+
   useEffect(() => {
     if (plasticCollection && plasticCollection.scheduledPickupDate) {
       const parsedDate = DateTime.fromJSDate(
         new Date(plasticCollection.scheduledPickupDate)
       );
+
       setDate(parsedDate);
+      setInitialDate(parsedDate);
     }
   }, [plasticCollection]);
 
@@ -78,6 +84,7 @@ const SchedulePlasticCollection: FC<Props> = ({
         hour: hours,
         minute: minutes,
       });
+
       setDate(dateWithTime);
     }
 
@@ -122,6 +129,8 @@ const SchedulePlasticCollection: FC<Props> = ({
 
   const isLoadingExistingCollection =
     plasticCollectionId !== undefined && existingCollectionLoading;
+
+  const dateHasChanged = date !== initialDate;
 
   return (
     <View>
@@ -188,7 +197,7 @@ const SchedulePlasticCollection: FC<Props> = ({
       {loading && <LoadingIndicator />}
       <WebButton
         text="Planlæg."
-        disabled={date === undefined || loading}
+        disabled={date === undefined || !dateHasChanged || loading}
         onPress={schedule}
       />
     </View>
