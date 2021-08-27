@@ -1,7 +1,7 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import axios from "axios";
 import React, { FC, useContext, useState } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { TabsParamList } from "../typings/types";
 import sortBatchByStatus from "../utils/batch";
 import BatchDetails, { Batch } from "../components/batch/BatchDetails";
@@ -37,37 +37,46 @@ const ProductionScreen: FC<Props> = ({ route }) => {
         options={["Modtag batches", "Bekræftede batches"]}
         selectionState={contextSelectionState}
       >
-        {isLoading ? (
-          <LoadingIndicator />
-        ) : (
-          <View>
-            {selectedContext === "Modtag batches" && (
-              <BatchDetails batches={sortedBatches.sent}>
-                {(batch) => (
-                  <ConfirmBatchReception
-                    batchId={batch.id}
-                    successCallback={refetchBatches}
-                  />
-                )}
-              </BatchDetails>
-            )}
-            {selectedContext === "Bekræftede batches" && (
-              <BatchDetails batches={sortedBatches.received}>
-                {(batch) => (
-                  <ProductsForBatch
-                    batchId={batch.id}
-                    clusterId={batch.clusterId}
-                    productionPartnerId={userId}
-                  />
-                )}
-              </BatchDetails>
-            )}
-          </View>
-        )}
+        <View style={styles.rightSideContainer}>
+          {isLoading ? (
+            <LoadingIndicator />
+          ) : (
+            <View>
+              {selectedContext === "Modtag batches" && (
+                <BatchDetails batches={sortedBatches.sent}>
+                  {(batch) => (
+                    <ConfirmBatchReception
+                      batchId={batch.id}
+                      successCallback={refetchBatches}
+                    />
+                  )}
+                </BatchDetails>
+              )}
+              {selectedContext === "Bekræftede batches" && (
+                <BatchDetails batches={sortedBatches.received}>
+                  {(batch) => (
+                    <ProductsForBatch
+                      batchId={batch.id}
+                      clusterId={batch.clusterId}
+                      productionPartnerId={userId}
+                    />
+                  )}
+                </BatchDetails>
+              )}
+            </View>
+          )}
+        </View>
       </ContextSelector>
     </Container>
   );
 };
+
+const styles = StyleSheet.create({
+  rightSideContainer: {
+    // TODO: This it NOT the best solution but rather just a quick workaround
+    maxWidth: "68vw",
+  },
+});
 
 export default ProductionScreen;
 

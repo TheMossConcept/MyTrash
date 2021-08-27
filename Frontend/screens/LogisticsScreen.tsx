@@ -46,7 +46,7 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
         options={["Afventer", "Planlagt", "Afhentet", "Bekræftet"]}
         selectionState={contextSelectionState}
       >
-        <View>
+        <View style={styles.rightSideContainer}>
           {isLoading ? (
             <LoadingIndicator />
           ) : (
@@ -144,6 +144,10 @@ const LogisticsScreen: FC<Props> = ({ route }) => {
 };
 
 const styles = StyleSheet.create({
+  // TODO: This is NOT the best solution but rather just a quick workaround!!
+  rightSideContainer: {
+    maxWidth: "68vw",
+  },
   informationTextField: {
     marginBottom: 23,
   },
