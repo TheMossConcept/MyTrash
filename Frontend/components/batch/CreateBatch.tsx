@@ -105,16 +105,14 @@ const CreateBatch: FC<Props> = ({ batchCreatorId, creationCallback }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
+    flexWrap: "wrap",
     alignItems: "center",
-    width: 1024,
   },
   inputField: {
     marginRight: 12,
     flex: 1,
   },
-  submitButton: {
-    flex: 1,
-  },
+  submitButton: { flex: 1 },
 });
 
 export default CreateBatch;

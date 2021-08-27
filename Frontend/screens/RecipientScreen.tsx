@@ -135,7 +135,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
             </View>
           )}
           {selectedContext === "Batchstyring" && (
-            <View>
+            <View style={{ flex: 1 }}>
               <CreateBatch
                 batchCreatorId={userId}
                 creationCallback={refetchBatches}

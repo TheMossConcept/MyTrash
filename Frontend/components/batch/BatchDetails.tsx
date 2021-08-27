@@ -35,8 +35,8 @@ const BatchDetail: FC<BatchDetailProps> = ({ batch, children }) => {
     day: "2-digit",
   })}`;
   return (
-    <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-      <View style={{ flex: 1 }}>
+    <View style={styles.container}>
+      <View style={styles.toggleBatchButton}>
         <WebButton
           icon={{
             src: require("../../assets/icons/dropdown_grey.png"),
@@ -45,12 +45,11 @@ const BatchDetail: FC<BatchDetailProps> = ({ batch, children }) => {
           }}
           onPress={toggleDetails}
           isSelected={showDetails}
-          style={{ width: 512 }}
           text={title}
         />
       </View>
       {showDetails && (
-        <View style={{ width: 512, marginLeft: 14 }}>
+        <View style={styles.batchInformationContainer}>
           <InformationField
             value={`Forbrugt plast ${batch.inputWeight} kg`}
             style={styles.informationField}
@@ -90,7 +89,7 @@ const BatchDetails: FC<Props> = ({
   const toggleSort = setSort ? () => setSort(!sort) : undefined;
 
   return batches.length === 0 ? (
-    <EmptyView textStyle={{ textAlign: "left" }} />
+    <EmptyView style={styles.emptyView} />
   ) : (
     <View style={style} {...viewProps}>
       {sorting && (
@@ -122,14 +121,21 @@ const BatchDetails: FC<Props> = ({
 };
 
 const styles = {
+  container: { flexDirection: "row", alignItems: "flex-start" },
+  emptyView: { justifyContent: "flex-start" },
   informationField: {
     marginBottom: 23,
   },
   line: {
     marginBottom: 23,
   },
+  toggleBatchButton: { flex: 1 },
+  batchInformationContainer: {
+    flex: 1,
+    marginLeft: 14,
+  },
   filterButton: {
-    width: 512,
+    flex: 1,
     marginBottom: 23,
   },
 };
