@@ -1,3 +1,3 @@
 {
- "routes": [{ "route": "/login", "redirect": "./" }, { "route": "/tilmeld", "redirect": "./" }, { "route": "/invitation" }, { "route": "/administration" },  { "route": "/indsamlingsadministration" }, { "route": "/logistik" }, { "route": "/modtagelse" }, { "route": "/produktion" }, { "route": "*" } ]
+ "routes": [{ "route": "/login", "rewrite": "./App.tsx" }, { "route": "/tilmeld", "redirect": "./" }, { "route": "/invitation" }, { "route": "/administration" },  { "route": "/indsamlingsadministration" }, { "route": "/logistik" }, { "route": "/modtagelse" }, { "route": "/produktion" }, { "route": "*" } ]
 }
