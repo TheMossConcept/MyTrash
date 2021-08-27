@@ -85,7 +85,7 @@ const RecipientScreen: FC<Props> = ({ route }) => {
         ]}
         selectionState={contextSelectionState}
       >
-        <View style={styles.rightSideContainer}>
+        <View>
           {selectedContext === "Modtaget" && (
             <View>
               {plasticCollectionsIsLoading ? (
@@ -264,10 +264,6 @@ const styles = StyleSheet.create({
     // floating above other elements itself instead of the surroundings having to
     // fit into the AutocompleteInput. This is a temporary workaround for now!
     zIndex: -1,
-  },
-  rightSideContainer: {
-    // TODO: This is NOT the best way of doing it but just a quick workaround!!
-    maxWidth: "68vw",
   },
 });
 
