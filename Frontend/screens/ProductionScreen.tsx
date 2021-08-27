@@ -37,7 +37,7 @@ const ProductionScreen: FC<Props> = ({ route }) => {
         options={["Modtag batches", "Bekræftede batches"]}
         selectionState={contextSelectionState}
       >
-        <View style={styles.rightSideContainer}>
+        <View>
           {isLoading ? (
             <LoadingIndicator />
           ) : (
@@ -70,13 +70,6 @@ const ProductionScreen: FC<Props> = ({ route }) => {
     </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  rightSideContainer: {
-    // TODO: This it NOT the best solution but rather just a quick workaround
-    maxWidth: "68vw",
-  },
-});
 
 export default ProductionScreen;
 
