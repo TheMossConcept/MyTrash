@@ -2,12 +2,11 @@
  "routes": [
    { "route": "/login", "rewrite": "index.html" },
    { "route": "/tilmeld", "rewrite": "index.html" },
-   { "route": "/join*", "rewrite": "index.html" },
    { "route": "/invitation*", "rewrite": "index.html" },
-   { "route": "/administration", "rewrite": "index.html" },
-   { "route": "/indsamlingsadministration*", "rewrite": "index.html" },
-   { "route": "/logistik*", "rewrite": "index.html" },
-   { "route": "/modtagelse*", "rewrite": "index.html" },
-   { "route": "/produktion*", "rewrite": "index.html" }
+   { "route": "/Administration", "rewrite": "index.html" },
+   { "route": "/Indsamlingsadministration*", "rewrite": "index.html" },
+   { "route": "/Logistik*", "rewrite": "index.html" },
+   { "route": "/Modtagelse*", "rewrite": "index.html" },
+   { "route": "/Produktion*", "rewrite": "index.html" }
  ]
 }
