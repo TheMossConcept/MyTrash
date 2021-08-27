@@ -84,7 +84,12 @@ const CollectorView: FC<CollectorViewProps> = ({
 
   const sharedAxiosConfig = useAxiosConfig();
 
+  const [updatingCollectorGoal, setUpdatingCollectorGoal] = useState(false);
+  const [deletingCollector, setDeletingCollector] = useState(false);
+
   const deleteUser = () => {
+    setDeletingCollector(true);
+
     axios
       .delete("/DeleteCollector", {
         params: { clusterId, collectorId: collector.id },
@@ -96,6 +101,9 @@ const CollectorView: FC<CollectorViewProps> = ({
         if (deletionCallback) {
           deletionCallback();
         }
+      })
+      .finally(() => {
+        setDeletingCollector(false);
       });
   };
 
@@ -104,6 +112,8 @@ const CollectorView: FC<CollectorViewProps> = ({
     collectionGoal: number
   ) => {
     return new Promise((resolve, reject) => {
+      setUpdatingCollectorGoal(true);
+
       axios
         .post(
           "/UpdateCollectorGoal",
@@ -119,6 +129,9 @@ const CollectorView: FC<CollectorViewProps> = ({
         })
         .catch(() => {
           reject();
+        })
+        .finally(() => {
+          setUpdatingCollectorGoal(false);
         });
     });
   };
@@ -144,13 +157,21 @@ const CollectorView: FC<CollectorViewProps> = ({
           style={styles.formItem}
         />
         <View style={styles.actionsContainer}>
-          <SubmitButton title="Opdater" style={styles.formItem} isWeb />
-          <WebButton
-            text="Slet bruger"
-            onPress={showConfirmationDialog}
-            style={styles.lastFormItem}
-            disabled={false}
-          />
+          {updatingCollectorGoal ? (
+            <LoadingIndicator style={styles.formItem} />
+          ) : (
+            <SubmitButton title="Opdater" style={styles.formItem} isWeb />
+          )}
+          {deletingCollector ? (
+            <LoadingIndicator style={styles.lastFormItem} />
+          ) : (
+            <WebButton
+              text="Slet bruger"
+              onPress={showConfirmationDialog}
+              style={styles.lastFormItem}
+              disabled={false}
+            />
+          )}
         </View>
       </FormContainer>
       <ConfirmationDialog

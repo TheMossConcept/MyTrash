@@ -16,9 +16,9 @@ import Platform from "../../utils/platform";
 import useAzureAdFlows from "../../hooks/useAzureAdFlows";
 import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 
-type Props = { hideMenuItems?: boolean };
+type Props = { loggedIn?: boolean };
 
-const Menu: FC<Props> = ({ hideMenuItems = false }) => {
+const Menu: FC<Props> = ({ loggedIn = true }) => {
   const { AZURE_AD_CLIENT_ID } = Constants.manifest.extra || {};
   const [popoverIsShown, setPopoverIsShown] = useState(false);
 
@@ -28,7 +28,10 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
   const scopes = [AZURE_AD_CLIENT_ID];
 
   const editProfile = useAzureAdFlows("B2C_1_ProfileEdit", scopes);
-  const onEditProfilePress = () => editProfile();
+  const onEditProfilePress = () => {
+    editProfile();
+    setPopoverIsShown(false);
+  };
 
   const navigation = useNavigation();
 
@@ -38,6 +41,8 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
     AsyncStorage.setItem("shouldPrompt", "true");
 
     navigation.navigate("Login");
+
+    setPopoverIsShown(false);
   };
 
   const menuRef = useRef(null);
@@ -48,6 +53,7 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
 
   const openPrivacyPolicy = () => {
     Linking.openURL("https://houe.com/Brug-af-cookies");
+    setPopoverIsShown(false);
   };
 
   return (
@@ -55,7 +61,6 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
       <TouchableOpacity
         onPress={() => setPopoverIsShown(!popoverIsShown)}
         ref={popoverRef}
-        disabled={hideMenuItems}
       >
         <Image
           source={require("../../assets/icons/menu.png")}
@@ -74,15 +79,19 @@ const Menu: FC<Props> = ({ hideMenuItems = false }) => {
       >
         <View style={styles.popoverContainer}>
           <View style={styles.menuItemsContainer}>
-            <TouchableOpacity onPress={onEditProfilePress}>
-              <Text style={styles.popoverText}>Rediger profil.</Text>
-            </TouchableOpacity>
+            {loggedIn === true && (
+              <TouchableOpacity onPress={onEditProfilePress}>
+                <Text style={styles.popoverText}>Rediger profil.</Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity onPress={openPrivacyPolicy}>
               <Text style={styles.popoverText}>Privatlivspolitik.</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={logout}>
-              <Text style={styles.popoverText}>Log ud.</Text>
-            </TouchableOpacity>
+            {loggedIn === true && (
+              <TouchableOpacity onPress={logout}>
+                <Text style={styles.popoverText}>Log ud.</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </Popover>

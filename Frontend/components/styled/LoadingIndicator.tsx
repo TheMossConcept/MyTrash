@@ -1,11 +1,11 @@
 import React, { FC } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View, ViewProps } from "react-native";
 
-type Props = {};
+type Props = {} & ViewProps;
 
-const LoadingIndicator: FC<Props> = () => {
+const LoadingIndicator: FC<Props> = ({ style, ...viewProps }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]} {...viewProps}>
       <ActivityIndicator color="#748c43" />
     </View>
   );

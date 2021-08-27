@@ -65,14 +65,14 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
       <MainContentArea containerStyle={styles.mainContentAreaContainer}>
         {/* It does not make sense to show the menu items on the login screen
             as all of them requires you to be logged in */}
-        <Menu hideMenuItems />
+        <Menu loggedIn={false} />
         <HoueLogo />
         <View style={styles.textContainer}>
           <AppText
             text={`${ENVIRONMENT_NAME}. ${Linking.createURL(
               "/"
               // TODO: Better versioning
-            )}. Version 1.4.0. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
+            )}. Version 1.4.1. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
           />
         </View>
       </MainContentArea>
