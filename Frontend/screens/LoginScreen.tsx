@@ -48,6 +48,10 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
     }
   });
 
+  const openMyTrashInfo = () => {
+    Linking.openURL("https://www.houe.com/media/MyTrash_info.pdf");
+  };
+
   const handleAuthorizationSuccess = (
     tokenResponse: TokenResponse,
     refreshTokenIfNecessary: () => Promise<TokenResponse> | undefined
@@ -68,7 +72,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
             text={`${ENVIRONMENT_NAME}. ${Linking.createURL(
               "/"
               // TODO: Better versioning
-            )}. Version 1.1.0. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
+            )}. Version 1.1.1. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
           />
         </View>
       </MainContentArea>
@@ -89,6 +93,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         />
         <MobileButton
           text="MyTrash info."
+          onPress={openMyTrashInfo}
           icon={{
             src: require("../assets/icons/leaf_grey.png"),
             width: 20.5,
