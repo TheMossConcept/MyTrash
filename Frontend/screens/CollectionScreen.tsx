@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useState } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet, Linking } from "react-native";
 import { TabsParamList } from "../typings/types";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import MobileButton from "../components/styled/MobileButton";
@@ -21,7 +21,13 @@ type Props = StackScreenProps<TabsParamList, "Indsamling">;
 type FullCluster = Cluster & ClusterFormData;
 
 const CollectionScreen: FC<Props> = ({ route }) => {
-  console.log("Rendering CollectionScreen");
+  const openMyTrashInfo = () => {
+    Linking.openURL("https://www.houe.com/media/MyTrash_info.pdf");
+  };
+  const openProductsInfo = () => {
+    Linking.openURL("https://www.houe.com/media/MyTrash_produkter.pdf");
+  };
+
   const [selectedScreen, setSelectedScreen] = useState<"status" | "collection">(
     "status"
   );
@@ -89,6 +95,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
           />
           <MobileButton
             text="MyTrash info."
+            onPress={openMyTrashInfo}
             icon={{
               src: require("../assets/icons/leaf_grey.png"),
               width: 20.5,
@@ -114,6 +121,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
           />
           <MobileButton
             text="Produkter."
+            onPress={openProductsInfo}
             icon={{
               src: require("../assets/icons/chair_grey.png"),
               width: 19.5,
