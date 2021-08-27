@@ -4,11 +4,11 @@
    { "route": "/tilmeld", "redirect": "index.html" },
    { "route": "/join*", "redirect": "index.html" },
    { "route": "/invitation*", "redirect": "index.html" },
-   { "route": "/invitation*", "redirect": "index.html" },
    { "route": "/administration", "redirect": "index.html" },
    { "route": "/indsamlingsadministration*", "redirect": "index.html" },
    { "route": "/logistik*", "redirect": "index.html" },
    { "route": "/modtagelse*", "redirect": "index.html" },
-   { "route": "/produktion*", "redirect": "index.html" } 
+   { "route": "/produktion*", "redirect": "index.html" },
+   { "route": "*", "redirect": "index.html" } 
  ]
 }
