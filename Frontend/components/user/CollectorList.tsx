@@ -3,6 +3,8 @@ import * as yup from "yup";
 import { isEmpty, isArray } from "lodash";
 import { StyleSheet, Text, View } from "react-native";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { DateTime } from "luxon";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import ConfirmationDialog from "../shared/ConfirmationDialog";
 import FormContainer from "../shared/FormContainer";
@@ -107,12 +109,40 @@ const CollectorView: FC<CollectorViewProps> = ({
       });
   };
 
+  const clusterIdParams = { clusterId };
+
   const updateCollectionGoal = (
     collectorId: string,
     collectionGoal: number
   ) => {
     return new Promise((resolve, reject) => {
       setUpdatingCollectorGoal(true);
+
+      // TODO: This should be abstracted away in getQueriedData, as it is
+      // responsible for the caching strategy!
+      const updateCache = async () => {
+        const cacheKey = `/GetCollectors${JSON.stringify(clusterIdParams)}`;
+
+        const rawExistingCacheValue = await AsyncStorage.getItem(cacheKey);
+
+        if (rawExistingCacheValue) {
+          const existingCacheValue = JSON.parse(rawExistingCacheValue);
+          const existingCacheValueData: Collector[] = existingCacheValue.data;
+          const updatedCacheValueData = existingCacheValueData.map((value) => {
+            if (value.id === collectorId) {
+              return { ...value, collectionGoal };
+            }
+            return value;
+          });
+
+          const updatedCacheValue = {
+            ...existingCacheValue,
+            creationTime: DateTime.now().toString(),
+            data: updatedCacheValueData,
+          };
+          AsyncStorage.setItem(cacheKey, JSON.stringify(updatedCacheValue));
+        }
+      };
 
       axios
         .post(
@@ -124,6 +154,8 @@ const CollectorView: FC<CollectorViewProps> = ({
           }
         )
         .then(() => {
+          updateCache();
+
           showGlobalSnackbar("Indsamlingsmål opdateret");
           resolve();
         })
