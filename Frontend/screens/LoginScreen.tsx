@@ -1,4 +1,5 @@
 import Constants from "expo-constants";
+import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Linking from "expo-linking";
 import { StackScreenProps } from "@react-navigation/stack";
@@ -24,7 +25,46 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
 
     AsyncStorage.setItem("accessToken", accessToken);
     if (idToken) {
-      AsyncStorage.setItem("idToken", idToken);
+      const setUserInfo = async () => {
+        const tokenDecoded = jwtDecode(idToken) as any;
+        /* eslint-disable camelcase */
+        const {
+          name,
+          oid,
+          extension_Administrator,
+          extension_CollectionAdministrator,
+          extension_Collector,
+          extension_LogisticsPartner,
+          extension_RecipientPartner,
+          extension_ProductionPartner,
+        } = tokenDecoded;
+
+        const userHasNoAccess =
+          !extension_Administrator &&
+          !extension_CollectionAdministrator &&
+          !extension_Collector &&
+          !extension_LogisticsPartner &&
+          !extension_RecipientPartner &&
+          !extension_ProductionPartner;
+
+        AsyncStorage.setItem(
+          "userInfo",
+          JSON.stringify({
+            name,
+            userId: oid,
+            isAdministrator: extension_Administrator,
+            isCollectionAdministrator: extension_CollectionAdministrator,
+            isCollector: extension_Collector,
+            isLogisticsPartner: extension_LogisticsPartner,
+            isRecipientPartner: extension_RecipientPartner,
+            isProductionPartner: extension_ProductionPartner,
+            userHasNoAccess,
+          })
+        );
+        /* eslint-enable camelcase */
+      };
+
+      setUserInfo();
     }
 
     navigation.navigate("Root");

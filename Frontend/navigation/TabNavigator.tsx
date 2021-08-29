@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import jwtDecode from "jwt-decode";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useEffect, useMemo, useState } from "react";
@@ -44,49 +43,16 @@ const TabNavigator: FC<Props> = () => {
 
   useEffect(() => {
     const updateUserInfo = async () => {
-      const idToken = await AsyncStorage.getItem("idToken");
-      if (idToken) {
-        const tokenDecoded = jwtDecode(idToken) as any;
-        /* eslint-disable camelcase */
-        const {
-          name,
-          oid,
-          extension_Administrator,
-          extension_CollectionAdministrator,
-          extension_Collector,
-          extension_LogisticsPartner,
-          extension_RecipientPartner,
-          extension_ProductionPartner,
-        } = tokenDecoded;
-
-        const userHasNoAccess =
-          !extension_Administrator &&
-          !extension_CollectionAdministrator &&
-          !extension_Collector &&
-          !extension_LogisticsPartner &&
-          !extension_RecipientPartner &&
-          !extension_ProductionPartner;
-
-        setUserInfo({
-          name,
-          userId: oid,
-          isAdministrator: extension_Administrator,
-          isCollectionAdministrator: extension_CollectionAdministrator,
-          isCollector: extension_Collector,
-          isLogisticsPartner: extension_LogisticsPartner,
-          isRecipientPartner: extension_RecipientPartner,
-          isProductionPartner: extension_ProductionPartner,
-          userHasNoAccess,
-        });
-        /* eslint-enable camelcase */
+      const rawUserInfo = await AsyncStorage.getItem("userInfo");
+      if (rawUserInfo) {
+        const userInfoFromStorage = JSON.parse(rawUserInfo);
+        setUserInfo(userInfoFromStorage);
       }
     };
 
     updateUserInfo();
 
-    return () => {
-      setUserInfo(undefined);
-    };
+    return () => setUserInfo(undefined);
   }, []);
 
   const welcomeText = userInfo?.name
