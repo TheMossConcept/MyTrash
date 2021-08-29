@@ -23,7 +23,11 @@ type CreateBatchFormData = {
 const validationSchema = yup.object().shape({
   inputWeight: yup.number().required("Forbrugt plast er påkrævet"),
   outputWeight: yup.number().required("Batch vægt er påkrævet"),
-  additionFactor: yup.number().required("Tilsætningsprocent er påkrævet"),
+  additionFactor: yup
+    .number()
+    .min(1, "Tilsætningsprocenten skal minimum være 1")
+    .max(100, "Tilsætningsprocenten kan maksimalt være 100")
+    .required("Tilsætningsprocent er påkrævet"),
   batchNumber: yup.string().required("Batch nummer er påkrævet"),
   clusterId: yup.string().required("Et batch skal tilknyttes et cluster"),
 });

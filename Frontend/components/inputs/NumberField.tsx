@@ -1,5 +1,5 @@
 import { ErrorMessage, useFormikContext } from "formik";
-import React, { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren } from "react";
 import {
   View,
   TextInput,
@@ -21,9 +21,6 @@ export default function NumberField<T>({
   // Somewhat hacky, but it seems like the path of least resistance in order to support floating
   // numbers without making the UI and form state inconsistent and without allowing strings to be
   // passed on as numbers
-  const [firstPartOfFloat, setFirstPartOfFloat] = useState<
-    string | undefined
-  >();
   const formikProps = useFormikContext<T>();
 
   if (!formikProps) {
@@ -36,28 +33,16 @@ export default function NumberField<T>({
       if (newValue === "") {
         setFieldValue(field, undefined);
       } else {
-        const lastCharacterOfNewValue = newValue.charAt(newValue.length - 1);
+        const integerValue = Number.parseInt(newValue, 10);
 
-        const valueToParse = firstPartOfFloat
-          ? `${firstPartOfFloat}${lastCharacterOfNewValue}`
-          : newValue;
-        const floatValue = Number.parseFloat(valueToParse);
-
-        if (!Number.isNaN(floatValue)) {
-          setFieldValue(field, floatValue);
-        }
-
-        if (lastCharacterOfNewValue === ".") {
-          setFirstPartOfFloat(newValue);
-        } else {
-          setFirstPartOfFloat(undefined);
+        if (!Number.isNaN(integerValue)) {
+          setFieldValue(field, integerValue);
         }
       }
     };
 
-    // TODO: Do NOT try to handle floating point numbers here!
     const value = values
-      ? firstPartOfFloat || (values[key] as unknown as number)?.toString() || ""
+      ? (values[key] as unknown as number)?.toString() || ""
       : "";
 
     return (

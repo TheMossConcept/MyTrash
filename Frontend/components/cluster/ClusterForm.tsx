@@ -40,6 +40,8 @@ const validationSchema = yup.object().shape({
   necessaryPlastic: yup.number(),
   usefulPlasticFactor: yup
     .number()
+    .min(1, "Genanvendelsesprocenten skal minimum være 1")
+    .max(100, "Genanvendelsesprocenten kan maksimalt være 100")
     .required("Genanvendelsesprocent skal angives"),
   logisticsPartnerId: yup.string().required("Logistikpartner skal vælges"),
   recipientPartnerId: yup.string().required("Modtagerpartner skal vælges"),

@@ -68,12 +68,14 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         <Menu loggedIn={false} />
         <HoueLogo />
         <View style={styles.textContainer}>
-          <AppText
-            text={`${ENVIRONMENT_NAME}. ${Linking.createURL(
-              "/"
-              // TODO: Better versioning
-            )}. Version 1.4.2. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
-          />
+          {ENVIRONMENT_NAME !== "production" && (
+            <AppText
+              text={`${ENVIRONMENT_NAME}. ${Linking.createURL(
+                "/"
+                // TODO: Better versioning
+              )}. Version 1.5.0. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
+            />
+          )}
         </View>
       </MainContentArea>
       <BottomButtonContainer style={styles.bottomButtonContainer}>
