@@ -14,7 +14,7 @@ export type TabsParamList = {
   Logistik: { userId: string };
   Modtagelse: { userId: string };
   Produktion: { userId: string };
-  NoAccess: undefined;
+  NoAccess: { text?: string };
 };
 
 export type AppRole = {

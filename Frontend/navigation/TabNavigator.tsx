@@ -112,6 +112,16 @@ const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
     return { userId: userInfo.userId };
   }, [userInfo.userId]);
 
+  const partnerAccessingMobile =
+    (userInfo.isAdministrator ||
+      userInfo.isCollectionAdministrator ||
+      userInfo.isLogisticsPartner ||
+      userInfo.isRecipientPartner ||
+      userInfo.isProductionPartner) &&
+    !isWeb;
+
+  const collectorAccessingWeb = userInfo.isCollector && isWeb;
+
   return (
     <Tab.Navigator
       initialRouteName="Administration"
@@ -180,6 +190,24 @@ const Navigator: FC<NavigatorProps> = ({ userInfo, isWeb = false }) => {
       )}
       {userInfo.userHasNoAccess && (
         <Tab.Screen name="NoAccess" component={NoAccess} />
+      )}
+      {partnerAccessingMobile && (
+        <Tab.Screen
+          name="NoPartnerOnMobile"
+          component={NoAccess}
+          initialParams={{
+            text: "En partner kan kun benytte MyTrash via webinterfacet. Log ud og log ind igen som en indsamler, eller log ind på webinterfacet",
+          }}
+        />
+      )}
+      {collectorAccessingWeb && (
+        <Tab.Screen
+          name="NoCollectorOnWeb"
+          component={NoAccess}
+          initialParams={{
+            text: "En indsamler kan kun tilgå MyTrash via mobil app'en. Log på mobil app'en som kan hentes i App Store eller Play Store i stedet",
+          }}
+        />
       )}
     </Tab.Navigator>
   );
