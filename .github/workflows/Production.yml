@@ -65,7 +65,6 @@ jobs:
       uses: Azure/functions-action@v1
       id: fa
       with:
-        app-name: 'houe-plastic-recycling-windows'
-        slot-name: 'production'
+        app-name: 'func-houe-mytrash'
         package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
         publish-profile: ${{ secrets.MYTRASH_BACKEND_PUBLISH_PROFILE_PRODUCTION }}
