@@ -1,4 +1,6 @@
 import React, { FC } from "react";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { EventRegister } from "react-native-event-listeners";
 import {
   View,
   ImageBackground,
@@ -7,41 +9,75 @@ import {
   StyleSheet,
   StyleProp,
   ViewStyle,
+  TouchableWithoutFeedback,
+  GestureResponderEvent,
 } from "react-native";
+import { useAssets } from "expo-asset";
+import Platform from "../../utils/platform";
+import LoadingIndicator from "./LoadingIndicator";
 
-type Props = { containerStyle?: StyleProp<ViewStyle>; isWeb?: boolean } & Omit<
-  ImageBackgroundProps,
-  "source" | "style"
->;
+type Props = {
+  containerStyle?: StyleProp<ViewStyle>;
+  disableScroll?: boolean;
+} & Omit<ImageBackgroundProps, "source" | "style">;
 
 const MainContentArea: FC<Props> = ({
   children,
   containerStyle,
-  isWeb = false,
+  disableScroll = false,
   ...imageBackgroundProps
 }) => {
-  return (
+  const isWeb = Platform.platformName === "web";
+
+  const handleGlobalPress = (event: GestureResponderEvent) => {
+    EventRegister.emit("globalPress", event);
+  };
+
+  const [assets] = useAssets([require("../../assets/images/background.png")]);
+
+  return !assets ? (
+    <View style={[styles.contentContainer, styles.loadingContainer]}>
+      <LoadingIndicator />
+    </View>
+  ) : (
     <View style={containerStyle}>
       <ImageBackground
         // TODO: Do something less brittle here than relying on the naming convention!
-        source={
-          isWeb
-            ? require("../../assets/images/background_web.png")
-            : require("../../assets/images/background.png")
-        }
+        source={{ uri: assets[0].localUri || assets[0].uri }}
         // If this is not an array, the width does not go all the way out for whatever reason
-        style={[styles.imageBackground]}
+        style={[styles.contentContainer]}
         {...imageBackgroundProps}
       >
-        <SafeAreaView style={{ height: "100%" }}>{children}</SafeAreaView>
+        {disableScroll || isWeb ? (
+          <TouchableWithoutFeedback onPress={handleGlobalPress}>
+            <View style={styles.childContainer}>
+              <SafeAreaView>{children}</SafeAreaView>
+            </View>
+          </TouchableWithoutFeedback>
+        ) : (
+          <KeyboardAwareScrollView>
+            <TouchableWithoutFeedback onPress={handleGlobalPress}>
+              <View style={styles.childContainer}>
+                <SafeAreaView>{children}</SafeAreaView>
+              </View>
+            </TouchableWithoutFeedback>
+          </KeyboardAwareScrollView>
+        )}
       </ImageBackground>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  imageBackground: {
+  contentContainer: {
     width: "100%",
+    height: "100%",
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  childContainer: {
     height: "100%",
     paddingTop: 64,
     paddingHorizontal: 49,

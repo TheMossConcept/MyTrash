@@ -14,6 +14,7 @@ export type PlasticCollection = {
   id: string;
   clusterId: string;
   requesterId: string;
+  clusterName: string;
   recipientPartnerId: string;
   numberOfUnits: number;
   streetAddress: string;
@@ -35,18 +36,18 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
   children,
 }) => {
   const {
-    companyName,
     streetAddress,
     zipCode,
     city,
     numberOfUnits,
     comment,
     weight,
+    clusterName,
   } = plasticCollection;
   const [showDetails, setShowDetails] = useState(false);
   const toggleDetails = () => setShowDetails(!showDetails);
 
-  const title = companyName || streetAddress;
+  const title = `${streetAddress} for cluster ${clusterName}`;
   const addressString =
     streetAddress && (zipCode || city)
       ? `${streetAddress || ""}, ${zipCode || ""} ${city || ""}`
@@ -63,7 +64,6 @@ const PlasticCollectionDetail: FC<PlasticCollectionDetailProps> = ({
           }}
           onPress={toggleDetails}
           isSelected={showDetails}
-          style={{ width: 512 }}
           text={title}
         />
       </View>
@@ -153,18 +153,19 @@ const PlasticCollectionsDetails: FC<Props> = ({
 
 const styles = {
   container: {
-    flexDirection: "row" as "row",
-    alignItems: "flex-start" as "flex-start",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
   },
   line: {
     marginBottom: 23,
   },
   detailsContainer: {
     marginLeft: 14,
-    width: 512,
+    flex: 1,
   },
   filterButton: {
-    width: 512,
+    flex: 1,
     marginBottom: 23,
   },
   commentField: {

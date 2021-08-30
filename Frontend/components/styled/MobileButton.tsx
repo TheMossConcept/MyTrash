@@ -8,11 +8,13 @@ import {
 } from "react-native";
 
 type Props = {
-  text: string;
+  text?: string;
   icon?: { src: any; width?: number; height?: number };
   isSelected?: boolean;
   isVerticalButton?: boolean;
+  ref?: any;
 } & TouchableOpacityProps;
+
 export type MobileButtonProps = Props;
 
 // TODO: Consider making a WebButton and a MobileButton
@@ -66,16 +68,18 @@ const MobileButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
             style={{ width: icon.width || 32, height: icon.height || 32 }}
           />
         )}
-        <Text
-          style={{
-            fontSize: 15,
-            color: isSelected ? "#7b8463" : "#a3a5a8",
-            textAlign: isVerticalButton ? "right" : undefined,
-            fontFamily: "HelveticaNeueLTPro-Bd",
-          }}
-        >
-          {text}
-        </Text>
+        {text && (
+          <Text
+            style={{
+              fontSize: 15,
+              color: isSelected ? "#7b8463" : "#a3a5a8",
+              textAlign: isVerticalButton ? "right" : undefined,
+              fontFamily: "HelveticaNeueLTPro-Bd",
+            }}
+          >
+            {text}
+          </Text>
+        )}
       </TouchableOpacity>
     );
   }
@@ -84,7 +88,6 @@ const MobileButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     borderRadius: 20,
     justifyContent: "space-between",
     alignItems: "flex-start",
@@ -122,11 +125,6 @@ const styles = StyleSheet.create({
   verticalButtonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-  },
-  webButtonContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
     alignItems: "center",
   },
 });

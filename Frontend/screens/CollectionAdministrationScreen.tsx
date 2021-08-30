@@ -6,9 +6,9 @@ import ClusterList, { Cluster } from "../components/cluster/ClusterList";
 import { TabsParamList } from "../typings/types";
 import Container from "../components/shared/Container";
 import { UpdateCluster } from "../components/cluster/ModifyCluster";
-import CollectorForm from "../components/user/CollectorForm";
 import useQueriedData from "../hooks/useQueriedData";
 import LoadingIndicator from "../components/styled/LoadingIndicator";
+import CollectorFormWithList from "../components/user/CollectorFormWithList";
 
 type Props = StackScreenProps<TabsParamList, "Indsamlingsadministration">;
 
@@ -36,12 +36,10 @@ const CollectionAdministrationScreen: FC<Props> = ({ route }) => {
                   successCallback={refetchClusters}
                 />
               </View>
-              <View style={{ flex: 1 }}>
-                <CollectorForm
-                  clusterId={cluster.id}
-                  title="Tilføj indsamler"
-                />
-              </View>
+              <CollectorFormWithList
+                clusterId={cluster.id}
+                title="Tilføj indsamler."
+              />
             </View>
           )}
         </ClusterList>

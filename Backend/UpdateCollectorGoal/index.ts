@@ -19,17 +19,23 @@ const httpTrigger: AzureFunction = async function (
     // Also note that the -'s have been removed
     const clientId = process.env.ClientId;
 
-    await client.api(`/users/${collectorId}`).patch({
+    const updatedCollector = await client.api(`/users/${collectorId}`).patch({
       [`extension_${clientId}_CollectionGoal`]: collectionGoal,
     });
 
     context.res = {
       statusCode: 200,
+      body: JSON.stringify(updatedCollector),
     };
   } catch (error) {
+    const body = JSON.stringify({
+      errorMessage: "Der skete en fejl under opdateringen af indsamlerens mål",
+      rawError: error,
+    });
+
     context.res = {
       statusCode: 500,
-      body: JSON.stringify(error),
+      body,
     };
   }
 };

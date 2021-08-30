@@ -39,7 +39,7 @@ const DeliverPlasticCollection: FC<Props> = ({
         }
       )
       .then(() => {
-        showGlobalSnackbar("Aflevering registreret");
+        showGlobalSnackbar("Afhentning registreret");
         resetForm();
 
         successCallback();
@@ -54,8 +54,12 @@ const DeliverPlasticCollection: FC<Props> = ({
       }
       validationSchema={validationSchema}
     >
-      <NumberField formKey="weight" label="Vægt" style={{ marginBottom: 23 }} />
-      <SubmitButton title="Register aflevering" isWeb />
+      <NumberField
+        formKey="weight"
+        label="Vægt i kg"
+        style={{ marginBottom: 23 }}
+      />
+      <SubmitButton title="Register afhentning" isWeb />
     </FormContainer>
   );
 };

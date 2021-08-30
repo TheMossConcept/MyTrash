@@ -43,7 +43,7 @@ const CollectionStatusPopover: FC<Props> = ({
         </TouchableOpacity>
       </View>
       <View style={styles.headlineContainer}>
-        <Text style={styles.headline}>Status på afhentninger.</Text>
+        <Text style={styles.headline}>Status på afhentning.</Text>
       </View>
       <StatusLine collectionStatus="pending" data={data} />
       <StatusLine collectionStatus="scheduled" data={data} />
@@ -96,6 +96,14 @@ const StatusLine: FC<StatusLineProps> = ({
       statusText = "";
   }
 
+  const dateString = `${dateToDisplay?.toFormat("dd LLLL")}`;
+  const timeString =
+    dateToDisplay && (dateToDisplay?.minute !== 0 || dateToDisplay?.hour !== 0)
+      ? ` ${dateToDisplay.toFormat("HH:mm")}`
+      : "";
+
+  const dateTimeString = `${dateString}${timeString}`;
+
   return (
     <View style={[styles.statusLineContainer, style]} {...viewProps}>
       <View style={styles.statusIndicatorContainer}>
@@ -111,12 +119,10 @@ const StatusLine: FC<StatusLineProps> = ({
         {isCurrentStatus && (
           <View style={{ justifyContent: "center" }}>
             <Text style={styles.informationText}>
-              {data.numberOfUnits} Stk.
+              {`${data.numberOfUnits} Stk.`}
             </Text>
             {dateToDisplay && (
-              <Text style={styles.informationText}>
-                {`${dateToDisplay.toFormat("dd LLLL yyyy")}.`}
-              </Text>
+              <Text style={styles.informationText}>{dateTimeString}</Text>
             )}
           </View>
         )}
@@ -127,21 +133,21 @@ const StatusLine: FC<StatusLineProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: 458,
-    width: 400,
+    height: 430,
+    width: 380,
     backgroundColor: "#d2d3c8",
   },
   crossContainer: {
     alignItems: "flex-end",
-    padding: 24,
+    padding: 32,
   },
   headlineContainer: {
     marginLeft: 20,
-    marginBottom: 40.5,
+    marginBottom: 20.25,
   },
   statusLineContainer: {
     marginHorizontal: 38.5,
-    marginBottom: 20,
+    marginBottom: 10,
     flexDirection: "row",
   },
   statusInformationContainer: {

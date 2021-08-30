@@ -1,12 +1,14 @@
 import axios from "axios";
 import * as yup from "yup";
-import React, { FC, useContext } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { FC, useContext, useState } from "react";
+import { StyleSheet } from "react-native";
+import { FormikHelpers } from "formik";
 import FormContainer from "../shared/FormContainer";
 import SubmitButton from "../inputs/SubmitButton";
 import StringField from "../inputs/StringField";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 type Props = {
   clusterId: string;
@@ -16,7 +18,7 @@ type Props = {
 };
 
 type CreateProductFormData = {
-  productNumber?: number;
+  productNumber?: string;
 };
 
 const validationSchema = yup.object().shape({
@@ -29,14 +31,18 @@ const CreateProduct: FC<Props> = ({
   batchId,
   successCallback,
 }) => {
+  const [loading, setLoading] = useState(false);
+
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
-  const initialFormValues: CreateProductFormData = {};
+  const initialFormValues: CreateProductFormData = { productNumber: "" };
   const sharedAxiosConfig = useAxiosConfig();
 
   const createProduct = (
     values: CreateProductFormData,
-    resetForm: () => void
+    helpers: FormikHelpers<CreateProductFormData>
   ) => {
+    setLoading(true);
+
     axios
       .post(
         "/CreateProduct",
@@ -49,21 +55,24 @@ const CreateProduct: FC<Props> = ({
         { ...sharedAxiosConfig }
       )
       .then(() => {
-        showGlobalSnackbar("Produkt oprettet");
-        resetForm();
+        showGlobalSnackbar("Vare oprettet");
 
         if (successCallback) {
           successCallback();
         }
+      })
+      .finally(() => {
+        helpers.resetForm();
+        helpers.validateForm();
+
+        setLoading(false);
       });
   };
 
   return (
     <FormContainer
       initialValues={initialFormValues}
-      onSubmit={(values, formikHelpers) =>
-        createProduct(values, formikHelpers.resetForm)
-      }
+      onSubmit={(values, formikHelpers) => createProduct(values, formikHelpers)}
       validationSchema={validationSchema}
       validateOnMount
     >
@@ -72,7 +81,8 @@ const CreateProduct: FC<Props> = ({
         label="Varenummer"
         style={styles.productNumberField}
       />
-      <SubmitButton title="Opret produkt" isWeb />
+      {loading && <LoadingIndicator />}
+      <SubmitButton title="Opret vare" isWeb />
     </FormContainer>
   );
 };

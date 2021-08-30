@@ -4,73 +4,104 @@ import { CollectionStatusData } from "../components/collection/CollectionStatusP
 import { CollectionFormData } from "../components/collection/OrderCollectionForm";
 import GlobalSnackbarContext from "../utils/globalContext";
 import useAxiosConfig from "./useAxiosConfig";
+import useQueriedData from "./useQueriedData";
 
 type ReturnValue = {
-  update?: (newValues: CollectionFormData) => void;
-  formValues?: CollectionFormData;
+  update?: (newValues: CollectionFormData) => Promise<CollectionData>;
+  formValues: CollectionFormData;
   statusValues?: CollectionStatusData;
   collectionIsOver?: boolean;
+  loading: boolean;
   refresh: () => void;
 };
 
-type CollectionData = CollectionFormData &
-  CollectionStatusData & { _id: string };
+type CollectionFormDataWithId = CollectionFormData & { _id: string };
+type CollectionData = CollectionFormDataWithId & CollectionStatusData;
 
 const useLatestPlasticCollection = (collectorId: string): ReturnValue => {
+  const {
+    data: existingCollection,
+    refetch: getLatestCollection,
+    updateCache,
+    isLoading: loading,
+  } = useQueriedData<CollectionData>("/GetLatestCollection", { collectorId });
+
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
 
-  const [existingCollection, setExistingCollection] =
-    useState<CollectionData>();
-  const sharedAxiosConfig = useAxiosConfig();
-
-  const getLatestCollection = () => {
-    axios
-      .get("/GetLatestCollection", {
-        ...sharedAxiosConfig,
-        params: { collectorId },
-      })
-      .then((response) => {
-        if (response.data) {
-          setExistingCollection(response.data);
-        }
-      });
-  };
-
-  // Try getting the latest collection initially
-  useEffect(() => {
-    getLatestCollection();
-  }, []);
+  const [existingFormData, setExistingFormData] =
+    useState<CollectionFormDataWithId>({
+      _id: "",
+      comment: "",
+      isLastCollection: false,
+    });
+  const [existingStatusData, setExistingStatusData] =
+    useState<CollectionStatusData>();
 
   const collectionHasYetToBeHandled =
-    existingCollection?.collectionStatus === "pending" ||
-    existingCollection?.collectionStatus === "scheduled";
+    existingStatusData?.collectionStatus === "pending";
 
-  if (existingCollection && collectionHasYetToBeHandled) {
+  useEffect(() => {
+    if (existingCollection && collectionHasYetToBeHandled) {
+      setExistingFormData(existingCollection);
+    } else {
+      setExistingFormData({
+        _id: "",
+        comment: "",
+        isLastCollection: false,
+      });
+    }
+
+    setExistingStatusData(existingCollection);
+  }, [collectionHasYetToBeHandled, existingCollection]);
+
+  const sharedAxiosConfig = useAxiosConfig();
+
+  /* eslint-disable-next-line no-underscore-dangle */
+  if (existingFormData._id && collectionHasYetToBeHandled) {
     const updateCollectionRequest = (values: CollectionFormData) => {
-      axios
-        .put("/UpdatePlasticCollection", values, {
-          ...sharedAxiosConfig,
-          /* eslint-disable-next-line no-underscore-dangle */
-          params: { collectionId: existingCollection._id },
-        })
-        .then((response) => {
-          setExistingCollection(response.data);
-          showGlobalSnackbar("Afhentning opdateret");
-        });
+      return new Promise<CollectionData>((resolve, reject) => {
+        axios
+          .put("/UpdatePlasticCollection", values, {
+            ...sharedAxiosConfig,
+            /* eslint-disable-next-line no-underscore-dangle */
+            params: { collectionId: existingFormData._id },
+          })
+          .then((response) => {
+            setExistingFormData(response.data);
+            setExistingStatusData(response.data);
+
+            showGlobalSnackbar("Afhentning redigeret");
+
+            updateCache(response.data);
+            resolve(response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+            getLatestCollection();
+
+            reject(error);
+          });
+      });
     };
 
     return {
       update: updateCollectionRequest,
-      statusValues: existingCollection,
-      formValues: existingCollection,
+      statusValues: existingStatusData,
+      formValues: existingFormData,
+      loading,
       // If the last collection has been handled, the collection is over
       collectionIsOver:
-        !collectionHasYetToBeHandled && existingCollection.isLastCollection,
+        !collectionHasYetToBeHandled && existingFormData.isLastCollection,
       refresh: getLatestCollection,
     };
   }
 
-  return { refresh: getLatestCollection, statusValues: existingCollection };
+  return {
+    refresh: getLatestCollection,
+    loading,
+    statusValues: existingStatusData,
+    formValues: existingFormData,
+  };
 };
 
 export default useLatestPlasticCollection;

@@ -1,9 +1,7 @@
 import { useFormikContext } from "formik";
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { useTheme } from "react-native-paper";
-import { AppRole } from "../../hooks/useAppRoles";
-import Container from "../shared/Container";
+import { View } from "react-native";
+import { AppRole } from "../../typings/types";
 import WebButton from "../styled/WebButton";
 
 type Props = {
@@ -13,7 +11,6 @@ type Props = {
 
 export default function RoleSelector({ formKey: key, appRoles }: Props) {
   const formikProps = useFormikContext<any>();
-  const { colors } = useTheme();
 
   if (!formikProps) {
     throw Error(
@@ -28,7 +25,12 @@ export default function RoleSelector({ formKey: key, appRoles }: Props) {
     };
 
     return (
-      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
         {appRoles.map((availableAppRole: AppRole) => {
           const roleIsSelected = selectedRole === availableAppRole.id;
           const selectRole = () => {
@@ -37,11 +39,12 @@ export default function RoleSelector({ formKey: key, appRoles }: Props) {
 
           return (
             <WebButton
-              text={availableAppRole.displayName}
+              text={availableAppRole.multilineDisplayName}
               onPress={selectRole}
               key={availableAppRole.id}
               isSelected={roleIsSelected}
               style={{ marginRight: 10 }}
+              textStyle={{ textAlign: "left" }}
             />
           );
         })}

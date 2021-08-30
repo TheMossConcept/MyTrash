@@ -1,0 +1,78 @@
+# Docs for the Azure Web Apps Deploy action: https://go.microsoft.com/fwlink/?linkid=2134798
+# More GitHub Actions for Azure: https://go.microsoft.com/fwlink/?linkid=2135048
+
+name: MyTrash - Staging (Houe)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './Backend' # set this to the path to your web app project, defaults to the repository root
+  AZURE_FRONTEND_PACKAGE_PATH: './Frontend' # set this to the path to your web app project, defaults to the repository root
+  NODE_VERSION: '14.x' # set this to the node version to use (supports 8.x, 10.x, 12.x, 14.x)
+  EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
+
+jobs:
+  frontend-build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # checkout the repo
+    - name: 'Checkout Github Action'
+      uses: actions/checkout@v2
+    - name: Build and deploy webapp
+      id: builddeploy
+      uses: Azure/static-web-apps-deploy@v1
+      env:
+        EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
+        NODE_VERSION: ${{ env.NODE_VERSION }}
+        PRE_BUILD_COMMAND: "npm install --global --silent expo-cli"
+        APPLICATION_ENVIRONMENT: staging
+        # POST_BUILD_COMMAND: "rm -rf .oryx_all_node_modules/ && expo publish"
+      with:
+        azure_static_web_apps_api_token: ${{ secrets.HOUE_STAGING_FRONTEND_PUBLISH_TOKEN }}
+        repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+        action: "upload"
+        ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+        # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+        app_location: "/Frontend" # App source code path
+        # We omit api_location because we need the API separate of the static web app so we can call it from mobile devices
+        api_location: "" # Api source code path - optional. 
+        output_location: "web-build" # Built app content directory - optional
+        ###### End of Repository/Build Configurations ######
+    - name: Deploy to Expo
+      env:
+        EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
+      run: |
+        cd Frontend
+        npm install --global --silent expo-cli
+        npm run publish
+  backend-build-and-deploy:
+    runs-on: windows-latest
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v2
+
+    - name: Setup Node ${{ env.NODE_VERSION }} Environment
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 'Resolve Project Dependencies Using Npm'
+      shell: pwsh
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        npm install
+        npm run build --if-present
+        npm run test --if-present
+        popd
+
+    - name: 'Run Azure Functions Action'
+      uses: Azure/functions-action@v1
+      id: fa
+      with:
+        app-name: 'func-houe-mytrash'
+        slot-name: 'staging'
+        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+        publish-profile: ${{ secrets.HOUE_STAGING_BACKEND_PUBLISH_PROFILE }}

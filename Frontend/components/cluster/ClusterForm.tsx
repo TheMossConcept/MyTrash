@@ -1,21 +1,25 @@
 import * as yup from "yup";
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Formik } from "formik";
-import Constants from "expo-constants";
+import * as Linking from "expo-linking";
+import Clipboard from "expo-clipboard";
 import SelectPartnersForm from "../user/SelectPartnersForm";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import BooleanField from "../inputs/BooleanField";
 import HeadlineText from "../styled/HeadlineText";
+import MobileButton from "../styled/MobileButton";
+import GlobalSnackbarContext from "../../utils/globalContext";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 export type ClusterFormData = {
-  isOpen: boolean;
+  open: boolean;
   closedForCollection: boolean;
   name: string;
   c5Reference: string;
-  necessaryPlastic?: number;
+  necessaryAmountOfPlastic?: number;
   usefulPlasticFactor?: number;
   productionPartnerId?: string;
   collectionAdministratorId?: string;
@@ -24,7 +28,7 @@ export type ClusterFormData = {
 };
 
 export type Props = {
-  cluster: ClusterFormData;
+  cluster: ClusterFormData & { closedForCollection: boolean };
   clusterId?: string;
   submit?: (Cluster: ClusterFormData, reset: () => void) => void;
   title?: string;
@@ -34,23 +38,35 @@ const validationSchema = yup.object().shape({
   name: yup.string().required("Navn skal angives"),
   c5Reference: yup.string(),
   necessaryPlastic: yup.number(),
-  usefulPlasticFactor: yup.number().required("Beregningsfaktor skal angives"),
-  collectionAdministratorId: yup
-    .string()
-    .required("Indsamlingsadministrator skal vælges"),
+  usefulPlasticFactor: yup
+    .number()
+    .min(1, "Genanvendelsesprocenten skal minimum være 1")
+    .max(100, "Genanvendelsesprocenten kan maksimalt være 100")
+    .required("Genanvendelsesprocent skal angives"),
   logisticsPartnerId: yup.string().required("Logistikpartner skal vælges"),
   recipientPartnerId: yup.string().required("Modtagerpartner skal vælges"),
   productionPartnerId: yup.string().required("Produktionspartner skal vælges"),
 });
 
 const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
-  let deepLinkUrl = "";
+  const showSnackbar = useContext(GlobalSnackbarContext);
+
+  let invitationLinkUrl = "";
   if (clusterId) {
-    const { MOBILE_REDIRECT_URL } = Constants.manifest.extra;
     // TODO: See if we can do something about the schema hardcoding!
     // TODO: This should probably be in the environment files!
-    deepLinkUrl = `${MOBILE_REDIRECT_URL}/tilmeld?clusterId=${clusterId}`;
+    invitationLinkUrl = Linking.createURL("/invitation", {
+      queryParams: { clusterId },
+    });
   }
+
+  const copyInvitationLinkToClipboard = () => {
+    Clipboard.setString(invitationLinkUrl);
+    showSnackbar("Invitationslinket er kopireret");
+  };
+
+  const editable = !cluster.closedForCollection;
+
   return (
     <Formik
       initialValues={cluster}
@@ -62,36 +78,73 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
       validationSchema={validationSchema}
       validateOnMount
     >
-      {({ values }) => (
+      {({ values, isSubmitting }) => (
         <View style={styles.container}>
-          <HeadlineText
-            text={`${title}.`}
-            style={{ alignItems: "flex-start" }}
+          {title && (
+            <HeadlineText
+              text={`${title}.`}
+              style={{ alignItems: "flex-start" }}
+            />
+          )}
+          <StringField
+            formKey="name"
+            label="Navn"
+            style={styles.inputField}
+            editable={editable}
           />
-          <StringField formKey="name" label="Navn" style={styles.inputField} />
           <StringField
             formKey="c5Reference"
             label="C5 Reference"
             style={styles.inputField}
+            editable={editable}
           />
           <NumberField
-            formKey="necessaryPlastic"
-            label="Målsætning"
+            formKey="necessaryAmountOfPlastic"
+            label="Målsætning i kg"
             style={styles.inputField}
+            editable={editable}
           />
           <NumberField
             formKey="usefulPlasticFactor"
-            label="Beregningsfaktor"
+            label="Genanvendelsesprocent"
             style={styles.inputField}
+            editable={editable}
           />
-          <SelectPartnersForm style={styles.selectPartnersForm} />
+          <SelectPartnersForm
+            style={styles.selectPartnersForm}
+            editable={editable}
+          />
           <View style={styles.isOpenCheckboxContainer}>
-            <BooleanField formKey="isOpen" label="Åbent cluster" />
-            {!values.isOpen && deepLinkUrl !== "" && (
-              <Text>Invitationslink: {deepLinkUrl}</Text>
+            <BooleanField
+              formKey="open"
+              label="Åbent cluster"
+              enabled={editable}
+            />
+            {!values.open && invitationLinkUrl !== "" && (
+              <View style={styles.invitationLinkContainer}>
+                <MobileButton
+                  icon={{
+                    src: require("../../assets/icons/copy.png"),
+                    width: 34,
+                    height: 34,
+                  }}
+                  style={{ marginRight: 23 }}
+                  onPress={copyInvitationLinkToClipboard}
+                />
+                <Text style={styles.invitationLinkText}>
+                  Invitationslink: {invitationLinkUrl}
+                </Text>
+              </View>
             )}
           </View>
-          {submit && <SubmitButton title={title || "Indsend"} isWeb />}
+          {isSubmitting && <LoadingIndicator />}
+          {submit && (
+            <SubmitButton
+              title={title || "Indsend"}
+              style={styles.submitButton}
+              isWeb
+            />
+          )}
         </View>
       )}
     </Formik>
@@ -108,11 +161,25 @@ const styles = StyleSheet.create({
     // TODO: This should automatically be handled by the AutocompleteInput instead!
     zIndex: -1,
   },
+  submitButton: {
+    // TODO: This should automatically be handled by the AutocompleteInput instead!
+    zIndex: -1,
+  },
   inputField: {
     marginBottom: 23,
   },
   selectPartnersForm: {
     marginBottom: 23,
+  },
+  invitationLinkContainer: {
+    flexDirection: "row",
+    marginTop: 23,
+    alignItems: "center",
+  },
+  invitationLinkText: {
+    color: "#a3a5a8",
+    fontFamily: "HelveticaNeueLTPro-Bd",
+    fontSize: 16,
   },
 });
 

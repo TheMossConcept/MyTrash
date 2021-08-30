@@ -1,10 +1,12 @@
 import axios from "axios";
 import React, { FC, useContext, useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native-paper";
+import { View } from "react-native";
 import ClusterForm, { ClusterFormData } from "./ClusterForm";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import GlobalSnackbarContext from "../../utils/globalContext";
 import WebButton, { WebButtonProps } from "../styled/WebButton";
+import ConfirmationDialog from "../shared/ConfirmationDialog";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 type UpdateFormProps = {
   successCallback: () => void;
@@ -42,7 +44,7 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
         ...sharedAxiosConfig,
       })
       .then(() => {
-        showGlobalSnackbar("Clusteret blev opdateret");
+        showGlobalSnackbar("Clusteret blev redigeret");
 
         successCallback();
       });
@@ -53,10 +55,10 @@ export const UpdateCluster: FC<UpdateFormProps> = ({
       cluster={initialValues}
       clusterId={clusterId}
       submit={updateCluster}
-      title="Opdater cluster"
+      title="Rediger cluster"
     />
   ) : (
-    <ActivityIndicator />
+    <LoadingIndicator />
   );
 };
 
@@ -69,7 +71,7 @@ export const CreateCluster: FC<CreateFormProps> = ({ successCallback }) => {
 
   const initialValues = {
     name: "",
-    isOpen: false,
+    open: false,
     closedForCollection: false,
     c5Reference: "",
     logisticsPartnerId: "",
@@ -110,9 +112,13 @@ export const CloseClusterBtn: FC<CloseClusterBtnProps> = ({
   title,
   ...webButtonProps
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const sharedAxiosConfig = useAxiosConfig();
 
   const closeCluster = () => {
+    setIsLoading(true);
+
     axios
       .post(
         "/CloseCluster",
@@ -123,15 +129,79 @@ export const CloseClusterBtn: FC<CloseClusterBtnProps> = ({
         if (successCallback) {
           successCallback();
         }
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
   return (
-    <WebButton
-      onPress={closeCluster}
-      text={title || "Luk cluster"}
-      disabled={false}
-      {...webButtonProps}
-    />
+    <View>
+      {isLoading ? (
+        <LoadingIndicator />
+      ) : (
+        <WebButton
+          onPress={() => setShowConfirmationDialog(true)}
+          text={title || "Luk cluster"}
+          disabled={false}
+          {...webButtonProps}
+        />
+      )}
+      <ConfirmationDialog
+        description="Clusteret lukkes og alt data relateret til det slettes efter 30 dage"
+        showState={[showConfirmationDialog, setShowConfirmationDialog]}
+        actionToConfirm={closeCluster}
+      />
+    </View>
+  );
+};
+
+type OpenClusterBtnProps = {
+  clusterId: string;
+  title?: string;
+  successCallback?: () => void;
+} & Omit<WebButtonProps, "onPress" | "text" | "disabled" | "isSelected">;
+
+export const OpenClusterBtn: FC<OpenClusterBtnProps> = ({
+  clusterId,
+  successCallback,
+  title,
+  ...webButtonProps
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const sharedAxiosConfig = useAxiosConfig();
+
+  const openCluster = () => {
+    setIsLoading(true);
+
+    axios
+      .put(
+        "/ReopenCluster",
+        {},
+        { ...sharedAxiosConfig, params: { clusterId } }
+      )
+      .then(() => {
+        if (successCallback) {
+          successCallback();
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  return (
+    <View>
+      {isLoading ? (
+        <LoadingIndicator />
+      ) : (
+        <WebButton
+          onPress={openCluster}
+          text={title || "Åben cluster"}
+          disabled={false}
+          {...webButtonProps}
+        />
+      )}
+    </View>
   );
 };

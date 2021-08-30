@@ -1,12 +1,19 @@
 import axios from "axios";
 import { DateTime } from "luxon";
-import React, { FC, useContext, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { DatePickerModal, TimePickerModal } from "react-native-paper-dates";
+import {
+  CalendarDate,
+  SingleChange,
+} from "react-native-paper-dates/lib/typescript/src/Date/Calendar";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
+import useQueriedData from "../../hooks/useQueriedData";
 import GlobalSnackbarContext from "../../utils/globalContext";
 import InformationField from "../styled/InformationField";
+import LoadingIndicator from "../styled/LoadingIndicator";
 import WebButton from "../styled/WebButton";
+import { PlasticCollection } from "./PlasticCollectionsDetails";
 
 type Props = {
   plasticCollectionId: string;
@@ -18,6 +25,30 @@ const SchedulePlasticCollection: FC<Props> = ({
   plasticCollectionScheduledCallback,
 }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
+  const [loading, setLoading] = useState(false);
+
+  const {
+    isLoading: existingCollectionLoading,
+    refetch,
+    data: plasticCollection,
+  } = useQueriedData<PlasticCollection>("/GetPlasticCollection", {
+    id: plasticCollectionId,
+  });
+
+  const [initialDate, setInitialDate] = useState<DateTime | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    if (plasticCollection && plasticCollection.scheduledPickupDate) {
+      const parsedDate = DateTime.fromJSDate(
+        new Date(plasticCollection.scheduledPickupDate)
+      );
+
+      setDate(parsedDate);
+      setInitialDate(parsedDate);
+    }
+  }, [plasticCollection]);
 
   const [date, setDate] = useState<DateTime | undefined>(undefined);
 
@@ -30,12 +61,11 @@ const SchedulePlasticCollection: FC<Props> = ({
   const onDismissDate = () => setDatePickerOpen(false);
   const onDismissTime = () => setTimePickerOpen(false);
 
-  // TODO: Fix these typings so they come from the library itself!
-  const onConfirmDate = (params: { date: Date }) => {
+  const onConfirmDate: SingleChange = (params: { date: CalendarDate }) => {
     const { date: selectedDate } = params;
-    const selectedDateTime = DateTime.fromJSDate(selectedDate);
 
     if (selectedDate) {
+      const selectedDateTime = DateTime.fromJSDate(selectedDate);
       setDate(selectedDateTime);
     }
 
@@ -44,8 +74,7 @@ const SchedulePlasticCollection: FC<Props> = ({
   const onConfirmTime = ({
     hours,
     minutes,
-  }: // TODO: Fix these typings so they come from the library itself!
-  {
+  }: {
     hours: number;
     minutes: number;
   }) => {
@@ -55,6 +84,7 @@ const SchedulePlasticCollection: FC<Props> = ({
         hour: hours,
         minute: minutes,
       });
+
       setDate(dateWithTime);
     }
 
@@ -64,6 +94,8 @@ const SchedulePlasticCollection: FC<Props> = ({
   const sharedAxiosConfig = useAxiosConfig();
   const schedule = () => {
     if (date) {
+      setLoading(true);
+
       axios
         .post(
           "SchedulePlasticCollection",
@@ -75,7 +107,12 @@ const SchedulePlasticCollection: FC<Props> = ({
         )
         .then(() => {
           showGlobalSnackbar("Afhentning planlagt");
+
+          refetch();
           plasticCollectionScheduledCallback();
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
@@ -90,9 +127,15 @@ const SchedulePlasticCollection: FC<Props> = ({
       } ${timeSelectionString}`
     : "";
 
+  const isLoadingExistingCollection =
+    plasticCollectionId !== undefined && existingCollectionLoading;
+
+  const dateHasChanged = date !== initialDate;
+
   return (
     <View>
       <View style={styles.selectPickupDateTimeContainer}>
+        {isLoadingExistingCollection && <LoadingIndicator />}
         {date !== undefined && (
           <View style={styles.dateStringInformationFieldContainer}>
             <InformationField value={selectedDateTimeString} />
@@ -107,7 +150,7 @@ const SchedulePlasticCollection: FC<Props> = ({
           <WebButton
             text="Vælg dato"
             onPress={selectPickupDate}
-            disabled={false}
+            disabled={isLoadingExistingCollection}
             icon={{
               src: require("../../assets/icons/calendar_grey.png"),
               width: 25,
@@ -119,7 +162,7 @@ const SchedulePlasticCollection: FC<Props> = ({
           <WebButton
             text="Vælg tid"
             onPress={selectPickupTime}
-            disabled={date === undefined}
+            disabled={date === undefined || isLoadingExistingCollection}
             icon={{
               src: require("../../assets/icons/calendar_grey.png"),
               width: 25,
@@ -137,8 +180,8 @@ const SchedulePlasticCollection: FC<Props> = ({
             startDate: new Date(),
           }}
           label="Vælg afhentningsdato" // optional, default 'Select time'
-          cancelLabel="Annuller" // optional, default: 'Cancel'
-          confirmLabel="Vælg" // optional, default: 'Ok'
+          // cancelLabel="Annuller" // optional, default: 'Cancel'
+          // confirmLabel="Vælg" // optional, default: 'Ok'
           animationType="fade" // optional, default is 'none'
         />
         <TimePickerModal
@@ -151,20 +194,17 @@ const SchedulePlasticCollection: FC<Props> = ({
           animationType="fade" // optional, default is 'none'
         />
       </View>
+      {loading && <LoadingIndicator />}
       <WebButton
         text="Planlæg."
-        disabled={date === undefined}
+        disabled={date === undefined || !dateHasChanged || loading}
         onPress={schedule}
-        style={styles.submitButton}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  submitButton: {
-    width: 256,
-  },
   selectPickupDateTimeContainer: {
     flexDirection: "row",
     marginBottom: 23,

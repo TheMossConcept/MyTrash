@@ -19,22 +19,28 @@ const httpTrigger: AzureFunction = async function (
 
     // TODO: Consider whether it is a good idea to have two different return values
     // depending on the request issued!
-    const {
-      collectors: idsOfCollectors,
-    } = await databaseAPI.findById<ClusterEntity>("cluster", clusterId);
+    const cluster = await databaseAPI.findById<ClusterEntity>(
+      "cluster",
+      clusterId
+    );
+
+    const idsOfCollectors = cluster.collectors || [];
+
+    const rectifiedIdOfCollectors = idsOfCollectors.filter(
+      (idOfCollector) => idOfCollector !== null && idOfCollector !== undefined
+    );
 
     // We get an UnsupportedQuery from the Microsoft Graph API if we
     // try to filter with an empty array
-    if (isEmpty(idsOfCollectors)) {
+    if (isEmpty(rectifiedIdOfCollectors)) {
       context.res = {
-        body: JSON.stringify(idsOfCollectors),
+        body: JSON.stringify(rectifiedIdOfCollectors),
       };
     } else {
       // Make sure the array is valid for use in the graph filtering query!
-      const rectifiedFilteringArray = JSON.stringify(idsOfCollectors).replace(
-        '/"/g',
-        "'"
-      );
+      const rectifiedFilteringArray = JSON.stringify(
+        rectifiedIdOfCollectors
+      ).replace('/"/g', "'");
 
       // Please note that this is the client id of the b2c-extensions-app and NOT of the actual app registration itself!
       // Also note that the -'s have been removed
@@ -62,9 +68,14 @@ const httpTrigger: AzureFunction = async function (
         body: JSON.stringify(returnValue),
       };
     }
-  } catch (e) {
+  } catch (error) {
+    const body = JSON.stringify({
+      errorMessage: "Der skete en fejl under hentningen af indsamlerne",
+      rawError: error.toString(),
+    });
+
     context.res = {
-      body: JSON.stringify(e),
+      body,
       statusCode: 500,
     };
   }

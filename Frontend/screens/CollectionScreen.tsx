@@ -1,6 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { FC, useState } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet, Linking } from "react-native";
 import { TabsParamList } from "../typings/types";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import MobileButton from "../components/styled/MobileButton";
@@ -13,12 +13,21 @@ import { Cluster } from "../components/cluster/ClusterList";
 import { ClusterFormData } from "../components/cluster/ClusterForm";
 import CollectionForm from "../components/collection/OrderCollectionForm";
 import Container from "../components/shared/Container";
+import HoueLogo from "../components/styled/HoueLogo";
+import LoadingIndicator from "../components/styled/LoadingIndicator";
 
 type Props = StackScreenProps<TabsParamList, "Indsamling">;
 
 type FullCluster = Cluster & ClusterFormData;
 
 const CollectionScreen: FC<Props> = ({ route }) => {
+  const openMyTrashInfo = () => {
+    Linking.openURL("https://www.houe.com/media/MyTrash_info.pdf");
+  };
+  const openProductsInfo = () => {
+    Linking.openURL("https://www.houe.com/media/MyTrash_produkter.pdf");
+  };
+
   const [selectedScreen, setSelectedScreen] = useState<"status" | "collection">(
     "status"
   );
@@ -33,7 +42,6 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       collectorId: userId,
     }
   );
-
   const activeClusters = clusters
     ? clusters.filter((cluster) => !cluster.closedForCollection)
     : [];
@@ -44,27 +52,33 @@ const CollectionScreen: FC<Props> = ({ route }) => {
     activeClusters.length > 0 ? activeClusters[0] : undefined;
 
   /* eslint-disable no-nested-ternary */
-  return isLoading ? (
+  return !activeCluster && isLoading ? (
     <Container style={styles.centered}>
-      <ActivityIndicator />
+      <LoadingIndicator />
     </Container>
   ) : activeCluster ? (
     <Container>
-      <MainContentArea containerStyle={{ height: "80%" }}>
+      <MainContentArea containerStyle={styles.mainContentAreaContainer}>
         <Menu />
-        <HeadlineText style={{ marginTop: 54 }} />
+        <HoueLogo />
+        {isLoading && (
+          <View style={styles.centered}>
+            <LoadingIndicator />
+          </View>
+        )}
         {statusSelected ? (
           <CollectorProgression
             userId={userId}
             clusterId={activeCluster.id}
-            style={{ marginTop: 62.5 }}
+            clusterIsOpen={activeCluster.open}
+            style={styles.collectorProgression}
           />
         ) : (
           <CollectionForm userId={userId} clusterId={activeCluster.id} />
         )}
       </MainContentArea>
-      <BottomButtonContainer style={{ paddingVertical: 20, height: "20%" }}>
-        <View style={{ flex: 1, paddingHorizontal: 7 }}>
+      <BottomButtonContainer style={styles.bottomButtonContainer}>
+        <View style={styles.firstButtonContainer}>
           <MobileButton
             text={`Status \n indsamling.`}
             icon={{
@@ -77,12 +91,11 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             isVerticalButton
             isSelected={statusSelected}
             onPress={() => setSelectedScreen("status")}
-            style={{
-              marginBottom: 9,
-            }}
+            style={styles.topButton}
           />
           <MobileButton
-            text="Projekt."
+            text="MyTrash info."
+            onPress={openMyTrashInfo}
             icon={{
               src: require("../assets/icons/leaf_grey.png"),
               width: 20.5,
@@ -91,7 +104,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             isVerticalButton
           />
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={styles.secondButtonContainer}>
           <MobileButton
             text={`Afhentning \n plastik.`}
             icon={{
@@ -104,12 +117,11 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             isVerticalButton
             isSelected={collectionSelected}
             onPress={() => setSelectedScreen("collection")}
-            style={{
-              marginBottom: 9,
-            }}
+            style={styles.topButton}
           />
           <MobileButton
             text="Produkter."
+            onPress={openProductsInfo}
             icon={{
               src: require("../assets/icons/chair_grey.png"),
               width: 19.5,
@@ -121,9 +133,13 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       </BottomButtonContainer>
     </Container>
   ) : (
-    <Container style={styles.centered}>
-      <HeadlineText text="Ingen aktive clustere" />
-    </Container>
+    <View>
+      <Menu />
+      <HoueLogo />
+      <Container style={styles.centered}>
+        <HeadlineText text="Ingen aktive clustere" />
+      </Container>
+    </View>
   );
   /* eslint-enable no-nested-ternary */
 };
@@ -133,6 +149,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  mainContentAreaContainer: {
+    height: "80%",
+  },
+  collectorProgression: { marginTop: 72.5 },
+  bottomButtonContainer: {
+    paddingVertical: 10,
+    height: "20%",
+  },
+  firstButtonContainer: { flex: 1, paddingHorizontal: 7 },
+  secondButtonContainer: { flex: 1 },
+  topButton: { marginBottom: 9 },
 });
 
 export default CollectionScreen;

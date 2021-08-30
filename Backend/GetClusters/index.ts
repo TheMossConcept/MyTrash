@@ -98,9 +98,14 @@ const httpTrigger: AzureFunction = async function (
         body: JSON.stringify(returnValue),
       };
     }
-  } catch (e) {
+  } catch (error) {
+    const body = JSON.stringify({
+      errorMessage: "Der skete en fejl under hentning af clusterne",
+      rawError: error,
+    });
+
     context.res = {
-      body: JSON.stringify(e),
+      body,
     };
   }
 };

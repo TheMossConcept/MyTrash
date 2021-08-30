@@ -9,12 +9,17 @@ import {
   Image,
 } from "react-native";
 
-type Props<T> = { formKey: keyof T & string; label: string } & ViewProps;
+type Props<T> = {
+  formKey: keyof T & string;
+  label: string;
+  enabled?: boolean;
+} & ViewProps;
 
 export default function BooleanField<T>({
   formKey: key,
   label,
   style,
+  enabled = true,
   ...viewProps
 }: PropsWithChildren<Props<T>>) {
   const formikProps = useFormikContext<T>();
@@ -26,11 +31,15 @@ export default function BooleanField<T>({
   } else {
     const { values, setFieldValue } = formikProps;
 
-    const checked = values[key];
+    const checked = values ? values[key] : false;
     return (
       <View style={[styles.container, style]} {...viewProps}>
         <View style={styles.checkboxContainer}>
-          <TouchableOpacity onPress={() => setFieldValue(key, !values[key])}>
+          <TouchableOpacity
+            onPress={
+              enabled ? () => setFieldValue(key, !values[key]) : undefined
+            }
+          >
             <View style={styles.checkbox}>
               {checked && (
                 <Image

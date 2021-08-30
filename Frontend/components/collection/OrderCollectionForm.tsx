@@ -15,6 +15,7 @@ import SubmitButton from "../inputs/SubmitButton";
 import MobileButton from "../styled/MobileButton";
 import CollectionStatusPopover from "./CollectionStatusPopover";
 import useLatestPlasticCollection from "../../hooks/useLatestPlasticCollection";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 export type CollectionFormData = {
   numberOfUnits?: number;
@@ -40,23 +41,35 @@ const validationSchema = yup.object().shape({
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
 const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
   const showGlobalSnackbar = useContext(GlobalSnackbarContext);
-  const initialValues = {
-    isLastCollection: false,
-    comment: "",
-  };
+
+  const [isCreatingCollection, setIsCreatingCollection] = useState(false);
+  const [isUpdatingCollection, setIsUpdatingCollection] = useState(false);
 
   const [popoverIsShown, setPopoverIsShown] = useState(false);
-  const popoverRef = useRef<TouchableOpacity>();
+  const popoverRef = useRef<TouchableOpacity>(null);
 
-  const { update, formValues, statusValues, refresh, collectionIsOver } =
-    useLatestPlasticCollection(userId);
+  const {
+    update,
+    formValues,
+    loading: isFetchingData,
+    statusValues,
+    refresh,
+    collectionIsOver,
+  } = useLatestPlasticCollection(userId);
+
+  const showCollectionStatusPopover = () => {
+    refresh();
+    setPopoverIsShown(true);
+  };
+
+  const loading =
+    isCreatingCollection || isUpdatingCollection || isFetchingData;
 
   const sharedAxiosConfig = useAxiosConfig();
 
-  const createCollectionRequest = (
-    values: CollectionFormData,
-    reset: () => void
-  ) => {
+  const createCollectionRequest = (values: CollectionFormData) => {
+    setIsCreatingCollection(true);
+
     axios
       .post(
         "/CreatePlasticCollection",
@@ -67,17 +80,23 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
         refresh();
 
         showGlobalSnackbar("Afhentning bestilt");
-        reset();
 
         if (successCallback) {
           successCallback();
         }
+      })
+      .catch((error) => {
+        console.log(error);
+        refresh();
+      })
+      .finally(() => {
+        setIsCreatingCollection(false);
       });
   };
 
   const dismissPopover = () => setPopoverIsShown(false);
 
-  return collectionIsOver ? (
+  return collectionIsOver === true ? (
     <View>
       <Text style={styles.headlineText}>Indsamlingen er overstået</Text>
       {statusValues && (
@@ -90,59 +109,73 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     </View>
   ) : (
     <View>
-      <Text style={styles.headlineText}>Book afhentninger.</Text>
+      <Text style={styles.headlineText}>Book afhentning.</Text>
       <FormContainer
-        initialValues={formValues || initialValues}
+        initialValues={formValues}
         validationSchema={validationSchema}
-        onSubmit={(values, formikHelpers) => {
+        onSubmit={async (values) => {
           if (update) {
-            update(values);
+            setIsUpdatingCollection(true);
+
+            update(values).finally(() => {
+              setIsUpdatingCollection(false);
+            });
           } else {
-            createCollectionRequest(values, formikHelpers.resetForm);
+            createCollectionRequest(values);
           }
         }}
         validateOnMount
         enableReinitialize
         style={styles.contentContainer}
       >
-        <NumberField label="Antal enheder" formKey="numberOfUnits" />
+        <NumberField
+          label="Antal enheder"
+          formKey="numberOfUnits"
+          editable={!loading}
+        />
         <StringField
           label="Kommentar"
           formKey="comment"
           maxLength={140}
+          editable={!loading}
           style={styles.inputField}
         />
         <BooleanField
           label="Sidste opsamling"
           formKey="isLastCollection"
+          enabled={!loading}
           style={styles.inputField}
         />
-        <View style={styles.buttonsContainer}>
-          <SubmitButton
-            title={update ? `Ret \n afhentning` : `Book \n afhentning.`}
-            style={[styles.button, { marginRight: 7.5 }]}
-            icon={{
-              src: require("../../assets/icons/calendar_grey.png"),
-              width: 28,
-              height: 27.5,
-            }}
-          />
-          <MobileButton
-            text={`Status på \n afhentning.`}
-            ref={popoverRef}
-            onPress={() => setPopoverIsShown(true)}
-            disabled={!statusValues}
-            isVerticalButton
-            style={styles.button}
-            icon={{
-              src: require("../../assets/icons/notepad_grey.png"),
-              height: 30,
-              width: 33,
-            }}
-          />
-        </View>
+        {loading ? (
+          <LoadingIndicator />
+        ) : (
+          <View style={styles.buttonsContainer}>
+            <SubmitButton
+              title={update ? `Ret \n afhentning` : `Book \n afhentning.`}
+              style={[styles.button, { marginRight: 7.5 }]}
+              icon={{
+                src: require("../../assets/icons/calendar_grey.png"),
+                width: 28,
+                height: 27.5,
+              }}
+            />
+            <MobileButton
+              text={`Status på \n afhentning.`}
+              ref={popoverRef}
+              onPress={showCollectionStatusPopover}
+              disabled={!statusValues}
+              isVerticalButton
+              style={styles.button}
+              icon={{
+                src: require("../../assets/icons/notepad_grey.png"),
+                height: 30,
+                width: 33,
+              }}
+            />
+          </View>
+        )}
       </FormContainer>
-      {statusValues && (
+      {statusValues !== undefined && (
         <Popover
           from={popoverRef}
           isVisible={popoverIsShown}
@@ -169,9 +202,15 @@ const styles = StyleSheet.create({
     marginTop: 40.5,
   },
   buttonsContainer: {
-    marginTop: 58.5,
+    marginTop: 20,
+    marginBottom: 20,
     height: 68,
     flexDirection: "row",
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
   },
   button: {
     flex: 1,

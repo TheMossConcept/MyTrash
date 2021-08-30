@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { View, ViewProps, Text, StyleSheet } from "react-native";
 import ProgressWheel from "react-native-progress-wheel";
-import InformationText from "../styled/InformationText";
+import HeadlineText from "../styled/HeadlineText";
 
 type Props = {
   explanationText: string;
@@ -28,7 +28,7 @@ const UserProgressionCircle: FC<Props> = ({
   );
 
   return (
-    <View style={[styles.container, style]} {...viewProps}>
+    <View style={[style]} {...viewProps}>
       {collectedPercentage !== undefined ? (
         <View>
           <Text
@@ -55,7 +55,7 @@ const UserProgressionCircle: FC<Props> = ({
           />
         </View>
       ) : (
-        <InformationText>Kunne ikke hentes</InformationText>
+        <HeadlineText text="Kunne ikke hentes" />
       )}
     </View>
   );

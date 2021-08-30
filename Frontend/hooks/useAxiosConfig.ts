@@ -1,11 +1,34 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AxiosRequestConfig } from "axios";
-import { useEffect, useMemo, useState } from "react";
+import axios, { AxiosRequestConfig } from "axios";
+import { useContext, useEffect, useMemo, useState } from "react";
 import Constants from "expo-constants";
+import GlobalSnackbarContext from "../utils/globalContext";
 
 export default function useAxiosConfig(): AxiosRequestConfig {
-  const { BACKEND_URL } = Constants.manifest.extra;
+  const { BACKEND_URL } = Constants.manifest.extra || {};
   const [accessToken, setAccessToken] = useState<string | undefined>();
+
+  const showSnackbar = useContext(GlobalSnackbarContext);
+  useEffect(() => {
+    const errorHandlingInterceptor = axios.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (errorObject) => {
+        const responseData = errorObject?.response?.data;
+        if (responseData) {
+          const { errorMessage } = responseData;
+          if (errorMessage) {
+            showSnackbar(errorMessage, true);
+          }
+        }
+
+        return Promise.reject(errorObject);
+      }
+    );
+
+    return () => axios.interceptors.response.eject(errorHandlingInterceptor);
+  }, [showSnackbar]);
 
   useEffect(() => {
     AsyncStorage.getItem("accessToken").then((accessTokenFromLocalStorage) => {

@@ -1,0 +1,12 @@
+{
+ "routes": [
+   { "route": "/login", "rewrite": "index.html" },
+   { "route": "/tilmeld", "rewrite": "index.html" },
+   { "route": "/invitation*", "rewrite": "index.html" },
+   { "route": "/administration", "rewrite": "index.html" },
+   { "route": "/Indsamlingsadministration*", "rewrite": "index.html" },
+   { "route": "/Logistik*", "rewrite": "index.html" },
+   { "route": "/Modtagelse*", "rewrite": "index.html" },
+   { "route": "/Produktion*", "rewrite": "index.html" }
+ ]
+}

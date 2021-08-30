@@ -2,24 +2,24 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { EventRegister } from "react-native-event-listeners";
 import React, { FC } from "react";
 
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { TabsParamList } from "../typings/types";
 import ClusterList, { Cluster } from "../components/cluster/ClusterList";
 import Container from "../components/shared/Container";
 import {
   CloseClusterBtn,
   CreateCluster,
+  OpenClusterBtn,
   UpdateCluster,
 } from "../components/cluster/ModifyCluster";
 import CollaboratorForm from "../components/user/CollaboratorForm";
-import CollectorForm from "../components/user/CollectorForm";
 import ClusterForm, {
   ClusterFormData,
 } from "../components/cluster/ClusterForm";
-import CollectorList from "../components/user/CollectorList";
 import HeadlineText from "../components/styled/HeadlineText";
 import useQueriedData from "../hooks/useQueriedData";
 import LoadingIndicator from "../components/styled/LoadingIndicator";
+import CollectorFormWithList from "../components/user/CollectorFormWithList";
 
 type Props = StackScreenProps<TabsParamList, "Administration">;
 
@@ -41,65 +41,74 @@ const AdministrationScreen: FC<Props> = () => {
 
   return (
     <Container>
-      <View style={{ flexDirection: "row", marginBottom: 50 }}>
-        <View style={{ flex: 1, marginRight: 50 }}>
+      <View style={styles.container}>
+        <View style={styles.collaboratorFormContainer}>
           <CollaboratorForm
             title="Inviter partner"
             successCallback={handlePartnerInvited}
           />
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={styles.createClusterContainer}>
           <CreateCluster successCallback={refetchClusters} />
         </View>
       </View>
-      <HeadlineText
-        text="Aktive clustre."
-        style={{ alignItems: "flex-start" }}
-      />
+      <HeadlineText text="Aktive clustre." style={styles.headlineText} />
       {isLoading ? (
         <LoadingIndicator />
       ) : (
         <ClusterList clusters={activeClusters}>
           {({ cluster }) => (
             <View>
-              <View style={{ flexDirection: "row" }}>
-                <View style={{ flex: 1, marginRight: 23 }}>
+              <View style={styles.activeClustersContainer}>
+                <View style={styles.updateClusterContainer}>
                   <UpdateCluster
                     clusterId={cluster.id}
                     successCallback={refetchClusters}
                   />
                 </View>
-                <View style={{ flex: 1 }}>
-                  <CollectorForm
-                    clusterId={cluster.id}
-                    title="Tilføj indsamler"
-                    style={{ marginBottom: 23 }}
-                  />
-                  <CollectorList clusterId={cluster.id} />
-                </View>
+                <CollectorFormWithList
+                  clusterId={cluster.id}
+                  title="Tilføj indsamler."
+                />
               </View>
               <CloseClusterBtn
                 clusterId={cluster.id}
                 successCallback={refetchClusters}
-                style={{ marginTop: 23 }}
+                style={styles.changeClusterStateButton}
               />
             </View>
           )}
         </ClusterList>
       )}
-      <HeadlineText
-        text="Lukkede clustre."
-        style={{ alignItems: "flex-start" }}
-      />
+      <HeadlineText text="Lukkede clustre." style={styles.headlineText} />
       {isLoading ? (
         <LoadingIndicator />
       ) : (
         <ClusterList clusters={inactiveClusters}>
-          {({ cluster }) => <ClusterForm cluster={cluster} />}
+          {({ cluster }) => (
+            <View>
+              <ClusterForm cluster={cluster} title="Cluster" />
+              <OpenClusterBtn
+                clusterId={cluster.id}
+                successCallback={refetchClusters}
+                style={styles.changeClusterStateButton}
+              />
+            </View>
+          )}
         </ClusterList>
       )}
     </Container>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { flexDirection: "row", marginBottom: 50 },
+  collaboratorFormContainer: { flex: 1, marginRight: 50 },
+  createClusterContainer: { flex: 1 },
+  activeClustersContainer: { flexDirection: "row" },
+  updateClusterContainer: { flex: 1, marginRight: 23 },
+  headlineText: { alignItems: "flex-start" },
+  changeClusterStateButton: { marginTop: 23 },
+});
 
 export default AdministrationScreen;

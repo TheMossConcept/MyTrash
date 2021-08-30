@@ -1,6 +1,8 @@
 import React, { FC } from "react";
 import { StyleSheet, View } from "react-native";
-import useProducts from "../../hooks/useProducts";
+import useQueriedData from "../../hooks/useQueriedData";
+import { Product } from "../../typings/types";
+import LoadingIndicator from "../styled/LoadingIndicator";
 import CreateProduct from "./CreateProduct";
 import ProductsDetails from "./ProductsDetails";
 
@@ -16,7 +18,11 @@ const ProductsForBatch: FC<Props> = ({
   clusterId,
   productionPartnerId,
 }) => {
-  const { products, refetchProducts } = useProducts({ batchId });
+  const {
+    data: products,
+    refetch: refetchProducts,
+    isLoading,
+  } = useQueriedData<Product[]>("/GetProducts", { batchId });
 
   return (
     <View>
@@ -28,7 +34,11 @@ const ProductsForBatch: FC<Props> = ({
           successCallback={refetchProducts}
         />
       </View>
-      <ProductsDetails products={products} refetchProducts={refetchProducts} />
+      {isLoading && <LoadingIndicator />}
+      <ProductsDetails
+        products={products || []}
+        refetchProducts={refetchProducts}
+      />
     </View>
   );
 };

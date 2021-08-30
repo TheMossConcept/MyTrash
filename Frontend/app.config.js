@@ -2,26 +2,23 @@
 // (e.g. for throw-away developments)
 const localConfig = {
   AUTHORIZATION_URL:
-    "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration",
-  AZURE_AD_CLIENT_ID: "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412",
+    "https://houeb2c.b2clogin.com/houeb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration",
+  AZURE_AD_CLIENT_ID: "5a5e1ff1-c935-4cc6-b6b6-5ab356682d10",
   BACKEND_URL: "http://localhost:7071/api",
-  MOBILE_REDIRECT_URL: "exp://127.0.0.1:19000",
   ENVIRONMENT_NAME: "local",
 };
 const stagingConfig = {
   AUTHORIZATION_URL:
-    "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration",
-  AZURE_AD_CLIENT_ID: "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412",
-  BACKEND_URL: "https://houe-plastic-recycling-windows.azurewebsites.net/api",
-  MOBILE_REDIRECT_URL: "exp://127.0.0.1:19000",
+    "https://houeb2c.b2clogin.com/houeb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration",
+  AZURE_AD_CLIENT_ID: "5a5e1ff1-c935-4cc6-b6b6-5ab356682d10",
+  BACKEND_URL: "https://func-houe-mytrash-staging.azurewebsites.net/api",
   ENVIRONMENT_NAME: "staging",
 };
 const productionConfig = {
   AUTHORIZATION_URL:
-    "https://mossconsultingorg.b2clogin.com/mossconsultingorg.onmicrosoft.com/v2.0/.well-known/openid-configuration",
-  AZURE_AD_CLIENT_ID: "93d698bf-5f62-4b7d-9a5b-cf9fa4dd0412",
-  BACKEND_URL: "https://houe-plastic-recycling-windows.azurewebsites.net/api",
-  MOBILE_REDIRECT_URL: "mytrash://login",
+    "https://houeb2c.b2clogin.com/houeb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration",
+  AZURE_AD_CLIENT_ID: "5a5e1ff1-c935-4cc6-b6b6-5ab356682d10",
+  BACKEND_URL: "https://func-houe-mytrash-staging.azurewebsites.net/api",
   ENVIRONMENT_NAME: "production",
 };
 
@@ -39,12 +36,12 @@ if (process.env.APPLICATION_ENVIRONMENT === "production") {
 }
 
 export default {
-  name: "Houe plastic recycling",
+  name: "MyTrash",
   owner: "houe",
-  slug: "houe-plastic-recycling",
+  slug: "my-trash",
   version: "1.0.0",
   orientation: "portrait",
-  scheme: "houe-plastic-recycling",
+  scheme: "mytrash",
   userInterfaceStyle: "automatic",
   updates: {
     fallbackToCacheTimeout: 0,

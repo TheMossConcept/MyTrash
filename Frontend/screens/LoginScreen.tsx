@@ -1,7 +1,9 @@
 import Constants from "expo-constants";
+import jwtDecode from "jwt-decode";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Linking from "expo-linking";
 import { StackScreenProps } from "@react-navigation/stack";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { TokenResponse } from "expo-auth-session";
 import React, { FC, useEffect, useState } from "react";
 import AuthorizationButton from "../components/AuthorizationButton";
@@ -10,20 +12,59 @@ import MobileButton from "../components/styled/MobileButton";
 import BottomButtonContainer from "../components/styled/BottomButtonContainer";
 import MainContentArea from "../components/styled/MainContentArea";
 import Menu from "../components/shared/Menu";
-import HeadlineText from "../components/styled/HeadlineText";
 import AppText from "../components/styled/AppText";
+import HoueLogo from "../components/styled/HoueLogo";
 
 type Props = StackScreenProps<RootStackParamList, "Login">;
 
 const LoginScreen: FC<Props> = ({ navigation }) => {
-  const { ENVIRONMENT_NAME } = Constants.manifest.extra;
+  const { ENVIRONMENT_NAME } = Constants.manifest.extra || {};
 
   const loginWithTokenResponse = (tokenResponse: TokenResponse) => {
     const { idToken, accessToken } = tokenResponse;
 
     AsyncStorage.setItem("accessToken", accessToken);
     if (idToken) {
-      AsyncStorage.setItem("idToken", idToken);
+      const setUserInfo = async () => {
+        const tokenDecoded = jwtDecode(idToken) as any;
+        /* eslint-disable camelcase */
+        const {
+          name,
+          oid,
+          extension_Administrator,
+          extension_CollectionAdministrator,
+          extension_Collector,
+          extension_LogisticsPartner,
+          extension_RecipientPartner,
+          extension_ProductionPartner,
+        } = tokenDecoded;
+
+        const userHasNoAccess =
+          !extension_Administrator &&
+          !extension_CollectionAdministrator &&
+          !extension_Collector &&
+          !extension_LogisticsPartner &&
+          !extension_RecipientPartner &&
+          !extension_ProductionPartner;
+
+        AsyncStorage.setItem(
+          "userInfo",
+          JSON.stringify({
+            name,
+            userId: oid,
+            isAdministrator: extension_Administrator,
+            isCollectionAdministrator: extension_CollectionAdministrator,
+            isCollector: extension_Collector,
+            isLogisticsPartner: extension_LogisticsPartner,
+            isRecipientPartner: extension_RecipientPartner,
+            isProductionPartner: extension_ProductionPartner,
+            userHasNoAccess,
+          })
+        );
+        /* eslint-enable camelcase */
+      };
+
+      setUserInfo();
     }
 
     navigation.navigate("Root");
@@ -47,6 +88,10 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
     }
   });
 
+  const openMyTrashInfo = () => {
+    Linking.openURL("https://www.houe.com/media/MyTrash_info.pdf");
+  };
+
   const handleAuthorizationSuccess = (
     tokenResponse: TokenResponse,
     refreshTokenIfNecessary: () => Promise<TokenResponse> | undefined
@@ -57,26 +102,23 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <MainContentArea containerStyle={{ height: "80%" }}>
-        <Menu />
-        <HeadlineText style={{ marginTop: 54 }} />
+      <MainContentArea containerStyle={styles.mainContentAreaContainer}>
+        {/* It does not make sense to show the menu items on the login screen
+            as all of them requires you to be logged in */}
+        <Menu loggedIn={false} />
+        <HoueLogo />
         <View style={styles.textContainer}>
-          <AppText
-            text={`${ENVIRONMENT_NAME} Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
-          />
-        </View>
-        <View style={styles.iconContainer}>
-          <Image
-            source={{
-              src: require("../assets/icons/arrow.png"),
-              width: 31,
-              height: 31,
-            }}
-            style={styles.icon}
-          />
+          {ENVIRONMENT_NAME !== "production" && (
+            <AppText
+              text={`${ENVIRONMENT_NAME}. ${Linking.createURL(
+                "/"
+                // TODO: Better versioning
+              )}. Version 1.5.1. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
+            />
+          )}
         </View>
       </MainContentArea>
-      <BottomButtonContainer style={{ height: "20%" }}>
+      <BottomButtonContainer style={styles.bottomButtonContainer}>
         <AuthorizationButton
           style={styles.bottomButton}
           handleAuthorization={handleAuthorizationSuccess}
@@ -92,12 +134,14 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
           style={styles.bottomButton}
         />
         <MobileButton
-          text="Projekt."
+          text="MyTrash info."
+          onPress={openMyTrashInfo}
           icon={{
             src: require("../assets/icons/leaf_grey.png"),
             width: 20.5,
             height: 32.5,
           }}
+          style={[styles.bottomButton, styles.lastBottomButton]}
         />
       </BottomButtonContainer>
     </View>
@@ -112,6 +156,10 @@ const styles = StyleSheet.create({
   textContainer: {
     marginTop: 60,
   },
+  mainContentAreaContainer: {
+    height: "80%",
+  },
+  bottomButtonContainer: { height: "20%", minHeight: 165 },
   iconContainer: {
     // The image itself constitutes 4 % of the space
     marginTop: 100,
@@ -123,7 +171,9 @@ const styles = StyleSheet.create({
   },
   bottomButton: {
     marginRight: 10,
+    flex: 1,
   },
+  lastBottomButton: { marginRight: 0 },
 });
 
 export default LoginScreen;

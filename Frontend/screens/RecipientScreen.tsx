@@ -79,132 +79,134 @@ const RecipientScreen: FC<Props> = ({ route }) => {
         options={[
           "Modtaget",
           "Bekræftet",
-          "Oprettede batches",
+          "Batchstyring",
           "Afsendte batches",
           "Bekræftede batches",
         ]}
         selectionState={contextSelectionState}
       >
-        {selectedContext === "Modtaget" && (
-          <View>
-            {plasticCollectionsIsLoading ? (
-              <LoadingIndicator />
-            ) : (
-              <View>
-                <PlasticCollectionsDetails
-                  plasticCollections={sortedCollections.delivered}
-                  sorting={{
-                    displayName: "modtaget dato",
-                    sortState: [
-                      plasticCollectionsSortKey === "deliveryDate",
-                      togglePlasticCollectionsSorting("deliveryDate"),
-                    ],
-                  }}
-                  hideWeight
-                >
-                  {(collection) => (
-                    <RegisterPlasticCollectionReciept
-                      plasticCollection={collection}
-                      successCallback={refetchPlasticCollections}
-                    />
-                  )}
-                </PlasticCollectionsDetails>
-              </View>
-            )}
-          </View>
-        )}
-        {selectedContext === "Bekræftet" && (
-          <View>
-            {plasticCollectionsIsLoading ? (
-              <LoadingIndicator />
-            ) : (
-              <View>
-                <PlasticCollectionsDetails
-                  plasticCollections={sortedCollections.received}
-                  sorting={{
-                    displayName: "bekræftet dato",
-                    sortState: [
-                      plasticCollectionsSortKey === "receivedDate",
-                      togglePlasticCollectionsSorting("receivedDate"),
-                    ],
-                  }}
-                />
-              </View>
-            )}
-          </View>
-        )}
-        {selectedContext === "Oprettede batches" && (
-          <View>
-            <CreateBatch
-              batchCreatorId={userId}
-              creationCallback={refetchBatches}
-            />
-            {batchesIsLoading ? (
-              <LoadingIndicator />
-            ) : (
-              <View>
-                <BatchDetails
-                  batches={sortedBatches.created}
-                  style={styles.createdBatchesDetailsContainer}
-                  sorting={{
-                    displayName: "oprettet dato",
-                    sortState: [
-                      batchesSortKey === "createdAt",
-                      toggleBatchSorting("createdAt"),
-                    ],
-                  }}
-                >
-                  {(batch) => (
-                    <RegisterBatchSent
-                      batchId={batch.id}
-                      successCallback={refetchBatches}
-                    />
-                  )}
-                </BatchDetails>
-              </View>
-            )}
-          </View>
-        )}
-        {selectedContext === "Afsendte batches" && (
-          <View>
-            {batchesIsLoading ? (
-              <LoadingIndicator />
-            ) : (
-              <View>
-                <BatchDetails
-                  batches={sortedBatches.sent}
-                  sorting={{
-                    displayName: "afsendt dato",
-                    sortState: [
-                      batchesSortKey === "sentDate",
-                      toggleBatchSorting("sentDate"),
-                    ],
-                  }}
-                />
-              </View>
-            )}
-          </View>
-        )}
-        {selectedContext === "Bekræftede batches" && (
-          <View>
-            {batchesIsLoading ? (
-              <LoadingIndicator />
-            ) : (
-              <View>
-                <BatchDetails
-                  batches={sortedBatches.received}
-                  sorting={{
-                    displayName: "modtaget dato",
-                    sortState: [
-                      batchesSortKey === "receivedDate",
-                      toggleBatchSorting("receivedDate"),
-                    ],
-                  }}
-                />
-              </View>
-            )}
-          </View>
-        )}
+        <View>
+          {selectedContext === "Modtaget" && (
+            <View>
+              {plasticCollectionsIsLoading ? (
+                <LoadingIndicator />
+              ) : (
+                <View>
+                  <PlasticCollectionsDetails
+                    plasticCollections={sortedCollections.delivered}
+                    sorting={{
+                      displayName: "modtaget dato",
+                      sortState: [
+                        plasticCollectionsSortKey === "deliveryDate",
+                        togglePlasticCollectionsSorting("deliveryDate"),
+                      ],
+                    }}
+                    hideWeight
+                  >
+                    {(collection) => (
+                      <RegisterPlasticCollectionReciept
+                        plasticCollection={collection}
+                        successCallback={refetchPlasticCollections}
+                      />
+                    )}
+                  </PlasticCollectionsDetails>
+                </View>
+              )}
+            </View>
+          )}
+          {selectedContext === "Bekræftet" && (
+            <View>
+              {plasticCollectionsIsLoading ? (
+                <LoadingIndicator />
+              ) : (
+                <View>
+                  <PlasticCollectionsDetails
+                    plasticCollections={sortedCollections.received}
+                    sorting={{
+                      displayName: "bekræftet dato",
+                      sortState: [
+                        plasticCollectionsSortKey === "receivedDate",
+                        togglePlasticCollectionsSorting("receivedDate"),
+                      ],
+                    }}
+                  />
+                </View>
+              )}
+            </View>
+          )}
+          {selectedContext === "Batchstyring" && (
+            <View style={{ flex: 1 }}>
+              <CreateBatch
+                batchCreatorId={userId}
+                creationCallback={refetchBatches}
+              />
+              {batchesIsLoading ? (
+                <LoadingIndicator />
+              ) : (
+                <View style={styles.batchDetailsContainer}>
+                  <BatchDetails
+                    batches={sortedBatches.created}
+                    style={styles.createdBatchesDetailsContainer}
+                    sorting={{
+                      displayName: "oprettet dato",
+                      sortState: [
+                        batchesSortKey === "createdAt",
+                        toggleBatchSorting("createdAt"),
+                      ],
+                    }}
+                  >
+                    {(batch) => (
+                      <RegisterBatchSent
+                        batchId={batch.id}
+                        successCallback={refetchBatches}
+                      />
+                    )}
+                  </BatchDetails>
+                </View>
+              )}
+            </View>
+          )}
+          {selectedContext === "Afsendte batches" && (
+            <View>
+              {batchesIsLoading ? (
+                <LoadingIndicator />
+              ) : (
+                <View>
+                  <BatchDetails
+                    batches={sortedBatches.sent}
+                    sorting={{
+                      displayName: "afsendt dato",
+                      sortState: [
+                        batchesSortKey === "sentDate",
+                        toggleBatchSorting("sentDate"),
+                      ],
+                    }}
+                  />
+                </View>
+              )}
+            </View>
+          )}
+          {selectedContext === "Bekræftede batches" && (
+            <View>
+              {batchesIsLoading ? (
+                <LoadingIndicator />
+              ) : (
+                <View>
+                  <BatchDetails
+                    batches={sortedBatches.received}
+                    sorting={{
+                      displayName: "modtaget dato",
+                      sortState: [
+                        batchesSortKey === "receivedDate",
+                        toggleBatchSorting("receivedDate"),
+                      ],
+                    }}
+                  />
+                </View>
+              )}
+            </View>
+          )}
+        </View>
       </ContextSelector>
     </Container>
   );
@@ -248,6 +250,10 @@ const RegisterBatchSent: FC<RegisterBatchSentProps> = ({
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 20,
+  },
+  batchDetailsContainer: {
+    // TODO: The AutocompleteInput should handle this itself!
+    zIndex: -1,
   },
   markAsSentButton: {
     height: 25,

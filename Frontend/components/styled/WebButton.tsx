@@ -18,7 +18,6 @@ type Props = {
 
 export type WebButtonProps = Props;
 
-// TODO: Consider making a WebButton and a MobileButton
 /* eslint-disable react/display-name */
 const WebButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
   (
@@ -58,7 +57,7 @@ const WebButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
 
     return (
       <TouchableOpacity
-        style={containerStyles}
+        style={[containerStyles, { flexDirection: "row" }]}
         disabled={disabled}
         ref={ref}
         {...touchableOpacityProps}
@@ -76,7 +75,7 @@ const WebButton: FC<Props> = React.forwardRef<TouchableOpacity, Props>(
               color: textColor,
               marginLeft: 11,
               fontFamily: "HelveticaNeueLTPro-Bd",
-              wordBreak: "break-word",
+              flexShrink: 1,
               textAlign: "center",
             },
             textStyle,

@@ -1,16 +1,20 @@
 import axios from "axios";
-import React, { FC } from "react";
+import React, { FC, useContext, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import * as yup from "yup";
+import { FormikHelpers } from "formik";
 import FormContainer from "../shared/FormContainer";
 import StringField from "../inputs/StringField";
 import NumberField from "../inputs/NumberField";
 import SubmitButton from "../inputs/SubmitButton";
 import RoleSelector from "./RoleSelector";
-import useAppRoles from "../../hooks/useAppRoles";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
 import HeadlineText from "../styled/HeadlineText";
 import globalStyles from "../../utils/globalStyles";
+import GlobalSnackbarContext from "../../utils/globalContext";
+import useQueriedData from "../../hooks/useQueriedData";
+import { AppRole } from "../../typings/types";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 export type UserFormData = {
   email: string;
@@ -58,7 +62,7 @@ const validationSchema = yup.object().shape({
 
 // TODO: Change undefined to null to get rid of the controlled to uncontrolled error!
 const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
-  // const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialValues: UserFormData = {
     email: "",
@@ -72,26 +76,37 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
     role: "",
   };
 
+  const showGlobalSnackbar = useContext(GlobalSnackbarContext);
+
   const sharedAxiosConfig = useAxiosConfig();
-  const createUser = (values: UserFormData, resetForm: () => void) => {
+  const createUser = (
+    values: UserFormData,
+    helpers: FormikHelpers<UserFormData>
+  ) => {
+    setIsLoading(true);
+
     axios
       .post("/CreateCollaborator", values, {
         ...sharedAxiosConfig,
       })
       .then(() => {
-        // setShowSnackbar(true);
-        resetForm();
+        showGlobalSnackbar("Partner inviteret");
 
         if (successCallback) {
           successCallback();
         }
+      })
+      .finally(() => {
+        setIsLoading(false);
+        helpers.resetForm();
+        helpers.validateForm();
       });
   };
 
-  const { appRoles } = useAppRoles();
+  const { data: appRoles } = useQueriedData<AppRole[]>("GetAppRoles/");
 
   // Empty array as we do not select app roles for non-partner users
-  const appRolesForSelection = appRoles.filter(
+  const appRolesForSelection = (appRoles || []).filter(
     (appRole) => appRole.id !== "Collector"
   );
 
@@ -100,17 +115,32 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
     <FormContainer
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={(values, formikHelpers) =>
-        createUser(values, formikHelpers.resetForm)
-      }
+      onSubmit={(values, formikHelpers) => createUser(values, formikHelpers)}
       validateOnMount
     >
-      <HeadlineText text={`${title}.`} style={{ alignItems: "flex-start" }} />
+      <HeadlineText text={`${title}.`} style={styles.headline} />
       <StringField
         label="Virksomhedsnavn"
         formKey="companyName"
         style={styles.field}
       />
+      <Text style={globalStyles.subheaderText} textBreakStrategy="highQuality">
+        Addresseoplysninger.
+      </Text>
+      <View style={styles.streetAddressField}>
+        <View style={styles.streetNameContainer}>
+          <StringField
+            label="Gadenavn"
+            formKey="street"
+            style={styles.streetNameField}
+          />
+        </View>
+        <View style={styles.streetNumberContainer}>
+          <StringField label="Husnummer" formKey="streetNumber" />
+        </View>
+      </View>
+      <StringField label="By" formKey="city" style={styles.field} />
+      <NumberField label="Postnummer" formKey="zipCode" style={styles.field} />
       <Text style={globalStyles.subheaderText}>Kontaktperson. </Text>
       <StringField label="Fornavn" formKey="firstName" style={styles.field} />
       <StringField label="Efternavn" formKey="lastName" style={styles.field} />
@@ -120,24 +150,12 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
         formKey="phoneNumber"
         style={styles.field}
       />
-      <Text style={[globalStyles.subheaderText, { wordBreak: "break-word" }]}>
-        Addresseoplysninger.
-      </Text>
-      <View style={styles.streetAddressField}>
-        <View style={{ flex: 2 }}>
-          <StringField
-            label="Gadenavn"
-            formKey="street"
-            style={styles.streetNameField}
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          <StringField label="Husnummer" formKey="streetNumber" />
-        </View>
-      </View>
-      <StringField label="By" formKey="city" style={styles.field} />
-      <NumberField label="Postnummer" formKey="zipCode" style={styles.field} />
       <RoleSelector formKey="role" appRoles={appRolesForSelection} />
+      {isLoading && (
+        <View style={styles.loadingContainer}>
+          <LoadingIndicator />
+        </View>
+      )}
       <SubmitButton title={title} style={styles.submitButton} isWeb />
     </FormContainer>
   );
@@ -146,6 +164,11 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
 const styles = StyleSheet.create({
   field: {
     marginBottom: 23,
+  },
+  loadingContainer: {
+    marginTop: 23,
+    alignItems: "center",
+    justifyContent: "center",
   },
   submitButton: {
     marginTop: 23,
@@ -157,7 +180,9 @@ const styles = StyleSheet.create({
   streetNameField: {
     marginRight: 12,
   },
-  subheaderText: {},
+  headline: { alignItems: "flex-start" },
+  streetNameContainer: { flex: 2 },
+  streetNumberContainer: { flex: 1 },
 });
 
 export default CollaboratorForm;

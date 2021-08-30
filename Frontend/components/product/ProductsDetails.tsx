@@ -1,12 +1,13 @@
 import axios from "axios";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Divider } from "react-native-paper";
 import useAxiosConfig from "../../hooks/useAxiosConfig";
-import { Product } from "../../hooks/useProducts";
 import HeadlineText from "../styled/HeadlineText";
 import globalStyles from "../../utils/globalStyles";
 import WebButton from "../styled/WebButton";
+import { Product } from "../../typings/types";
+import LoadingIndicator from "../styled/LoadingIndicator";
 
 type Props = {
   products: Product[];
@@ -14,12 +15,9 @@ type Props = {
 };
 
 const ProductsDetails: FC<Props> = ({ products, refetchProducts }) => {
-  return (
+  return products.length !== 0 ? (
     <View style={styles.container}>
-      <HeadlineText
-        text="Oprettede produkter."
-        style={{ alignItems: "flex-start" }}
-      />
+      <HeadlineText text="Oprettede produkter." style={styles.headlineText} />
       {products.map((product, index) => {
         const isLastProduct = index === products.length - 1;
 
@@ -47,7 +45,7 @@ const ProductsDetails: FC<Props> = ({ products, refetchProducts }) => {
         );
       })}
     </View>
-  );
+  ) : null;
 };
 
 type MarkProductAsSentButtonProps = {
@@ -59,9 +57,13 @@ const MarkProductAsSentButton: FC<MarkProductAsSentButtonProps> = ({
   productId,
   successCallback,
 }) => {
+  const [loading, setLoading] = useState(false);
+
   const sharedAxiosConfig = useAxiosConfig();
 
   const markProductAsSent = () => {
+    setLoading(true);
+
     axios
       .post(
         "/RegisterProductSent",
@@ -72,10 +74,15 @@ const MarkProductAsSentButton: FC<MarkProductAsSentButtonProps> = ({
         if (successCallback) {
           successCallback();
         }
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
-  return (
+  return loading ? (
+    <LoadingIndicator />
+  ) : (
     <WebButton
       text="Marker som afsendt"
       onPress={markProductAsSent}
@@ -105,6 +112,7 @@ const styles = StyleSheet.create({
   productStatus: {
     flex: 1,
   },
+  headlineText: { alignItems: "flex-start" },
 });
 
 export default ProductsDetails;

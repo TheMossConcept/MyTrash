@@ -28,9 +28,14 @@ const httpTrigger: AzureFunction = async function (
       // status: 200, /* Defaults to 200 */
       body: JSON.stringify(usersResult.value),
     };
-  } catch (e) {
+  } catch (error) {
+    const body = JSON.stringify({
+      errorMessage: "Der skete en fejl under hentningen af brugerne for rollen",
+      rawError: error,
+    });
+
     context.res = {
-      body: JSON.stringify(e),
+      body,
       statusCode: 500,
     };
   }

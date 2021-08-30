@@ -3,17 +3,21 @@ import {
   AuthRequest,
   AuthSessionResult,
   DiscoveryDocument,
+  Prompt,
 } from "expo-auth-session";
 import { useEffect, useState } from "react";
 import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import getDefaultRedirectUri from "../utils/authorization";
 
 export default function useAzureAdFlows(
   flowName: string,
   scopes: string[],
-  redirectUri?: string
+  redirectUri?: string,
+  prompt?: Prompt
 ) {
-  const { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID } = Constants.manifest.extra;
+  const { AUTHORIZATION_URL, AZURE_AD_CLIENT_ID } =
+    Constants.manifest.extra || {};
   const [discoveryDocument, setDiscoveryDocument] = useState<
     DiscoveryDocument | undefined
   >(undefined);
@@ -57,13 +61,6 @@ export default function useAzureAdFlows(
   const defaultRedirectUrl = getDefaultRedirectUri();
   const redirectUriForRequest = redirectUri || defaultRedirectUrl;
 
-  const authRequest = new AuthRequest({
-    clientId: AZURE_AD_CLIENT_ID,
-    scopes,
-    extraParams: { p: flowName },
-    redirectUri: redirectUriForRequest,
-  });
-
   const triggerFlow = async (
     callback?: (
       authSessionResult: AuthSessionResult,
@@ -71,6 +68,18 @@ export default function useAzureAdFlows(
       discoveryDocument: DiscoveryDocument
     ) => void
   ) => {
+    const shouldPrompt = await AsyncStorage.getItem("shouldPrompt");
+
+    const authRequest = new AuthRequest({
+      clientId: AZURE_AD_CLIENT_ID,
+      scopes,
+      extraParams: { p: flowName },
+      redirectUri: redirectUriForRequest,
+      prompt: shouldPrompt === "true" ? Prompt.SelectAccount : undefined,
+    });
+
+    AsyncStorage.setItem("shouldPrompt", "false");
+
     if (discoveryDocument) {
       /* We don't care about the return value of this, but one of the side effects of it is that
        * the challenge and verifier is set up correctly. This is not the most elegant way of doing

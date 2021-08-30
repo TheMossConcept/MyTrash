@@ -73,6 +73,12 @@ const styles = StyleSheet.create({
   },
   rightAreaContainer: {
     marginLeft: 124,
+    flex: 1,
+  },
+  selectionText: {
+    fontSize: 34,
+    color: "#9b9c9e",
+    fontFamily: "HelveticaNeueLTPro-Hv",
   },
   contentContainer: {
     marginTop: 39,
@@ -86,11 +92,6 @@ const styles = StyleSheet.create({
     height: 27,
     position: "absolute",
     right: -12,
-  },
-  selectionText: {
-    fontSize: 34,
-    color: "#9b9c9e",
-    fontFamily: "HelveticaNeueLTPro-Hv",
   },
   menuText: {
     marginBottom: 23,
