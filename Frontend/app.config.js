@@ -47,6 +47,7 @@ export default {
     fallbackToCacheTimeout: 0,
   },
   assetBundlePatterns: ["**/*"],
+  icon: "./assets/icons/app_icon.png",
   ios: {
     supportsTablet: true,
     bundleIdentifier: "com.houe.mytrash",

@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   ViewProps,
+  useWindowDimensions,
 } from "react-native";
 
 type CollectionStatus = "pending" | "scheduled" | "delivered" | "received";
@@ -32,8 +33,11 @@ const CollectionStatusPopover: FC<Props> = ({
   data,
   ...viewProps
 }) => {
+  const window = useWindowDimensions();
+  const width = window.width - 10;
+
   return (
-    <View style={[styles.container, style]} {...viewProps}>
+    <View style={[styles.container, { width }, style]} {...viewProps}>
       <View style={styles.crossContainer}>
         <TouchableOpacity onPress={dismissPopover}>
           <Image
@@ -96,7 +100,7 @@ const StatusLine: FC<StatusLineProps> = ({
       statusText = "";
   }
 
-  const dateString = `${dateToDisplay?.toFormat("dd LLLL")}`;
+  const dateString = `${dateToDisplay?.toFormat("d LLLL")}`;
   const timeString =
     dateToDisplay && (dateToDisplay?.minute !== 0 || dateToDisplay?.hour !== 0)
       ? ` ${dateToDisplay.toFormat("HH:mm")}`
@@ -134,7 +138,6 @@ const StatusLine: FC<StatusLineProps> = ({
 const styles = StyleSheet.create({
   container: {
     height: 430,
-    width: 380,
     backgroundColor: "#d2d3c8",
   },
   crossContainer: {
