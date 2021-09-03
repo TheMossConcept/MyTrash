@@ -54,17 +54,62 @@ This section is aimed at developers and other tech-savy people who need to work 
 
 ## Azure AD B2C
 
-All users, partners and collectors alike, are saved in and handled by Azure AD B2C. Azure AD B2C also handles login, edit og user profile, password management ect. To handle individual collection goals and roles, the following custom attributes have been added to the AD
+All users, partners and collectors alike, are saved in and handled by Azure AD B2C. Azure AD B2C also handles login, edit of user profiles, password management ect. To handle individual collection goals and roles, the following custom attributes have been added to the AD
 
 <img width="1163" alt="CustomAttributes" src="https://user-images.githubusercontent.com/6885285/132017404-6d1eab7a-a8a8-4a59-8248-5e5e3c3592dd.png">
 
+As custom attributes are a pain to work with through the portal interface (I'm actually not sure it is even possible as of this writing), the preferred way to add a new partner outside of the web interface is to issue a POST requet to https://func-houe-mytrash.azurewebsites.net/api/CreateCollaborator with a body like this.
 
-## Azure infrastructure og webdeployment
+```
+{
+	"firstName": "Louise",
+	"lastName": "Mørk",
+	"phoneNumber": "12345678",
+	"email": "test@test.com",
+	"companyName": "Houe",
+	"street": "Rodelundsvej",
+	"streetNumber": 4,
+	"city": "Ry",
+	"zipCode": 8680,
+	"role": "Administrator" 
+}
+```
+
+As you have probably guessed from the custom attributes, the valid values for role are: Administrator, CollectionAdministrator, LogisticsPartner, RecipientPartner and ProductionPartner. Adding collectors is done through a separate function and should not be necessary to do outside of the interface.
+
+## Azure infrastructure and webdeployment
+
+The folder Infrastructure contains ARM templates for most of the infrastructure and a file for deployment. It deploys and sets up the backends and databases but not the static web apps. As you can see, the Function Apps that host the backends need access to Microsoft Graph through a managed identity which is set up in the deployment.sh script. Although the script can be run, it's mostly meant for documentation and you can manually copy and paste individually commands to run the parts of it that you need.
+
+Also, you need to be aware that the cosmos DB database with the mongo API needs indexes on certain collections, otherwise all endpoints that involve sorting will fail. This include the `GetLatestCollection` endpoint which is critical for the functionality of the mobile app. The fields that need indexes are the following
+
+For the collection named "Collection": 
+```
+CreatedAt
+ScheduledPickupDate
+DeliveryDate
+ReceivedDate
+```
+
+For the collection named "Batch":
+```
+CreatedAt
+SentDate
+ReceivedDate
+```
+
+These can be created ahead of time even though the two collections do not yet have data. This is done by accessing the database either throug the portal or through a terminal by using the information in the connection string. Remember to add the `--tls` flag to the `mongo` command. An index is created by using [this method](https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/).
+
+Finally, remember to grant your static web app CORS access so it can access the backend through a web browser. You should also remember to add the URL of your static web app to approve redirect URLs in the Azure AD B2C, otherwise login and profile edit will fail for your URL. This is also true if you change the URL of an already deployed solution.
+
+Deployment is done automatically through Github Actions. A push to develop will deploy to the test environment and a push to master will deploy to the production environment. Please be aware that you need to manually build and re-upload the apps for iOS and Android when deploying to production (see below). 
 
 ## Deployment of the mobile app
 
+Everything regarding the mobile app is handled through [Expo](https://expo.dev/). Houe has an Expo account that Louise Mørk manages. Building for iOS is done through `npm run build:ios` and conversely for Android using `npm run build:android`. When building for iOS for the first time, contact Phillip at Houe as he owns the account that deploys the build to app store. The first time you build, you need to login to his account and he needs to approve you through 2FA.
+
+The result of the build should be uploaded to [App Store Connect](https://appstoreconnect.apple.com/) for Apple and [Google Play Console](https://play.google.com/console/u/3/developers/?pli=1) for Google. Phillip at Houe owns both accounts, so contact him for access.
+
 ## The test environment
 
-## Things to be aware of
-
-CORS, tilføjelse af URL til Azure AD B2C
+The test environment contains a separat cosmos db, function app, static web app and mobile apps that are deployed to the Expo Go app. It is completely isolated from production except for the fact that they use the same AD. 
