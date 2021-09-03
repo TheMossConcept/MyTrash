@@ -81,7 +81,7 @@ As you have probably guessed from the custom attributes, the valid values for ro
 
 The folder Infrastructure contains ARM templates for most of the infrastructure and a file for deployment. It deploys and sets up the backends and databases but not the static web apps. As you can see, the Function Apps that host the backends need access to Microsoft Graph through a managed identity which is set up in the deployment.sh script. Although the script can be run, it's mostly meant for documentation and you can manually copy and paste individually commands to run the parts of it that you need.
 
-Also, you need to be aware that the cosmos DB database with the mongo API needs indexes on certain collections, otherwise all endpoints that involve sorting will fail. This include the `GetLatestCollection` endpoint which is critical for the functionality of the mobile app. The fields that need indexes are the following
+Also, you need to be aware that the cosmos DB database with the mongo API needs indexes on certain collections, otherwise all endpoints that involve sorting will fail. This includes the `GetLatestCollection` endpoint which is critical for the functionality of the mobile app. The fields that need indexes are the following
 
 For the collection named "Collection": 
 ```
@@ -110,6 +110,6 @@ Everything regarding the mobile app is handled through [Expo](https://expo.dev/)
 
 The result of the build should be uploaded to [App Store Connect](https://appstoreconnect.apple.com/) for Apple and [Google Play Console](https://play.google.com/console/u/3/developers/?pli=1) for Google. Phillip at Houe owns both accounts, so contact him for access.
 
-## The test environment
+## The staging environment
 
-The test environment contains a separat cosmos db, function app, static web app and mobile apps that are deployed to the Expo Go app. It is completely isolated from production except for the fact that they use the same AD. 
+The staging environment contains a separat cosmos db, function app, static web app and mobile apps that are deployed to the Expo Go app. It is completely isolated from production except for the fact that they use the same AD. 
