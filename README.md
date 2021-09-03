@@ -22,10 +22,14 @@ Der findes følgende partnertyper: Administrationspartner, indsamlingspartner, l
 
 Under sektionen omkring Azure AD B2C i det tekniske afsnit beskrives, hvordan partnere kan oprettes direkte udenom webinterfacet. Dette kan f.eks. blive relevant, hvis alle administrationspartnere er blevet slettet, da det så ikke er muligt at oprette en administrationspartner igennem webinterfacet. De forskellige partnere har adgang til følgende funktionalitet:
 
-Administrationspartner: Oprette partnere og oprette clustre, tilgå alle clustre og redigere disse, invitere indsamlere til dem, slette indsamlere fra dem, oprette og ændre individuelle indsamlingsmål samt lukke åbne clustre og åbne lukkede clustre. Vær opmærksom på, at dropdown'en til valg af partnere fungerer som dropdown'en til valg af clustre ved oprettelse af bruger i app'en. Den viser således kun 5 resultater til en start og indsnævrer valgmulighederne, når der skrives i feltet, hvorfor den ønskede partner ikke nødvendigvis vises før listen er snævret tilstrækkeligt ind.  
+Administrationspartner: Oprette partnere og oprette clustre, tilgå alle clustre og redigere disse, invitere indsamlere til dem, slette indsamlere fra dem, oprette og ændre individuelle indsamlingsmål samt lukke åbne clustre og åbne lukkede clustre. Vær opmærksom på, at dropdown'en til valg af partnere fungerer som dropdown'en til valg af clustre ved oprettelse af bruger i app'en. Den viser således kun 5 resultater til en start og indsnævrer valgmulighederne, når der skrives i feltet, hvorfor den ønskede partner ikke nødvendigvis vises før listen er snævret tilstrækkeligt ind.
+
 Indsamlingspartner: Tilgå og redigere det cluster, som partneren er knyttet til samt tilføje indsamlere til clusteret, slette indsamlere fra clusteret, redigere indsamlernes individuelle indsamlingsmål og lukke clusteret. Indsamlingspartneren har således adgang til et subset af administraionspartnerens funktionalitet for et enkelt cluster.
+
 Logistikpartner: Kan se alle de afhentninger der venter på ham, planlægge disse, redigere vægten når de hentes og følge med i, om de bekræftes hos modtagerpartneren. De afhentninger logistikpartneren kan se er alle de afhentninger der er booket i alle clustre, som partneren er sat som logistikpartner på og han arbejder således på tværs af clustre. Hvis logistikpartneren fjernes fra et eksisterende cluster vil have beholde de afhentninger der blev booket i clusteret mens han var logistikpartner på det, men ikke få fremtidige afhentninger fra det cluster. Som i app'en kan der gå op til 10 minutter fra en afhentning bookes i app'en til den kan ses af logistikpartneren, da systemet kun spørger efter data hvert 10 minut.
+
 Modtagerpartner: Kan se og bekræfte modtagelse af de afhentninger logistikpartneren har afleveret, oprette batches og afsende disse og følge op på, at de bliver bekræftet modtaget hos produktionspartneren. Modtagerpartneren arbejder også på tværs af clustre og modtager afhentninger for alle de clustre, som partneren er tilknyttet. Ligesom med logistikpartneren stopper modtagerpartneren med at modtage afhentninger fra et cluster fremadretet, hvis partneren fjernes fra clusteret, men beholder dem, der allerede er afleveret. Som med logistikpartneren kan der gå op til 10 minutter fra en afhentning afsendes til den kan ses hos logistikpartneren.
+
 Produktionspartner: Kan se og bekræfte modtagelse af de batches modtagerpartneren har sendt og kan oprette produkter under hvert batch samt markere disse produkter som afsendt. Produktionspartneren arbejder også på tværs af clustre og modtager batches for alle de clustre, som partneren er tilknyttet til. Ligesom med logistik- og modtagerpartner stopper produktionspartneren med at modtage batches fra et givent cluster fremadretet, hvis partneren fjernes fra det cluster, men beholder de batches han har modtaget fra clusteret indtil da.
 
 ## Hvad skal du som bruger være opmærksom på?
@@ -46,11 +50,14 @@ Systemet hostes i Azure. I det følgende gives et overblik over, hvilket abstrak
 
 # The system from a technical perspective
 
-This section is aimed at developers and other tech-savy people who need to work with the system on a technical level.
+This section is aimed at developers and other tech-savy people who need to work with the system on a technical level. The solution is hosted at Houe's Azure in the tenant with id 17368d8c-b9ce-409c-ba95-ead421daaaa0 and domain houeb2c.onmicrosoft.com. For access contact Phillip at Houe or netIP who handles Azure for Houe.
 
 ## Azure AD B2C
 
-To handle 
+All users, partners and collectors alike, are saved in and handled by Azure AD B2C. Azure AD B2C also handles login, edit og user profile, password management ect. To handle individual collection goals and roles, the following custom attributes have been added to the AD
+
+<img width="1163" alt="CustomAttributes" src="https://user-images.githubusercontent.com/6885285/132017404-6d1eab7a-a8a8-4a59-8248-5e5e3c3592dd.png">
+
 
 ## Azure infrastructure og webdeployment
 
