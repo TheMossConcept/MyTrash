@@ -49,7 +49,7 @@ export default {
   assetBundlePatterns: ["**/*"],
   icon: "./assets/icons/app_icon.png",
   ios: {
-    supportsTablet: true,
+    supportsTablet: false,
     bundleIdentifier: "com.houe.mytrash",
   },
   android: {
