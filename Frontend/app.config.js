@@ -39,7 +39,7 @@ export default {
   name: "MyTrash",
   owner: "houe",
   slug: "my-trash",
-  version: "1.0.0",
+  version: "1.0.4",
   orientation: "portrait",
   scheme: "mytrash",
   userInterfaceStyle: "automatic",
