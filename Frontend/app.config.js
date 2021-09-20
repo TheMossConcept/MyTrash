@@ -39,7 +39,7 @@ export default {
   name: "MyTrash",
   owner: "houe",
   slug: "my-trash",
-  version: "1.0.4",
+  version: "1.0.7",
   orientation: "portrait",
   scheme: "mytrash",
   userInterfaceStyle: "automatic",
@@ -54,6 +54,7 @@ export default {
   },
   android: {
     package: "com.houe.mytrash",
+    versionCode: 2,
     adaptiveIcon: {
       backgroundColor: "#FFFFFF",
     },

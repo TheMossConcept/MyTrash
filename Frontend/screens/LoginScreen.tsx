@@ -14,6 +14,7 @@ import MainContentArea from "../components/styled/MainContentArea";
 import Menu from "../components/shared/Menu";
 import AppText from "../components/styled/AppText";
 import HoueLogo from "../components/styled/HoueLogo";
+import getDefaultRedirectUri from "../utils/authorization";
 
 type Props = StackScreenProps<RootStackParamList, "Login">;
 
@@ -110,10 +111,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         <View style={styles.textContainer}>
           {ENVIRONMENT_NAME !== "production" && (
             <AppText
-              text={`${ENVIRONMENT_NAME}. ${Linking.createURL(
-                "/"
-                // TODO: Better versioning
-              )}. Version 1.6.0. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
+              text={`${ENVIRONMENT_NAME}. ${getDefaultRedirectUri()}. Version 1.6.0. Login a sint oluptatiur nusa doluptatem Occatur ulparcia es pro que in pa doloren imaios recescid et, quo doloria nis dellabore dolut hilla dit pos quidia volecto beatempero dolent.  Ut omnit, sam et ex ex exero.`}
             />
           )}
         </View>
