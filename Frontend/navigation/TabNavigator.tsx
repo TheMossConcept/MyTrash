@@ -56,8 +56,8 @@ const TabNavigator: FC<Props> = () => {
   }, []);
 
   const welcomeText = userInfo?.name
-    ? `Velkommen ${userInfo.name}.`
-    : "Velkommen.";
+    ? `Velkommen ${userInfo.name}`
+    : "Velkommen";
 
   return userInfo ? (
     <SafeAreaProvider>

@@ -118,14 +118,14 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
       onSubmit={(values, formikHelpers) => createUser(values, formikHelpers)}
       validateOnMount
     >
-      <HeadlineText text={`${title}.`} style={styles.headline} />
+      <HeadlineText text={`${title}`} style={styles.headline} />
       <StringField
         label="Virksomhedsnavn"
         formKey="companyName"
         style={styles.field}
       />
       <Text style={globalStyles.subheaderText} textBreakStrategy="highQuality">
-        Addresseoplysninger.
+        Addresseoplysninger
       </Text>
       <View style={styles.streetAddressField}>
         <View style={styles.streetNameContainer}>
@@ -141,7 +141,7 @@ const CollaboratorForm: FC<Props> = ({ title, successCallback }) => {
       </View>
       <StringField label="By" formKey="city" style={styles.field} />
       <NumberField label="Postnummer" formKey="zipCode" style={styles.field} />
-      <Text style={globalStyles.subheaderText}>Kontaktperson. </Text>
+      <Text style={globalStyles.subheaderText}>Kontaktperson </Text>
       <StringField label="Fornavn" formKey="firstName" style={styles.field} />
       <StringField label="Efternavn" formKey="lastName" style={styles.field} />
       <StringField label="Email" formKey="email" style={styles.field} />

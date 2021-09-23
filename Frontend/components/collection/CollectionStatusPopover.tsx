@@ -75,23 +75,23 @@ const StatusLine: FC<StatusLineProps> = ({
 
   switch (collectionStatus) {
     case "pending":
-      statusText = "Afventer.";
+      statusText = "Afventer";
       dateToDisplay = DateTime.fromISO(data.createdAt);
       break;
     case "scheduled":
-      statusText = `Afhentning \nplanlagt.`;
+      statusText = `Afhentning \nplanlagt`;
       dateToDisplay = data.scheduledPickupDate
         ? DateTime.fromISO(data.scheduledPickupDate)
         : undefined;
       break;
     case "delivered":
-      statusText = `Afhentning \nbekræftet.`;
+      statusText = `Afhentning \nbekræftet`;
       dateToDisplay = data.deliveryDate
         ? DateTime.fromISO(data.deliveryDate)
         : undefined;
       break;
     case "received":
-      statusText = "Modtaget.";
+      statusText = "Modtaget";
       dateToDisplay = data.receivedDate
         ? DateTime.fromISO(data.receivedDate)
         : undefined;

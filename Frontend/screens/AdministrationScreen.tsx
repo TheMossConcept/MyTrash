@@ -52,7 +52,7 @@ const AdministrationScreen: FC<Props> = () => {
           <CreateCluster successCallback={refetchClusters} />
         </View>
       </View>
-      <HeadlineText text="Aktive clustre." style={styles.headlineText} />
+      <HeadlineText text="Aktive clustre" style={styles.headlineText} />
       {isLoading ? (
         <LoadingIndicator />
       ) : (
@@ -68,7 +68,7 @@ const AdministrationScreen: FC<Props> = () => {
                 </View>
                 <CollectorFormWithList
                   clusterId={cluster.id}
-                  title="Tilføj indsamler."
+                  title="Tilføj indsamler"
                 />
               </View>
               <CloseClusterBtn
@@ -80,7 +80,7 @@ const AdministrationScreen: FC<Props> = () => {
           )}
         </ClusterList>
       )}
-      <HeadlineText text="Lukkede clustre." style={styles.headlineText} />
+      <HeadlineText text="Lukkede clustre" style={styles.headlineText} />
       {isLoading ? (
         <LoadingIndicator />
       ) : (

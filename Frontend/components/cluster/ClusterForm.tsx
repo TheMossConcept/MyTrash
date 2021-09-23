@@ -82,7 +82,7 @@ const ClusterForm: FC<Props> = ({ cluster, clusterId, submit, title }) => {
         <View style={styles.container}>
           {title && (
             <HeadlineText
-              text={`${title}.`}
+              text={`${title}`}
               style={{ alignItems: "flex-start" }}
             />
           )}
