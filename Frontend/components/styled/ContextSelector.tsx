@@ -51,7 +51,7 @@ const ContextSelector: FC<Props> = ({ children, options, selectionState }) => {
         </View>
       </View>
       <View style={styles.rightAreaContainer}>
-        <Text style={styles.selectionText}>{selectedOption}.</Text>
+        <Text style={styles.selectionText}>{selectedOption}</Text>
         <View style={styles.contentContainer}>{children}</View>
       </View>
     </View>

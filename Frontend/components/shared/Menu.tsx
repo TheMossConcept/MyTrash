@@ -81,15 +81,15 @@ const Menu: FC<Props> = ({ loggedIn = true }) => {
           <View style={styles.menuItemsContainer}>
             {loggedIn === true && (
               <TouchableOpacity onPress={onEditProfilePress}>
-                <Text style={styles.popoverText}>Rediger profil.</Text>
+                <Text style={styles.popoverText}>Rediger profil</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity onPress={openPrivacyPolicy}>
-              <Text style={styles.popoverText}>Privatlivspolitik.</Text>
+              <Text style={styles.popoverText}>Privatlivspolitik</Text>
             </TouchableOpacity>
             {loggedIn === true && (
               <TouchableOpacity onPress={logout}>
-                <Text style={styles.popoverText}>Log ud.</Text>
+                <Text style={styles.popoverText}>Log ud</Text>
               </TouchableOpacity>
             )}
           </View>

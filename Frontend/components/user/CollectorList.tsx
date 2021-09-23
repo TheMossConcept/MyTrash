@@ -40,13 +40,13 @@ const CollectorList: FC<Props> = ({
 }) => {
   return (
     <View>
-      <HeadlineText style={styles.leftText} text="Indsamlere." />
+      <HeadlineText style={styles.leftText} text="Indsamlere" />
       {/* eslint-disable no-nested-ternary */}
       {isLoading ? (
         <LoadingIndicator />
       ) : isEmpty(collectors) || !isArray(collectors) ? (
         <Text style={[globalStyles.subheaderText, styles.leftText]}>
-          Ingen indsamlere tilføjede.
+          Ingen indsamlere tilføjede
         </Text>
       ) : (
         collectors.map((collector) => (
