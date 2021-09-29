@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   mainContentAreaContainer: {
     height: "80%",
   },
-  bottomButtonContainer: { height: "20%", minHeight: 165 },
+  bottomButtonContainer: { height: "20%" },
   iconContainer: {
     // The image itself constitutes 4 % of the space
     marginTop: 100,
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
   bottomButton: {
     marginRight: 10,
     flex: 1,
+    height: 100,
   },
   lastBottomButton: { marginRight: 0 },
 });

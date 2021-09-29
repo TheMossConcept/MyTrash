@@ -11,8 +11,9 @@ const styles = StyleSheet.create({
   bottomButtonContainer: {
     backgroundColor: "#e7e7e8",
     width: "100%",
+    height: "100%",
     flexDirection: "row",
-    paddingVertical: 39,
+    alignItems: "center",
     paddingHorizontal: 20,
   },
 });
