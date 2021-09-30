@@ -80,7 +80,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       <BottomButtonContainer style={styles.bottomButtonContainer}>
         <View style={styles.firstButtonContainer}>
           <MobileButton
-            text={`Status \n indsamling.`}
+            text={`Status \n indsamling`}
             icon={{
               src: statusSelected
                 ? require("../assets/icons/graph_green.png")
@@ -94,7 +94,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             style={styles.topButton}
           />
           <MobileButton
-            text="MyTrash info."
+            text="MyTrash info"
             onPress={openMyTrashInfo}
             icon={{
               src: require("../assets/icons/leaf_grey.png"),
@@ -106,7 +106,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
         </View>
         <View style={styles.secondButtonContainer}>
           <MobileButton
-            text={`Afhentning \n plastik.`}
+            text={`Afhentning \n plastik`}
             icon={{
               src: collectionSelected
                 ? require("../assets/icons/truck_green.png")
@@ -120,7 +120,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             style={styles.topButton}
           />
           <MobileButton
-            text="Produkter."
+            text="Produkter"
             onPress={openProductsInfo}
             icon={{
               src: require("../assets/icons/chair_grey.png"),
@@ -133,13 +133,13 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       </BottomButtonContainer>
     </Container>
   ) : (
-    <View>
+    <MainContentArea>
       <Menu />
       <HoueLogo />
       <Container style={styles.centered}>
-        <HeadlineText text="Ingen aktive clustere" />
+        <HeadlineText text="Ingen aktive clustre" />
       </Container>
-    </View>
+    </MainContentArea>
   );
   /* eslint-enable no-nested-ternary */
 };
