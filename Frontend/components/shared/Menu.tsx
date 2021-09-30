@@ -52,7 +52,7 @@ const Menu: FC<Props> = ({ loggedIn = true }) => {
   useOutsideClickDetector(menuRef, outsideClickHandler);
 
   const openPrivacyPolicy = () => {
-    Linking.openURL("https://houe.com/Brug-af-cookies");
+    Linking.openURL("https://www.houe.com/Brug-af-cookies");
     setPopoverIsShown(false);
   };
 
