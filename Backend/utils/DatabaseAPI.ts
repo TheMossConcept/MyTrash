@@ -10,9 +10,107 @@ const getMongoClient = async () => {
       process.env.CUSTOMCONNSTR_DbConnectionString,
       { useUnifiedTopology: true }
     );
+
+    // Only do (and await for) this the first time around!
+    await initializeIndexes(globalMongoClientInstace);
   }
 
   return globalMongoClientInstace;
+};
+
+const initializeIndexes = async (client: mongodb.MongoClient) => {
+  await client
+    .db(DATABASE_NAME)
+    .collection("cluster")
+    .createIndexes([
+      {
+        name: "collectionAdministratorId",
+        key: { collectionAdministratorId: 1 },
+        sparse: true,
+      },
+      {
+        name: "logisticsPartnerId",
+        key: { logisticsPartnerId: 1 },
+        sparse: true,
+      },
+      {
+        name: "productionPartnerId",
+        key: { productionPartnerId: 1 },
+        sparse: true,
+      },
+      {
+        name: "recipientPartnerId",
+        key: { recipientPartnerId: 1 },
+        sparse: true,
+      },
+      { name: "collectors", key: { collectors: 1 }, sparse: true },
+    ]);
+
+  await client
+    .db(DATABASE_NAME)
+    .collection("collection")
+    .createIndexes([
+      { name: "createdAt", key: { createdAt: 1 } },
+      { name: "scheduledPickupDate", key: { scheduledPickupDate: 1 } },
+      { name: "deliveryDate", key: { deliveryDate: 1 } },
+      { name: "receivedDate", key: { receivedDate: 1 } },
+      { name: "requesterId", key: { requesterId: 1 }, sparse: true },
+      { name: "clusterId", key: { clusterId: 1 }, sparse: true },
+      {
+        name: "logisticsPartnerId",
+        key: { logisticsPartnerId: 1 },
+        sparse: true,
+      },
+      {
+        name: "recipientPartnerId",
+        key: { recipientPartnerId: 1 },
+        sparse: true,
+      },
+    ]);
+
+  await client
+    .db(DATABASE_NAME)
+    .collection("batch")
+    .createIndexes([
+      { name: "createdAt", key: { createdAt: 1 } },
+      { name: "sentDate", key: { sentDate: 1 } },
+      {
+        name: "clusterId",
+        key: { clusterId: 1 },
+        sparse: true,
+      },
+      {
+        name: "recipientPartnerId",
+        key: { recipientPartnerId: 1 },
+        sparse: true,
+      },
+      {
+        name: "productionPartnerId",
+        key: { productionPartnerId: 1 },
+        sparse: true,
+      },
+    ]);
+
+  await client
+    .db(DATABASE_NAME)
+    .collection("product")
+    .createIndexes([
+      {
+        name: "clusterId",
+        key: { clusterId: 1 },
+        sparse: true,
+      },
+      {
+        name: "batchId",
+        key: { batchId: 1 },
+        sparse: true,
+      },
+      {
+        name: "productionPartnerId",
+        key: { productionPartnerId: 1 },
+        sparse: true,
+      },
+    ]);
 };
 
 type PaginationResult<T> = {
