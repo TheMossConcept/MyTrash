@@ -91,7 +91,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             isVerticalButton
             isSelected={statusSelected}
             onPress={() => setSelectedScreen("status")}
-            style={styles.topButton}
+            style={[styles.topButton, styles.bottomButton]}
           />
           <MobileButton
             text="MyTrash info"
@@ -101,6 +101,7 @@ const CollectionScreen: FC<Props> = ({ route }) => {
               width: 20.5,
               height: 32.5,
             }}
+            style={styles.bottomButton}
             isVerticalButton
           />
         </View>
@@ -117,10 +118,11 @@ const CollectionScreen: FC<Props> = ({ route }) => {
             isVerticalButton
             isSelected={collectionSelected}
             onPress={() => setSelectedScreen("collection")}
-            style={styles.topButton}
+            style={[styles.topButton, styles.bottomButton]}
           />
           <MobileButton
             text="Produkter"
+            style={styles.bottomButton}
             onPress={openProductsInfo}
             icon={{
               src: require("../assets/icons/chair_grey.png"),
@@ -160,6 +162,7 @@ const styles = StyleSheet.create({
   firstButtonContainer: { flex: 1, paddingHorizontal: 7 },
   secondButtonContainer: { flex: 1 },
   topButton: { marginBottom: 9 },
+  bottomButton: { height: "40%" },
 });
 
 export default CollectionScreen;
