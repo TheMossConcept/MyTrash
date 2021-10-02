@@ -1,5 +1,4 @@
-import React, { FC } from "react";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import React, { FC, useRef } from "react";
 import { EventRegister } from "react-native-event-listeners";
 import {
   View,
@@ -11,6 +10,8 @@ import {
   ViewStyle,
   TouchableWithoutFeedback,
   GestureResponderEvent,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import { useAssets } from "expo-asset";
 import Platform from "../../utils/platform";
@@ -21,13 +22,19 @@ type Props = {
   disableScroll?: boolean;
 } & Omit<ImageBackgroundProps, "source" | "style">;
 
+export const ScrollViewContext =
+  React.createContext<React.MutableRefObject<ScrollView | null> | null>(null);
+
 const MainContentArea: FC<Props> = ({
   children,
   containerStyle,
   disableScroll = false,
   ...imageBackgroundProps
 }) => {
+  const scrollViewRef = useRef<ScrollView | null>(null);
+
   const isWeb = Platform.platformName === "web";
+  const isIOS = Platform.platformName === "iOS";
 
   const handleGlobalPress = (event: GestureResponderEvent) => {
     EventRegister.emit("globalPress", event);
@@ -55,13 +62,17 @@ const MainContentArea: FC<Props> = ({
             </View>
           </TouchableWithoutFeedback>
         ) : (
-          <KeyboardAwareScrollView>
-            <TouchableWithoutFeedback onPress={handleGlobalPress}>
-              <View style={styles.childContainer}>
-                <SafeAreaView>{children}</SafeAreaView>
-              </View>
-            </TouchableWithoutFeedback>
-          </KeyboardAwareScrollView>
+          <KeyboardAvoidingView behavior={isIOS ? "padding" : "height"}>
+            <ScrollView ref={scrollViewRef}>
+              <ScrollViewContext.Provider value={scrollViewRef}>
+                <TouchableWithoutFeedback onPress={handleGlobalPress}>
+                  <View style={styles.childContainer}>
+                    <SafeAreaView>{children}</SafeAreaView>
+                  </View>
+                </TouchableWithoutFeedback>
+              </ScrollViewContext.Provider>
+            </ScrollView>
+          </KeyboardAvoidingView>
         )}
       </ImageBackground>
     </View>
