@@ -103,7 +103,10 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <MainContentArea containerStyle={styles.mainContentAreaContainer}>
+      <MainContentArea
+        containerStyle={styles.mainContentAreaContainer}
+        disableScroll
+      >
         {/* It does not make sense to show the menu items on the login screen
             as all of them requires you to be logged in */}
         <Menu loggedIn={false} />

@@ -42,22 +42,19 @@
             "type": "string"
         }
     },
+    "variables": {},
     "resources": [
         {
             "apiVersion": "2018-11-01",
             "name": "[parameters('name')]",
             "type": "Microsoft.Web/sites",
             "kind": "functionapp",
-            "identity": {
-                "principalId": "",
-                "tenantId": "",
-                "type": "SystemAssigned"
-            },
             "location": "[parameters('location')]",
-            "tags": null,
+            "tags": {},
             "dependsOn": [
-                "microsoft.insights/components/func-houe-mytrash",
-                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+                "microsoft.insights/components/func-mytrash-test",
+                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+                "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
             ],
             "properties": {
                 "name": "[parameters('name')]",
@@ -77,15 +74,23 @@
                         },
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                            "value": "[reference('microsoft.insights/components/func-houe-mytrash', '2015-05-01').InstrumentationKey]"
+                            "value": "[reference('microsoft.insights/components/func-mytrash-test', '2015-05-01').InstrumentationKey]"
                         },
                         {
                             "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                            "value": "[reference('microsoft.insights/components/func-houe-mytrash', '2015-05-01').ConnectionString]"
+                            "value": "[reference('microsoft.insights/components/func-mytrash-test', '2015-05-01').ConnectionString]"
                         },
                         {
-                            "name": "AzureWebJobsSecretStorageType",
-                            "value": "files"
+                            "name": "AzureWebJobsStorage",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+                            "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+                        },
+                        {
+                            "name": "WEBSITE_CONTENTSHARE",
+                            "value": "[concat(toLower(parameters('name')), 'ad03')]"
                         }
                     ],
                     "use32BitWorkerProcess": "[parameters('use32BitWorkerProcess')]"
@@ -100,7 +105,7 @@
             "type": "Microsoft.Web/serverfarms",
             "location": "[parameters('location')]",
             "kind": "",
-            "tags": null,
+            "tags": {},
             "dependsOn": [],
             "properties": {
                 "name": "[parameters('hostingPlanName')]",
@@ -115,10 +120,10 @@
         },
         {
             "apiVersion": "2020-02-02-preview",
-            "name": "func-houe-mytrash",
+            "name": "func-mytrash-test",
             "type": "microsoft.insights/components",
             "location": "westeurope",
-            "tags": null,
+            "tags": {},
             "dependsOn": [],
             "properties": {
                 "ApplicationId": "[parameters('name')]",
@@ -126,6 +131,20 @@
                 "Flow_Type": "Redfield",
                 "Application_Type": "web",
                 "WorkspaceResourceId": "/subscriptions/3e3908a1-ee68-4017-9152-eef719ee76f7/resourcegroups/defaultresourcegroup-weu/providers/microsoft.operationalinsights/workspaces/defaultworkspace-3e3908a1-ee68-4017-9152-eef719ee76f7-weu"
+            }
+        },
+        {
+            "apiVersion": "2019-06-01",
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[parameters('storageAccountName')]",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "properties": {
+                "supportsHttpsTrafficOnly": true,
+                "minimumTlsVersion": "TLS1_2"
             }
         }
     ]

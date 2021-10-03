@@ -28,7 +28,6 @@ import useQueryState from "../../hooks/useQueryState";
 import globalStyles from "../../utils/globalStyles";
 import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 import LoadingIndicator from "../styled/LoadingIndicator";
-import AutocompleteInputItem from "./AutocompleteInputItem";
 
 export type SelectableEntity = {
   id: string;
@@ -202,7 +201,6 @@ const AutocompleteInput: FC<Props> = ({
               renderItem: ({ item }: { item: SelectableEntity }) => {
                 return (
                   <TouchableOpacity
-                    ref={ref}
                     onPress={handleItemSelection(item)}
                     style={styles.touchableOpacity}
                   >

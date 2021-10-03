@@ -79,6 +79,16 @@ As custom attributes are a pain to work with through the portal interface (I'm a
 
 As you have probably guessed from the custom attributes, the valid values for role are: Administrator, CollectionAdministrator, LogisticsPartner, RecipientPartner and ProductionPartner. Adding collectors is done through a separate function and should not be necessary to do outside of the interface.
 
+## Identity throughout the system
+
+In MyTrash, we have three main entities that help us follow the plastic throughout its lifetime: Collection, batch, and product. In addition, we have another entity, Cluster, that ties everything together.
+
+When a collector uses the MyTrash app, she books a collection of plastic. This creates a new (plastic) collection entity in the database which is linked to the cluster that the collector belongs as well as the LogisticsPartner and RecipientPartner in that cluster. When the LogisticsPartner schedules pick-up, registers pick-up and registers delivery the status of the collection changes. The status of the collection also changes once the RecipientPartner registers reception of the collection.
+
+The RecipientPartner creates a batch. The batch is linked to the RecipientPartner who creates it, the cluster he belongs to and the ProductionPartner of that cluster. Be aware that the batch is NOT linked backwards to a Collection. Thus, we cannot determine which batches are made from which collections and therefore, we also cannot tell what specific collector contributed to the batch. Tracking-wise, the only thing we know about a batch is what Cluster it belongs to.
+
+The Product is the final entity that is created. It's created for a specific batch and as such, it's linked to the ProductionPartner who creates it, the cluster he is in and the batch it was created from. We can go back in our tracking from Product to Batch but no further than that, as a batch is not linked to a Collection as just mentioned.
+
 ## Azure infrastructure and webdeployment
 
 The folder Infrastructure contains ARM templates for most of the infrastructure and a file for deployment. It deploys and sets up the backends and databases but not the static web apps. As you can see, the Function Apps that host the backends need access to Microsoft Graph through a managed identity which is set up in the deployment.sh script. Although the script can be run, it's mostly meant for documentation and you can manually copy and paste individually commands to run the parts of it that you need.
@@ -100,7 +110,8 @@ SentDate
 ReceivedDate
 ```
 
-These can be created ahead of time even though the two collections do not yet have data. This is done by accessing the database either throug the portal or through a terminal by using the information in the connection string. Remember to add the `--tls` flag to the `mongo` command. An index is created by using [this method](https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/).
+These can be created ahead of time even though the two collections do not yet have data. This is done by accessing the database either throug the portal or through a terminal by using the information in the connection string. Remember to add the `--tls` flag to the `mongo` command. An index is created by using [this method](https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/). 
+In the latest update, these indexes  - along with indexes for all the foreign keys for performance - are generated in code the first time the database client is initialized, however, the above instructions have been left here as they still hold value as documentation into a vital aspect of the systems functionality.
 
 Finally, remember to grant your static web app CORS access so it can access the backend through a web browser. You should also remember to add the URL of your static web app to approve redirect URLs in the Azure AD B2C, otherwise login and profile edit will fail for your URL. This is also true if you change the URL of an already deployed solution.
 
@@ -115,3 +126,5 @@ The result of the build should be uploaded to [App Store Connect](https://appsto
 ## The staging environment
 
 The staging environment contains a separat cosmos db, function app, static web app and mobile apps that are deployed to the Expo Go app. It is completely isolated from production except for the fact that they use the same AD. The environment is controlled by the environment variable `APPLICATION_ENVIRONMENT`. The possible values include `local`, `staging` and `production`.
+
+The staging environment can be access at `https://polite-field-0d14ffe03.azurestaticapps.net/` and the production environment can be access at `https://mytrash.houe.com`.

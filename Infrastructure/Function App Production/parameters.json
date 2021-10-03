@@ -6,13 +6,13 @@
             "value": "3e3908a1-ee68-4017-9152-eef719ee76f7"
         },
         "name": {
-            "value": "func-houe-mytrash"
+            "value": "func-mytrash-production"
         },
         "location": {
             "value": "West Europe"
         },
         "hostingPlanName": {
-            "value": "ASP-rghouemytrash-860d"
+            "value": "ASP-rghouemytrash-b385"
         },
         "serverFarmResourceGroup": {
             "value": "rg-houe-mytrash"
@@ -21,7 +21,7 @@
             "value": false
         },
         "storageAccountName": {
-            "value": "storageaccountrghou9144"
+            "value": "storageaccountrghou89e0"
         },
         "sku": {
             "value": "Dynamic"

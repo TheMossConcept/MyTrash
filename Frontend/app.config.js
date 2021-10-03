@@ -18,7 +18,7 @@ const productionConfig = {
   AUTHORIZATION_URL:
     "https://houeb2c.b2clogin.com/houeb2c.onmicrosoft.com/v2.0/.well-known/openid-configuration",
   AZURE_AD_CLIENT_ID: "5a5e1ff1-c935-4cc6-b6b6-5ab356682d10",
-  BACKEND_URL: "https://func-houe-mytrash.azurewebsites.net/api",
+  BACKEND_URL: "https://func-mytrash-production.azurewebsites.net/api",
   ENVIRONMENT_NAME: "production",
 };
 
@@ -39,7 +39,7 @@ export default {
   name: "MyTrash",
   owner: "houe",
   slug: "my-trash",
-  version: "1.0.7",
+  version: "2",
   orientation: "portrait",
   scheme: "mytrash",
   userInterfaceStyle: "automatic",
@@ -54,7 +54,7 @@ export default {
   },
   android: {
     package: "com.houe.mytrash",
-    versionCode: 2,
+    versionCode: 3,
     adaptiveIcon: {
       backgroundColor: "#FFFFFF",
     },
