@@ -34,7 +34,6 @@ const MainContentArea: FC<Props> = ({
   const scrollViewRef = useRef<ScrollView | null>(null);
 
   const isWeb = Platform.platformName === "web";
-  const isIOS = Platform.platformName === "iOS";
 
   const handleGlobalPress = (event: GestureResponderEvent) => {
     EventRegister.emit("globalPress", event);
@@ -63,7 +62,7 @@ const MainContentArea: FC<Props> = ({
           </TouchableWithoutFeedback>
         ) : (
           <KeyboardAvoidingView behavior="position">
-            <ScrollView ref={scrollViewRef}>
+            <ScrollView ref={scrollViewRef} keyboardShouldPersistTaps="handled">
               <ScrollViewContext.Provider value={scrollViewRef}>
                 <TouchableWithoutFeedback onPress={handleGlobalPress}>
                   <View style={styles.childContainer}>

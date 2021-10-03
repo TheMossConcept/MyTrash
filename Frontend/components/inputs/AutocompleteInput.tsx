@@ -17,7 +17,7 @@ import {
   ViewStyle,
   TextInput,
   StyleSheet,
-  TouchableOpacity,
+  Keyboard,
 } from "react-native";
 import Autocomplete, {
   AutocompleteProps,
@@ -29,6 +29,7 @@ import globalStyles from "../../utils/globalStyles";
 import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 import LoadingIndicator from "../styled/LoadingIndicator";
 import { ScrollViewContext } from "../styled/MainContentArea";
+import AutocompleteInputItem from "./AutocompleteInputItem";
 
 export type SelectableEntity = {
   id: string;
@@ -152,7 +153,9 @@ const AutocompleteInput: FC<Props> = ({
 
     // ============================================================================
 
-    const handleItemSelection = (item: SelectableEntity) => () => {
+    const handleItemSelection = (item: SelectableEntity) => {
+      Keyboard.dismiss();
+
       setSelectedId(item.id);
       setHideSuggestionList(true);
     };
@@ -200,14 +203,10 @@ const AutocompleteInput: FC<Props> = ({
               // eslint-disable-next-line react/display-name
               renderItem: ({ item }: { item: SelectableEntity }) => {
                 return (
-                  <TouchableOpacity
-                    onPress={handleItemSelection(item)}
-                    style={styles.touchableOpacity}
-                  >
-                    <Text style={[globalStyles.subheaderText, styles.itemText]}>
-                      {item.displayName}
-                    </Text>
-                  </TouchableOpacity>
+                  <AutocompleteInputItem
+                    item={item}
+                    handleItemSelection={handleItemSelection}
+                  />
                 );
               },
             }}
@@ -242,9 +241,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
-  },
-  touchableOpacity: {
-    width: "100%",
   },
 });
 
