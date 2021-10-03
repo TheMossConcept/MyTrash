@@ -61,11 +61,6 @@ const CollectionScreen: FC<Props> = ({ route }) => {
       <MainContentArea containerStyle={styles.mainContentAreaContainer}>
         <Menu />
         <HoueLogo />
-        {isLoading && (
-          <View style={styles.centered}>
-            <LoadingIndicator />
-          </View>
-        )}
         {statusSelected ? (
           <CollectorProgression
             userId={userId}

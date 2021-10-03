@@ -69,6 +69,7 @@ const AutocompleteInput: FC<Props> = ({
   const autocompleteRef = useRef(null);
   const clickOutsideHandler = () => {
     setHideSuggestionList(true);
+    Keyboard.dismiss();
   };
   useOutsideClickDetector(autocompleteRef, clickOutsideHandler);
 
@@ -200,6 +201,7 @@ const AutocompleteInput: FC<Props> = ({
             flatListProps={{
               keyExtractor: (item: SelectableEntity) => item.id,
               ItemSeparatorComponent: Divider,
+              keyboardShouldPersistTaps: "handled",
               // eslint-disable-next-line react/display-name
               renderItem: ({ item }: { item: SelectableEntity }) => {
                 return (

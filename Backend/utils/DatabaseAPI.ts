@@ -12,13 +12,12 @@ const getMongoClient = async () => {
     );
 
     // Only do (and await for) this the first time around!
-    // await initializeIndexes(globalMongoClientInstace);
+    await initializeIndexes(globalMongoClientInstace);
   }
 
   return globalMongoClientInstace;
 };
 
-/*
 const initializeIndexes = async (client: mongodb.MongoClient) => {
   await client
     .db(DATABASE_NAME)
@@ -113,7 +112,6 @@ const initializeIndexes = async (client: mongodb.MongoClient) => {
       },
     ]);
 };
-*/
 
 type PaginationResult<T> = {
   result: Array<T & DatabaseEntity>;
