@@ -62,7 +62,7 @@ const MainContentArea: FC<Props> = ({
             </View>
           </TouchableWithoutFeedback>
         ) : (
-          <KeyboardAvoidingView behavior={isIOS ? "padding" : "height"}>
+          <KeyboardAvoidingView behavior="position">
             <ScrollView ref={scrollViewRef}>
               <ScrollViewContext.Provider value={scrollViewRef}>
                 <TouchableWithoutFeedback onPress={handleGlobalPress}>
