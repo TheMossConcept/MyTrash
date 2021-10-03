@@ -28,6 +28,7 @@ import useQueryState from "../../hooks/useQueryState";
 import globalStyles from "../../utils/globalStyles";
 import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 import LoadingIndicator from "../styled/LoadingIndicator";
+import platform from "../../utils/platform";
 
 export type SelectableEntity = {
   id: string;
@@ -65,7 +66,9 @@ const AutocompleteInput: FC<Props> = ({
   const autocompleteRef = useRef(null);
   const clickOutsideHandler = () => {
     setHideSuggestionList(true);
-    Keyboard.dismiss();
+    if (platform.platformName !== "web") {
+      Keyboard.dismiss();
+    }
   };
   useOutsideClickDetector(autocompleteRef, clickOutsideHandler);
 

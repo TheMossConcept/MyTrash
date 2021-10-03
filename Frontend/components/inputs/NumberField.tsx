@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 import globalStyles from "../../utils/globalStyles";
+import platform from "../../utils/platform";
 
 type Props<T> = { formKey: keyof T & string; label: string } & TextInputProps;
 
@@ -27,7 +28,9 @@ export default function NumberField<T>({
 
   const ref = useRef(null);
   useOutsideClickDetector(ref, () => {
-    Keyboard.dismiss();
+    if (platform.platformName !== "web") {
+      Keyboard.dismiss();
+    }
   });
 
   if (!formikProps) {
