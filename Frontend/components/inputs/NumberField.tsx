@@ -1,12 +1,14 @@
 import { ErrorMessage, useFormikContext } from "formik";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useRef } from "react";
 import {
   View,
   TextInput,
   Text,
   StyleSheet,
   TextInputProps,
+  Keyboard,
 } from "react-native";
+import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 import globalStyles from "../../utils/globalStyles";
 
 type Props<T> = { formKey: keyof T & string; label: string } & TextInputProps;
@@ -22,6 +24,11 @@ export default function NumberField<T>({
   // numbers without making the UI and form state inconsistent and without allowing strings to be
   // passed on as numbers
   const formikProps = useFormikContext<T>();
+
+  const ref = useRef(null);
+  useOutsideClickDetector(ref, () => {
+    Keyboard.dismiss();
+  });
 
   if (!formikProps) {
     throw Error(
@@ -57,6 +64,7 @@ export default function NumberField<T>({
           /* NB! This is unsafe but I don't know how to statically tell the compiler
           that T should only contain strings */
           value={value}
+          ref={ref}
           onChangeText={handleNumberChange(key)}
           onBlur={handleBlur(key)}
           {...textInputProps}

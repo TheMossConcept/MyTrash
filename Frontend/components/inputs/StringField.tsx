@@ -1,5 +1,5 @@
 import { ErrorMessage, useFormikContext } from "formik";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useRef } from "react";
 import {
   View,
   ViewStyle,
@@ -7,7 +7,9 @@ import {
   Text,
   TextInputProps,
   StyleSheet,
+  Keyboard,
 } from "react-native";
+import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 import globalStyles from "../../utils/globalStyles";
 
 type Props<T> = {
@@ -24,6 +26,11 @@ export default function StringField<T>({
 }: PropsWithChildren<Props<T>>) {
   const formikProps = useFormikContext<T>();
 
+  const ref = useRef(null);
+  useOutsideClickDetector(ref, () => {
+    Keyboard.dismiss();
+  });
+
   if (!formikProps) {
     throw Error(
       "Incorrect use of StringField. It's used outside a FormContainer which is not allowed as it needs the context crated by Formik!"
@@ -31,6 +38,7 @@ export default function StringField<T>({
   } else {
     const { values, handleChange, handleBlur } = formikProps;
     const value = values ? (values[key] as unknown as string) : "";
+
     return (
       <View style={style}>
         <Text style={[globalStyles.subheaderText, styles.labelText]}>
@@ -40,6 +48,7 @@ export default function StringField<T>({
           /* NB! This is unsafe but I don't know how to statically tell the compiler
           that T should only contain strings */
           value={value}
+          ref={ref}
           onChangeText={handleChange(key)}
           onBlur={handleBlur(key)}
           placeholder={label}
