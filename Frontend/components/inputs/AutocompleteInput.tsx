@@ -17,6 +17,7 @@ import {
   TextInput,
   StyleSheet,
   Keyboard,
+  TouchableOpacity,
 } from "react-native";
 import Autocomplete, {
   AutocompleteProps,
@@ -150,7 +151,7 @@ const AutocompleteInput: FC<Props> = ({
 
     // ============================================================================
 
-    const handleItemSelection = (item: SelectableEntity) => {
+    const handleItemSelection = (item: SelectableEntity) => () => {
       Keyboard.dismiss();
 
       setSelectedId(item.id);
@@ -200,10 +201,15 @@ const AutocompleteInput: FC<Props> = ({
               // eslint-disable-next-line react/display-name
               renderItem: ({ item }: { item: SelectableEntity }) => {
                 return (
-                  <AutocompleteInputItem
-                    item={item}
-                    handleItemSelection={handleItemSelection}
-                  />
+                  <TouchableOpacity
+                    ref={ref}
+                    onPress={handleItemSelection(item)}
+                    style={styles.touchableOpacity}
+                  >
+                    <Text style={[globalStyles.subheaderText, styles.itemText]}>
+                      {item.displayName}
+                    </Text>
+                  </TouchableOpacity>
                 );
               },
             }}
@@ -232,6 +238,9 @@ const AutocompleteInput: FC<Props> = ({
 const styles = StyleSheet.create({
   labelText: { fontSize: 12 },
   itemText: { fontSize: 12, paddingVertical: 15 },
+  touchableOpacity: {
+    width: "100%",
+  },
   emptyViewContainer: {
     height: 45,
     width: "100%",
