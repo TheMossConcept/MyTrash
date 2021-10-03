@@ -79,4 +79,4 @@ jobs:
       with:
         app-name: 'mytrash-test'
         package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-        publish-profile: ${{ secrets.TEMPORARY }}
+        publish-profile: ${{ secrets.MYTRASH_BACKEND_PUBLISH_PROFILE_STAGING }}

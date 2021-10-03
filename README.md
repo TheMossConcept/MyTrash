@@ -18,7 +18,7 @@ App'en har en menu hvorfra brugeren kan redigere sin profil, logge ud og se app'
 
 ## Partnere
 
-Partnere har kun adgang til app'en via webinterfacet, som i øjeblikket kan tilgås på [https://white-glacier-0780ea903.azurestaticapps.net/login](https://white-glacier-0780ea903.azurestaticapps.net/login). Planen er at løsningen skal flyttes til mytrash.houe.com, når domænevalideringen går i orden med Tony fra TC Systems, som står for administration af domænet houe.com.
+Partnere har kun adgang til app'en via webinterfacet, som tilgås på [https://mytrash.houe.com](https://mytrash.houe.com).
 
 Der findes følgende partnertyper: Administrationspartner, indsamlingspartner, logistikpartner, modtagerpartner og produktionspartner. En administrationspartner kan oprette nye partnere af alle disse typer. For nu kan en bruger kun være en type partner, så hvis Houe f.eks. har brug for en administrationpartner og en logistikpartner skal jeg oprettes to brugere, en for hver rolle. I partner dropdowns vises partnerens virksomhedsnavn.
 
@@ -44,10 +44,10 @@ Brugere deles på tværs af test og produktionsmiljø. I langt de fleste tilfæl
 
 Systemet hostes i Azure. I det følgende gives et overblik over, hvilket abstraktioner der benyttes og hvad disse koster.
 
-* Brugerstyring klares af Azure AD B2C og prisen her er afhængig af Monthly Active Users (MAUs). En prisliste kan findes [her](https://azure.microsoft.com/en-us/pricing/details/active-directory/external-identities/).
-* Backend til produktions- og testmiljø hostes i Azure Function Apps på et serverless tier. En prisliste kan findes [her](https://azure.microsoft.com/en-us/pricing/details/functions/).
-* Webinterfacet hostes i Azure Static Web Apps. En prisliste kan findes [her](https://azure.microsoft.com/en-us/pricing/details/app-service/static/).
-* Databaserne til produktions- og testmiljøet hostes i Cosmos DB på et serverless tier. En prisliste kan findes [her](https://azure.microsoft.com/en-us/pricing/details/cosmos-db/).
+* Backend til produktions- og testmiljø hostes i Azure Function Apps på et serverless tier. En prisliste kan findes på [https://azure.microsoft.com/en-us/pricing/details/functions/](https://azure.microsoft.com/en-us/pricing/details/functions/).
+* Brugerstyring klares af Azure AD B2C og prisen her er afhængig af Monthly Active Users (MAUs). En prisliste kan findes på [https://azure.microsoft.com/en-us/pricing/details/active-directory/external-identities/](https://azure.microsoft.com/en-us/pricing/details/active-directory/external-identities/).
+* Databaserne til produktions- og testmiljøet hostes i Cosmos DB på et serverless tier. En prisliste kan findes på [https://azure.microsoft.com/en-us/pricing/details/cosmos-db/](https://azure.microsoft.com/en-us/pricing/details/cosmos-db/).
+* Webinterfacet hostes i Azure Static Web Apps. En prisliste kan findes på [https://azure.microsoft.com/en-us/pricing/details/app-service/static/](https://azure.microsoft.com/en-us/pricing/details/app-service/static/).
 * Til at understøtte de to Azure Function Apps til backenden er der oprettet et Log Analytics Workspace, to Applications Insights instanser samt en Storage Account. Disse bruges ikke af andet end de to Azure Function Apps og derfor burde de ikke have noget bidrage af betydning til den samlede hostingpris.
 
 # The system from a technical perspective
@@ -110,7 +110,7 @@ SentDate
 ReceivedDate
 ```
 
-These can be created ahead of time even though the two collections do not yet have data. This is done by accessing the database either throug the portal or through a terminal by using the information in the connection string. Remember to add the `--tls` flag to the `mongo` command. An index is created by using [this method](https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/). 
+These can be created ahead of time even though the two collections do not yet have data. This is done by accessing the database either throug the portal or through a terminal by using the information in the connection string. Remember to add the `--tls` flag to the `mongo` command. An index is created by using the method documented at [https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/](https://docs.mongodb.com/manual/reference/method/db.collection.createIndex/). 
 In the latest update, these indexes  - along with indexes for all the foreign keys for performance - are generated in code the first time the database client is initialized, however, the above instructions have been left here as they still hold value as documentation into a vital aspect of the systems functionality.
 
 Finally, remember to grant your static web app CORS access so it can access the backend through a web browser. You should also remember to add the URL of your static web app to approve redirect URLs in the Azure AD B2C, otherwise login and profile edit will fail for your URL. This is also true if you change the URL of an already deployed solution.
@@ -119,12 +119,13 @@ Deployment is done automatically through Github Actions. A push to develop will 
 
 ## Deployment of the mobile app
 
-Everything regarding the mobile app is handled through [Expo](https://expo.dev/). Houe has an Expo account that Louise Mørk manages. Building for iOS is done through `npm run build:ios` and conversely for Android using `npm run build:android`. When building for iOS for the first time, contact Phillip at Houe as he owns the account that deploys the build to app store. The first time you build, you need to login to his account and he needs to approve you through 2FA.
+Everything regarding the mobile app is handled through Expo, see [https://expo.dev/](https://expo.dev/). Houe has an Expo account that Louise Mørk manages. Building for iOS is done through `npm run build:ios` and conversely for Android using `npm run build:android`. When building for iOS for the first time, contact Phillip at Houe as he owns the account that deploys the build to app store. The first time you build, you need to login to his account and he needs to approve you through 2FA.
 
-The result of the build should be uploaded to [App Store Connect](https://appstoreconnect.apple.com/) for Apple and [Google Play Console](https://play.google.com/console/u/3/developers/?pli=1) for Google. Phillip at Houe owns both accounts, so contact him for access.
+The result of the build should be uploaded to App Store Connect at [https://appstoreconnect.apple.com/](https://appstoreconnect.apple.com/) for Apple and Google Play Store at [https://play.google.com/console/u/3/developers/?pli=1](https://play.google.com/console/u/3/developers/?pli=1) for Google. Phillip at Houe owns both accounts, so contact him for access.
 
 ## The staging environment
 
 The staging environment contains a separat cosmos db, function app, static web app and mobile apps that are deployed to the Expo Go app. It is completely isolated from production except for the fact that they use the same AD. The environment is controlled by the environment variable `APPLICATION_ENVIRONMENT`. The possible values include `local`, `staging` and `production`.
 
-The staging environment can be access at `https://polite-field-0d14ffe03.azurestaticapps.net/` and the production environment can be access at `https://mytrash.houe.com`.
+The staging environment can be access at [https://polite-field-0d14ffe03.azurestaticapps.net/](https://polite-field-0d14ffe03.azurestaticapps.net/) and the production environment can be access at [https://mytrash.houe.com](https://mytrash.houe.com). The staging version of the app can be accessed by opening exp://exp.host/@houe/my-trash on a phone with Expo Go installed. It requires the user trying to access the app through Expo Go to be invited to the Houe Expo Account. 
+
