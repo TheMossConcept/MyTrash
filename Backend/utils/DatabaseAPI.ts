@@ -7,17 +7,18 @@ const getMongoClient = async () => {
   // If the global mongo client is not defined, create it by connecting to the db
   if (!globalMongoClientInstace) {
     globalMongoClientInstace = await mongodb.MongoClient.connect(
-      process.env.CUSTOMCONNSTR_DbConnectionString,
+      process.env.CUSTOMCONNSTR_DBConnectionString,
       { useUnifiedTopology: true }
     );
 
     // Only do (and await for) this the first time around!
-    await initializeIndexes(globalMongoClientInstace);
+    // await initializeIndexes(globalMongoClientInstace);
   }
 
   return globalMongoClientInstace;
 };
 
+/*
 const initializeIndexes = async (client: mongodb.MongoClient) => {
   await client
     .db(DATABASE_NAME)
@@ -112,6 +113,7 @@ const initializeIndexes = async (client: mongodb.MongoClient) => {
       },
     ]);
 };
+*/
 
 type PaginationResult<T> = {
   result: Array<T & DatabaseEntity>;
