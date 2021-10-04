@@ -16,6 +16,7 @@ import {
 import { useAssets } from "expo-asset";
 import Platform from "../../utils/platform";
 import LoadingIndicator from "./LoadingIndicator";
+import platform from "../../utils/platform";
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
@@ -56,7 +57,9 @@ const MainContentArea: FC<Props> = ({
             </View>
           </TouchableWithoutFeedback>
         ) : (
-          <KeyboardAvoidingView behavior="position">
+          <KeyboardAvoidingView
+            behavior={platform.platformName === "ios" ? "padding" : "height"}
+          >
             <ScrollView keyboardShouldPersistTaps="handled">
               <TouchableWithoutFeedback onPress={handleGlobalPress}>
                 <View style={styles.childContainer}>
