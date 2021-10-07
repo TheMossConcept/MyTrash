@@ -25,8 +25,8 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
     });
 
   const descriptionText = clusterIsOpen
-    ? "Status på din personlige indsamling."
-    : "Status på din personlige indsamling samt dit clusters totale status.";
+    ? "Status på din personlige indsamling"
+    : "Status på din personlige indsamling samt dit clusters totale status";
 
   return (
     <View style={style} {...viewProps}>
@@ -48,7 +48,7 @@ const CollectorProgression: FC<ClusterViewForCollectorProps> = ({
         ) : userProgressData ? (
           <ProgressionCircle
             progressData={userProgressData}
-            explanationText="Individuel."
+            explanationText="Individuel"
           />
         ) : null}
         {/* eslint-enable no-nested-ternary */}
@@ -76,7 +76,7 @@ const ClusterProgression: FC<ClusterProgressionProps> = ({ clusterId }) => {
   ) : clusterProgressData ? (
     <ProgressionCircle
       progressData={clusterProgressData}
-      explanationText="Cluster."
+      explanationText="Cluster"
     />
   ) : null;
   /* eslint-enable no-nested-ternary */

@@ -16,12 +16,14 @@ import {
 import { useAssets } from "expo-asset";
 import Platform from "../../utils/platform";
 import LoadingIndicator from "./LoadingIndicator";
-import platform from "../../utils/platform";
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
   disableScroll?: boolean;
 } & Omit<ImageBackgroundProps, "source" | "style">;
+
+export const ScrollViewContext =
+  React.createContext<React.MutableRefObject<ScrollView | null> | null>(null);
 
 const MainContentArea: FC<Props> = ({
   children,
@@ -30,6 +32,8 @@ const MainContentArea: FC<Props> = ({
   ...imageBackgroundProps
 }) => {
   const isWeb = Platform.platformName === "web";
+
+  const scrollViewRef = useRef<ScrollView | null>(null);
 
   const handleGlobalPress = (event: GestureResponderEvent) => {
     EventRegister.emit("globalPress", event);
@@ -58,14 +62,16 @@ const MainContentArea: FC<Props> = ({
           </TouchableWithoutFeedback>
         ) : (
           <KeyboardAvoidingView
-            behavior={platform.platformName === "ios" ? "padding" : "height"}
+            behavior={Platform.platformName === "ios" ? "padding" : "height"}
           >
-            <ScrollView keyboardShouldPersistTaps="handled">
-              <TouchableWithoutFeedback onPress={handleGlobalPress}>
-                <View style={styles.childContainer}>
-                  <SafeAreaView>{children}</SafeAreaView>
-                </View>
-              </TouchableWithoutFeedback>
+            <ScrollView keyboardShouldPersistTaps="handled" ref={scrollViewRef}>
+              <ScrollViewContext.Provider value={scrollViewRef}>
+                <TouchableWithoutFeedback onPress={handleGlobalPress}>
+                  <View style={styles.childContainer}>
+                    <SafeAreaView>{children}</SafeAreaView>
+                  </View>
+                </TouchableWithoutFeedback>
+              </ScrollViewContext.Provider>
             </ScrollView>
           </KeyboardAvoidingView>
         )}

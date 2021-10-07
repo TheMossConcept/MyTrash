@@ -7,6 +7,7 @@ import React, {
   useState,
   useCallback,
   useRef,
+  useContext,
 } from "react";
 import { take } from "lodash";
 import { EventRegister } from "react-native-event-listeners";
@@ -29,6 +30,7 @@ import globalStyles from "../../utils/globalStyles";
 import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 import LoadingIndicator from "../styled/LoadingIndicator";
 import platform from "../../utils/platform";
+import { ScrollViewContext } from "../styled/MainContentArea";
 
 export type SelectableEntity = {
   id: string;
@@ -62,6 +64,8 @@ const AutocompleteInput: FC<Props> = ({
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
   const [loading, setLoading] = useState(false);
   const [hideSuggestionList, setHideSuggestionList] = useState(true);
+
+  const scrollViewRef = useContext(ScrollViewContext);
 
   const autocompleteRef = useRef(null);
   const clickOutsideHandler = () => {
@@ -176,6 +180,9 @@ const AutocompleteInput: FC<Props> = ({
             onFocus={() => {
               if (editable) {
                 setHideSuggestionList(false);
+                if (scrollViewRef) {
+                  scrollViewRef.current?.scrollToEnd();
+                }
               }
             }}
             renderTextInput={({

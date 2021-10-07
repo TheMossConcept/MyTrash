@@ -109,7 +109,7 @@ const CollectionForm: FC<Props> = ({ userId, clusterId, successCallback }) => {
     </View>
   ) : (
     <View>
-      <Text style={styles.headlineText}>Book afhentning.</Text>
+      <Text style={styles.headlineText}>Book afhentning</Text>
       <FormContainer
         initialValues={formValues}
         validationSchema={validationSchema}

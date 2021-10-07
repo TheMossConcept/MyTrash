@@ -47,7 +47,7 @@ const CollectionStatusPopover: FC<Props> = ({
         </TouchableOpacity>
       </View>
       <View style={styles.headlineContainer}>
-        <Text style={styles.headline}>Status på afhentning.</Text>
+        <Text style={styles.headline}>Status på afhentning</Text>
       </View>
       <StatusLine collectionStatus="pending" data={data} />
       <StatusLine collectionStatus="scheduled" data={data} />

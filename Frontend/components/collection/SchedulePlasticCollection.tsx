@@ -196,7 +196,7 @@ const SchedulePlasticCollection: FC<Props> = ({
       </View>
       {loading && <LoadingIndicator />}
       <WebButton
-        text="Planlæg."
+        text="Planlæg"
         disabled={date === undefined || !dateHasChanged || loading}
         onPress={schedule}
       />

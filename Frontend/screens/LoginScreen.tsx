@@ -125,7 +125,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
           handleAuthorization={handleAuthorizationSuccess}
         />
         <MobileButton
-          text="Opret bruger."
+          text="Opret bruger"
           onPress={() => navigation.push("Join", { clusterId: undefined })}
           icon={{
             src: require("../assets/icons/checkmark_grey.png"),
@@ -135,7 +135,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
           style={styles.bottomButton}
         />
         <MobileButton
-          text="MyTrash info."
+          text="MyTrash info"
           onPress={openMyTrashInfo}
           icon={{
             src: require("../assets/icons/leaf_grey.png"),

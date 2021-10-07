@@ -38,7 +38,7 @@ const CollectionAdministrationScreen: FC<Props> = ({ route }) => {
               </View>
               <CollectorFormWithList
                 clusterId={cluster.id}
-                title="Tilføj indsamler."
+                title="Tilføj indsamler"
               />
             </View>
           )}

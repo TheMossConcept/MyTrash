@@ -17,7 +17,7 @@ type Props = {
 const ProductsDetails: FC<Props> = ({ products, refetchProducts }) => {
   return products.length !== 0 ? (
     <View style={styles.container}>
-      <HeadlineText text="Oprettede produkter." style={styles.headlineText} />
+      <HeadlineText text="Oprettede produkter" style={styles.headlineText} />
       {products.map((product, index) => {
         const isLastProduct = index === products.length - 1;
 
