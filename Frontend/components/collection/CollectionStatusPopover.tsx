@@ -143,7 +143,8 @@ const styles = StyleSheet.create({
   crossContainer: {
     alignItems: "flex-end",
     padding: 16,
-    paddingRight: 32,
+    paddingRight: 40,
+    paddingTop: 32,
   },
   headlineContainer: {
     marginLeft: 20,
@@ -186,6 +187,8 @@ const styles = StyleSheet.create({
   headline: {
     fontFamily: "HelveticaNeueLTPro-Hv",
     fontSize: 30,
+    paddingTop: 15,
+    textAlignVertical: "center",
     color: "#898c8e",
   },
 });
