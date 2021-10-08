@@ -180,8 +180,8 @@ const AutocompleteInput: FC<Props> = ({
             onFocus={() => {
               if (editable) {
                 setHideSuggestionList(false);
-                if (scrollViewRef) {
-                  scrollViewRef.current?.scrollToEnd();
+                if (scrollViewRef && scrollViewRef.current) {
+                  scrollViewRef.current.scrollTo({ y: 100, animated: true });
                 }
               }
             }}
