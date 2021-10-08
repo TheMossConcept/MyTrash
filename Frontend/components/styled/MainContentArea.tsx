@@ -22,9 +22,6 @@ type Props = {
   disableScroll?: boolean;
 } & Omit<ImageBackgroundProps, "source" | "style">;
 
-export const ScrollViewContext =
-  React.createContext<React.MutableRefObject<ScrollView | null> | null>(null);
-
 const MainContentArea: FC<Props> = ({
   children,
   containerStyle,
@@ -32,8 +29,6 @@ const MainContentArea: FC<Props> = ({
   ...imageBackgroundProps
 }) => {
   const isWeb = Platform.platformName === "web";
-
-  const scrollViewRef = useRef<ScrollView | null>(null);
 
   const handleGlobalPress = (event: GestureResponderEvent) => {
     EventRegister.emit("globalPress", event);
@@ -64,14 +59,12 @@ const MainContentArea: FC<Props> = ({
           <KeyboardAvoidingView
             behavior={Platform.platformName === "ios" ? "padding" : "height"}
           >
-            <ScrollView keyboardShouldPersistTaps="handled" ref={scrollViewRef}>
-              <ScrollViewContext.Provider value={scrollViewRef}>
-                <TouchableWithoutFeedback onPress={handleGlobalPress}>
-                  <View style={styles.childContainer}>
-                    <SafeAreaView>{children}</SafeAreaView>
-                  </View>
-                </TouchableWithoutFeedback>
-              </ScrollViewContext.Provider>
+            <ScrollView keyboardShouldPersistTaps="handled">
+              <TouchableWithoutFeedback onPress={handleGlobalPress}>
+                <View style={styles.childContainer}>
+                  <SafeAreaView>{children}</SafeAreaView>
+                </View>
+              </TouchableWithoutFeedback>
             </ScrollView>
           </KeyboardAvoidingView>
         )}

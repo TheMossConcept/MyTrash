@@ -7,7 +7,6 @@ import React, {
   useState,
   useCallback,
   useRef,
-  useContext,
 } from "react";
 import { take } from "lodash";
 import { EventRegister } from "react-native-event-listeners";
@@ -30,7 +29,6 @@ import globalStyles from "../../utils/globalStyles";
 import useOutsideClickDetector from "../../hooks/useOutsideClickDetector";
 import LoadingIndicator from "../styled/LoadingIndicator";
 import platform from "../../utils/platform";
-import { ScrollViewContext } from "../styled/MainContentArea";
 
 export type SelectableEntity = {
   id: string;
@@ -45,6 +43,8 @@ type Props = {
   style?: ViewStyle;
   editable?: boolean;
 } & Pick<AutocompleteProps<any>, "containerStyle">;
+
+// TODO: This component should be broken up into smaller components
 
 // TODO: By simply handing this component an endpoint that it calls itself, we make it
 // more reuseable by offloading responsibility onto it, however, we also potentially
@@ -64,8 +64,6 @@ const AutocompleteInput: FC<Props> = ({
   const [entities, setEntities] = useState<SelectableEntity[]>([]);
   const [loading, setLoading] = useState(false);
   const [hideSuggestionList, setHideSuggestionList] = useState(true);
-
-  const scrollViewRef = useContext(ScrollViewContext);
 
   const autocompleteRef = useRef(null);
   const clickOutsideHandler = () => {
@@ -180,9 +178,6 @@ const AutocompleteInput: FC<Props> = ({
             onFocus={() => {
               if (editable) {
                 setHideSuggestionList(false);
-                if (scrollViewRef && scrollViewRef.current) {
-                  scrollViewRef.current.scrollTo({ y: 100, animated: true });
-                }
               }
             }}
             renderTextInput={({
@@ -191,16 +186,18 @@ const AutocompleteInput: FC<Props> = ({
               onFocus,
               onBlur,
             }: any) => (
-              <TextInput
-                value={value}
-                onChangeText={onChangeText}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                placeholder={title}
-                placeholderTextColor="#a3a5a8"
-                editable={editable}
-                style={globalStyles.textField}
-              />
+              <View style={styles.textFieldContainer}>
+                <TextInput
+                  value={value}
+                  onChangeText={onChangeText}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                  placeholder={title}
+                  placeholderTextColor="#a3a5a8"
+                  editable={editable}
+                  style={[globalStyles.textField, styles.textField]}
+                />
+              </View>
             )}
             hideResults={hideSuggestionList}
             flatListProps={{
@@ -246,6 +243,13 @@ const AutocompleteInput: FC<Props> = ({
 const styles = StyleSheet.create({
   labelText: { fontSize: 12 },
   itemText: { fontSize: 12, paddingVertical: 15 },
+  // The sole purposes
+  textField: { height: 150, marginBottom: -90, paddingBottom: 110 },
+  textFieldContainer: {
+    height: 60,
+    overflow: "hidden",
+    borderRadius: 16,
+  },
   touchableOpacity: {
     width: "100%",
   },
