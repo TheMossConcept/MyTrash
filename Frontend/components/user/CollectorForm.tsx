@@ -180,7 +180,7 @@ const CollectorForm: FC<Props> = ({
         style={styles.inputField}
       />
       <Text style={[globalStyles.subheaderText, styles.subheader]}>
-        Adresse.
+        Adresse
       </Text>
       <View style={[styles.inputField, { flexDirection: "row" }]}>
         <View style={{ flex: 2, marginRight: 10 }}>
