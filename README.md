@@ -40,6 +40,9 @@ Som nævnt flere gange henter systemet kun data hvert 10 minut, og data kan sål
 
 Brugere deles på tværs af test og produktionsmiljø. I langt de fleste tilfælde har dette ikke nogen betydning, dog betyder det, at de partnere man givetvis opretter i testmiljø også kan ses på produktionsmiljøet. Da partnerne kun kan ses af administratorer har dette ikke den store betydning, men det er noget man skal have in mente, når man tester.
 
+Alle lukkede clustre og data relateret til disse slettes 30 dage efter, de er lukkede. Dette gælder både indsamlerne i clusteret, indsamlingerne registreret til clusteret, batches oprettede under clusteret og produkter oprettet under clusteret samt, selvfølgelig, selve clusteret. Det eneste relateret til clusteret der ikke slettes er partnerne, da disse
+kan gå igen på tværs af mange forskellige clustre. En partner slettes manuelt via Azure AD B2C som kan tilgås via [https://portal.azure.com/](https://portal.azure.com/) sammen med alt andet, der ligger i Azure. NetIP kan supportere og vejlede omkring alt, hvad der ligger i Azure.
+
 ## Priser
 
 Systemet hostes i Azure. I det følgende gives et overblik over, hvilket abstraktioner der benyttes og hvad disse koster.
@@ -56,7 +59,8 @@ This section is aimed at developers and other tech-savy people who need to work 
 
 ## Azure AD B2C
 
-All users, partners and collectors alike, are saved in and handled by Azure AD B2C. Azure AD B2C also handles login, edit of user profiles, password management ect. To handle individual collection goals and roles, the following custom attributes have been added to the AD
+All users, partners and collectors alike, are saved in and handled by Azure AD B2C. Azure AD B2C also handles login, edit of user profiles, password management ect. To handle individual collection goals and roles, the following custom attributes have been added to the AD in order to keep all data related to users in the AD.
+To some extent, this is a matter of preference, however, I think it's nicer to have everything related to users in the AD instead of having a little bit of necessary user data lying around in the database when the majority of user management happens in Azure AD. 
 
 <img width="1163" alt="CustomAttributes" src="https://user-images.githubusercontent.com/6885285/132017404-6d1eab7a-a8a8-4a59-8248-5e5e3c3592dd.png">
 
@@ -121,11 +125,12 @@ Deployment is done automatically through Github Actions. A push to develop will 
 
 Everything regarding the mobile app is handled through Expo, see [https://expo.dev/](https://expo.dev/). Houe has an Expo account that Louise Mørk manages. Building for iOS is done through `npm run build:ios` and conversely for Android using `npm run build:android`. When building for iOS for the first time, contact Phillip at Houe as he owns the account that deploys the build to app store. The first time you build, you need to login to his account and he needs to approve you through 2FA.
 
-The result of the build should be uploaded to App Store Connect at [https://appstoreconnect.apple.com/](https://appstoreconnect.apple.com/) for Apple and Google Play Store at [https://play.google.com/console/u/3/developers/?pli=1](https://play.google.com/console/u/3/developers/?pli=1) for Google. Phillip at Houe owns both accounts, so contact him for access.
+The result of the build should be uploaded to App Store Connect at [https://appstoreconnect.apple.com/](https://appstoreconnect.apple.com/) for Apple and Google Play Store at [https://play.google.com/console/u/3/developers/?pli=1](https://play.google.com/console/u/3/developers/?pli=1) for Google. Phillip at Houe owns both accounts, so contact him for access. Note that development to production needs to be done manually as just described (as opposed to development to stagaing which happens automatically in the pipeline). Deployment via the CLI used to require a subscription and has therefore not been done, but should be done sometime in the future, see https://docs.expo.dev/distribution/uploading-apps/.
 
 ## The staging environment
 
-The staging environment contains a separat cosmos db, function app, static web app and mobile apps that are deployed to the Expo Go app. It is completely isolated from production except for the fact that they use the same AD. The environment is controlled by the environment variable `APPLICATION_ENVIRONMENT`. The possible values include `local`, `staging` and `production`.
+The staging environment contains a separat cosmos db, function app, static web app and mobile apps that are deployed to the Expo Go app. It is completely isolated from production except for the fact that they use the same AD. The environment is controlled by the environment variable `APPLICATION_ENVIRONMENT`. The possible values include `local`, `staging` and `production`. Local should only be used when developing. It runs the application against a local backend and a local database. Please note that this will cause issues when debugging the mobile app on device unless you forward your localhost to something accessible from the mobile device using e.g. ngrok or similar. 
+Staging runs the solution against the staging backend and database and should be used to issue pre-releases for test by Houe, if you want to test performance while developing or you don't want to make your localhost accessible to develop the mobile app. Production run the application against the production backend and database and should only be used when deploying the application. Also, the debug text on the login screen is hidden when the environment is production.
 
-The staging environment can be access at [https://polite-field-0d14ffe03.azurestaticapps.net/](https://polite-field-0d14ffe03.azurestaticapps.net/) and the production environment can be access at [https://mytrash.houe.com](https://mytrash.houe.com). The staging version of the app can be accessed by opening exp://exp.host/@houe/my-trash on a phone with Expo Go installed. It requires the user trying to access the app through Expo Go to be invited to the Houe Expo Account. 
+The staging environment can be access at [https://polite-field-0d14ffe03.azurestaticapps.net/](https://polite-field-0d14ffe03.azurestaticapps.net/) and the production environment can be access at [https://mytrash.houe.com](https://mytrash.houe.com) or [https://white-glacier-0780ea903.azurestaticapps.net/](https://white-glacier-0780ea903.azurestaticapps.net/) the former being an alias for the latter. The staging version of the app can be accessed by opening exp://exp.host/@houe/my-trash on a phone with Expo Go installed. It requires the user trying to access the app through Expo Go to be invited to the Houe Expo Account. 
 

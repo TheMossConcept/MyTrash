@@ -22,7 +22,7 @@ function useOutsideClickDetector(
       const children: any[] = ref?.current?._children;
 
       if (
-        platform.platformName === "ios" &&
+        platform.platformName !== "web" &&
         children &&
         ref.current &&
         !children.includes(event.target)
