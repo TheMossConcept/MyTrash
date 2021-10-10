@@ -54,6 +54,7 @@ export default {
   },
   android: {
     package: "com.houe.mytrash",
+    softwareKeyboardLayoutMode: "pan",
     versionCode: 3,
     adaptiveIcon: {
       backgroundColor: "#FFFFFF",

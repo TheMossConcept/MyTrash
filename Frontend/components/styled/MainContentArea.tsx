@@ -57,7 +57,8 @@ const MainContentArea: FC<Props> = ({
           </TouchableWithoutFeedback>
         ) : (
           <KeyboardAvoidingView
-            behavior={Platform.platformName === "ios" ? "padding" : "height"}
+            // Android can handle this itself
+            behavior={Platform.platformName === "ios" ? "padding" : undefined}
           >
             <ScrollView keyboardShouldPersistTaps="handled">
               <TouchableWithoutFeedback onPress={handleGlobalPress}>
