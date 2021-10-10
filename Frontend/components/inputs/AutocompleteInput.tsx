@@ -244,9 +244,9 @@ const styles = StyleSheet.create({
   labelText: { fontSize: 12 },
   itemText: { fontSize: 12, paddingVertical: 15 },
   // The sole purposes
-  textField: { height: 150, marginBottom: -90, paddingBottom: 110 },
+  textField: { height: 140, marginBottom: -100, paddingBottom: 100 },
   textFieldContainer: {
-    height: 60,
+    height: 50,
     overflow: "hidden",
     borderRadius: 16,
   },

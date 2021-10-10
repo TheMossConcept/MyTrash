@@ -60,7 +60,7 @@ const MainContentArea: FC<Props> = ({
             // Android can handle this itself
             behavior={Platform.platformName === "ios" ? "padding" : undefined}
           >
-            <ScrollView keyboardShouldPersistTaps="handled">
+            <ScrollView keyboardShouldPersistTaps="handled" bounces={false}>
               <TouchableWithoutFeedback onPress={handleGlobalPress}>
                 <View style={styles.childContainer}>
                   <SafeAreaView>{children}</SafeAreaView>
