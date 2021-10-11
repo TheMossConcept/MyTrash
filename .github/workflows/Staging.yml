@@ -44,6 +44,7 @@ jobs:
     - name: Deploy to Expo
       env:
         EXPO_TOKEN: ${{ secrets.EXPO_ACCESS_TOKEN }}
+        APPLICATION_ENVIRONMENT: staging
       run: |
         cd Frontend
         npm install --global --silent expo-cli
