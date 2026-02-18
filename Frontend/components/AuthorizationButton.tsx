@@ -13,6 +13,7 @@ import Constants from "expo-constants";
 import useAzureAdFlows from "../hooks/useAzureAdFlows";
 import MobileButton, { MobileButtonProps } from "./styled/MobileButton";
 import getDefaultRedirectUri from "../utils/authorization";
+import { mockLogin } from "../utils/mockApi";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -21,13 +22,17 @@ type Props = {
     tokenResponse: TokenResponse,
     refreshTokenIfNecessary: () => Promise<TokenResponse> | undefined
   ) => void;
+  // Added for mock login navigation
+  onMockLogin?: () => void;
 } & Omit<MobileButtonProps, "text" | "icon">;
 
 export default function AuthorizationButton({
   handleAuthorization,
+  onMockLogin,
   ...MobileButtonProps
 }: Props) {
-  const { AZURE_AD_CLIENT_ID } = Constants.manifest.extra || {};
+  const { AZURE_AD_CLIENT_ID, ENVIRONMENT_NAME } =
+    Constants.manifest.extra || {};
   const scopes = [AZURE_AD_CLIENT_ID, "profile", "email", "offline_access"];
 
   const defaultRedirectUrl = getDefaultRedirectUri();
@@ -36,6 +41,15 @@ export default function AuthorizationButton({
 
   // Request
   const onPress = async () => {
+    // In local mode, bypass Azure AD and use mock login
+    if (ENVIRONMENT_NAME === "local") {
+      await mockLogin();
+      if (onMockLogin) {
+        onMockLogin();
+      }
+      return;
+    }
+
     const getAccessTokenFromCode = (
       authSessionResult: AuthSessionResult,
       authRequest: AuthRequest,

@@ -123,6 +123,7 @@ const LoginScreen: FC<Props> = ({ navigation }) => {
         <AuthorizationButton
           style={styles.bottomButton}
           handleAuthorization={handleAuthorizationSuccess}
+          onMockLogin={() => navigation.navigate("Root")}
         />
         <MobileButton
           text="Opret bruger"

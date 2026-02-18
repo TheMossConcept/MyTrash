@@ -8,6 +8,24 @@ import { Theme } from "react-native-paper/lib/typescript/types";
 import { useFonts } from "expo-font";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import Navigation from "./navigation";
+import { Platform } from "react-native";
+import { setupMockApi } from "./utils/mockApi";
+
+// Install mock API interceptor for local development
+setupMockApi();
+
+// Remove the Expo DevTools iframe overlay on web - it intercepts all pointer events
+if (Platform.OS === "web") {
+  const removeDevToolsOverlay = () => {
+    document.querySelectorAll("iframe").forEach((el) => {
+      el.style.pointerEvents = "none";
+    });
+  };
+  // Run immediately and observe for dynamically added iframes
+  removeDevToolsOverlay();
+  const observer = new MutationObserver(removeDevToolsOverlay);
+  observer.observe(document.body, { childList: true, subtree: true });
+}
 
 const theme: Theme = {
   ...DefaultTheme,
